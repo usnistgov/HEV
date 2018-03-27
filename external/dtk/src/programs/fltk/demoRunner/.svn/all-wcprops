@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/diverse/!svn/ver/981/trunk/dtk/programs/fltk/demoRunner
+END
+dtk-demoRunner.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/981/trunk/dtk/programs/fltk/demoRunner/dtk-demoRunner.cpp
+END
+launchButtons.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/659/trunk/dtk/programs/fltk/demoRunner/launchButtons.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/diverse/!svn/ver/916/trunk/dtk/programs/fltk/demoRunner/CMakeLists.txt
+END
+mainWindow.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/demoRunner/mainWindow.cpp
+END
+getcwd.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/demoRunner/getcwd.cpp
+END

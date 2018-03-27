@@ -1,0 +1,119 @@
+set -x
+
+savgfly --examine  1lineTest.out1.osg
+savgfly --examine  1polyTest.out1.osg
+savgfly --examine  2lineTest.out1.osg
+savgfly --examine  2polyTest.out1.osg
+savgfly --examine  3lineTest.out1.osg
+savgfly --examine  3polyTest.out1.osg
+savgfly --examine  linePolyLineTest.out1.osg
+savgfly --examine  linePolyTest.out1.osg
+savgfly --examine  polyLinePolyTest.out1.osg
+savgfly --examine  polyLineTest.out1.osg
+
+savgfly --examine  1lineTest.out2.osg
+savgfly --examine  1polyTest.out2.osg
+savgfly --examine  2lineTest.out2.osg
+savgfly --examine  2polyTest.out2.osg
+savgfly --examine  3lineTest.out2.osg
+savgfly --examine  3polyTest.out2.osg
+savgfly --examine  linePolyLineTest.out2.osg
+savgfly --examine  linePolyTest.out2.osg
+savgfly --examine  polyLinePolyTest.out2.osg
+savgfly --examine  polyLineTest.out2.osg
+
+
+
+
+savgfly --examine  1lineTest.out1.savg
+savgfly --examine  1polyTest.out1.savg
+savgfly --examine  2lineTest.out1.savg
+savgfly --examine  2polyTest.out1.savg
+savgfly --examine  3lineTest.out1.savg
+savgfly --examine  3polyTest.out1.savg
+savgfly --examine  linePolyLineTest.out1.savg
+savgfly --examine  linePolyTest.out1.savg
+savgfly --examine  polyLinePolyTest.out1.savg
+savgfly --examine  polyLineTest.out1.savg
+
+##########################################################
+
+
+savgfly --examine  1lineTest.nf.savg
+savgfly --examine  polyLinePoly.ns.savg
+
+savgfly --examine  2lineTest.cy.savg
+savgfly --examine  2lineTest.cn.savg
+
+savgfly --examine  linePolyLineTest.raw.savg
+savgfly --examine  linePolyLineTest.angle.savg
+savgfly --examine  linePolyLineTest.cut.savg
+savgfly --examine  linePolyLineTest.round.savg
+
+savgfly --examine  3lineTest.d3.savg
+savgfly --examine  3lineTest.d10.savg
+
+savgfly --examine  2polyTest.r0.01.savg
+savgfly --examine  2polyTest.r0.02.savg
+
+
+
+
+savgfly --examine  1lineTest.nf.osg
+savgfly --examine  polyLinePoly.ns.osg
+
+savgfly --examine  2lineTest.cy.osg
+savgfly --examine  2lineTest.cn.osg
+
+savgfly --examine  linePolyLineTest.raw.osg
+savgfly --examine  linePolyLineTest.angle.osg
+savgfly --examine  linePolyLineTest.cut.osg
+savgfly --examine  linePolyLineTest.round.osg
+
+savgfly --examine  3lineTest.d3.osg
+savgfly --examine  3lineTest.d10.osg
+
+savgfly --examine  2polyTest.r0.01.osg
+savgfly --examine  2polyTest.r0.02.osg
+
+
+
+##########################################################
+
+
+savgfly --examine  1lineTest.raw.cy.savg
+savgfly --examine  1lineTest.cut.nf.savg
+savgfly --examine  1lineTest.round.d4.savg
+savgfly --examine  1lineTest.ang.r0.03.savg
+
+savgfly --examine  1lineTest.cynf.savg
+savgfly --examine  1lineTest.cn.d5.savg
+savgfly --examine  1lineTest.cy.r0.02.savg
+
+savgfly --examine  1lineTest.ns.d6.savg
+savgfly --examine  1lineTest.nf.r0.005.savg
+
+savgfly --examine  1lineTest.d5.r0.02.savg
+
+
+
+
+
+savgfly --examine  1lineTest.raw.cy.osg
+savgfly --examine  1lineTest.cut.nf.osg
+savgfly --examine  1lineTest.round.d4.osg
+savgfly --examine  1lineTest.ang.r0.03.osg
+
+savgfly --examine  1lineTest.cynf.osg
+savgfly --examine  1lineTest.cn.d5.osg
+savgfly --examine  1lineTest.cy.r0.02.osg
+
+savgfly --examine  1lineTest.ns.d6.osg
+savgfly --examine  1lineTest.nf.r0.005.osg
+
+savgfly --examine  1lineTest.d5.r0.02.osg
+
+
+
+
+

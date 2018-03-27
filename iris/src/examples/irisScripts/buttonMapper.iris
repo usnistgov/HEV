@@ -1,0 +1,19 @@
+# load this into irisfly
+# for pressing buttons
+exec dtk-caveDeviceSimulator
+# load the buttonMapper DSO, just use default button input
+# create 2 maps- map one is just left button
+dso buttonMapper map simple 1 tmp/justLeft
+# map 2 is more complicated- left/right and right only
+dso buttonMapper map messy 5 tmp/leftRight 2 tmp/justMiddle
+# turn on "simple"
+dso buttonMapper on simple
+# see what happens
+exec hev-writeButtons -c 1 tmp/justLeft
+exec hev-writeButtons -c 1 tmp/leftRight
+exec hev-writeButtons -c 1 tmp/justMiddle
+exec xterm -title justLeft -e hev-readButtons -i -d tmp/justLeft
+# switch to a different map after a bit
+after time 30 dso buttonMapper on messy
+after time 30 exec xterm -title leftRight -e hev-readButtons -i -d tmp/leftRight
+after time 30 exec xterm -title justMiddle -e hev-readButtons -i -d tmp/justMiddle

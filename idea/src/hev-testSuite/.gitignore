@@ -1,0 +1,25 @@
+#
+# This .gitignore is specific to hev-testSuite
+#
+# see gitignore(5) for details
+
+test_caffeineMolecule/sideViews.timeline.iris
+
+test_pointsAndLines/cylinderLines.savg
+test_pointsAndLines/cylinderPoints.savg
+test_pointsAndLines/piPoints.savg
+test_pointsAndLines/tetrahedronLines.savg
+test_pointsAndLines/tetrahedronPoints.savg
+
+test_shaderProcedure_sgs/sphere4.frag
+test_shaderProcedure_sgs/shaderProcedureControls.timeline.iris
+
+test_sgSample/objectsOnOff.timeline.iris
+test_sgSample/sgSample.iris
+test_sgSample/sg_cone.savg
+test_sgSample/sg_cube.savg
+test_sgSample/sg_cylinder.savg
+test_sgSample/sg_sphere.savg
+
+test_solidControls/solidControls.timeline.iris
+test_solidControls/sphere0.frag

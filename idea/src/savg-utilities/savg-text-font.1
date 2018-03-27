@@ -1,0 +1,48 @@
+.TH SAVG\-TEXT-FONT 1 "26 May 2009"
+.SH NAME
+savg-text-font \- SAVG ToolBox: text-font
+.SH SYNOPSIS
+.B savg-text-font fontname
+.SH DESCRIPTION
+.I savg-text-font
+adds the font keyword for \fIsavg\fP files (\fISAVG ToolBox\fP).  It 
+accepts input from
+.I stdin
+and outputs to
+.I stdout.
+If invalid arguments or no arguments are given, 
+then 
+.I savg-text-font fontname
+prints usage information and terminates.
+.SH OPTIONS
+.TP
+.B \   savg-text-font fontname
+.SH EXAMPLES
+.TP
+.B savg-text-font Helvetica < in.savg > out.savg
+Reads from 
+.I in.savg
+and sets the text font to Helvetica.  Then outputs to 
+.I out.savg.
+.SH BUGS
+(none)
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+March 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

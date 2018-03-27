@@ -1,0 +1,55 @@
+.TH SAVG\-REGPOLY 1 "16 July 2004"
+
+.SH NAME
+savg-regpoly \- SAVG Toolbox: regular polygon
+.SH SYNOPSIS
+.B savg-regpoly
+[val]
+.PP
+.br
+.SH DESCRIPTION
+.I Savg-regpoly
+generates a regular polygon -- one that has equal-length sides -- to stdout by rotating a line around the z-axis.  It uses 
+.I savg-sor 
+to actually generate the polygon.  The regular polygon is centered at the origin.  It's visible surface is directed towared the positive z-axis.  It has a unit size of one, which is defined from the center to its corner points.
+Usage messages are produced when options are incorrectly specified.
+.SH OPTIONS
+.PP
+.TP
+.B val
+Specify the number of edges of the polygon (default 3).
+.SH EXAMPLES
+.TP
+.B "savg-regpoly 4 > square.savg"
+Creates a square and puts it in the SAVG format file 
+.I square.savg.
+.TP
+.B "savg-regpoly 8 > object.savg"
+Creates a regular octagon whose circumscribed circle would have diameter
+1 and puts it in the SAVG format file 
+.I object.savg.
+
+.SH SEE ALSO
+savg-sor
+.PP
+.SH AUTHOR
+.PP
+Brandon M. Smith
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Summer 2004, modified June 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

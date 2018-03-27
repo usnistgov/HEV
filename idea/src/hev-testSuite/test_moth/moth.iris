@@ -1,0 +1,16 @@
+
+###########################################################
+# Load objects and create scenegraph switch models on/off #
+###########################################################
+LOAD moth_Points /home/griffin/hev/idea/testSuite/moth_data/points.iris
+NODEMASK moth_Points ON
+ADDCHILD moth_Points world
+
+LOAD moth_Sides /home/griffin/hev/idea/testSuite/moth_data/sides.iris
+NODEMASK moth_Sides ON
+ADDCHILD moth_Sides world
+
+LOAD moth_Grids /home/griffin/hev/idea/testSuite/moth_data/grids.iris
+NODEMASK moth_Grids ON
+ADDCHILD moth_Grids world
+

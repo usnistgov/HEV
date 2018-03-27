@@ -1,0 +1,1 @@
+after realize exec ./tim > $IRIS_CONTROL_FIFO

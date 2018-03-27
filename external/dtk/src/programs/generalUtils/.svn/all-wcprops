@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/981/trunk/dtk/programs/generalUtils
+END
+dtk-fsleep.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/generalUtils/dtk-fsleep.cpp
+END
+dtk-msgError.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/generalUtils/dtk-msgError.cpp
+END
+dtk-printEnv.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/diverse/!svn/ver/981/trunk/dtk/programs/generalUtils/dtk-printEnv.cpp
+END
+dtk-recorder.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/diverse/!svn/ver/708/trunk/dtk/programs/generalUtils/dtk-recorder.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/915/trunk/dtk/programs/generalUtils/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/generalUtils/README
+END
+dtk-checkColor.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/generalUtils/dtk-checkColor.cpp
+END

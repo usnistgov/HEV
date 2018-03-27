@@ -1,0 +1,43 @@
+# setup script for HEV iris
+hev_iris=$1
+
+if [ -z "$HEV_PROFILE" ] ; then
+    echo "iris This file can not be sourced directly; \$HEVROOT/profile sources this file."
+    return
+fi
+
+hev_msg_prefix="${hev_iris}/profile: "
+
+if [ "${hev_iris}" == "" ] ; then
+   hev_def_iris_dir="$HEVROOT/iris"
+   hev_spew "$hev_msg_prefix warning: no directrory passed, using $hev_def_iris_dir"
+   hev_iris=$hev_def_iris_dir
+   unset hev_def_iris_dir
+fi
+
+if [ ! -d ${hev_iris} ] ; then
+   hev_spew "$hev_msg_prefix HEV profile: Error- $hev_iris is not a directory, exiting"
+   return 1
+fi
+
+export HEV_IRIS_DIR="${hev_iris}"
+
+export IRIS_HOME=${hev_iris}/src
+export IRIS_PREFIX=${hev_iris}
+export PKG_CONFIG_PATH=`hev_prepend_path "$PKG_CONFIG_PATH" "$IRIS_HOME" ":"`
+export IRIS_CONTROL_FIFO=/tmp/irisControlFifo-${USER}
+
+if [ -d $IRIS_PREFIX ] ; then
+   export PKG_CONFIG_PATH=`hev_prepend_path "$PKG_CONFIG_PATH" "$IRIS_PREFIX" ":"`
+   export PATH=`hev_prepend_path "$PATH" "$IRIS_PREFIX/bin" ":"`
+   export LD_LIBRARY_PATH=`hev_prepend_path "$LD_LIBRARY_PATH" "$IRIS_PREFIX/lib" ":"`
+   export OSG_FILE_PATH=`hev_prepend_path "$OSG_FILE_PATH" ".:$IRIS_PREFIX/data" ":"`
+
+else
+    hev_spew "$hev_msg_prefix" IRIS not found
+fi
+
+
+
+unset hev_iris
+

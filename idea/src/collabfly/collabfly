@@ -1,0 +1,254 @@
+#!/bin/sh
+
+########################################################################
+# if $1 has a value, append :$2, otherwise just set $1 to $2
+setOrAppend() {
+    a=`eval echo '$'$1`
+    if [ "$a" = "" ] ; then
+	eval $1="$2"
+    else
+	eval $1="\$$1":\""$2"\"
+    fi
+}
+
+########################################################################
+# if $1 has a value, prepend $2:, otherwise just set $1 to $2
+setOrPrepend() {
+    a=`eval echo '$'$1`
+    if [ "$a" = "" ] ; then
+	eval $1="$2"
+    else
+	eval $1=\""$2"\":"\$$1"
+    fi
+}
+
+########################################################################
+# execute a command also also send it out via a DTK message
+doItAndSpewIt() {
+    dtk-msgInfo collabfly: $@
+    $@
+    return $?
+}
+
+########################################################################
+function usage() {
+    cat<<EOF
+Usage: collabfly [ --separateGUI | --noGUI ] [ --move node ] hostname[:port] | :[port] command
+
+   hostname[:port] | :[port] specifies the hostname and port number of the
+   remote collabfly. If hostname is omitted, localhost will be used.
+   If port is omitted, the default DTK port will be used
+
+   All remaining arguments are executed as a command.  The command needs to
+   directly or indirectly invoke the irisfly command. For example to run a
+   demo collaboratively, use the command "./rundemo"
+
+Notes:
+
+  To test this on a single system with two dtk servers, try this:
+
+    in one window run collabfly using a different shared memory and port,
+    also different IRIS and MCP fifos.  The remote collabfly you want to
+    connect to will be using the defaults, and on localhost, so the remote
+    collabfly can be specified as :, which is shorthand for localhost:32419
+      export DTK_SHAREDMEM_DIR=/dev/shm/dtkSharedMem_collabfly
+      export DTK_PORT=34220 
+      export DTK_CONNECTION=localhost:$DTK_PORT
+      export IRIS_CONTROL_FIFO=/tmp/irisControlFifo-${USER}_collabfly
+      export IRISFLY_MCP_CONTROL_FIFO=/tmp/irisfly-mcp-fifo-${USER}_collabfly
+      collabfly --m tape : irisfly -v --examine tape.osg head.osg
+
+    in another window run with the defaults, and connect to the above. The
+    remote collabfly is on localhost, but with a different port number
+      collabfly --m tape :34220 irisfly -v --examine tape.osg head.osg
+
+EOF
+}
+
+########################################################################
+# add private data directory to MCP and OSG file paths
+setOrPrepend MCP_FILE_PATH "$HEVROOT/idea/etc/collabfly/data" 
+export MCP_FILE_PATH 
+setOrPrepend OSG_FILE_PATH "$HEVROOT/idea/etc/collabfly/data:$OSG_FILE_PATH"
+export OSG_FILE_PATH 
+export PATH="$HEVROOT/idea/etc/collabfly/bin:$PATH"
+
+if [ $# -lt 2 ]
+then usage
+    exit 1
+fi
+
+# was --separateGUI or --noGIU specified?
+# how about --move?
+while [ -n "$*" ]
+do
+    if [ "$1" != "${1#--s}" ]
+    then mcpgui=s
+    elif [ "$1" != "${1#--n}" ]
+    then mcpgui=n
+    elif [ "$1" != "${1#--m}" ]
+    then shift ; node=$1
+    elif [ "$1" != "${1#--}" ]
+    then usage
+	exit 0 
+    else
+	break
+    fi
+    shift
+done
+
+if [ -n "$node" ]
+then dtk-msgInfo collabfly: node named $node can be moved with the wand
+fi
+
+# is it of the form hostname, or hostname:port or :port? 
+if ( echo $1 | grep -vq ':' )
+then remoteHost=$1
+elif [ "$1" != "${1#:}" ]
+then remoteHost=localhost
+    remotePort=$1
+    if [ "$remotePort" == ":" ]
+    then unset remotePort
+    fi
+else remoteHost=`echo $1 | sed -e 's/:.*$//'`
+    remotePort=`echo $1 | sed -e 's/^.*:/:/'`
+fi
+
+shift
+
+# does remote hostname include a "."? we want a FQDN
+if [ "$remoteHost" != "localhost" ]
+then if ( echo $remoteHost | grep -qv "\." ) 
+    then
+	remoteHost=$remoteHost.`dnsdomainname`
+    fi
+fi
+
+# get local hostname and port too
+if [ "$remoteHost" != "localhost" ]
+then localHost=`hostname`
+    # does hostname include a "."? we want a FQDN
+    if ( echo $localHost | grep -qv "\." ) 
+    then
+	localHost=$localHost.`dnsdomainname`
+    fi
+else localHost=localhost
+fi
+
+if [ -n "$DTK_PORT" ]
+then localPort=:$DTK_PORT
+fi
+
+
+dtk-msgInfo collabfly: local shared memory files can be reached via $localHost$localPort
+dtk-msgInfo collabfly: connecting to remote shared memory at $remoteHost$remotePort
+
+if [ "$remoteHost" == "$localHost" -a "$remotePort" == "$localPort" ]
+then echo "collabfly: local hostname and local port are the same as the remote hostname and remote port"
+    exit 1
+fi
+
+# start a dtk server if one isn't already running
+if ( ! dtk-pingServer >/dev/null) ; then
+    serverStarted=yup
+    env DTK_CONNECTION=localhost$localPort dtk-server -d
+    if [ -n "$DTK_PORT" ]
+    then dtk-msgInfo collabfly: starting DTK server on port "${localPort#:}"
+    else dtk-msgInfo collabfly: starting DTK server on default port 
+    fi
+fi
+
+# come up with the names of the local and remote shared memory files
+# both systems use the same shared memory filename for the same thing
+# so local here means we generate and write it and remote means we read it
+localLocationShm="collabfly/locationShm-$localHost$localPort"
+localWandShm="collabfly/wandShm-$localHost$localPort"
+remoteLocationShm="collabfly/locationShm-$remoteHost$remotePort"
+remoteWandShm="collabfly/wandShm-$remoteHost$remotePort"
+
+# used by the mover
+# wand, in world coordinates
+# these two have the same name, local and remote
+moverMatrixShm="collabfly/moverMatrixShm"
+moverOwnerShm="collabfly/moverOwnerShm"
+
+# create and zero the local shared memory files, each holds an osg::Matrix
+doItAndSpewIt dtk-zeroShm $localLocationShm 128
+doItAndSpewIt dtk-zeroShm $localWandShm 128
+doItAndSpewIt dtk-zeroShm $remoteLocationShm 128
+doItAndSpewIt dtk-zeroShm $remoteWandShm 128
+
+# for mover
+doItAndSpewIt dtk-zeroShm $moverMatrixShm 128
+# store a string- the hostname of who is moving the object, 
+# or blank if not being moved
+doItAndSpewIt dtk-zeroShm $moverOwnerShm 128
+
+# do this on exit
+trap "if [ -n \"$serverStarted\" ] ; \
+      then dtk-msgInfo collabfly: shutting down server ; \
+         doItAndSpewIt env DTK_CONNECTION=localhost$localPort dtk-shutdownServer ; \
+         dtk-msgInfo collabfly: deleting local shared memory files ; \
+         doItAndSpewIt dtk-destroySharedMem $localLocationShm $localWandShm $moverMatrixShm $moverOwnerShm $remoteLocationShm $remoteWandShm ; fi" EXIT
+
+# try to connect to the remote server
+dtk-msgInfo trying to connect to DTK server $remoteHost$remotePort
+while ( ! doItAndSpewIt dtk-connectServer $remoteHost$remotePort )
+do sleep 2
+    doItAndSpewIt dtk-msgInfo trying again to connect to DTK host $remoteServer$remotePort
+done
+
+# try and connect the remote shared memory files
+while (! doItAndSpewIt dtk-connectRemoteSharedMem $localLocationShm $remoteHost$remotePort $localLocationShm )
+do sleep 2
+    doItAndSpewIt dtk-msgInfo trying again to connect shared memory files
+done
+dtk-msgInfo collabfly: connected local shared memory $localLocationShm to remote shared memory $localLocationShm
+
+while (! doItAndSpewIt dtk-connectRemoteSharedMem $localWandShm $remoteHost$remotePort $localWandShm )
+do sleep 2
+    doItAndSpewIt dtk-msgInfo trying again to connect shared memory files
+done
+dtk-msgInfo collabfly: connected local shared memory $localWandShm to remote shared memory $localWandShm
+
+while (! doItAndSpewIt dtk-connectRemoteSharedMem $moverMatrixShm $remoteHost$remotePort $moverMatrixShm )
+do sleep 2
+    doItAndSpewIt dtk-msgInfo trying again to connect shared memory files
+done
+dtk-msgInfo collabfly: connected local shared memory $moverMatrixShm to remote shared memory $moverMatrixShm
+
+while (! doItAndSpewIt dtk-connectRemoteSharedMem $moverOwnerShm $remoteHost$remotePort $moverOwnerShm )
+do sleep 2
+    doItAndSpewIt dtk-msgInfo trying again to connect shared memory files
+done
+dtk-msgInfo collabfly: connected local shared memory $moverOwnerShm to remote shared memory $moverOwnerShm
+
+# if running two collabflys on the same system, this helps you know which one is which
+# the one with blue borders and text is the one that uses the default DTK port
+# note that window raise/lower might give some complaints as we use a non-standard title
+if [ "$remoteHost" == "localhost" ]
+then if [ -z "$DTK_PORT" ]
+    then hevCollabOptions="-title 32419 -fg blue"
+    else hevCollabOptions="-title $DTK_PORT"
+    fi
+fi
+
+if [ -n "$node" ]
+then moveNode="--move $node $moverMatrixShm $moverOwnerShm"
+fi
+
+# specify the other options to hev-collab- these get put on hev-collab's command line in hev-collab.mcp
+hevCollabOptions="$hevCollabOptions $moveNode --localLocationShmName $localLocationShm --localWandShmName $localWandShm --remoteLocationShmName $remoteLocationShm --remoteWandShmName $remoteWandShm"
+
+echo hevCollabOptions set to \"$hevCollabOptions\"
+
+if [ "$mcpgui" = "s" ]
+then setOrPrepend IRIS_FILES hev-collab-separate.iris
+    export IRIS_FILES
+elif [ "$mcpgui" = "" ]
+then setOrPrepend IRIS_FILES hev-collab-main.iris
+    export IRIS_FILES
+fi
+
+dtk-msgNotice collabfly: executing command env HEV_COLLAB_OPTIONS=\"$HEV_COLLAB_OPTIONS $hevCollabOptions\" $@
+env HEV_COLLAB_OPTIONS="$HEV_COLLAB_OPTIONS $hevCollabOptions" $@

@@ -1,0 +1,151 @@
+#DOWN
+#ROW 1
+CELLRULER ULC
+CELLRULER HORIZ
+CELLRULER URC
+CELLRULER VERT
+LABEL fnord
+CELLRULER VERT
+CELLRULER LLC
+CELLRULER HORIZ
+CELLRULER LRC
+
+BUTTON b0Off b0On
+  FIRST first time for b0Off
+  ON "quotes" # comment 'quote' $foo four spaces->    <- \ \\ \\\ \t
+  ON time
+  OFF ls
+  CLEANUP b0
+  INIT
+RADIO COLOR 1 0 0
+  BUTTON b1Off b1On COLOR .8 .8 .8
+    FIRST first time for b1
+    ON b1 On!
+    OFF b1 off!
+    CLEANUP b1 cleanup!
+    INIT
+  BUTTON b2Off b2On COLOR 0 1 0
+    FIRST first time for b2
+    ON b2 on!
+    CLEANUP b2 cleanup!
+    INIT
+  BUTTON b3
+    OFF b3 off!
+    CLEANUP b3
+END
+RADIO COLOR 0 0 1
+  BUTTON b11Off b11On COLOR .8 .8 .8
+    FIRST first time for b11
+    ON b11 on!
+    OFF b11 off!
+    CLEANUP b11 cleanup!
+  BUTTON b12Off b12On COLOR 0 1 0
+    FIRST first time for b12
+    ON whoami
+    CLEANUP b12
+  BUTTON b13
+    OFF w
+    CLEANUP b13
+    INIT
+END
+LABEL "1 2 3"
+CELLRULER VERT HORIZ
+LABEL "3 4 5"
+BUTTON b4 COLOR .4 .8 .8
+  FIRST who me?
+  ON pwd
+  CLEANUP b4
+  INIT
+BUTTON b5 COLOR .2 .8 .8
+  OFF find . -type f | xargs wc
+  CLEANUP b5
+RADIO COLOR 0 1 0
+  BUTTON b1a COLOR .8 .8 .8
+    ON echo hello world!
+    OFF echo $HOME
+    CLEANUP b1a
+  BUTTON b2a COLOR 0 1 0
+    ON whoami
+    CLEANUP b2a
+  BUTTON b3a
+    OFF w
+    CLEANUP b3a
+END
+LABEL
+MENU mA COLOR 1 1 1
+  BUTTON m0Off m0On
+    FIRST first m0
+    ON make
+#    OFF printenv
+    CLEANUP m0
+#    INIT
+  RADIO
+    BUTTON m1Off m1On
+      FIRST first m1.1
+      FIRST first m1.2
+      ON set
+      OFF foo!
+      CLEANUP m1
+    BUTTON m2Off m2On
+      FIRST first m2.1
+      FIRST first m2.2
+      ON last
+      OFF who
+      CLEANUP m2
+      INIT
+    BUTTON m3
+      FIRST first time for m3
+      ON echo *
+      OFF xterm
+      CLEANUP m3
+      INIT
+  END
+  BUTTON m4Off m4On
+    ON set
+    OFF unset
+    CLEANUP m4
+  RADIO
+    BUTTON m5
+      ON set
+      OFF bar!
+      CLEANUP m5
+    BUTTON m6
+      ON last
+      OFF who
+      CLEANUP m6
+    BUTTON m7
+      ON echo *
+      OFF xterm
+      CLEANUP m7
+      INIT
+  END
+END
+RADIOMENU fooOff
+  BUTTON foo1Off foo1On 
+    FIRST foo1 first
+    ON foo1 on
+    OFF foo1 off
+    CLEANUP foo1 cleanup
+  BUTTON foo2Off foo2On
+    FIRST foo2 first
+    ON foo2 on
+    OFF foo2 off
+    CLEANUP foo2 cleanup
+END
+RADIOMENU bar
+  BUTTON bar1
+    FIRST bar1 first
+    ON bar1 on
+    OFF bar1 off
+    CLEANUP bar1 cleanup
+    INIT
+  BUTTON bar2
+    FIRST bar2 first
+    ON bar2 on
+    OFF bar2 off
+    CLEANUP bar2 cleanup
+END
+RESET hide show COLOR .3 .4 .5
+#READ foo.mcp
+#TIMEOUT 1.5
+

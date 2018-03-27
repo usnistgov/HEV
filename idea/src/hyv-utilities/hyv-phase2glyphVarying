@@ -1,0 +1,345 @@
+#! /usr/bin/perl
+#
+# hyv-phase2glyphVarying - see usage message below
+#
+# steve@nist.gov
+#
+#
+# Indexing the img and phase file:
+#   From jeff, 4 Sep 2008:
+#   The first index (i, or the x dimension) varies the fastest, the last index (k, or
+#   the z dimension) varies the slowest.
+
+
+#$version="20081011";
+$version="20110711";
+
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hyv-phase2glyphVarying [--parallel n] [--size value] [--scale value] phaseNumber i j k r g b  dataDir | phaseFile
+
+  Convert the *.phase files for a specified phaseNumber to *_g.savg with a glyph
+  at each voxel position with a data value greater than 0. The glyph size varies
+  based the voxel data value.
+
+
+  --parallel n  specifies how many concurrent processes to be used convert
+                in parallel. On a 2 CPU machine, n of 2 is a good number.
+
+  --size value  is the size of the glyph specified in the range 0.0 to 1.0.
+                1.0 creates a glyph 100% the voxel size. 0.0 is generally
+		not a useful value. The default value is .25
+
+  --scale value The final glyph size is scaled by on the specified value.
+                The default value is 1.
+
+  phaseNumber   is an integer used to identify the phase being processed.
+                This command is invoked multiple times for each desired 
+		phase.
+
+  i j k         is the dimension of the image. 
+
+  r g b         is the color of the glyphs.
+                These values are specified in the range 0.0 to 1.0
+		The default is .8 .8 .8.
+
+  dataDir       is an existing directory containing the phase files.
+                The resulting savg files are written to dataDir
+		with names in the form of *.savg.
+
+  phaseFile     when a phase file is specified rather than a directory name,
+                then the single file is converted to a savg glyph
+                file in the current directory.
+
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+
+############################
+# Process the command line #
+############################
+
+$oneThird=1./3.;
+
+$debugFlag=0;
+$parallel=1;
+$sizeValue=.25;
+undef($scaleValue);
+$scaleFlag=0;
+$rVal=.8;
+$gVal=.8;
+$bVal=.8;
+
+GetOptions("debug"       => \$debugFlag,
+	   "size:f"      => \$sizeValue,
+	   "scale:f"     => \$scaleValue,
+           "parallel:i"  => \$parallel);
+
+#print "-----> @ARGV <----\n";
+#$sgs=@ARGV;
+#print "number args = $sgs\n";
+
+usage() if (@ARGV != 8);
+
+if (defined($scaleValue)) {
+    $scaleFlag=1;
+} else {
+    $scaleValue=1;
+}
+
+
+$phaseNumber = shift;
+$iDimension= shift;
+$jDimension= shift;
+$kDimension= shift;
+$rVal = shift;
+$gVal = shift;
+$bVal = shift;
+$data = shift;
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "parallel= $parallel\n";
+    print STDERR "sizeValue= $sizeValue\n";
+    print STDERR "scaleFlag= $scaleFlag\n";
+    print STDERR "scaleValue= $scaleValue\n";
+    print STDERR "phaseNumber= $phaseNumber\n";
+    print STDERR "img size: $iDimension $jDimension $kDimension\n";
+    print STDERR "rVal= $rVal\n";
+    print STDERR "gVal= $gVal\n";
+    print STDERR "bVal= $bVal\n";
+    print STDERR "data= $data\n";
+}
+
+
+
+# Is the input data a single file or directory of file?
+if ( -d $data ) {
+    #print STDERR "$data is a directory\n";
+    processDirFiles();
+    #print STDERR "All Done\n";
+} else {
+    #print STDERR "$data is a file\n";
+    processSingleFile()
+
+}
+
+
+#########################
+# Process a single file #
+#########################
+
+sub processSingleFile {
+    print STDERR "Process a single phase file: $data\n";
+	
+    ($basename, $dirname, $suffix) = fileparse($data, ('.phase'));
+
+    $a=rindex($basename,"_");
+    if ($a<0) {
+	print STDERR "Phase number must be part of the file name: $basename\n";
+	usage();
+    }
+
+    if ($debugFlag) {
+	print STDERR "phaseNumber $phaseNumber\n";
+    }
+
+    $savgName=$basename."_g.savg";
+    $isoName=$basename.".iso";
+    if ($debugFlag) {
+	print STDERR "data= $data\n";
+	print STDERR "basename= $basename\n";
+	print STDERR "path= $path\n";
+	printf(STDERR "suffix= '%s'\n",$suffix);
+	print STDERR "savgName= $savgName\n";
+	print STDERR "isoName= $isoName\n";
+    }
+    if ($suffix eq '') {die("'$data' is not a savg file or directory\n");}
+
+    open(PHASE,"<$data") || die("Can not open file: $data\n");
+    open(SAVG,">$savgName") || die("Can not open file: $savgName\n");
+
+    # Get the iso value
+    $isoValue=getIsoValue($isoName);
+
+    #
+    # Glyphs based on phase value.
+    # Use i j k dimensions to get a position
+    # and create the glyph
+    #
+
+    $glyphCount=0;
+
+    $i=1; $j=1; $k=1;
+    while (<PHASE>) {
+	@c=split(' ', $_, -1);
+	printf(SAVG "# %d %d %d %g\n", $i, $j, $k, $c[0]);
+	#if ($c[0] > $isoValue) {
+	if ($c[0] > 0) {
+	    # print "$c[0]  $isoValue\n";
+	    if ($scaleFlag) {
+		$scaleFactor=$c[0]*$scaleValue;
+	    } else {
+		$scaleFactor=1;
+	    }
+	    glyphOut($i,$j,$k);
+	    $glyphCount=$glyphCount+1;
+	}
+	$i++;
+	if ($i > $iDimension) {
+	    $i=1;
+	    $j++;
+	    if ($j > $jDimension) {
+		$j=1;
+		$k++;
+		if ($k > $kDimension) {
+		    last;
+		}
+	    }
+	}
+
+    }
+
+    close(PHASE);
+    close(SAVG);
+    #print STDERR "$data : glyphCount = $glyphCount \n";
+	
+}
+
+
+# Subroutine to read the corresponding iso file for the iso value
+
+sub getIsoValue {
+    # Make these local
+    local($isoNameTemp,$isoValueTemp);
+    #Get the passed parameter
+    $isoNameTemp=$_[0];
+    open(ISO,"<$isoNameTemp") || die("Can not open file: $isoNameTemp\n");
+
+    $isoValueTemp=<ISO>;
+    # is it a valid number
+    if ( ! ($isoValueTemp =~ /^([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?$/ ) ) {
+	die("$isoNameTemp contains bad data\n");
+    }
+
+    chop($isoValueTemp);
+    return($isoValueTemp);
+}
+
+# Subroutine to output the glyph
+
+sub glyphOut {
+    # x,y,z are local variables
+    # sizeValue and SAVG file identifier are global
+    # scaleFactor is global
+    # color values are global
+    local($x,$y,$z);
+    $x=$_[0]-1;
+    $y=$_[1]-1;
+    $z=$_[2]-1;
+
+    # Output a scaled and translated cube
+    $xt=($scaleFactor*$sizeValue/2)**$oneThird;
+    $yt=($scaleFactor*$sizeValue/2)**$oneThird;
+    $zt=($scaleFactor*$sizeValue/2)**$oneThird;
+
+    printf SAVG "#xyz:: $x $y %x $sizeValue $scaleFactor $xt $yt $zt\n";
+
+    print SAVG "polygon\n";
+    print SAVG $x-$xt," ",$y+$yt," ",$z-$zt," $rVal $gVal $bVal 1 0 0 -1\n";
+    print SAVG $x+$xt," ",$y+$yt," ",$z-$zt," $rVal $gVal $bVal 1 0 0 -1\n";
+    print SAVG $x+$xt," ",$y-$yt," ",$z-$zt," $rVal $gVal $bVal 1 0 0 -1\n";
+    print SAVG $x-$xt," ",$y-$yt," ",$z-$zt," $rVal $gVal $bVal 1 0 0 -1\n";
+    print SAVG "polygon\n";
+    print SAVG $x+$xt," ",$y+$yt," ",$z+$zt," $rVal $gVal $bVal 1 0 0 1\n";
+    print SAVG $x-$xt," ",$y+$yt," ",$z+$zt," $rVal $gVal $bVal 1 0 0 1\n";
+    print SAVG $x-$xt," ",$y-$yt," ",$z+$zt," $rVal $gVal $bVal 1 0 0 1\n";
+    print SAVG $x+$xt," ",$y-$yt," ",$z+$zt," $rVal $gVal $bVal 1 0 0 1\n";
+    print SAVG "polygon\n";
+    print SAVG $x-$xt," ",$y+$yt," ",$z+$zt," $rVal $gVal $bVal 1 0 1 0\n";
+    print SAVG $x+$xt," ",$y+$yt," ",$z+$zt," $rVal $gVal $bVal 1 0 1 0\n";
+    print SAVG $x+$xt," ",$y+$yt," ",$z-$zt," $rVal $gVal $bVal 1 0 1 0\n";
+    print SAVG $x-$xt," ",$y+$yt," ",$z-$zt," $rVal $gVal $bVal 1 0 1 0\n";
+    print SAVG "polygon\n";
+    print SAVG $x-$xt," ",$y-$yt," ",$z-$zt," $rVal $gVal $bVal 1 0 -1 0\n";
+    print SAVG $x+$xt," ",$y-$yt," ",$z-$zt," $rVal $gVal $bVal 1 0 -1 0\n";
+    print SAVG $x+$xt," ",$y-$yt," ",$z+$zt," $rVal $gVal $bVal 1 0 -1 0\n";
+    print SAVG $x-$xt," ",$y-$yt," ",$z+$zt," $rVal $gVal $bVal 1 0 -1 0\n";
+    print SAVG "polygon\n";
+    print SAVG $x+$xt," ",$y+$yt," ",$z-$zt," $rVal $gVal $bVal 1 1 0 0\n";
+    print SAVG $x+$xt," ",$y+$yt," ",$z+$zt," $rVal $gVal $bVal 1 1 0 0\n";
+    print SAVG $x+$xt," ",$y-$yt," ",$z+$zt," $rVal $gVal $bVal 1 1 0 0\n";
+    print SAVG $x+$xt," ",$y-$yt," ",$z-$zt," $rVal $gVal $bVal 1 1 0 0\n";
+    print SAVG "polygon\n";
+    print SAVG $x-$xt," ",$y+$yt," ",$z+$zt," $rVal $gVal $bVal 1 -1 0 0\n";
+    print SAVG $x-$xt," ",$y+$yt," ",$z-$zt," $rVal $gVal $bVal 1 -1 0 0\n";
+    print SAVG $x-$xt," ",$y-$yt," ",$z-$zt," $rVal $gVal $bVal 1 -1 0 0\n";
+    print SAVG $x-$xt," ",$y-$yt," ",$z+$zt," $rVal $gVal $bVal 1 -1 0 0\n";
+
+}
+
+
+
+######################################
+# Process a directory of phase files #
+######################################
+
+sub processDirFiles {
+    print STDERR "Process a directory of phase files: $data\n";
+
+    chdir($data) || die("Can not chdir to: $data\n");
+
+    ($debugFlag) ? ($debugOption="--debug") : ($debugOption="");
+    ($scaleFlag) ? ($scaleOption="--scale $scaleValue") : ($scaleOption="");
+
+    $pcount=$parallel;
+    
+    $fileList="*_".$phaseNumber.".phase";
+    print STDERR "fileList= $fileList\n";
+    while ($phaseFile = < $fileList > ) {
+
+	$cmd="hyv-phase2glyphVarying $debugOption --size $sizeValue $scaleOption $phaseNumber $iDimension $jDimension $kDimension $rVal $gVal $bVal $phaseFile";
+	if ($pid = fork) {
+	    # parent here
+	    #print STDERR "Parent\n";
+	    $pcount--;
+	    if ($pcount == 0) {
+		while (wait != -1) {
+		    #print STDERR "waiting\n";
+		}
+		$pcount=$parallel;
+	    }
+	} else {
+	    # child here
+	    #print STDERR "Child: $cmd\n";
+	    exec($cmd);
+	    exit 0;
+	}
+
+
+    }
+
+    while (wait != -1) {
+	#print STDERR "waiting\n";
+    }
+}

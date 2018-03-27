@@ -1,0 +1,104 @@
+.TH hev-brokenWindow 1 "25 October 2011"
+.SH NAME
+hev-brokenWindow \- create SAVG format files to display randomized broken
+window pattern
+
+
+.SH SYNOPSIS
+.B hev-brokenWindow 
+.I inputFileName 
+.I outputDirectoryName
+.I [r g b a]
+
+.SH DESCRIPTION
+.PP
+.B
+hev-brokenWindow 
+generates a randomized window breakage pattern based on the inputs provided in
+the given user input file and outputs the corresponding SAVG files into the
+given directory.  
+
+If the user chooses to create a separate SAVG file for each 
+shard, there will be two savg files outputted for each shard - one file 
+specifying the lines (along with the tangents) that define the outline of the 
+shard, and the other 
+speficying the polygons that make up the shard.  There will also be a text file
+created that lists out the names of each of the SAVG files created.  If the 
+user chooses to create combined SAVG files, there will be one SAVG file created
+specifying the oultines for all of the shards, and another SAVG file created
+specifying the polygons for all of the shards.
+
+The user can choose to output an adjacency text file which
+lists out all the neighboring shards of each shard, as well as a centroid
+file, which lists out the centroid of each shard.  These options are stored
+in the user input file.
+
+.br
+
+.TP
+.I inputFileName
+The name of the user input file.  
+.TP
+.I outputDirectoryName
+The name of the directory where the output files should be stored.  This
+directory must already exist.  
+.TP
+.I [r g b a]
+Specify the color of the shards. The color is specified by the RGB values, a represents the level of transparency. If nothing is specified, the default color will be gray.
+.PP
+.SH EXAMPLE
+.B 
+hev-brokenWindow input.txt outputDir
+
+This command will read the user inputs from the input.txt file located in the
+current directory, and then output the appropriate SAVG and text files
+to the directory named outputDir.  It is assumed that outputDir already
+exists in the current path.
+
+The window will be automatically displayed if so chosen by the user in the user
+input file.  The output file names are also specified in the user input file.
+If the user chooses to put each shard in a separate SAVG file, the window can
+be displayed using the following command:
+
+.B
+savgly --examine outputDir/tang-*.savg outputDir/shard-*.savg
+
+This command assumes that the user chose the tangented outline files' basename
+to be "tang" and the shard polygon files' basename to be "shard"
+
+If the user chooses to put all the shards into combined SAVG files, the window
+can be displayed using the following command:
+
+.B
+savgfly --examine outputDir/tangented.savg outputDir/window.savg
+
+This command assumes that the user chose the tangented outline file to be 
+named "tangented.savg" and the shard polygon file to be named "window.savg"
+
+To get a sample input text file, please look at $HEVROOT/idea/src/hev-brokenWindow/input.txt
+
+It is important that the input file structure is followed and all the required
+options are filled in. The same input.txt files documents what the user should
+know about each option.
+
+
+.SH NOTES
+The names of the output files are specified in the user input file.  Files 
+with the same name (or same basename) in the given output directory may be 
+overwritten or deleted.   
+
+If you specify r you need to specify g, b and a. It will only do something if the 4 values are specified, otherwise nothing will be written in the savg files.
+
+Python3 is required to run this program.  You may use the following command
+to source python3:
+
+.B
+source $HEVROOT/external/python3/profile
+
+.SH SEE ALSO
+.BR hev-animateWindow (1), 
+.BR irisfly (1)
+
+.SH AUTHOR
+.PP
+Poorva Singal, NIST/ITL/ACMD/HPCVG

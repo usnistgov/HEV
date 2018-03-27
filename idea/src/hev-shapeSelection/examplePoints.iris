@@ -1,0 +1,11 @@
+LOAD example.iris
+
+# create a points file, and delete it when done
+#ECHO ON
+SET points /tmp/shapeSelectionPoints-$($USER)
+WAIT echo -e "-1 -1 -1\n -1 -1  1\n -1  1 -1\n -1  1  1\n  1 -1 -1\n  1 -1  1\n  1  1 -1\n  1  1  1" > $(points)
+AFTER CLEANUP EXEC rm $(points)
+
+# shape selection
+EXEC hev-shapeSelection --transformation $(transformation) --points $(points) --eligible $(eligible) --selected  $(selected) --noescape > $IRIS_CONTROL_FIFO
+

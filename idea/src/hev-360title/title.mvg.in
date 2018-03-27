@@ -1,0 +1,61 @@
+push graphic-context
+  viewbox 0 0 4096 1024
+
+  push graphic-context
+    fill 'black'
+    rectangle 0,0 4096,1024
+  pop graphic-context
+
+  push graphic-context
+    font Helvetica-Narrow-Bold
+    fill 'white'
+    text-antialias 1
+    gravity 'Center'
+
+    push graphic-context
+      font-size 96
+      text 0,-128 "@TITLE@"
+    pop graphic-context
+
+    push graphic-context
+      font-size 72
+      text 0,128 "@SUBTITLE@"
+    pop graphic-context
+
+  pop graphic-context
+
+  push graphic-context
+    translate 32,480
+    stroke 'white'
+    fill 'slateblue'
+    stroke-width 1
+    polygon 0,48 80,48 80,16 128,64 80,112 80,80, 0,80
+  pop graphic-context
+
+  push graphic-context
+    translate 1056,480
+    stroke 'white'
+    fill 'slateblue'
+    stroke-width 1
+    polygon 0,48 80,48 80,16 128,64 80,112 80,80, 0,80
+  pop graphic-context
+
+  push graphic-context
+    translate 4064,608
+    rotate 180
+    stroke 'white'
+    fill 'slateblue'
+    stroke-width 1
+    polygon 0,48 80,48 80,16 128,64 80,112 80,80, 0,80
+  pop graphic-context
+
+  push graphic-context
+    translate 3040,608
+    rotate 180
+    stroke 'white'
+    fill 'slateblue'
+    stroke-width 1
+    polygon 0,48 80,48 80,16 128,64 80,112 80,80, 0,80
+  pop graphic-context
+
+pop graphic-context

@@ -1,0 +1,29 @@
+Test programs for shader printing
+=================================
+
+Running the tests
+-----------------
+    make
+    irisfly something.iris
+
+There are two samples. Both display a sphere, with one column of one
+of the transformation matrices overlaid on top. The key iris commands
+for printing numbers are the TXTR line, loading numbers.tif into an
+otherwise unused texture unit (this example uses texture unit 3), the
+UNIFORM line setting the 'numbers' variable to that texture unit
+number, and a fragment shader that uses the number printing code from
+numbers.glsl
+
+screen.iris, screen.frag.i
+--------------------------
+Prints screen-aligned numbers centered on the object. These are always
+facing the viewer and right side up, but do not scale with the object
+size, so may fall off of the edge of the object
+
+surface.iris, surface.frag.i
+----------------------------
+Prints numbers on the surface of the object, aligned with the surface
+texture coordinates. If the object is rotated the wrong way, these may
+not be visible, and from inside the object they'll look backwards, but
+they always show the full number and look more like they are attached
+to the object itself.

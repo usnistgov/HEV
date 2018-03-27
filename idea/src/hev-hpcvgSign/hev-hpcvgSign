@@ -1,0 +1,108 @@
+#! /bin/bash
+
+
+# hev-hpcvgSign
+# Steve Satterfield
+# May 18, 2015
+
+
+function usage {
+
+cat <<EOF
+
+Usage: hev-hpcvgSign [--fg color] [--bg color] [--size size] [--]
+
+   Display an image of the following text:
+
+        High Performance Computing and Visualization Group (HPCVG)  
+          Applied and Computational Mathematics Division (ACMD) 
+               Information Technology Laboratory (ITL)  
+
+
+        --fg color   specify foreground text color
+
+
+        --bg color   specify background color
+
+        --size size  specify the vertical size in pixels
+                     default is 160
+
+        --           Anything else on the command line after this is 
+                     passed to hev-imageDisplay which is used to
+                     actually display the sign. 
+
+
+       The color value is in the Image Magick format.
+       Examples: '#00FF00' or rgb(0,255,0) or rgb(0.0%,100.0%,0.0%)
+
+
+
+EOF
+exit 1
+
+}
+
+BG=lightgray
+BG=white
+FG=black
+
+#-pointsize $PS \
+#PS=30
+
+SIZE=x160
+
+i=0
+
+while [ $# -gt 0 ]
+do
+     case $1 in
+	 --h*|-h)
+	     usage
+	     ;;
+	 --f*|-f*)
+	     shift
+	     [ $# -eq 0 ] && usage
+	     FG=$1
+	     shift
+	     ;;
+	 --b*|-g*)
+	     shift
+	     [ $# -eq 0 ] && usage
+	     BG=$1
+	     shift
+	     ;;
+	 --s*|-s*)
+	     shift
+	     [ $# -eq 0 ] && usage
+	     SIZE="x$1"
+	     shift
+	     ;;
+	 --)
+	     shift
+	     break
+	     ;;
+      esac
+     i=$((i+1))
+     [ $i -gt 1000 ] && usage
+done
+
+#echo FG $FG BG $BG SIZE $SIZE
+#echo remaining: $*
+
+
+png="/tmp/hpcvgSign_${USER}_$$.png"
+
+TEXT=$HEV_IDEA_DIR/etc/hev-hpcvgSign/data/hpcvg.txt
+
+trap "rm -f $png" 0
+
+
+convert -background $BG -fill $FG \
+-size $SIZE \
+-gravity center \
+label:@${TEXT} \
+$png
+
+
+hev-imageDisplay $* $png
+

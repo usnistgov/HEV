@@ -1,0 +1,52 @@
+dcs te 0 0 0   0 0 0  .5
+
+load g gnomon.osg
+#dcs gdcs -1.2 -.7 -.7
+dcs gdcs 0 0 0
+addchild g gdcs
+addchild gdcs te
+
+load a axis.osg
+
+dcs level0 0 0 0
+dcs level1 0 0 .25
+dcs level2 0 0 .5
+dcs level3 0 0 .75
+dcs level4 0 0 1
+
+dcs a0dcs 0 0 0
+addchild a a0dcs
+addchild a0dcs level0
+
+dcs a1dcs -.25 -.25 0
+addchild a a1dcs
+addchild a1dcs level0
+
+dcs a2dcs -.5 -.5 0
+addchild a a2dcs
+addchild a2dcs level0
+
+dcs a3dcs -.75 -.7 0
+addchild a a3dcs
+addchild a3dcs level0
+
+dcs a4dcs -1 -1 0
+addchild a a4dcs
+addchild a4dcs level0
+
+addchild level0 te
+
+addchild level0 level1
+addchild level1 te
+
+addchild level0 level2
+addchild level2 te
+
+addchild level0 level3
+addchild level3 te
+
+addchild level0 level4
+addchild level4 te
+
+
+return te

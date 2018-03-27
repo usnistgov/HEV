@@ -1,0 +1,77 @@
+.TH SAVG\-COLOR 1 "17 June 2004"
+.SH NAME
+savg-color \- SAVG ToolBox: color
+.SH SYNOPSIS
+.B savg-color
+[-r val] [-b val] [-g val] [-a val]
+.SH DESCRIPTION
+.I Savg-color
+sets the color of \fIsavg\fP files (\fISAVG ToolBox\fP).  It 
+accepts input from
+.I stdin
+and outputs to
+.I stdout.
+If no command line arguments are given
+.I savg-color
+defaults to an opaque white.  If invalid arguments are given 
+then 
+.I savg-color
+prints usage information and terminates.
+.SH OPTIONS
+.TP
+.B \-r val
+This sets the value of red.  Accepts a floating point number from 0 to 1 
+and defaults to 0.
+.TP
+.B \-g val
+This sets the value of green.  Accepts a floating point number from 0 to 1 
+and defaults to 0.
+.TP
+.B \-b val
+This sets the value of blue.  Accepts a floating point number from 0 to 1 
+and defaults to 0.
+.TP
+.B \-a val
+This sets the value of alpha or transparency.  Accepts a floating 
+point number from 0 to 1 and defaults to 1.
+.SH EXAMPLES
+.TP
+.B savg-color < in.savg > out.savg
+Reads from 
+.I in.savg
+and set the color to opaque white.  Then outputs to 
+.I out.savg.
+.TP
+.B savg-color -g .5 < in.savg > out.savg
+Reads from 
+.I in.savg
+and set the color to opaque light green.  Then outputs to 
+.I out.savg.
+.TP
+.B savg-color -b .5 -r .5 -a .7 < in.savg > out.savg
+Reads from 
+.I in.savg
+and sets the color to partially transparent light purple.  Then outputs to 
+.I out.savg.
+.SH BUGS
+(none)
+.SH AUTHOR
+Brandon M. Smith
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Summer 2004
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

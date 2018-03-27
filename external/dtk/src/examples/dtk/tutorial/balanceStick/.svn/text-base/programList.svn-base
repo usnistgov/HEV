@@ -1,0 +1,11 @@
+
+dtk-floatSliders translate --update-continuous --number 1 --scale 0 -0.5 0.5 0 --labels x_in
+
+stickBalance
+
+dtk-gnomonDisplay stick
+
+dtk-floatSliders stick --update-continuous --number 6 --scale 3 -180 180 0 --scale 4 -180 180 0 --scale 5 -180 180 0 --labels x y z H P R
+
+dtk-floatScope stick --scale stick 0 -10 10 --scale stick 3 -180 180 --scale stick 4 -180 180 --scale stick 5 -180 180
+

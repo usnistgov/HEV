@@ -1,0 +1,150 @@
+.TH hev-tracker 1 " June 2017"
+
+.SH NAME
+
+hev-tracker
+
+.SH SYNOPSIS
+
+\fBhev-tracker\fR \fIcommand\fR [ \fIparameter\fR ]\fI
+
+.SH DESCRIPTION
+
+\fIhev-tracker\fR manages the DTK shared memory service and
+the ART optical tracker deamon, \fIhev-artTracker(1)\fR. and wand services.
+It requires a single \fIcommand\fR, which specifies the action to
+take.  Some of the commands can take optional \fIparameters\fR .
+
+In the command descriptions below, a \fIserver\fR is a computer which is
+actually reading the tracker and wand hardware, and the \fIclient\fR is a computer
+that reads this data via dtk remote shared memory.  These commands are
+designed to be run from the client computer unless otherwise noted.
+ 
+The \fIcommands\fR are:
+
+.TP
+\fBstart\fR [\fIserver\fR [\fIconfigFile\fR ] ]
+starts a dtk server on the both the server and client computers, creates the
+shared memory files used by the tracker and wand, and
+connects the client's shared memory to the server.
+Starts the ART tracker deamon.
+
+.TP
+\fBstop\fR [\fIserver\fR ]
+stops the dtk server on the both the server and client computers and deletes the
+shared memory files used by the tracker and wand.
+Stops the ART tracker deamon.
+
+.TP
+\fBstatus\fR [\fIserver\fR ]
+prints to standard output the status of the server and client dtk servers,
+and the shared memory files.
+
+.TP
+\fBpause\fR
+sends a \fISTOP\fR signal to the running dtk server.  For this command to
+work, you need to be the owner of the dtk server process.  This can also be done
+by stopping and starting the server, preferably using the \fBstopClient\fR
+and \fBstartClient\fR commands.  The \fBpause\fR command is handy for
+freezing the tracker and wand in order to take better screenshots.
+
+.TP
+\fBresume\fR
+sends a \fICONT\fR signal to the running dtk server.  As with the
+\fBpause\fR command, you need to be the owner of the dtk server process.
+The \fBresume\fR command is
+handy for unfreezing the tracker and wand between screenshots.
+
+.TP
+\fBstartClient\fR
+starts a dtk server on client computer, creates the
+shared memory files used by the tracker and wand, and
+connects the client's shared memory to the server.  This command should only
+be run on the client computer.
+
+.TP
+\fBstartClientWandOnly\fR
+like the \fBstartClient\fR command, but the head tracking is not started,
+which can be useful when video recording (with a camera) in the CAVE.
+Use the \fBhaltClient\fR prior to using this command.
+This command should only
+be run on the client computer.
+
+.TP
+\fBstopClient\fR
+stops the dtk server on the client computer and deletes the
+shared memory files used by the tracker and wand.  This command should only
+be run on the client computer.
+
+.TP
+\fBhaltClient\fR
+stops the dtk server on the client computer, like \fBstopClient\fR, 
+but does not delete the
+shared memory files used by the tracker and wand.  This command should only
+be run on the client computer.
+
+.TP
+\fBstatusClient\fR
+prints to standard output the status of the client dtk server,
+and the shared memory files used by the tracker and wand.  This command should only
+be run on the client computer.
+
+.TP
+\fBstartServer [\fIserver\fR [\fIconfigFile\fR ] ]\fR
+starts a dtk server on the server computer, creates the
+shared memory files used by the tracker and wand.
+This command should only
+be run on the server computer.
+
+.TP
+\fBstopServer [\fIserver\fR ]\fR
+stops the dtk server on the server computer and deletes the
+shared memory files used by the tracker and wand.  This command should only
+be run on the server computer.
+
+.TP
+\fBstatusServer\fR
+prints to standard output the status of the server dtk server,
+and the shared memory files used by the tracker and wand.  This command should only
+be run on the server computer.
+
+
+
+.SH NOTES
+
+When the commands \fBstatus\fR,  \fBstart\fR or \fBstop\fR are executed on a
+client, an \fIssh\fR command is used to connect to the server.  You may
+receive prompts from \fIssh\fR for your password and other information.
+
+If the \fIserver\fR parameter is not specified, the remote hostname of
+tracker host is used.  For example,
+on the CAVE,  the current tracker host is "tardis.cam.nist.gov".
+
+The name of the configuration file loaded by the dtk server on the remote
+host is of the format \fIhost\fR.config, where \fIhost\fR is the actual
+hostname of the server, minus its domain.  For example, the name of the
+configuration file on the CAVE, being driven by "tardis.cam.nist.gov", is
+"tardis.config".
+
+The dtk shared memory segments used by the tracker and wand are: \fIhead\fR,
+\fIwand\fR, \fIjoystick\fR, and \fIbuttons\fR.
+
+.SH BUGS
+
+The name of the configuration file is presently hard-coded.
+This needs to be fixed when the dtk-server supports configuration files via
+colon-separated search paths in envvars.
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST Scientific Applications & Visualization Group
+.br
+May 2011
+.br
+.br
+Steve Satterfield added \fBstartClientWandOnly\fR command,May 2013
+.br
+Steve Satterfield and and John Hagedorn updated this for the ART tracker installed September 2016.

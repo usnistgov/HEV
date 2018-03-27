@@ -1,0 +1,42 @@
+.TH SAVG\-PTGRAPH 1 "February 2007"
+.SH NAME
+savg-ptgraph \- SAVG ToolBox: ptgraph
+.SH SYNOPSIS
+.B savg-ptgraph
+nodesfilename savgfilename nodenumber
+.SH DESCRIPTION
+.I Savg-ptgraph
+reads in a savg file and a node number and creates a visual connectivity net.
+It accepts savg file information from
+.I stdin
+and outputs to 
+.I stdout.
+
+.SH OPTIONS
+.TP
+.B \  nodesfilename
+file name for output file with nodal connectivities.
+.TP
+.B \  savgfilename
+file name for savg file that displays the node connectivities.
+.TP
+.B \  nodenumber
+node number for node whose connectivity net is created.
+.SH EXAMPLES
+.TP
+.B cat file1.savg | savg-ptgraph node-connects outfile.savg 10
+This reads in object information from file1, computes the nodal
+connectivity for node 10 and create a visual network in file outfile.savg.
+.SH AUTHOR
+Adele peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+February 2007
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

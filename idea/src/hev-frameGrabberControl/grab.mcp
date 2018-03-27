@@ -1,0 +1,5 @@
+BUTTON grab
+  FIRST AFTER REALIZE EXEC hev-frameGrabberControl -title grab --noescape > $IRIS_CONTROL_FIFO
+  FIRST WAIT irisfly-addAndShowWindow grab
+  ON WAIT irisfly-addAndShowWindow grab
+  OFF WAIT irisfly-removeAndHideWindow grab

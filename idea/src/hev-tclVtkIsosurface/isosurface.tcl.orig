@@ -1,0 +1,52 @@
+catch {load vtktcl}
+#sgs source ~/.wishrc
+source vtkInt.tcl
+source colors.tcl
+
+vtkRenderer ren1
+vtkRenderWindow renWin
+  renWin AddRenderer ren1
+vtkRenderWindowInteractor iren
+  iren SetRenderWindow renWin
+
+# create pipeline
+
+vtkStructuredPointsReader reader
+#sgs    reader SetFileName "$VTKDATA/heart.vtk"
+#    reader SetFileName "./heart.vtk"
+    reader SetFileName "./sample8.vtk"
+# niet nodig reader Update
+
+# data in range 0..255
+#sgsset level 128
+set level .499
+vtkMarchingCubes iso
+    iso SetInput [reader GetOutput]
+    iso SetValue 0 $level
+
+vtkPolyDataMapper isoMapper
+    isoMapper SetInput [iso GetOutput]
+    isoMapper ScalarVisibilityOff
+
+vtkActor isoActor
+    isoActor SetMapper isoMapper
+    eval [isoActor GetProperty] SetColor $antique_white
+
+# assign our actor to the renderer
+    ren1 AddActor isoActor
+
+    ren1 SetBackground 1 1 1
+    renWin SetSize 500 500
+
+
+vtkIVExporter iv
+  iv SetInput renWin
+  iv SetFileName foo.iv
+  iv Write
+
+
+# render the image
+    iren Initialize
+
+# prevent the tk window from showing up then start the event loop
+wm withdraw .

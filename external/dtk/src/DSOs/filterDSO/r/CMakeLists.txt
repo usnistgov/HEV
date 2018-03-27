@@ -1,0 +1,41 @@
+# CMakeLists.txt to build filterDSO/r
+
+INCLUDE_DIRECTORIES( ${DTK_SOURCE_DIR}/include )
+
+ADD_LIBRARY( floatLnInterp MODULE floatLnInterp.cpp )
+TARGET_LINK_LIBRARIES( floatLnInterp dtk )
+
+ADD_LIBRARY( floatRC MODULE floatRC.cpp )
+TARGET_LINK_LIBRARIES( floatRC dtk )
+
+ADD_LIBRARY( floatShockAbsorber MODULE floatShockAbsorber.cpp )
+TARGET_LINK_LIBRARIES( floatShockAbsorber dtk )
+
+SET_TARGET_PROPERTIES( floatLnInterp floatRC floatShockAbsorber
+		PROPERTIES PREFIX "" )
+
+ADD_LIBRARY( doubleLnInterp MODULE floatLnInterp.cpp )
+TARGET_LINK_LIBRARIES( doubleLnInterp dtk )
+SET_TARGET_PROPERTIES( doubleLnInterp PROPERTIES COMPILE_FLAGS -DDTK_DOUBLE PREFIX "" )
+
+ADD_LIBRARY( doubleRC MODULE floatRC.cpp )
+TARGET_LINK_LIBRARIES( doubleRC dtk )
+SET_TARGET_PROPERTIES( doubleRC PROPERTIES COMPILE_FLAGS -DDTK_DOUBLE PREFIX "" )
+
+ADD_LIBRARY( doubleShockAbsorber MODULE floatShockAbsorber.cpp )
+TARGET_LINK_LIBRARIES( doubleShockAbsorber dtk )
+SET_TARGET_PROPERTIES( doubleShockAbsorber PROPERTIES COMPILE_FLAGS -DDTK_DOUBLE PREFIX "" )
+
+IF( NOT WIN32 )
+	ADD_LIBRARY( getTrackdHead MODULE getTrackdHead.cpp )
+	TARGET_LINK_LIBRARIES( getTrackdHead dtk )
+	SET_TARGET_PROPERTIES( getTrackdHead PROPERTIES PREFIX "" )
+	SET( NONWIN32_INSTALL_TARGETS getTrackdHead )
+ENDIF( NOT WIN32 )
+
+INSTALL( TARGETS floatLnInterp floatRC floatShockAbsorber doubleLnInterp
+		doubleRC doubleShockAbsorber ${NONWIN32_INSTALL_TARGETS}
+		LIBRARY DESTINATION etc/dtk/filterDSO PERMISSIONS OWNER_READ
+		OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ
+		WORLD_EXECUTE )
+

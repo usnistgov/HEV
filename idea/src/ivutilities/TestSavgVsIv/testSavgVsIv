@@ -1,0 +1,20 @@
+#! /bin/sh
+
+# a test to compare coordinate system for savg vs iv
+
+out1=testSavgVsIv.savg
+out2=testSavgVsIv.iv
+
+
+(savg-sphere | savg-rgb 1 1 1 | savg-translate 0 0 0  > $out1;\
+ savg-sphere | savg-rgb 1 0 0 | savg-translate 8 0 0 >> $out1;\
+ savg-sphere | savg-rgb 0 1 0 | savg-translate 0 8 0 >> $out1;\
+ savg-sphere | savg-rgb 0 0 1 | savg-translate 0 0 8 >> $out1)
+
+(ivcube | ivrgba 1 1 1 1 | ivtranslate 0 0 0  > $out2;\
+ ivcube | ivrgba 1 0 0 1 | ivtranslate 8 0 0 >> $out2;\
+ ivcube | ivrgba 0 1 0 1 | ivtranslate 0 8 0 >> $out2;\
+ ivcube | ivrgba 0 0 1 1 | ivtranslate 0 0 8 >> $out2)
+
+
+ 

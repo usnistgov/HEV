@@ -1,0 +1,14 @@
+#!/bin/sh
+#if [ -z "$IRISFLY_MCP_CONTROL_FIFO" ]
+#then
+#    # this is run from a shell command in a terminal window
+    for f in $*
+    do echo "wait echo $f > \$IRISFLY_MCP_CONTROL_FIFO" > $IRIS_CONTROL_FIFO
+    done
+#else
+#    echo else
+#    # this is run by iris
+#    for f in $*
+#    do echo $f > $IRISFLY_MCP_CONTROL_FIFO
+#    done
+#fi

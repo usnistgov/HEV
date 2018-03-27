@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/915/trunk/dtk/programs/clientServer
+END
+dtk-checkService.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/clientServer/dtk-checkService.cpp
+END
+dtk-connectServer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/clientServer/dtk-connectServer.cpp
+END
+dtk-loadService.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/clientServer/dtk-loadService.cpp
+END
+dtk-shutdownServer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/clientServer/dtk-shutdownServer.cpp
+END
+dtk-resetService.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/clientServer/dtk-resetService.cpp
+END
+dtk-unloadService.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/clientServer/dtk-unloadService.cpp
+END
+dtk-pingServer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/clientServer/dtk-pingServer.cpp
+END
+dtk-connectRemoteSharedMem.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/clientServer/dtk-connectRemoteSharedMem.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/915/trunk/dtk/programs/clientServer/CMakeLists.txt
+END

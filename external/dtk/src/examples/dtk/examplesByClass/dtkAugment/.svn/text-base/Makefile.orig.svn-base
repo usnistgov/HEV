@@ -1,0 +1,39 @@
+#!gmake
+
+#####################################################################
+# At this point the DTK library should be installed and `dtk-config'
+# should be in your PATH.  `dtk-config' helps make this makefile work
+# on different OSs and installations.
+#
+
+CXX = $(shell dtk-config --compiler)
+CXXFLAGS += $(shell dtk-config --cxxflags) $(shell dtk-config --include)
+
+# list of things to build
+DSO = $(patsubst %.cpp, %.so, $(wildcard *.cpp))
+
+build: test $(DSO)
+
+
+# target rules
+
+test:
+	@if ! dtk-config --test ; \
+          then echo; \
+          echo "You must put \`dtk-config' in your path" ;\
+          exit 1; fi
+
+.SUFFIXES: .cpp
+
+$(DSO): %.so: %.cpp
+	$(CXX) $(CXXFLAGS) -elf -shared -Wl,-soname,$@ -o $@ $^
+
+
+######################## clean stuff ###################################
+
+clean:
+	rm -f *.so so_locations
+
+cleaner distclean: clean
+	rm -f *~ core make.depend make.depend.bak
+#

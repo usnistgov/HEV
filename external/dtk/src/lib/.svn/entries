@@ -1,0 +1,55 @@
+10
+
+dir
+995
+https://diverse.svn.sourceforge.net/svnroot/diverse/trunk/dtk/lib
+https://diverse.svn.sourceforge.net/svnroot/diverse
+
+
+
+2012-04-18T14:35:33.848531Z
+981
+kelso
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+507ea766-9cfe-0310-9089-a533cff91c67
+
+dtkAL
+dir
+
+dtk
+dir
+
+dtkFLTK
+dir
+
+dtkX11
+dir
+
+dtkGLX
+dir
+
+CMakeLists.txt
+file
+
+
+
+
+2011-01-24T20:43:32.000000Z
+24d1ed525e4b162ffd4956f3e79adbbb
+2009-03-05T06:32:23.610166Z
+915
+pshinpaugh
+

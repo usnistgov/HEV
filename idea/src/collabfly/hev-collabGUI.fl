@@ -1,0 +1,201 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include "hev-collabFunctions.h"} {global
+} 
+
+Function {make_window()} {open
+} {
+  Fl_Window main_window {open
+    xywh {2119 546 165 175} type Double visible
+  } {
+    Fl_Group remoteLocationGroup {
+      label {remote location:}
+      xywh {5 5 155 50} box BORDER_BOX align 21
+    } {
+      Fl_Button copyRemoteLocationButton {
+        label jump
+        callback {copyRemoteLocation() ;}
+        tooltip {jump to  the location of the collaborator, but don't follow} xywh {10 25 70 20}
+      }
+      Fl_Light_Button followRemoteLocationButton {
+        label follow
+        callback {followRemoteLocation(o->value()) ;}
+        tooltip {jump to and follow the location of the collaborator} xywh {85 25 70 20}
+      }
+    }
+    Fl_Group wandTypeGroup {
+      label {wand type:}
+      xywh {5 60 155 50} box BORDER_BOX align 21
+    } {
+      Fl_Menu_Button localWandTypeMenuButton {
+        label local
+        callback {localWandType(o->value()) ;} open
+        tooltip {choose the graphical representation of the local wand} xywh {10 80 70 20} align 22
+      } {
+        MenuItem noneLocalWandMenuItem {
+          label none
+          xywh {0 0 36 21} type Radio
+        }
+        MenuItem pointerLocalWandMenuItem {
+          label pointer
+          xywh {5 5 36 21} type Radio
+        }
+        MenuItem rayLocalWandMenuItem {
+          label ray
+          xywh {5 5 36 21} type Radio
+        }
+        MenuItem cursorLocalWandMenuItem {
+          label cursor
+          xywh {5 5 36 21} type Radio
+        }
+        MenuItem axisLocalWandMenuItem {
+          label axis
+          xywh {5 5 36 21} type Radio
+        }
+        MenuItem dotLocalWandMenuItem {
+          label dot
+          xywh {5 5 36 21} type Radio
+        }
+      }
+      Fl_Menu_Button remoteWandTypeMenuButton {
+        label remote
+        callback {remoteWandType(o->value()) ;} open
+        tooltip {choose the graphical representation of the remote wand} xywh {85 80 70 20} align 22
+      } {
+        MenuItem noneRemoteWandMenuItem {
+          label none
+          xywh {10 10 36 21} type Radio
+        }
+        MenuItem pointerRemoteWandMenuItem {
+          label pointer
+          xywh {15 15 36 21} type Radio
+        }
+        MenuItem rayRemoteWandMenuItem {
+          label ray
+          xywh {15 15 36 21} type Radio
+        }
+        MenuItem cursorRemoteWandMenuItem {
+          label cursor
+          xywh {15 15 36 21} type Radio
+        }
+        MenuItem axisRemoteWandMenuItem {
+          label axis
+          xywh {15 15 36 21} type Radio
+        }
+        MenuItem dotRemoteWandMenuItem {
+          label dot
+          xywh {15 15 36 21} type Radio
+        }
+      }
+    }
+    Fl_Group remoteWandGroup {
+      label {remote wand:}
+      xywh {5 170 155 50} box BORDER_BOX align 21 hide deactivate
+    } {
+      Fl_Button copyRemoteWandButton {
+        label copy
+        callback {copyRemoteWand() ;}
+        tooltip {move our wand to the location of the collaborator's wand, but don't follow} xywh {10 190 70 20}
+      }
+      Fl_Light_Button followRemoteWandButton {
+        label follow
+        callback {followRemoteWand(o->value()) ;}
+        tooltip {move our wand to the location of the collaborator's wand and follow it} xywh {85 190 70 20}
+      }
+    }
+    Fl_Group remoteHeadGroup {
+      label {remote head:}
+      xywh {5 170 155 50} box BORDER_BOX align 21 hide deactivate
+    } {
+      Fl_Button copyRemoteHeadButton {
+        label copy
+        callback {copyRemoteHead() ;}
+        tooltip {move our head to the location of the collaborator's head, but don't follow (disabled it we're in an immersive system)} xywh {10 190 70 20}
+      }
+      Fl_Light_Button followRemoteHeadButton {
+        label follow
+        callback {followRemoteHead(o->value()) ;}
+        tooltip {move our head to the location of the collaborator's head and follow it (disabled it we're in an immersive system)} xywh {85 190 70 20}
+      }
+    }
+    Fl_Group headTypeGroup {
+      label {head type:}
+      xywh {5 225 155 50} box BORDER_BOX align 21 hide deactivate
+    } {
+      Fl_Menu_Button localHeadTypeMenuButton {
+        label local
+        callback {localHeadType(o->value()) ;} open
+        tooltip {choose the graphical representation of the local head} xywh {10 245 70 20} align 22
+      } {
+        MenuItem pointerLocalHeadMenuItem {
+          label pointer
+          xywh {15 15 36 21} type Radio
+        }
+        MenuItem rayLocalHeadMenuItem {
+          label ray
+          xywh {15 15 36 21} type Radio
+        }
+        MenuItem cursorLocalHeadMenuItem {
+          label cursor
+          xywh {15 15 36 21} type Radio
+        }
+        MenuItem headLocalHeadMenuItem {
+          label head
+          xywh {15 15 36 21} type Radio
+        }
+        MenuItem dotLocalHeadMenuItem {
+          label dot
+          xywh {15 15 36 21} type Radio
+        }
+        MenuItem noneLocalHeadMenuItem {
+          label none
+          xywh {10 10 36 21} type Radio
+        }
+      }
+      Fl_Menu_Button remoteHeadTypeMenuButton {
+        label remote
+        callback {remoteHeadType(o->value()) ;} open
+        tooltip {choose the graphical representation of the remote head} xywh {85 245 70 20} align 22
+      } {
+        MenuItem pointerRemoteHeadMenuItem {
+          label pointer
+          xywh {25 25 36 21} type Radio
+        }
+        MenuItem rayRemoteHeadMenuItem {
+          label ray
+          xywh {25 25 36 21} type Radio
+        }
+        MenuItem cursorRemoteHeadMenuItem {
+          label cursor
+          xywh {25 25 36 21} type Radio
+        }
+        MenuItem headRemoteHeadMenuItem {
+          label head
+          xywh {25 25 36 21} type Radio
+        }
+        MenuItem dotRemoteHeadMenuItem {
+          label dot
+          xywh {25 25 36 21} type Radio
+        }
+        MenuItem noneRemoteHeadMenuItem {
+          label none
+          xywh {20 20 36 21} type Radio
+        }
+      }
+    }
+    Fl_Group objectMoverGroup {selected
+      xywh {5 115 155 55} box BORDER_BOX
+    } {
+      Fl_Light_Button moveButton {
+        label move
+        callback {moveCallback(o->value()) ;}
+        tooltip {jump to and follow the location of the collaborator} xywh {10 120 145 20}
+      }
+      Fl_Output activeOutput {
+        xywh {10 145 145 20}
+      }
+    }
+  }
+} 

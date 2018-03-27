@@ -1,0 +1,54 @@
+#!/bin/bash
+# test simple rendering of volumes
+
+# check command line arguments and print usage
+if [[ $# -ne 4 || \
+      ! ( "$1" == "volume" || "$1" == "mixed" ) || \
+      ! ( "$2" == "point" || "$2" == "linear" || "$2" == "preint") || \
+      ! ( "$3" == "emit" || "$3" == "lit" || "$3" == "preint") || \
+      ! ( "$4" =~ ^[-Ee.0-9]*$ ) ]]; then
+
+    cat <<EOF
+Usage: $0 <type> <integration> <scale>
+
+<type> is either "volume" for volume only or "mixed" for mixed objects
+and volume
+
+<integration> is either "point" or "linear". See the hev-voltrace
+--integration option for details
+
+<transfer> is either "emit" for the emmission/absorption volume model
+or "lit" for a gradient-based volume lighting model, or "preint" for
+preintegrated volume rendering
+
+<scale> is an optical scale factor, controlling the degree of
+transparency. For this demo, 20 works well.
+EOF
+  exit 1;
+fi
+
+# assign command line arguments to more descriptive names
+export renderType="$1"
+export integration="$2"
+export transfer="$3"
+export scale="$4"
+
+# generate volume rendering object
+if [ "$renderType" = "volume" ]; then
+    # don't include support for user clipping planes or embedded objects
+    hev-voltrace --no-clip --no-objects \
+	--integration "$integration" --transfer "$transfer" \
+	1 1 1 bucky.osg
+else
+    # include embedded objects, but not user clipping planes
+    hev-voltrace --no-clip --objects \
+	--integration "$integration" --transfer "$transfer" \
+	1 1 1 bucky.osg
+fi
+
+
+# display bounding box and volume
+irisfly --background .5 .7 .9 --examine box.osg "$renderType".iris
+
+# kill transfer function view
+killall -q osgviewer

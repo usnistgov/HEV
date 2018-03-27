@@ -1,0 +1,5 @@
+Node {
+  StateSet {
+    GL_LIGHTING PROTECTED|ON
+  }
+}

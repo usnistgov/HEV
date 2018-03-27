@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import shutil
+
+
+# note that "hev-" is omitted from prog names
+
+
+#######################################################
+
+def copyFile (fn, srcDir, destDir) :
+	srcFN = os.path.join (srcDir, fn)
+	destFN = os.path.join (destDir, fn)
+	# copy while preserving mode, timestamp, etc.
+	shutil.copy2 (srcFN, destFN)
+
+def copyProg (progName, srcDir, destDir) :
+	progSubDir = os.path.join (srcDir, progName)
+	copyFile ("hev-" + progName, progSubDir, destDir)
+	copyFile ("hev-" + progName + ".1", progSubDir, destDir)
+	copyFile ("hev-" + progName + ".test.sh", progSubDir, destDir)
+
+#######################################################
+
+
+
+
+
+
+if  len (sys.argv) == 4 :
+	srcDir = sys.argv[1]
+	destDir = sys.argv[2]
+	progNameFile = sys.argv[3]
+
+else :
+	print >>sys.stderr, "Bad arg count: " + string(len(sys.argv))
+	sys.exit (-1)
+
+
+if progNameFile != None :
+	pnFP = open (progNameFile, "r")
+	# progNames = pnFP.read()
+	# progNameList = progNames.split()
+	progNameList = pnFP.read().split()
+	pnFP.close()
+	
+
+for progName in progNameList :
+	copyProg (progName, srcDir, destDir)
+
+sys.exit (0)
+
+

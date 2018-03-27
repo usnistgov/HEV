@@ -1,0 +1,4 @@
+EXEC hev-DCS --under wand --noescape baz > $IRIS_CONTROL_FIFO
+DCS baz
+LOAD foo head.osg
+ADDCHILD foo baz

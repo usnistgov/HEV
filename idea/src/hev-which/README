@@ -1,0 +1,71 @@
+May 26, 2015 - steve
+
+Decided to include hev-which in the HEV tree and install as normal.
+However, the script hev-which and man page hev-which.1 should be given
+to Chris when updated so he can install as a normal Linux rpm and will
+be available when no HEV environment has been set.
+
+
+
+March 3, 2012 - steve
+
+hev-which is not installed in the HEV tree.
+
+Rather, hev-which and hev-which.1 are installed in /usr/local/bin and
+/usr/share/man/man1 by Chris via rpm.
+
+--------------------------------------------------------------------------
+
+Date: Fri, 9 Mar 2012 12:47:00 -0500
+From: Chris Schanzle <schanzle@nist.gov>
+To: "Satterfield, Steven G." <steven.satterfield@nist.gov>
+Cc: "Koss Jr, Donald A." <donald.koss@nist.gov>
+Subject: Re: hev-which ready to install (fwd)
+
+Created rpm package hev-which from mcsd-testing repo and installed on
+vail for your testing pleasure.  I can promote to repo 'mcsd' (proper)
+and install on all savg systems as you like.  Please review the files,
+packaging details, check man page, etc.  FYI, rpm spec is
+~schanzle/tmp/specs/hev-which.spec passed rpmlint tests (great since
+it told me the files from your email were DOS-formatted EOL's).
+
+[root@vail ~]# rpm -qil hev-which
+Name        : hev-which                    Relocations: (not relocatable)
+Version     : 1                                 Vendor: (none)
+Release     : 1                             Build Date: Fri 09 Mar 2012 12:40:30 PM EST
+Install Date: Fri 09 Mar 2012 12:41:12 PM EST      Build Host: copious.cam.nist.gov
+Group       : Development/Tools             Source RPM: hev-which-1-1.src.rpm
+Size        : 1974                             License: Public Domain
+Signature   : (none)
+Packager    : Chris Schanzle <schanzle@nist.gov>
+URL         : http://www.nist.gov/itl/math/hpcvg/
+Summary     : Displays which HEV environment is configured
+Description :
+Prints which HEV environment is currently set.
+Also sets exit status.
+
+/usr/bin/hev-which
+/usr/share/man/man1/hev-which.1.gz
+
+
+Chris
+
+
+
+> Date: Fri, 2 Mar 2012 13:49:45 -0500
+> From: Steve Satterfield<steve@nist.gov>
+> To: "Schanzle, Chris"<christopher.schanzle@nist.gov>
+> Cc: "Koss Jr, Donald A."<donald.koss@nist.gov>,
+>        "Satterfield, Steven G."<steven.satterfield@nist.gov>
+> Subject: hev-which ready to install
+>
+>
+> Chris,
+>
+> As we discussed, I have completed the hev-which command and its ready to
+> be installed on the HPCVG machines. Attached is the hev-which script and
+> man page.
+>
+> Thanks,
+> Steve
+

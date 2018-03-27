@@ -1,0 +1,154 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH collabfly 1 "June, 2012" "NIST/MCSD" "MCSD HEV"
+.SH NAME
+collabfly
+- implement remote pointers and shared navigation between two irisfly
+sessions, with optional shared node transformation
+
+.SH SYNOPSIS
+.B "collabfly"
+.I  [ --move nodeName ] [ --separateGUI | --noGUI ] hostname[:port] | :[port] command
+
+.SH PARAMETERS
+
+.IP "--move"
+specifies the name of a node thatcan be collaboratively moved using the
+wand. The node \fBMUST\fR be directly under the world node.
+
+.IP "--separateGUI"
+specifies that the button to launch the GUI control panel should be separate
+from the main MCP control panel. By default a button to launch the GUI is
+added to the main MCP control panel. The option can be abbreviated to
+\fI--s\fR; only the first three characters of the option are checked.
+
+.IP "--noGUI"
+specifies that no button will be created to launch the GUI control
+panel. This can be useful when you want to embed the button to launch the
+GUI control panel in your own set of MCP menu buttons, such as part of a
+collection of radio buttons. The option can be abbreviated to \fI--n\fR;
+only the first three characters of the option are checked.
+
+To include the button, add the line:
+
+.IP
+SREAD hev-collab.mcp
+
+.P
+to your MCP file. \fBcollabfly\fR adds the directory containing the file
+hev-collab.mcp to the MCP_FILE_PATH envvar. The MCP SREAD command is a
+conditional read, and doesn't return an error is the file isn't found. This
+allows the same MCP file to be used with or without \fBcollabfly\fR.
+
+
+.IP "hostname[:port] | :[port]"
+specifies the hostname of the system running the other collabfly session,
+and its DTK port number.
+
+If \fIhostname\fR is omitted it is assumed to be localhost. This is
+generally only the case when running two \fBcollabfly\fR sessions on the
+same system.
+
+If \fIport\fR is omitted the standard DTK port, 34219, will be used. This is
+generally only NOT the case when running two \fBcollabfly\fR sessions on the
+same system.
+
+.IP command
+specifies the command to run. Both \fBcollabfly\fR sessions should run the
+same \fIcommand\fR. The command needs be, or invoke,
+the \fBirisfly\fR(1) command.
+
+.SH DESCRIPTION
+
+\fBcollabfly\fR creates a connection via DTK shared memory to another system
+also running \fBcollabfly\fR, and sets up shared navigation and a remote
+pointer and an optional shared node transformation. \fBcollabfly\fR runs a
+private binary which creates a GUI control panel that allows the user to
+choose when to follow the remote navigation, what objects to use as the
+local and remote pointers, and when to move the shared node.
+
+After setting up the DTK shared memory connection \fBcollabfly\fR runs the
+command specified on the command line. This command needs to be, or invoke,
+the \fBirisfly\fR(1) command. Both the local and remote
+\fBcollabfly\fR sessions should run the same command, although this is not
+enforced.
+
+.SH "EXAMPLE 1"
+
+Two systems, tardis.cam.nist.gov, and ftl.bitl.nist.gov, want to share
+navigation and remote pointers while running a HEV demo. In the steps below,
+it doesn't matter who goes first- the first collabfly will wait on the
+second collabfly to start.
+
+on tardis.cam.nist.gov type the command:
+
+.IP 
+collabfly ftl.bitl.nist.gov ./rundemo
+
+.P
+and on ftl.bitl.nist.gov type the command:
+
+.IP 
+collabfly tardis.cam.nist.gov ./rundemo
+
+.P
+Note that the command ./rundemo will run the irisfly command.
+
+.SH "EXAMPLE 2"
+
+These command will load three objects, and specify the cube as the object to
+be collaboratively moved.
+
+on tardis.cam.nist.gov type the command:
+
+.IP
+export OSG_FILE_PATH=$HEVROOT/idea/etc/collabfly/data:$OSG_FILE_PATH
+
+collabfly --move cube ftl.bitl.nist.gov irisfly --examine cone.osg sphere.osg cube.osg
+
+.P
+and on ftl.bitl.nist.gov type the command:
+
+.IP 
+export OSG_FILE_PATH=$HEVROOT/idea/etc/collabfly/data:$OSG_FILE_PATH
+
+collabfly --move cube tardis.cam.nist.gov irisfly --examine cone.osg sphere.osg cube.osg
+
+.SH NOTE
+
+While a node is being moved, navigation for the user moving the node
+will be deactivated.
+
+.SH NOTE
+
+To test this on a single system with two DTK servers, try this:
+
+In one window run collabfly using a different shared memory and port,
+also different IRIS and MCP fifos.  The remote collabfly you want to
+connect to will be using the defaults, and on localhost, so the remote
+collabfly can be specified as :, which is shorthand for localhost:32419
+
+.IP
+export DTK_SHAREDMEM_DIR=/dev/shm/dtkSharedMem_collabfly
+.br
+export DTK_PORT=34220
+.br
+export DTK_CONNECTION=localhost:$DTK_PORT
+.br
+export IRIS_CONTROL_FIFO=/tmp/irisControlFifo-${USER}_collabfly
+.br
+export IRISFLY_MCP_CONTROL_FIFO=/tmp/irisfly-mcp-fifo-${USER}_collabfly
+.br
+collabfly : irisfly -v --examine cow.osg
+
+.P
+In another window run with the defaults, and connect to the above. The
+remote collabfly is on localhost, but with a different port number
+
+.IP
+collabfly :34220 irisfly -v --examine cow.osg
+
+.SH AUTHOR
+
+John Kelso, kelso@nist.gov,  NIST/ITL/MCSD
+

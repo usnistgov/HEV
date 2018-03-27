@@ -1,0 +1,10 @@
+# iris-DCS applied the following options to create the DCS:
+#  nodeName = "blueAxis"
+#  center 0.000000 0.000000 0.000000
+# and loaded the following files:
+#  "blueAxis.savg" with node name "blueAxis.savg"
+#center: radius = 0.173205, center = 0.000000 0.000000 0.000000
+DCS "blueAxis" 
+LOAD "blueAxis.savg" "blueAxis.savg"
+ADDCHILD "blueAxis.savg" "blueAxis"
+RETURN "blueAxis"

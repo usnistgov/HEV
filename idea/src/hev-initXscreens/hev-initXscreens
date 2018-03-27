@@ -1,0 +1,308 @@
+#! /bin/bash
+#
+# hev-initXscreens - setup CAVE hosts for CAVE
+#
+#   - set up R G B backgrounds for CAVE screens
+#   - run hev-framelock if needed.
+#
+# Pre-CentOS 7 specifically started kwin
+# Save this reference in case need it again..
+#
+# Related links:
+#  KDE_MULTIHEAD vairable
+#  http://techbase.kde.org/KDE_System_Administration/Environment_Variables#KDE_MULTIHEAD
+#
+#  running second WM
+#  http://forums.x-plane.org/index.php?showtopic=44217
+#
+# steve@nist.gov
+#
+#  05/04/2017 convert to CentOS 7
+
+VERSION=20170524
+
+debugHOST=vail
+
+
+###################
+# Common Commands #
+###################
+
+function testBG()
+{
+    # return 1 if correct values, 0 if no
+
+    bgfront=$(kreadconfig  --file plasma-desktop-screen-1-appletsrc --group Containments --group 3 --group Wallpaper --group image --key wallpaper)
+    bgfrontBaseName=$(basename $bgfron 2> /dev/null )
+
+    bgleft=$(kreadconfig  --file plasma-desktop-screen-2-appletsrc --group Containments --group 3 --group Wallpaper --group image --key wallpaper)
+    bgleftBaseName=$(basename $bglef t 2> /dev/null )
+
+    bgfloor=$(kreadconfig  --file plasma-desktop-screen-3-appletsrc --group Containments --group 3 --group Wallpaper --group image --key wallpaper)
+    bgfloorBaseName=$(basename $bgfloor 2> /dev/null)
+
+
+    if [ "$VERBOSE" == "1" ]
+    then
+	echo "Before values:"         > /dev/tty
+	echo  bgfrontBaseName ${bgfrontBaseName}          > /dev/tty
+	echo  bgleftBaseName  ${bgleftBaseName}           > /dev/tty
+	echo  bgfloorBaseName ${bgfloorBaseName}          > /dev/tty
+    fi
+
+    if [ "${bgfrontBaseName}" == "frontBackGround.png" ] &&
+       [ "${bgleftBaseName}"  == "leftBackGround.png" ] &&
+       [ "${bgfloorBaseName}" == "floorBackGround.png" ]
+    then
+	bgflag=1
+        #echo Background already correct > /dev/tty
+    else
+	bgflag=0
+        #echo Background needs to be set  > /dev/tty 
+    fi
+
+    echo $bgflag
+}
+
+
+function commonCmds {
+
+flag=$(testBG)
+
+
+
+if [ "${flag}" == "0" ] || [ "${force}" == "1" ]
+then
+    FR=${PDATA}/frontBackGround${ALT}.png
+    LE=${PDATA}/leftBackGround${ALT}.png
+    FL=${PDATA}/floorBackGround${ALT}.png
+ 
+    # http://foreverquest.blogspot.com/2010/11/kde-452-changing-wallpaper-background.html
+
+    if [ "$VERBOSE" = 1 ]
+    then
+        echo Setting R G B backgounds
+        ls -hl $FR $LE $FL
+    fi
+
+    # Halt Plasma
+    #kbuildsycoca4 &&
+    killall -HUP plasma-desktop   > /dev/null 2> /dev/null
+
+    # Write values
+    kwriteconfig --file plasma-desktop-screen-1-appletsrc --group Containments --group 3 --group Wallpaper --group image --key wallpaper $FR
+    kwriteconfig --file plasma-desktop-screen-2-appletsrc --group Containments --group 3 --group Wallpaper --group image --key wallpaper $LE
+    kwriteconfig --file plasma-desktop-screen-3-appletsrc --group Containments --group 3 --group Wallpaper --group image --key wallpaper $FL
+
+    # Restart plasma
+    #export KDE_MULTIHEAD=0
+    #kbuildsycoca4 &&
+    kstart plasma-desktop > /dev/null 2> /dev/null
+
+
+else
+    if [ "$VERBOSE" = 1 ]
+    then
+	echo "Background already set up"
+    fi
+fi
+
+}
+
+
+
+##########
+# Dettol #
+##########
+
+function dettol {
+
+   commonCmds
+
+}
+
+
+
+##########
+# Tylium #
+##########
+
+function tylium {
+
+   commonCmds
+
+}
+
+
+#############
+# Gallifrey #
+#############
+
+
+function gallifrey {
+
+commonCmds
+
+hev-framelock
+
+}
+
+
+
+
+
+#########
+# Debug #
+#########
+
+function debug {
+
+commonCmds
+
+env DISPLAY=:0.0 hev-imageDisplay  -geometry +0+0 ${PDATA}/frontBackGround.png &
+env DISPLAY=:0.0 hev-imageDisplay  -geometry +0+0 ${PDATA}/leftBackGround.png &
+env DISPLAY=:0.0 hev-imageDisplay  -geometry +0+0 ${PDATA}/floorBackGround.png &
+
+
+}
+
+
+
+
+
+
+
+
+#########
+# Usage #
+#########
+
+function usage {
+    echo "Usage: hev-initXscreens  [-f] [-alt] [-v] [-d]"
+    echo
+    echo  "This command only works when run on RAVE or PowerWall."
+    echo  "It does nothing on other systems"
+
+    exit
+
+}
+
+
+########
+# Main #
+########
+
+
+if [ -z $HEVROOT ]
+then
+    echo HEV environemnt is not set up
+    exit 1
+fi
+
+
+
+PDATA=${HEV_IDEA_DIR}/etc/hev-initXscreens/data
+#echo "Private data" $PDATA
+force=0
+
+VERBOSE=0
+H=`hostname -s`
+
+
+for k in 1 2 3 4
+do
+
+    case $# in
+	0)
+	    ;;
+	*)
+	    case $1 in
+		-alt|--alt)
+		    ALT=Alt
+		    ;;
+		-f|--f|-force|--force)
+		    force=1;
+		    ;;
+		-d|--d|-debug|--debug)
+		    ;;
+		-v|--v|-verbose|--verbose)
+		    VERBOSE=1
+		    echo "hev-initXscreens version: $VERSION"
+		    ;;
+		-h|--h|-help|--help)
+		    usage
+		    ;;
+		*)
+		    usage
+		    ;;
+	    esac
+	    ;;
+    esac
+    shift
+done
+
+dok=0
+if [ "$DISPLAY" == ":0.0" ]
+then
+    dok=1
+fi
+if [ "$DISPLAY" == ":0" ]
+then
+    dok=1
+fi
+if [ "$dok" == "0" ]
+then
+    echo "hev-initXscreens: DISPLAY is $DISPLAY, must be :0.0"
+    exit 1
+fi
+
+if [ "$H" = "gallifrey" ]
+then
+    if [ "$VERBOSE" = 1 ]
+    then
+	gallifrey
+        echo "hev-initXscreens executed on host: ${H}${DISPLAY}"
+    else
+        gallifrey > /dev/null
+    fi
+elif [ "$H" = "tylium" ]
+then
+    if [ "$VERBOSE" = 1 ]
+    then
+	tylium
+        echo "hev-initXscreens executed on host: ${H}${DISPLAY}"
+    else
+        tylium > /dev/null
+    fi
+elif [ "$H" = "dettol" ]
+then
+    if [ "$VERBOSE" = 1 ]
+    then
+	dettol
+        echo "hev-initXscreens executed on host: ${H}${DISPLAY}"
+    else
+        dettol
+       # dettol > /dev/null
+    fi
+elif [ "$H" = "vail" ]
+then
+    if [ "$VERBOSE" = 1 ]
+    then
+	debug
+        echo "hev-initXscreens executed on host: ${H}${DISPLAY}"
+    else
+        debug > /dev/null
+    fi
+else
+    if [ "$VERBOSE" = 1 ]
+    then
+        echo "hev-initXscreens does not apply to this host: ${H}${DISPLAY}"
+
+    fi
+    exit 1
+fi
+
+
+###########
+# The END #
+###########

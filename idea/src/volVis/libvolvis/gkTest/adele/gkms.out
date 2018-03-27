@@ -1,0 +1,29 @@
+
+
+baneFindInclusion: inclusions: percentile percentile range-ratio
+baneFindInclusion: measures: gradmag hess-2nd val(float)
+baneFindInclusion: pass A of inclusion initialization ...   done
+baneFindInclusion: pass B of inclusion initialization ...   done
+baneFindInclusion: determining inclusion ... ##_baneIncPercentile_Ans: hist's size=1024, sum=31195136 --> out = 1559.76
+##_baneIncPercentile_Ans: hist's min,max (0,1094.7) ---positive---> 0, 1094.7
+##_baneIncPercentile_Ans: hist (0,1094.7) --> min,max = (0,1094.7) --> mid = 0
+##_baneIncPercentile_Ans: --> {min,max}Incr = 0,1
+##_baneIncPercentile_Ans: --> output min, max = 0, 648.475
+##_baneIncPercentile_Ans: hist's size=1024, sum=31195136 --> out = 4679.27
+##_baneIncPercentile_Ans: hist's min,max (-1979.93,1451.19) ---zero-center---> -1979.93, 1979.93
+##_baneIncPercentile_Ans: hist (-1979.93,1451.19) --> min,max = (-1979.93,1979.93) --> mid = 0
+##_baneIncPercentile_Ans: --> {min,max}Incr = 1,1
+##_baneIncPercentile_Ans: --> output min, max = -852.995, 852.995
+done
+baneMakeHVol: inclusion: 0:[0,648.475], 1:[-852.995,852.995], 2:[-1000,1312]
+baneMakeHVol: creating raw histogram volume ...   done
+baneMakeHVol: included 99.9859% of original voxels
+baneMakeHVol: will clip at 256
+baneMakeHVol: creating 8-bit histogram volume ...   done
+
+
+
+
+gkms opac: calculated gthresh = 25.939
+
+

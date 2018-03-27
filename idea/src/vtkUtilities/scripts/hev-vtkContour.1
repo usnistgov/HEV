@@ -1,0 +1,74 @@
+.TH hev-vtkContour
+.SH NAME
+hev-vtkContour - generate isosurfaces/isolines from a VTK data file
+
+.SH SYNOPSIS
+.B hev-vtkContour contourVal inFName outFName
+.br
+  or
+.br
+.B hev-vtkContour nContours rangeStart rangeEnd inFName outFName 
+
+.SH DESCRIPTION
+.B hev-vtkContour
+generates contours (isosurfaces or isolines) from VTK data files.
+
+The first form of the command line generates a single
+contour at the indicated contour value.  The second form 
+generates multiple contours over a range of contour values.
+
+.PP
+
+.SH PARAMETERS
+.TP
+.B contourVal
+Contour value.
+
+.TP
+.B inFName
+Location/filename of input VTK file.
+
+.TP
+.B outFName
+Location/filename of output contour file. 
+This file is written in VTK format.
+
+.TP
+.B nContours
+Total number of contours (they will be evenly spaced between specified range).
+
+.TP
+.B rangeStart
+Start of contour range.
+
+.TP
+.B rangeEnd
+End of contour range.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  These files can
+be used as input to this program.
+For example:
+
+  hev-vtkContour 2 0.2 0.6 structPoints.1.vtk surf2.vtk
+
+This generates two isosurfaces (at values 0.2 and 0.6) from the scalar
+field in the file structuPoints.1.vtk.
+The output file (surf2.vtk) should look like two surfaces (green and yellow); 
+each should be one octant of an ellipsoid. The yellow surface is small and 
+more or less parallel to the bigger green surface.
+
+
+.SH SEE ALSO
+
+hev-vtkReverse, vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+April 25th 2012

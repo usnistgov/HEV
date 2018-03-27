@@ -1,0 +1,142 @@
+#! /bin/sh
+
+# hev-checkGroup - check for proper group id of installed HEV software
+
+# steve@nist.gov
+# May 14, 2015
+
+function runFind {
+     # need the sed command in case embedded spaces in the found name
+     find $1 \( -type f -o -type d \) -a \! -group diverse | sed "s/ /\\\ /g"
+}
+
+
+function usage {
+cat <<EOF
+
+Usage: hev-checkPerm [--help] [ --hevOnly | --betaOnly ]
+
+EOF
+exit 1
+}
+
+
+# Only execute this command on the hev server
+SERVER="hev64.cam.nist.gov"
+
+h=0
+me=`hostname -i`
+serv=$(nslookup ${SERVER} | grep "Address:" | sed -e "1d" -e "s/Address: //")
+#echo me= ${me} serv=  ${serv}
+if [ "${me}" == "${serv}" ]
+then
+     h=1
+fi
+
+if [ "$h" == "0" ]
+then
+    echo "This command must be run only on ${SERVER}"
+    exit 1
+fi
+
+
+temp="/tmp/checkGroupGroup.$$"
+
+trap "rm -f $temp" 0
+
+# List the specific subdirectories to search
+HEV_LIST=" \
+/usr/local/HEV/.bashhev \
+/usr/local/HEV/.gitignore \
+\
+/usr/local/HEV/admin \
+/usr/local/HEV/demos \
+/usr/local/HEV/doc \
+/usr/local/HEV/external \
+/usr/local/HEV/idea \
+/usr/local/HEV/iris \
+"
+
+# Include all top level plain files
+HEV_LIST="${HEV_LIST} $(find -L  /usr/local/HEV -maxdepth 1  -type f -print)"
+
+#for i in $HEV_LIST
+#do
+#    echo $i
+#done
+
+
+# List the specific subdirectories to search
+BETA_LIST=" \
+/usr/local/HEV-beta/.bashhev \
+/usr/local/HEV-beta/.gitignore \
+\
+/usr/local/HEV-beta/admin \
+/usr/local/HEV-beta/demos \
+/usr/local/HEV-beta/doc \
+/usr/local/HEV-beta/external \
+/usr/local/HEV-beta/idea \
+/usr/local/HEV-beta/iris
+"
+
+
+# Include all top level plain files
+BETA_LIST="${BETA_LIST} $(find -L  /usr/local/HEV-beta -maxdepth 1  -type f -print)"
+
+#for i in $BETA_LIST
+#do
+#    echo $i
+#done
+
+
+first=0
+exitCode=0
+
+
+
+cd /tmp
+
+case $# in
+0)
+	LIST="$HEV_LIST $BETA_LIST"
+	;;
+*)
+	case $1 in
+	    --b*|-b*)
+		LIST="$BETA_LIST"
+		;;
+	    --hev*|-hev*)
+		LIST="$HEV_LIST"
+		;;
+	    --hel*|-hel*)
+		usage
+		;;
+	    *)
+		usage
+		;;
+	esac
+esac
+
+
+
+for d in $LIST
+do
+   runFind $d > $temp
+   if [ -s  $temp ]
+   then
+       if [ $first -eq 0 ]
+       then
+	   echo "HEV Group ID Problems:"
+	   echo "   Files and directories should be group id 'diverse'"
+	   echo
+	   first=1
+	   exitCode=1
+       fi
+       echo $d
+       cat $temp | xargs ls -ld
+       echo
+   fi
+done
+
+exit $exitCode
+

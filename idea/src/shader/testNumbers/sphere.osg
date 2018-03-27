@@ -1,0 +1,8 @@
+Geode {
+  ShapeDrawable {
+    Sphere {
+      Center 0 0 0
+      Radius 1
+    }
+  }
+}

@@ -1,0 +1,140 @@
+.TH HEV-SHADERLIBRARY-SPHERE 7 "May 2013" "NIST/ACMD" "HCPVG HEV"
+
+.SH NAME
+hev-shaderLibrary-sphere
+- functions for drawing spheres using a single point, includeable in other shaders.
+
+.SH SYNOPSIS
+\fB#include <sphere.glsl>\fR
+.PP
+\fBbool sphereBBox(vec4\fR \fIPo\fR\fB, float\fR \fIr\fR\fB, out vec4\fR \fIssbb\fR\fB, out vec2\fR \fIzrange\fR\fB);\fR
+.PP
+\fBbool sphereSize(vec4\fR \fIPo\fR\fB, float\fR \fIr\fR\fB, out vec2\fR \fIzrange\fR\fB, out vec4\fR \fIspherePos\fR\fB,
+    out float\fR \fIsphereSize\fR\fB);\fR
+.PP
+\fBfloat sphereDraw(vec4\fR \fIfragCoord\fR\fB, vec4\fR \fIPo\fR\fB, float\fR \fIr\fR\fB, vec2\fR \fIzrange\fR\fB,
+    out vec4\fR \fIFe\fR\fB, out vec3\fR \fINe\fR\fB, out float\fR \fIface\fR\fB);\fR
+.PP
+\fBvec4 sphereColorCubeMap(samplerCube\fR \fItex\fR\fB, vec3\fR \fIN\fR\fB);\fR
+.br
+\fBvec4 sphereColorSphMap(sampler2D\fR \fItex\fR\fB, vec3\fR \fIN\fR\fB);\fR
+.br
+\fBvec4 sphereColorSphCoord(sampler2D\fR \fItex\fR\fB, vec3\fR \fIN\fR\fB);\fR
+
+.SH DESCRIPTION
+
+The function
+.BR sphereBBox ()
+should be called from the geometry or vertex shader. It computes the screen
+space bounding box of a sphere where
+.IP
+.IR Po
+is the sphere center in object space,
+.br
+.IR r
+is the sphere radius in object space,
+.br
+.IR ssbb
+will be the computed screen space bounding box (left, top,
+    right, bottom), and
+.br
+.IR zrange
+will be the computed range of z values (near, far).
+.PP
+.BR sphereBBox ()
+returns \fBtrue\fR if the sphere is clipped or \fBfalse\fR if not.
+.PP
+
+The function
+.BR sphereSize ()
+should be called from the vertex shader. It computes the point center and size
+for a sphere where
+.IP
+.IR Po
+is the sphere center in object space,
+.br
+.IR r
+is the sphere radius in object space,
+.br
+.IR zrange
+will be the computed range of z values (near, far),
+.br
+.IR spherePos
+will be the computed screen space position for
+    GL_POINT, and
+.br
+.IR sphereSize
+will be the computed size for GL_POINT.
+.PP
+.BR sphereSize ()
+returns \fBtrue\fR if the sphere is clipped or \fBfalse\fR if not.
+.PP
+
+The function
+.BR sphereDraw ()
+should be called from the fragment shader. It compuates the ray/sphere
+intersection, where
+.IP
+.IR fragCoord
+is the pixel coordinate of the ray,
+.br
+.IR Po
+is the center of the sphere in object space,
+.br
+.IR r
+is the sphere radius in object space,
+.br
+.IR zrange
+is the depth range for the sphere (in -1..1 NDC),
+.br
+.IR Fe
+will be the computed eye-space intersection of the ray and
+    sphere,
+.br
+.IR Ne
+will be the computed eye-space normal, and
+.br
+.IR face
+will be -1 for an intersection inside of the sphere and
+    +1 for an intersection ouside.
+.PP
+.BR sphereDraw ()
+returns the depth of intersection or infinity if no intersection occurred.
+.PP
+The functions
+.BR sphereColorCubeMap (),
+.BR sphereColorSphMap (),
+and
+.BR sphereColorSphCoord()
+return the color of the sphere in direction \fIN\fR using a cube map, sphere
+map, or spherical coordinates respectively. \fItex\fR is the texture to
+sample.
+.PP
+These functions are based Jim Blinn's Corner, How to Draw a Sphere: Part 1,
+IEEE CG&A, January 1995.
+
+.SH NOTES
+If a vertex shader is being used, only one of \fBsphereBBox()\fR or
+\fBSphereSize()\fR should be called, not both.
+
+.SH REQUIRED STATE
+\fBuniform vec4 iris_Viewport;\fR
+.IP
+which should be set by IRIS and
+.PP
+\fBgl_ModelViewMatrix\fR,
+\fBgl_ModelViewProjectionMatrix\fR,
+\fBgl_ModelViewMatrixInverse\fR,
+\fBgl_ProjectionMatrixInverse\fR,
+\fBgl_NormalMatrix\fR,
+\fBgl_DepthRange\fR
+.IP 
+which should be set by OpenSceneGraph.
+
+.SH AUTHOR
+Marc Olano
+
+.SH SEE ALSO
+.BR hev-shaders (7),
+.BR hev-shaderLibrary (7).
+

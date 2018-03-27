@@ -1,0 +1,40 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-navigationControl 1 "May, 2011" "NIST/MCSD" "MCSD HEV"
+.SH NAME
+hev-navigationControl
+- a control panel to display and manipulate IRIS navigations
+
+.SH SYNOPSIS
+.B "hev-navigationControl"
+.I [ --noescape ] [ --usleep t ] [--fifo fifoName]
+
+.SH PARAMETERS
+
+.IP noescape
+if supplied, specifies that the GUI can't be killed by pressing the window
+manager's close button, or by pressing escape in the GUI window.
+
+.IP usleep
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.IP fifo
+specifies the name of the fifo to be used for reading queries sent to a
+running IRIS process. If not supplied "/tmp/hev-navigationControl-${USER}"
+will be used.
+
+.SH DESCRIPTION
+.PP
+.I \fBhev-navigationControl\fR
+displays a GUI which allows the user to modify the current navigation and to
+select which navigation to use.
+
+\fBhev-navigationControl\fR writes iris control commands to standard output,
+so it should have its output redirected to $IRIS_CONTROL_FIFO.
+
+.SH AUTHOR
+
+John Kelso, kelso@nist.gov,  NIST/ITL/MCSD
+
+

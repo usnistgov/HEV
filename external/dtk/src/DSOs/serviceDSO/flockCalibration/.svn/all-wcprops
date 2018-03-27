@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/flockCalibration
+END
+rigidXform.h
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/rigidXform.h
+END
+tetraUtils.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/tetraUtils.cpp
+END
+tetraUtils.h
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/tetraUtils.h
+END
+flockCalibration.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/diverse/!svn/ver/728/trunk/dtk/DSOs/serviceDSO/flockCalibration/flockCalibration.cpp
+END
+rigidXform.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/rigidXform.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/flockCalibration/CMakeLists.txt
+END

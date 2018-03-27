@@ -1,0 +1,17 @@
+#!/bin/sh
+file=$IRISFLY_HIDE_SHOW_WINDOWS
+
+if [ -z "$file" ]
+then dtk-msgError "irisfly-hideWindows: no window file" 1>&2
+    exit 1
+fi
+
+if [ ! -w "$file" ]
+then dtk-msgError "irisfly-hideWindows: no writeable window file" 1>&2
+    exit 1
+fi
+
+while read window
+do dtk-msgDebug "irisfly-hideWindows: lowering window \"$window\"" 1>&2
+    hev-hideWindow $window
+done < $file

@@ -1,0 +1,124 @@
+Group {
+  name "test"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  num_children 2
+  Camera {
+    name "pre_test"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    StateSet {
+      rendering_hint DEFAULT_BIN
+      renderBinMode INHERIT
+    }
+    referenceFrame RELATIVE
+    clearColor 0.5 0.5 0.5 0
+    clearMask 0x4100
+    transformOrder PRE_MULTIPLY
+    ProjectionMatrix {
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0 0 0 1
+    }
+    ViewMatrix {
+      1 0 0 0
+      0 1 0 0
+      0 0 1 0
+      0 0 0 1
+    }
+    renderOrder PRE_RENDER
+    renderTargetImplementation FRAME_BUFFER_OBJECT
+    renderTargetFallback PIXEL_BUFFER_RTT
+    drawBuffer 0
+    readBuffer 0
+    bufferComponent DEPTH_BUFFER {
+      internalFormat 0
+      TextureRectangle {
+        UniqueID TextureRectangle_0
+        name "depthTex"
+        wrap_s CLAMP
+        wrap_t CLAMP
+        wrap_r CLAMP
+        min_filter NEAREST
+        mag_filter NEAREST
+        maxAnisotropy 1
+        borderColor 0 0 0 0
+        borderWidth 0
+        useHardwareMipMapGeneration TRUE
+        unRefImageDataAfterApply FALSE
+        internalFormatMode USE_USER_DEFINED_FORMAT
+        internalFormat 1902
+        resizeNonPowerOfTwo FALSE
+        shadowComparison FALSE
+        shadowCompareFunc GL_LEQUAL
+        shadowTextureMode GL_LUMINANCE
+      }
+      level 0
+      face 0
+      mipMapGeneration FALSE
+    }
+    bufferComponent COLOR_BUFFER {
+      internalFormat 0
+      TextureRectangle {
+        UniqueID TextureRectangle_1
+        name "colorTex"
+        wrap_s CLAMP
+        wrap_t CLAMP
+        wrap_r CLAMP
+        min_filter NEAREST
+        mag_filter NEAREST
+        maxAnisotropy 1
+        borderColor 0 0 0 0
+        borderWidth 0
+        useHardwareMipMapGeneration TRUE
+        unRefImageDataAfterApply FALSE
+        internalFormatMode USE_USER_DEFINED_FORMAT
+        internalFormat GL_RGBA
+        resizeNonPowerOfTwo FALSE
+        shadowComparison FALSE
+        shadowCompareFunc GL_LEQUAL
+        shadowTextureMode GL_LUMINANCE
+      }
+      level 0
+      face 0
+      mipMapGeneration FALSE
+    }
+  }
+  Group {
+    name "post_test"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    StateSet {
+      rendering_hint DEFAULT_BIN
+      renderBinMode INHERIT
+      Uniform {
+        name "fxcam"
+        type bool 1 IntArray 1
+        {
+          1 
+        }
+      }
+      Uniform {
+        name "fxcamColor"
+        type int 1 IntArray 1
+        {
+          0 
+        }
+      }
+      Uniform {
+        name "fxcamDepth"
+        type int 1 IntArray 1
+        {
+          1 
+        }
+      }
+      textureUnit 0 {
+        Use TextureRectangle_1
+      }
+      textureUnit 1 {
+        Use TextureRectangle_0
+      }
+    }
+  }
+}

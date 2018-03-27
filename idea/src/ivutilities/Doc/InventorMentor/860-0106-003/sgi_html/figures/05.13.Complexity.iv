@@ -1,0 +1,46 @@
+#Inventor V2.0 ascii
+
+Separator {
+    OrthographicCamera {
+	position     0 -1.5 15
+	nearDistance 12
+	farDistance  17
+	focalDistance 14.5
+	height      20
+    }
+    LightModel { model BASE_COLOR }
+    DrawStyle { style LINES }
+    
+    Separator {
+	Translation {
+	    translation -2.5 0 0
+	}
+	Complexity { 
+	    type OBJECT_SPACE
+	}
+	Sphere {
+	    radius 2
+	}
+	Translation {
+	    translation 0 -4 0
+	}
+	Sphere {}
+    }
+    
+    Separator {
+	Translation {
+	    translation 2.5 0 0
+	}
+	Complexity { 
+	    type SCREEN_SPACE
+	}
+	Sphere {
+	    radius 2
+	}
+	Translation {
+	    translation 0 -4 0
+	}
+	Sphere {}
+    }
+}
+

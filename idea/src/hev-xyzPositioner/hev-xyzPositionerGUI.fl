@@ -1,0 +1,177 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+Function {make_main_window()} {open
+} {
+  Fl_Window {} {
+    label worldRollers open
+    xywh {1079 185 280 285} type Double box BORDER_BOX visible
+  } {
+    Fl_Light_Button {} {
+      label active
+      callback {active(bool(o->value())) ;}
+      tooltip {turn on to activate the valuators and click! button} xywh {20 10 74 20}
+    }
+    Fl_Group {} {open
+      tooltip {Press and drag right/left to raise/lower, or use the left/right cursor arrows} xywh {10 73 272 85}
+    } {
+      Fl_Roller {} {
+        callback {if (oldX>float(o->value()))
+   updateDeltaX(-1) ;
+else
+   updateDeltaX(1) ;
+oldX = float(o->value()) ;}
+        xywh {220 75 50 20} type Horizontal minimum -100 maximum 100 deactivate
+        code0 {xSlider1 = o ;}
+      }
+      Fl_Roller {} {
+        callback {if (oldX>float(o->value()))
+   updateDeltaX(-10) ;
+else
+   updateDeltaX(10) ;
+oldX = float(o->value()) ;}
+        xywh {165 75 50 20} type Horizontal minimum -100 maximum 100 deactivate
+        code0 {xSlider10 = o ;}
+      }
+      Fl_Roller {} {
+        callback {if (oldX>float(o->value()))
+   updateDeltaX(-100) ;
+else
+   updateDeltaX(100) ;
+oldX = float(o->value()) ;}
+        xywh {110 75 50 20} type Horizontal align 4 minimum -100 maximum 100 deactivate
+        code0 {xSlider100 = o ;}
+      }
+      Fl_Roller {} {
+        callback {if (oldY>float(o->value()))
+   updateDeltaY(-1) ;
+else
+   updateDeltaY(1) ;
+oldY = float(o->value()) ;}
+        xywh {220 105 50 20} type Horizontal minimum -100 maximum 100 deactivate
+        code0 {ySlider1 = o ;}
+      }
+      Fl_Roller {} {
+        callback {if (oldY>float(o->value()))
+   updateDeltaY(-10) ;
+else
+   updateDeltaY(10) ;
+oldY = float(o->value()) ;}
+        xywh {165 105 50 20} type Horizontal minimum -100 maximum 100 deactivate
+        code0 {ySlider10 = o ;}
+      }
+      Fl_Roller {} {
+        callback {if (oldY>float(o->value()))
+   updateDeltaY(-100) ;
+else
+   updateDeltaY(100) ;
+oldY = float(o->value()) ;}
+        xywh {110 105 50 20} type Horizontal align 4 minimum -100 maximum 100 deactivate
+        code0 {ySlider100 = o ;}
+      }
+      Fl_Roller {} {
+        callback {if (oldZ>float(o->value()))
+   updateDeltaZ(-1) ;
+else
+   updateDeltaZ(1) ;
+oldZ = float(o->value()) ;}
+        xywh {220 135 50 20} type Horizontal minimum -100 maximum 100 deactivate
+        code0 {zSlider1 = o ;}
+      }
+      Fl_Roller {} {
+        callback {if (oldZ>float(o->value()))
+   updateDeltaZ(-10) ;
+else
+   updateDeltaZ(10) ;
+oldZ = float(o->value()) ;}
+        xywh {165 134 50 20} type Horizontal minimum -100 maximum 100 deactivate
+        code0 {zSlider10 = o ;}
+      }
+      Fl_Roller {} {
+        callback {if (oldZ>float(o->value()))
+   updateDeltaZ(-100) ;
+else
+   updateDeltaZ(100) ;
+oldZ = float(o->value()) ;}
+        xywh {110 135 50 20} type Horizontal align 4 minimum -100 maximum 100 deactivate
+        code0 {zSlider100 = o ;}
+      }
+    }
+    Fl_Group {} {
+      label {.0001}
+      xywh {235 56 15 15} align 0
+    } {}
+    Fl_Group {} {
+      label {.001} open
+      xywh {175 56 15 15} align 0
+    } {}
+    Fl_Group {} {
+      label {.01} open
+      xywh {115 56 15 15} align 0
+    } {}
+    Fl_Button {} {
+      label RESET
+      callback {reset() ;}
+      xywh {200 250 70 20} deactivate
+      code0 {resetButton = o ;}
+    }
+    Fl_Input {} {
+      label {X:}
+      callback {updateX(atof((char*)(o->value())));}
+      xywh {30 75 75 20} when 8 deactivate
+      code0 {xText = o ;}
+      code1 {o->value("0") ;}
+    }
+    Fl_Input {} {
+      label {Y:}
+      callback {updateY(atof((char*)(o->value())));}
+      xywh {30 105 75 20} when 8 deactivate
+      code0 {yText = o ;}
+      code1 {o->value("0") ;}
+    }
+    Fl_Input {} {
+      label {Z:}
+      callback {updateZ(atof((char*)(o->value())));}
+      xywh {30 135 75 20} when 8 deactivate
+      code0 {zText = o ;}
+      code1 {o->value("0") ;}
+    }
+    Fl_Light_Button {} {
+      label glyph
+      callback {displayGlyph(bool(o->value())) ;}
+      tooltip {turn on to display the greem glyph} xywh {30 200 74 20} deactivate
+      code0 {glyphButton = o ;}
+    }
+    Fl_Roller {} {
+      label {glyph/gap size:}
+      callback {updateGapSize(float(o->value())) ;}
+      xywh {225 200 50 20} type Horizontal align 4 maximum 10 step 0.005 value 1 deactivate
+      code0 {gapSizeRoller = o ;}
+    }
+    Fl_Light_Button {} {
+      label {clack!}
+      callback {writeButton((bool)o->value()) ;}
+      xywh {30 250 70 20} hide deactivate
+      code0 {lightButton = o ;}
+    }
+    Fl_Light_Button {} {
+      label {clack3!}
+      callback {writeButton3((bool)o->value()) ;}
+      xywh {115 250 70 20} hide deactivate
+      code0 {lightButton3 = o ;}
+    }
+    Fl_Button {} {
+      label {click!}
+      callback {writeButton() ;} selected
+      xywh {35 250 70 20} hide deactivate
+      code0 {clickButton = o ;}
+    }
+    Fl_Button {} {
+      label {click3!}
+      callback {writeButton3() ;}
+      xywh {115 250 70 20} hide deactivate
+      code0 {clickButton3 = o ;}
+    }
+  }
+} 

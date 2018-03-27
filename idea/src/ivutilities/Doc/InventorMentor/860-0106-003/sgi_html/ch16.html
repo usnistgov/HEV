@@ -1,0 +1,722 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 16. Inventor Component Library</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch15.html" title="Chapter 15. Draggers and Manipulators"><link rel="next" href="ch17.html" title="Chapter 17. Using Inventor with OpenGL"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 16. Inventor Component Library</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch15.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch17.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5507529"></a>Chapter 16. <a name="id37269"></a>Inventor Component Library</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Construct, build, and use an <span class="bold"><b>SoXtRenderArea</b></span></p>
+</li>
+<li><p>Use the Inventor utility functions provided for initialization and window management with the Xt Intrinsics</p>
+</li>
+<li><p>Render a simple scene graph in the overlay planes</p>
+</li>
+<li><p>Construct and build Inventor components and manage them as Xt widgets</p>
+</li>
+<li><p>Attach a component directly to a scene graph and pass data to the application</p>
+</li>
+<li><p>Use callback functions to pass data from a component to the application</p>
+</li>
+<li><p>Add your own application buttons to a standard Inventor viewer</p>
+</li>
+<li><p>Use the Inventor clipboard to copy and paste data</p>
+</li>
+</ul></div><p>This chapter describes the Inventor Component Library, which includes utility functions, a render area, and a set of Xt components. Components are reusable modules with a built-in user interface for changing the scene graph interactively. Designed for easy integration into your program, each component is built from Motif-style Xt widgets and can be used alone or in combination with other widgets. Important concepts introduced in this chapter include the two types of components, <a name="idch161"></a><a name="idch162"></a><i>editors</i> and <i>viewers</i>, and the steps for <i>constructing</i> and <i>building</i> components and for managing them as Xt widgets. Since all components are interactive and are used to edit parts of the 3D scene, this chapter also describes how different types of components pass data back to the application.</p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5507679"></a>Introduction to Components</h2></div></div>
+<p>The Inventor Component Library consists of three major parts:<a name="idch163"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>Xt utility functions for initialization and window management<a name="idch164"></a></p>
+</li>
+<li><p>An Xt render area for static display of a scene graph<a name="idch165"></a></p>
+</li>
+<li><p>A set of Xt components, which include their own render area and a user interface for changing the displayed scene</p>
+</li>
+</ul></div><p>The following sections describe each part in more detail. This chapter assumes you have already read <a href="ch10.html#id10433">Chapter 10</a>, which describes the relationship between the Xt library and the Open Inventor toolkit, which is window-system&#8211;independent.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5507768"></a>Xt Utility Functions</h2></div></div>
+<p>This section outlines the basic sequence for initializing Inventor for use with the Xt Intrinsics, a library built on top of the X Window System library. An Xt widget contains an X window, along with extra functions for controlling the widget behavior. Because they contain a window, widgets can receive events from the X server.</p>
+<p>The <span class="bold"><b>SoXt::init()</b></span> routine returns an Xt widget that serves as the application's main shell window. In the following example, the widget is named <span class="bold"><b>myWindow</b></span>. An <a name="idch166"></a><span class="bold"><b>SoXtRenderArea</b></span> is later put into this window.</p>
+<p>The basic steps are as follows:</p>
+<div class="orderedlist"><ol type="1"><li><p>Initialize Inventor for use with the Xt Intrinsics (<span class="bold"><b>SoXt::init()</b></span>).</p>
+</li>
+<li><p>Create the <span class="bold"><b>SoXtRenderArea</b></span>.</p>
+</li>
+<li><p>Build other Inventor objects and Xt widgets.</p>
+</li>
+<li><p>Show the render area and Xt widgets (<span class="bold"><b>myRenderArea-&gt;show(); SoXt::show()</b></span>).</p>
+</li>
+<li><p>Enter the event loop (<span class="bold"><b>SoXt::mainLoop()</b></span>).</p>
+</li>
+</ol></div><p>Here is an example that follows this sequence:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;X11/Intrinsic.h&gt;
+#include &lt;Inventor/So.h&gt;
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt;
+
+main(int argc, char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+
+   SoXtRenderArea *myRenderArea = 
+         new SoXtRenderArea(myWindow);
+
+   SoSeparator *root = new SoSeparator;
+   // Build other Inventor objects and Xt widgets 
+   // and set up the root
+   // ...
+
+   myRenderArea-&gt;setSceneGraph(root);
+   myRenderArea-&gt;setTitle(&quot;Simple Xt&quot;);
+   myRenderArea-&gt;show(); // this calls XtManageChild
+   SoXt::show(myWindow); // this calls XtRealizeWidget
+
+   // Realize other Xt widgets
+   // ...
+
+   // Go into main event loop
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Be sure your program calls <a name="idch167"></a><span class="bold"><b>show()</b></span> for the child widgets before it calls <a name="idch168"></a><span class="bold"><b>show()</b></span> for the shell widget. If you try to show the shell widget first, you receive this error: &#8220;Shell widget x has zero width and/or height.&#8221; 
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5508001"></a>Render Area</h2></div></div>
+<p>The <a name="idch169"></a><span class="bold"><b>SoXtRenderArea</b></span> is an Xt widget that performs OpenGL rendering. When it receives X events, it translates them into <span class="bold"><b>SoEvents</b></span>, which are then passed to the scene manager for handling. <a name="idch1610"></a></p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5508034"></a>Methods</h3></div></div>
+<p>The scene graph to be rendered is set into the render area with the <a name="idch1611"></a><span class="bold"><b>setSceneGraph()</b></span> method. (This method increments the root's reference count.) The <a name="idch1612"></a><span class="bold"><b>getSceneGraph()</b></span> method returns the root node of this scene graph. </p>
+<p>Other useful methods on <span class="bold"><b>SoXtRenderArea</b></span> include the following:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>setTransparencyType()<a name="idch1613"></a></b></span></span></td><td width="10"> </td><td><p><br>
+specifies how transparent objects are rendered (see the section on the render action in <a href="ch09.html#id14375">Chapter 9</a> for details).</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setAntialiasing()<a name="idch1614"></a></b></span></span></td><td width="10"> </td><td><p>specifies the antialiasing methods.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setBorder()<a name="idch1615"></a></b></span></span></td><td width="10"> </td><td><p>shows or hides the window border.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setBackgroundColor()<a name="idch1616"></a></b></span></span></td><td width="10"> </td><td><p><br>
+specifies the window background color.</p>
+
+</td></tr></table></div><p>The render area attaches a node sensor to the root of the scene graph and automatically redraws the scene whenever the scene graph changes. Use the following method to change the priority of the redraw sensor:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>setRedrawPriority()<a name="idch1617"></a></b></span>
+</span></td><td width="10"> </td><td><p>
+
+
+<br>
+	specifies the priority of the redraw sensor (default priority is 10000)</p>
+
+</td></tr></table></div><p>Use the following two methods if you wish to disable automatic redrawing:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>setAutoRedraw()<a name="idch1618"></a></b></span></span></td><td width="10"> </td><td><p>enables or disables the redraw sensor on the render area.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>render()<a name="idch1619"></a></b></span></span></td><td width="10"> </td><td><p>redraws the scene immediately. If AutoRedraw is TRUE, you don't need to make this call.</p>
+
+</td></tr></table></div><p>See the <i>Open Inventor C++ Reference Manual</i> on <span class="bold"><b>SoXtRenderArea</b></span> for more information on these methods.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5508353"></a>Xt Devices<a name="idch1620"></a></h3></div></div>
+<p>If you use the default values when you create an <a name="idch1621"></a><span class="bold"><b>SoXtRenderArea</b></span>, mouse and keyboard events are handled automatically. The constructor for <a name="idch1622"></a><span class="bold"><b>SoXtRenderArea</b></span> is</p>
+<p>SoXtRenderArea(Widget <i>parent</i> = NULL,<br>
+	const char * <i>name</i> = NULL,<br>
+	SbBool <i>buildInsideParent</i> = TRUE,<br>
+	SbBool <i>getMouseInput</i> = TRUE, <br>
+	SbBool <i>getKeyboardInput</i> = TRUE);</p>
+<p>To disable input from either the mouse or the keyboard, specify FALSE for the <i>getMouseInput</i> or <i>getKeyboardInput</i> variable. For example, to disable mouse input:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoXtRenderArea *renderArea = new SoXtRenderArea(parent,
+         &quot;myRenderArea&quot;, TRUE, FALSE, TRUE);
+</pre></td></tr></table><p>Inventor defines three Xt devices:</p>
+<div class="itemizedlist"><ul type="disc"><li><p><span class="bold"><b>SoXtKeyboard<a name="idch1623"></a></b></span></p>
+</li>
+<li><p><span class="bold"><b>SoXtMouse</b></span></p>
+</li>
+<li><p><span class="bold"><b>SoXtSpaceball</b></span></p>
+</li>
+</ul></div><p>Use the <a name="idch1624"></a><span class="bold"><b>registerDevice()</b></span> method to register additional devices, such as the spaceball, with the render area. When this method is called, the render area registers interest in events generated by that device. When it receives those events, it translates them into <a name="idch1625"></a><span class="bold"><b>SoEvents</b></span> and passes them to the scene manager for handling. For information on creating your own device, see <i>The Inventor Toolmaker</i>.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5508575"></a>Using the Overlay Planes <i>(Advanced)</i></h3></div></div>
+<p>The overlay planes are a separate set of bitplanes that can be used for special purposes in Inventor. (Check your release notes for the number of overlay planes, which is implementation-dependent.) The overlay planes are typically used for objects in the scene that appear on top of the main image and are redrawn independently. Although you are limited with respect to color and complexity of the scene graph placed in the overlay planes, using them enables you to quickly redraw a simple scene graph without having to redraw the &#8220;complete&#8221; scene graph. The overlay planes provide a useful mechanism for providing user feedback&#8212;for example, for rapidly drawing geometry that follows the cursor. <a name="idch1626"></a></p>
+<p>Use the following methods to place a scene graph in the overlay planes:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>setOverlaySceneGraph()<a name="idch1627"></a></b></span>
+</span></td><td width="10"> </td><td><p>
+
+
+<br>
+	sets the scene graph to render in the overlay planes</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setOverlayColorMap()<a name="idch1628"></a></b></span></span></td><td width="10"> </td><td><p><br>
+sets the colors to use for the overlay bit planes; the overlay planes usually use color-index mode</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setOverlayBackgroundIndex()<a name="idch1629"></a></b></span></span></td><td width="10"> </td><td><p><br>
+sets the index of the background color for the overlay image (the default is 0, the clear color)</p>
+
+</td></tr></table></div><p>The overlay scene graph has its own redraw sensor and is similar to the &#8220;regular&#8221; scene graph, with these restrictions:<a name="idch1630"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>If you have a small number of overlay planes (for example, two), specify BASE_COLOR for the <span class="bold"><b>model</b></span> field of <a name="idch1631"></a><span class="bold"><b>SoLightModel</b></span>. (If your implementation has more than two overlay planes, you may be able to obtain crude lighting effects by using the <a name="idch1632"></a><span class="bold"><b>SoMaterialIndex</b></span> node; otherwise, use the <a name="idch1633"></a><span class="bold"><b>SoColorIndex</b></span> node to specify color indices.)</p>
+</li>
+<li><p>Keep the scene graph simple. Use line draw-style, rectangles, and 2D text that draws quickly. Do not use textures. Because the overlay planes are single-buffered, the redraw will flash if the scene is too complex.</p>
+</li>
+<li><p>Be sure to load the color map. There is no default color map for the overlay planes.</p>
+</li>
+</ul></div><p>The color map for the overlay planes contains a limited number of colors. Color 0 is <a name="idch1634"></a><i>clear</i> and cannot be changed. With two bitplanes, you can use indices 1 through 3 for colors. The syntax for <a name="idch1635"></a><span class="bold"><b>setOverlayColorMap()</b></span> is as follows:</p>
+<p><span class="bold"><b>setOverlayColorMap</b></span>(int <i>startIndex</i>, int <i>num</i>, const SbColor *<i>colors</i>);</p>
+<p>To render a shape with a particular color, use an <span class="bold"><b>SoColorIndex</b></span> node to set the current color index. Do not use an <span class="bold"><b>SoMaterial</b></span> node or <span class="bold"><b>SoBaseColor</b></span> node to set colors when you are in color-index mode (they are ignored).</p>
+<p><a href="ch16.html#id29169">Example 16-1</a> illustrates use of the overlay planes with a viewer component. By default, color 0 is used for the overlay plane's background color (the <i>clear</i> color), so this example uses color 1 for the object. </p>
+<div class="example"><p><a name="id5508988"></a><b>Example 16-1. <a name="id29169"></a><a name="idch1636"></a>Using the Overlay Planes</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/SoInput.h&gt;
+#include &lt;Inventor/nodes/SoNode.h&gt;
+#include &lt;Inventor/nodes/SoCone.h&gt;
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+
+static char *overlayScene = &quot;\
+#Inventor V2.0 ascii\n\
+\
+Separator { \
+   OrthographicCamera { \
+      position 0 0 5 \
+      nearDistance 1.0 \
+      farDistance 10.0 \
+      height 10 \
+   } \
+   LightModel { model BASE_COLOR } \
+   ColorIndex { index 1 } \
+   Coordinate3 { point [ -1 -1 0, -1 1 0, 1 1 0, 1 -1 0] } \
+   FaceSet {} \
+} &quot;;
+
+main(int , char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+
+   // Read the scene graph in
+   SoInput in;
+   SoNode *scene;
+   in.setBuffer((void *)overlayScene, (size_t)
+         strlen(overlayScene));
+   if (! SoDB::read(&amp;in, scene) || scene == NULL) {
+      printf(&quot;Couldn't read scene\n&quot;);
+      exit(1);
+   }
+
+   // Allocate the viewer, set the overlay scene and
+   // load the overlay color map with the wanted color.
+   SbColor color(.5, 1, .5);
+   SoXtExaminerViewer *myViewer = new
+         SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(new SoCone);
+   myViewer-&gt;setOverlaySceneGraph(scene);
+   myViewer-&gt;setOverlayColorMap(1, 1, &amp;color);
+   myViewer-&gt;setTitle(&quot;Overlay Plane&quot;);
+   
+   // Show the viewer and loop forever
+   myViewer-&gt;show();
+   XtRealizeWidget(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5509063"></a>Xt Components</h2></div></div>
+<p>Components are widgets that provide some 3D-related editing function. All components in the Inventor Component Library return an Xt widget handle for standard Motif-style layout and control. The render area is an example of a simple component. Viewer components are derived from <a name="idch1637"></a><span class="bold"><b>SoXtRenderArea</b></span>.</p>
+<p>Each component contains a user interface with such things as buttons, menus, and sliders that allow the user to change the scene graph interactively. One example of a component is the material editor, used in Examples 16-2, 16-3, and 16-4. With this editor, the user can customize objects shown in the Inventor window by interactively changing values for ambient, diffuse, specular, transparent, emissive, and shininess elements and immediately see the effects of those changes. Another example is the examiner viewer, which enables the user to move the camera through the scene, providing real-time changes in how the scene is viewed. <a name="idch1638"></a><a name="idch1639"></a><a name="idch1640"></a><a href="ch16.html#id24504">Figure 16-1</a> shows the component class tree.</p>
+<p>An <a name="idch1641"></a><span class="bold"><b>SoXtComponent</b></span> is an Inventor C++ wrapper around a Motif-compliant widget. This means that you can layer components in a window with other Motif widgets using standard layout schemes such as bulletin boards, form widgets, and row/column widgets. The material editor itself is an <a name="idch1642"></a><a name="idch1643"></a><span class="bold"><b>SoXtComponent</b></span> made up of other components and Motif-style widgets. (Its color sliders are derived from <span class="bold"><b>SoXtComponent</b></span>, and the radio buttons, toggle buttons, and menu are Motif-style widgets.) You can pass in a widget name to each component, which can then be used in resource files as the Motif name of the widget.</p>
+<p>Components fall into two general classes, viewers and editors, depending on which part of the scene graph they affect. <a name="idch1644"></a><i>Viewers</i> affect the camera node in the scene, and <i>editors</i> affect other nodes and fields in the scene, such as <span class="bold"><b>SoMaterial</b></span> nodes and <span class="bold"><b>SoDirectionalLight</b></span> nodes.</p>
+<p><div class="figure"><p><a name="id5509206"></a><b>Figure 16-1. <a name="id24504"></a><a name="idch1645"></a>Component Classes</b></p>
+<div class="mediaobject"><img src="figures/16.2Components.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5509280"></a>General Model</h2></div></div>
+<p>Follow these general steps to use any component in your program. (Additional considerations for specific components are outlined in the following sections.)<a name="idch1646"></a></p>
+<div class="orderedlist"><ol type="1"><li><p>Create the component using its constructor. Pass in the parent widget, the widget name, and whether it should build itself inside the parent widget. </p>
+</li>
+<li><p>Show or hide the component. </p>
+</li>
+<li><p>Pass data from the component to the application. </p>
+</li>
+</ol></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5509325"></a>Construct the Component<a name="idch1647"></a></h3></div></div>
+<p>Create the component using its constructor. The constructor has the form:</p>
+<p>SoXtComponent(Widget <i>parent</i> = NULL,<br>
+	const char * <i>name</i> = NULL,<br>
+	SbBool <i>buildInsideParent</i> = TRUE,<br>
+	SbBool <i>getMouseInput</i> = TRUE, <br>
+	SbBool <i>getKeyboardInput</i> = TRUE);</p>
+<p>For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoXtMaterialEditor *editor = new
+         SoXtMaterialEditor(parentWidget);
+</pre></td></tr></table><p>This step initializes local variables and structures and builds the component. You supply the parent widget you want the component to appear in. If you do not supply a parent widget, or if you pass FALSE for the <i>buildInsideParent<a name="idch1648"></a></i> parameter, the component is created inside its own shell. An important side effect is that if the component is put in its own window, it can resize itself when necessary. If the component is built into the widget tree, it cannot resize itself. If you do not supply a name, the name is the class name&#8212;&#8220;SoXtMaterialEditor,&#8221; in this case.</p>
+<p>If you specify FALSE for the <i>buildInsideParent</i> parameter, the component is built inside its own shell, but it uses the passed parent as part of the widget hierarchy for X resource lookup.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5509425"></a>Show and Hide the Component<a name="idch1649"></a></h3></div></div>
+<p>The <span class="bold"><b>show()</b></span> and <span class="bold"><b>hide()</b></span> methods are routines that allow you to manage the component widget. In summary, the <span class="bold"><b>show()</b></span> method is used to make the component visible. The <span class="bold"><b>hide()</b></span> method is used to make the component invisible. However, in Motif-compliant applications, the topmost parent of the widget tree must be <a name="idch1650"></a><i>realized</i> before its children are displayed. Additionally, only the children that are <i>managed</i> are displayed. </p>
+<p>If the Inventor component is a top-level shell widget (that is, no parent widget was passed to the constructor), the <span class="bold"><b>show()</b></span> method causes the component to call <span class="bold"><b>XtRealizeWidget()</b></span> on itself, and <span class="bold"><b>XtManageChild()</b></span> on its children.</p>
+<p>If the component is not a top-level shell widget, the <span class="bold"><b>show()</b></span> method causes<br>
+the component to call <span class="bold"><b>XtManageChild()</b></span> on itself and all its children. These widgets won't be visible, though, until <span class="bold"><b>XtRealizeWidget() </b></span>is called on the top-level widget.</p>
+<p>The <span class="bold"><b>show()</b></span> and <span class="bold"><b>hide()</b></span> methods on <span class="bold"><b>SoXtComponent</b></span> do some additional work that the component relies on. When you use a component, be sure to call its <span class="bold"><b>show()</b></span> method, not <span class="bold"><b>XtManage()</b></span> or <span class="bold"><b>XtRealize()</b></span>, and <span class="bold"><b>hide()</b></span>, not <span class="bold"><b>XtUnmanage()</b></span> and <span class="bold"><b>XtUnrealize()</b></span>. For instance:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoXtRenderArea *ra = new SoXtRenderArea();
+ra-&gt;show();
+</pre></td></tr></table><p>Each component also has a series of specialized methods for changing its behavior while the program is running. (See <span class="bold"><b>SoXtComponent</b></span> in the <i>Open Inventor C++ Reference Manual</i>.) These methods include the following:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>setTitle()<a name="idch1651"></a></b></span></span></td><td width="10"> </td><td><p>places a title in the title bar of a component that is a top-level shell widget</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setSize()<a name="idch1652"></a></b></span></span></td><td width="10"> </td><td><p>sizes the component (uses <span class="bold"><b>XtSetValue()</b></span>)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>getSize()<a name="idch1653"></a></b></span></span></td><td width="10"> </td><td><p>returns the size of the component (uses <span class="bold"><b>XtGetValue()</b></span>)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>isVisible()<a name="idch1654"></a></b></span></span></td><td width="10"> </td><td><p>returns TRUE if the component is currently mapped and realized on the display</p>
+
+</td></tr></table></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5509843"></a>Passing Data to the Application<a name="idch1655"></a></h3></div></div>
+<p>There are two ways for a component to pass data back to the application:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Use a callback list to inform the application when certain changes occur in the component (see <a href="ch16.html#id38794">Example 16-2</a>). Callbacks are useful when you want to affect more than one node (you can attach a component to only one node at a time).</p>
+</li>
+<li><p>Attach the component to a node (or field) in the scene graph (see <a href="ch16.html#id15471">Example 16-3</a>). For viewers, this is the <i>only</i> way to pass data back to the application; viewers are attached to an entire scene graph. </p>
+</li>
+</ul></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5509921"></a>Using Callbacks<a name="idch1656"></a></h4></div></div>
+<p>Editor components such as the material editor can also use callback functions to pass data back to the application. <a href="ch16.html#id38794">Example 16-2</a> illustrates the use of a callback procedure with the material editor.</p>
+<p>A list of callback functions and associated data, <a name="idch1657"></a><span class="bold"><b>SoCallbackList</b></span>, is automatically created when a component is constructed. You can add functions to and remove functions from this list and pass a pointer to the callback data.</p>
+<p>Some widgets, such as viewers, use lists of callback functions:<a name="idch1658"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p><i>Start callbacks</i>&#8212;called when interaction starts (for example, on a mouse down event)</p>
+</li>
+<li><p><i>Finish callbacks</i>&#8212;called when interaction finishes (for example, on a mouse-up event)</p>
+</li>
+</ul></div><p>The following methods add functions to and remove functions from these callback lists:<a name="idch1659"></a></p>
+<p><span class="bold"><b>addStartCallback</b></span>(<i>functionName, userData</i>)<br>
+<span class="bold"><b>removeStartCallback</b></span>(<i>functionName, userData</i>)</p>
+<p><span class="bold"><b>addFinishCallback</b></span>(<i>functionName, userData</i>)<br>
+<span class="bold"><b>removeFinishCallback</b></span>(<i>functionName, userData</i>)</p>
+<p>The material editor invokes its callbacks or updates the nodes it is attached to according to a programmable update frequency. Use the <span class="bold"><b>setUpdateFrequency()</b></span> method to specify this frequency. Choices are as follows:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term">CONTINUOUS</span></td><td width="10"> </td><td><p>continuously update the field as the value changes (the default)</p>
+
+</td></tr><tr valign="top"><td><span class="term">AFTER_ACCEPT</span></td><td width="10"> </td><td><p>update the field only when the user hits the accept button</p>
+
+</td></tr></table></div><p><a href="ch16.html#id38794">Example 16-2</a> builds a render area in a window supplied by the application and a material editor in its own window.  It uses callbacks for the component to report new values.<a name="idch1660"></a></p>
+<div class="example"><p><a name="id5510175"></a><b>Example 16-2. <a name="id38794"></a>Using a Callback Function</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt; 
+#include &lt;Inventor/Xt/SoXt.h&gt; 
+#include &lt;Inventor/Xt/SoXtMaterialEditor.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt; 
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt; 
+#include &lt;Inventor/nodes/SoMaterial.h&gt; 
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt; 
+#include &lt;Inventor/nodes/SoSeparator.h&gt; 
+
+// This is called by the Material Editor when a value changes
+void
+myMaterialEditorCB(void *userData, const SoMaterial *newMtl)
+{
+   SoMaterial *myMtl = (SoMaterial *) userData;
+
+   myMtl-&gt;copyFieldValues(newMtl);
+}
+
+main(int , char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+ 
+   // Build the render area in the applications main window
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+   myRenderArea-&gt;setSize(SbVec2s(200, 200));
+   // Build the Material Editor in its own window
+   SoXtMaterialEditor *myEditor = new SoXtMaterialEditor;
+ 
+   // Create a scene graph
+   SoSeparator *root = new SoSeparator;
+   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
+   SoMaterial *myMaterial = new SoMaterial;
+   root-&gt;ref();
+   myCamera-&gt;position.setValue(0.212482, -0.881014, 2.5);
+   myCamera-&gt;heightAngle = M_PI/4; 
+   root-&gt;addChild(myCamera);
+   root-&gt;addChild(new SoDirectionalLight);
+   root-&gt;addChild(myMaterial);
+
+   // Read the geometry from a file and add to the scene
+   SoInput myInput;
+   if (!myInput.openFile(&quot;dogDish.iv&quot;)) 
+      exit (1);
+   SoSeparator *geomObject = SoDB::readAll(&amp;myInput);
+   if (geomObject == NULL) 
+      exit (1);
+   root-&gt;addChild(geomObject);
+
+   // Add a callback for when the material changes
+   myEditor-&gt;addMaterialChangedCallback(
+         myMaterialEditorCB, myMaterial); 
+
+   // Set the scene graph
+   myRenderArea-&gt;setSceneGraph(root);
+
+   // Show the main window and the Material Editor
+   myRenderArea-&gt;setTitle(&quot;Editor Callback&quot;);
+   myRenderArea-&gt;show();
+   SoXt::show(myWindow);
+   myEditor-&gt;show();
+
+   // Loop forever
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5510253"></a>Attaching a Component to a Scene Graph<a name="idch1661"></a><a name="idch1662"></a></h4></div></div>
+<p>One way to affect a scene graph directly is to <i>attach</i> an editor component to a node in the scene graph. <a href="ch16.html#id15471">Example 16-3</a> shows using the <a name="idch1663"></a><span class="bold"><b>attach()</b></span> method to attach the material editor to a material node:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myEditor-&gt;attach(myMaterial);
+</pre></td></tr></table><p>The syntax for attach() here is</p>
+<p><span class="bold"><b>attach</b></span>(SoMaterial *<i>material</i>, int <i>index</i> = 0);</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><i>material</i></span></td><td width="10"> </td><td><p>the node to edit</p>
+
+</td></tr><tr valign="top"><td><span class="term"><i>index</i></span></td><td width="10"> </td><td><p>for multiple-value materials, the index within the node of the material to edit </p>
+
+</td></tr></table></div><p>In the same way, viewers are &#8220;attached&#8221; to the scene graph whose camera they edit. For example:<a name="idch1664"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoXtFlyViewer *spaceShip = new SoXtFlyViewer;
+spaceShip-&gt;setSceneGraph(root);
+</pre></td></tr></table><p>See <a href="ch16.html#id20759">&#8220;Viewers&#8221;</a> for a detailed description of what happens when a viewer is attached to a scene graph.</p>
+<p><a href="ch16.html#id15471">Example 16-3</a> builds a render area in a window supplied by the application and a material editor in its own window.  It attaches the editor to the material of an object. <a href="ch16.html#id22590">Figure 16-2</a> shows the image created by this example.</p>
+<div class="example"><p><a name="id5510560"></a><b>Example 16-3. <a name="id15471"></a>Attaching a Material Editor</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt; 
+#include &lt;Inventor/Xt/SoXt.h&gt; 
+#include &lt;Inventor/Xt/SoXtMaterialEditor.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt; 
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+
+main(int , char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+ 
+</pre></td></tr></table><p><div class="figure"><p><a name="id5510609"></a><b>Figure 16-2. <a name="id22590"></a>Material Editor and Render Area Created in Separate Windows</b></p>
+<div class="mediaobject"><img src="figures/16.2.ex.16.3.gif"></div></div><br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   // Build the render area in the applications main window
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+   myRenderArea-&gt;setSize(SbVec2s(200, 200));
+
+   // Build the material editor in its own window
+   SoXtMaterialEditor *myEditor = new SoXtMaterialEditor;
+ 
+   // Create a scene graph
+   SoSeparator *root = new SoSeparator;
+   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
+   SoMaterial *myMaterial = new SoMaterial;
+ 
+   root-&gt;ref();
+   myCamera-&gt;position.setValue(0.212482, -0.881014, 2.5);
+   myCamera-&gt;heightAngle = M_PI/4;
+   root-&gt;addChild(myCamera);
+   root-&gt;addChild(new SoDirectionalLight);
+   root-&gt;addChild(myMaterial);
+
+   // Read the geometry from a file and add to the scene
+   SoInput myInput;
+   if (!myInput.openFile(&quot;dogDish.iv&quot;))
+      exit (1);
+   SoSeparator *geomObject = SoDB::readAll(&amp;myInput);
+   if (geomObject == NULL)
+      exit (1);
+   root-&gt;addChild(geomObject);
+ 
+   // Set the scene graph
+   myRenderArea-&gt;setSceneGraph(root);
+ 
+   // Attach material editor to the material
+   myEditor-&gt;attach(myMaterial);
+ 
+   // Show the application window and the material editor
+   myRenderArea-&gt;setTitle(&quot;Attach Editor&quot;);
+   myRenderArea-&gt;show();
+   SoXt::show(myWindow);
+   myEditor-&gt;show();
+
+   // Loop forever
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><p><a href="ch16.html#id17256">Example 16-4</a> builds a render area and a material editor in a window supplied by the application. It uses a Motif-compliant form widget to lay both components inside the same window. The editor is attached to the material of an object. <a href="ch16.html#id40271">Figure 16-3</a> shows how this example initially looks on the screen.</p>
+<div class="example"><p><a name="id5510714"></a><b>Example 16-4. <a name="id17256"></a>Placing Two Components in the Same Window</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Xm/Form.h&gt;
+#include &lt;Inventor/SoDB.h&gt; 
+#include &lt;Inventor/Xt/SoXt.h&gt; 
+#include &lt;Inventor/Xt/SoXtMaterialEditor.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt; 
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt; 
+
+main(int , char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+   // Build the form to hold both components
+   Widget myForm = XtCreateWidget(&quot;Form&quot;, 
+            xmFormWidgetClass, myWindow, NULL, 0);
+
+   // Build the render area and Material Editor
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myForm);
+   myRenderArea-&gt;setSize(SbVec2s(200, 200));
+   SoXtMaterialEditor *myEditor = 
+            new SoXtMaterialEditor(myForm);
+ 
+   // Lay out the components within the form
+   Arg args[8];
+   XtSetArg(args[0], XmNtopAttachment, XmATTACH_FORM);
+   XtSetArg(args[1], XmNbottomAttachment, XmATTACH_FORM);
+   XtSetArg(args[2], XmNleftAttachment, XmATTACH_FORM); 
+   XtSetArg(args[3], XmNrightAttachment, XmATTACH_POSITION);
+   XtSetArg(args[4], XmNrightPosition, 40);
+   XtSetValues(myRenderArea-&gt;getWidget(), args, 5);
+   XtSetArg(args[2], XmNrightAttachment, XmATTACH_FORM); 
+   XtSetArg(args[3], XmNleftAttachment, XmATTACH_POSITION);
+   XtSetArg(args[4], XmNleftPosition, 41); 
+   XtSetValues(myEditor-&gt;getWidget(), args, 5);
+ 
+   // Create a scene graph
+   SoSeparator *root = new SoSeparator;
+   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
+   SoMaterial *myMaterial = new SoMaterial;
+
+
+   root-&gt;ref();
+   myCamera-&gt;position.setValue(0.212482, -0.881014, 2.5);
+   myCamera-&gt;heightAngle = M_PI/4;
+
+</pre></td></tr></table><p><div class="figure"><p><a name="id5510796"></a><b>Figure 16-3. <a name="id40271"></a>Using the Material Editor Component to Edit a Scene</b></p>
+<div class="mediaobject"><img src="figures/16.3.ex.16.4.gif"></div></div><br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   root-&gt;addChild(myCamera);
+   root-&gt;addChild(new SoDirectionalLight);
+   root-&gt;addChild(myMaterial);
+
+   // Read the geometry from a file and add to the scene
+   SoInput myInput;
+   if (!myInput.openFile(&quot;dogDish.iv&quot;))
+      exit (1);
+   SoSeparator *geomObject = SoDB::readAll(&amp;myInput);
+   if (geomObject == NULL)
+      exit (1);
+   root-&gt;addChild(geomObject);
+ 
+   // Make the scene graph visible
+   myRenderArea-&gt;setSceneGraph(root);
+ 
+   // Attach the material editor to the material in the scene
+   myEditor-&gt;attach(myMaterial);
+ 
+   // Show the main window
+   myRenderArea-&gt;show();
+   myEditor-&gt;show();
+   SoXt::show(myForm); // this calls XtManageChild
+   SoXt::show(myWindow); // this calls XtRealizeWidget
+ 
+   // Loop forever
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5510851"></a><a name="id20759"></a>Viewers</h2></div></div>
+<p>Viewers, such as the examiner viewer and the fly viewer, change the camera position and thus affect how a scene is viewed. The examiner viewer uses a virtual trackball to rotate the scene graph around a point of interest. With the fly viewer, mouse movements have the effect of tilting the viewer's head up, down, to the left, and to the right, as well as moving in the direction the viewer is facing.<a name="idch1665"></a></p>
+<p>All viewers have the following elements built into them:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>A render area in which the scene is being displayed</p>
+</li>
+<li><p>Thumbwheel and slider trim at the sides, which function differently for each viewer</p>
+</li>
+<li><p>A pop-up menu controlled by the right mouse button</p>
+</li>
+<li><p>Viewer icons in the upper right corner that are shortcuts for some of the pop-up menu operations</p>
+</li>
+<li><p>Optional application icons in the upper left corner</p>
+</li>
+</ul></div><p><a href="ch16.html#id31643">Figure 16-4</a> shows an example of the examiner viewer.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5510954"></a>Constructing a Viewer<a name="idch1666"></a></h3></div></div>
+<p>When you construct a viewer, you can specify whether the viewer is a browser viewer (BROWSER; the default) or an editor viewer (EDITOR). If the browser creates a camera node (see the following section), this camera node is removed from the scene graph when the viewer is detached. If an editor viewer creates a camera node, the camera node is retained when the viewer is detached.<a name="idch1667"></a></p>
+<p>The constructor for each viewer takes an additional parameter that specifies what to build. By default, the decoration and pop-up menu are created. For example, the constructor for the examiner viewer is as follows:</p>
+<p>SoXtExaminerViewer(Widget <i>parent</i> = NULL,<br>
+	const char * <i>name</i> = NULL,<br>
+	SbBool <i>buildInsideParent</i> = TRUE,<br>
+	SoXtFullViewer::BuildFlag <i>buildFlag</i> = BUILD_ALL, <br>
+	SoXtViewer::Type <i>type </i> = BROWSER);</p>
+<p>The <a name="idch1668"></a><i>buildFlag</i> can be one of the following values:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term">BUILD_NONE</span></td><td width="10"> </td><td><p>the decoration and pop-up menu are not created</p>
+
+</td></tr><tr valign="top"><td><span class="term">BUILD_DECORATION</span></td><td width="10"> </td><td><p><br>
+only the decoration is created</p>
+
+</td></tr><tr valign="top"><td><span class="term">BUILD_POPUP</span></td><td width="10"> </td><td><p>only the pop-up menu is created</p>
+
+</td></tr><tr valign="top"><td><span class="term">BUILD_ALL</span></td><td width="10"> </td><td><p>the decoration and pop-up menu are created</p>
+
+</td></tr></table></div><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>If the user doesn't need the viewer decoration, you can disable the creation of the decoration at construction time using the <i>buildFlag</i>; this will improve performance.
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5511146"></a><a name="id22515"></a>Specifying the Scene Graph for the Viewer</h3></div></div>
+<p>When you call <a name="idch1669"></a><span class="bold"><b>setSceneGraph()</b></span> for a viewer, several things happen automatically. First, the viewer searches the scene graph for a camera. If it finds one, it uses that camera. If it doesn't find a camera, it adds one. Second, it adds headlight, draw-style, and lighting-model nodes to the scene graph. (The following paragraphs describe these steps in detail.) </p>
+<p>Call <span class="bold"><b>setSceneGraph(NULL)</b></span> to disconnect the scene graph from the viewer component. If the viewer created a camera and the viewer is a browser, it removes the camera. If the viewer is an editor, it leaves the camera, since the view is saved along with the scene graph. For both types of viewers, the headlight group is removed when the scene graph is removed.</p>
+<p><div class="figure"><p><a name="id5511195"></a><b>Figure 16-4. <a name="id31643"></a><a name="idch1670"></a>Examiner Viewer</b></p>
+<div class="mediaobject"><img src="figures/2.3.examiner.cone.gif"></div></div><br>
+</p>
+<div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5511218"></a>Cameras<a name="idch1671"></a></h4></div></div>
+<p>All viewers search from the scene graph root downward for the first camera. If the viewer finds a camera, it uses it. If it doesn't find one, it creates a camera (of class <a name="idch1672"></a><span class="bold"><b>SoPerspectiveCamera</b></span> by default). If the viewer is an editor, it inserts the camera under the scene graph root, as shown in <a href="ch16.html#id35174">Figure 16-5</a>. When you save the scene graph, this new camera is saved with it. If the viewer is a browser, it inserts the camera above the scene graph, as shown in <a href="ch16.html#id15844">Figure 16-6</a>. This camera is not saved with the scene graph and is removed when the viewer is detached.</p>
+<p><div class="figure"><p><a name="id5511290"></a><b>Figure 16-5. <a name="id35174"></a><a name="idch1673"></a>Inserting a Camera for an Editor Viewer</b></p>
+<div class="mediaobject"><img src="figures/fig16.5.gif"></div></div><br>
+<div class="figure"><p><a name="id5511342"></a><b>Figure 16-6. <a name="id15844"></a><a name="idch1674"></a>Inserting a Camera for a Browser Viewer</b></p>
+<div class="mediaobject"><img src="figures/fig16.6.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5511367"></a>Lights<a name="idch1675"></a></h4></div></div>
+<p>Viewer components by default also add a directional light source to the scene. The viewer continuously changes the position of this light so that it tracks the camera and functions as a headlight shining on the camera's field of view. This headlight group is added just after the camera in the scene graph. To write the scene graph to a file without the headlight, you can either detach the viewer or turn off the headlight (see the <span class="bold"><b>setHeadlight()</b></span> method for <span class="bold"><b>SoXtViewer </b></span>in the <i>Open Inventor C++ Reference Manual</i>).</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5511406"></a>Viewer Draw-Style<a name="idch1676"></a></h4></div></div>
+<p>All viewers include a pop-up menu that allows you to change the draw-style of the entire scene. Sometimes, when the viewer changes the draw-style, it also changes the lighting model (for example, wireframe draw-style uses base-color lighting). When a viewer is attached, it inserts draw-style and lighting-model nodes above the scene graph, as shown in <a name="idch1677"></a><a href="ch16.html#id42625">Figure 16-7</a>. The following list describes the choices for draw-style and the accompanying changes in lighting model:<a name="idch1678"></a></p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term">VIEW_AS_IS</span></td><td width="10"> </td><td><p>ignores viewer's draw-style and lighting-model nodes (the default).</p>
+
+</td></tr><tr valign="top"><td><span class="term">VIEW_HIDDEN_LINE</span></td><td width="10"> </td><td><p><br>
+forces all shapes to be wireframe and changes lighting to BASE_COLOR. This style displays only the edges of front-facing polygons (back lines are hidden).</p>
+
+</td></tr><tr valign="top"><td><span class="term">VIEW_NO_TEXTURE</span></td><td width="10"> </td><td><p><br>
+forces all shapes to be rendered without textures.</p>
+
+</td></tr><tr valign="top"><td><span class="term">VIEW_LOW_COMPLEXITY</span></td><td width="10"> </td><td><p><br>
+forces all shapes to be rendered with a low complexity and no textures.</p>
+
+</td></tr><tr valign="top"><td><span class="term">VIEW_LINE</span></td><td width="10"> </td><td><p>forces all shapes to be wireframe and changes the lighting model to BASE_COLOR.</p>
+
+</td></tr><tr valign="top"><td><span class="term">VIEW_POINT</span></td><td width="10"> </td><td><p>forces all shapes to be points and changes the lighting model to BASE_COLOR and the point size to 3.0.</p>
+
+</td></tr><tr valign="top"><td><span class="term">VIEW_BBOX</span></td><td width="10"> </td><td><p>forces all shapes to be rendered as bounding boxes.</p>
+<p><div class="figure"><p><a name="id5511598"></a><b>Figure 16-7. <a name="id42625"></a>Inserting Drawing Style and Lighting Model Nodes</b></p>
+<div class="mediaobject"><img src="figures/fig16.7.gif"></div></div><br>
+</p>
+
+</td></tr></table></div></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5511644"></a>Viewer Draw-Type<a name="idch1679"></a></h4></div></div>
+<p>The draw-styles above can affect the scene while the camera is still, or while the user is interactively moving the camera. When the draw-style is set, you can choose between two settings, STILL and INTERACTIVE, to show which state should be affected. Use the <span class="bold"><b>setDrawStyle()</b></span> method for <span class="bold"><b>SoXtViewer</b></span> to specify the draw style and draw type:</p>
+<p><span class="bold"><b>setDrawStyle</b></span>(SoXtViewer::DrawType <i>type</i>,<br>
+	SoXtViewer::DrawStyle <i>style</i>)</p>
+<p>For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+setDrawStyle(SoXtViewer::INTERACTIVE,
+	SoXtViewer::VIEW_LINE);
+</pre></td></tr></table><p>The viewer pop-up menu, shown in <a href="ch16.html#id32107">Figure 16-8</a>, lists the draw-style choices for STILL, the choices for INTERACTIVE, and the choices for buffering type.</p>
+<p><div class="figure"><p><a name="id5511725"></a><b>Figure 16-8. <a name="id32107"></a>Viewer Pop-up Menu</b></p>
+<div class="mediaobject"><img src="figures/16-8.gif"></div></div><br>
+</p>
+</div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5511787"></a>Methods for SoXtViewer</h3></div></div>
+<p>Use the <a name="idch1680"></a><span class="bold"><b>setBufferingType()</b></span> method for <span class="bold"><b>SoXtViewer</b></span> to specify whether the viewer should use single buffering, double buffering, or a combination. The default buffering type is double buffering.  Double buffering provides smoother redraws, but offers fewer colors. Buffering types are as follows:<a name="idch1681"></a></p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term">SoXtViewer::BUFFER_SINGLE</span></td><td width="10"> </td><td><p><br>
+uses only one buffer; the image flickers between redraws<a name="idch1682"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term">SoXtViewer::BUFFER_DOUBLE</span></td><td width="10"> </td><td><p><br>
+redraws in the back buffer and then swaps buffers<a name="idch1683"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term">SoXtViewer::BUFFER_INTERACTIVE</span></td><td width="10"> </td><td><p><br>
+uses double buffering only when the user is doing interactive work; otherwise, uses single buffering</p>
+
+</td></tr></table></div><p>Other useful methods for <span class="bold"><b>SoXtViewer</b></span> include the following:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>setHeadlight()<a name="idch1684"></a></b></span></span></td><td width="10"> </td><td><p>turns the headlight on and off. The headlight is ON by default.<a name="idch1685"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setViewing()<a name="idch1686"></a><a name="idch1687"></a></b></span></span></td><td width="10"> </td><td><p>allows you to turn the viewer on and off. When the viewer is turned off, events over the render area are sent to the scene graph.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>viewAll()<a name="idch1688"></a></b></span></span></td><td width="10"> </td><td><p>automatically views the entire scene graph. </p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setAutoClipping()<a name="idch1689"></a></b></span></span></td><td width="10"> </td><td><p>turns autoclipping on and off. When ON, the near and far camera clipping planes are continuously adjusted around the scene's bounding box to minimize clipping. Autoclipping is ON by default.<a name="idch1690"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>saveHomePosition()<a name="idch1691"></a></b></span>
+</span></td><td width="10"> </td><td><p>
+
+
+<br>
+saves the current camera values so that the camera can quickly be reset to this position later.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>resetToHomePosition()<a name="idch1692"></a></b></span>
+</span></td><td width="10"> </td><td><p>
+
+
+<br>
+sets the camera position to the previously saved home position.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setStereoViewing()<a name="idch1693"></a></b></span>
+</span></td><td width="10"> </td><td><p>
+
+
+<br>
+renders the scene twice, offsetting the camera in between. Stereo glasses must be used when this scene is viewed. (This feature is hardware-dependent. See your release notice for information on whether this feature is supported.)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setSteroOffset()<a name="idch1694"></a></b></span></span></td><td width="10"> </td><td><p>sets the spacing between the eyes for stereo viewing.</p>
+
+</td></tr></table></div><p>See <span class="bold"><b>SoXtViewer</b></span> in the <i>Open Inventor C++ Reference Manual</i> for further details.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5512218"></a>Methods for SoXtFullViewer</h3></div></div>
+<p>The <a name="idch1695"></a><span class="bold"><b>SoXtFullViewer</b></span> class, derived from <span class="bold"><b>SoXtViewer</b></span>, is the abstract base class for all viewers that include decoration around the render area. This decoration is made up of thumbwheels, sliders, and push buttons. The<span class="bold"><b> setDecoration()</b></span> method allows you to show or hide the component trims. The <span class="bold"><b>setPopupMenuEnabled()</b></span>  method allows you to enable or disable the viewer pop-up menu. </p>
+<p>You can add optional application icons to the upper left corner of the component. Use the following methods to add these icons:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>addAppPushButton()<a name="idch1696"></a></b></span></span></td><td width="10"> </td><td><p><br>
+adds a push button for the application to the end of the button list</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>insertAppPushButton()<a name="idch1697"></a></b></span>
+</span></td><td width="10"> </td><td><p>
+
+
+<br>
+	places a push button at the specified index in the button list</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>removeAppPushButton()<a name="idch1698"></a></b></span>
+</span></td><td width="10"> </td><td><p>
+
+
+<br>
+	removes a push button from the button list</p>
+
+</td></tr></table></div><p>See <span class="bold"><b>SoXtFullViewer</b></span> in the<i> Open Inventor C++ Reference Manual</i> for further details.</p>
+<p><a href="ch16.html#id29890">Example 16-5</a> creates a simple scene graph with a material and a dish. It then creates a browser examiner viewer and attaches it to the scene graph. The camera and light in the scene are automatically created by the viewer.<a name="idch1699"></a></p>
+<div class="example"><p><a name="id5512422"></a><b>Example 16-5. <a name="id29890"></a>Using a Browser Examiner Viewer</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt; 
+#include &lt;Inventor/Xt/SoXt.h&gt; 
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt; 
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+
+main(int , char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+ 
+   // Build the viewer in the application's main window
+   SoXtExaminerViewer *myViewer = 
+      new SoXtExaminerViewer(myWindow);
+ 
+   // Read the geometry from a file and add to the scene
+   SoInput myInput;
+   if (!myInput.openFile(&quot;dogDish.iv&quot;))
+      exit (1);
+   SoSeparator *geomObject = SoDB::readAll(&amp;myInput);
+   if (geomObject == NULL)
+      exit (1);
+    
+   // Attach the viewer to the scene graph
+   myViewer-&gt;setSceneGraph(geomObject);
+ 
+   // Show the main window
+   myViewer-&gt;show();
+   SoXt::show(myWindow);
+
+   // Loop forever
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5512495"></a>Using the 3D Clipboard<a name="idch16100"></a></h2></div></div>
+<p>This section describes the convenience routines provided by Inventor for exchanging Inventor data between applications. Inventor's copy and paste methods conform to the X Consortium's <a name="idch16101"></a><i>Inter-Client Communication Conventions Manual</i> (ICCCM), July 1989, which presents guidelines on how processes communicate with each other when exchanging data. </p>
+<p>Inventor currently supports two data types, Inventor and string. If you need to copy and paste additional data types, or if you need more control over copy and paste functions than is provided by Inventor's convenience routines, you can use the Motif or Xt data-exchange routines directly. For more information, see the <a name="idch16102"></a><i>X Toolkit Intrinsics Programming Manual</i> by Adrian Nye and Tim O'Reilly (Sebastopol, Ca.: O'Reilly &amp; Associates, 1990).</p>
+<p>The <a name="idch16103"></a><span class="bold"><b>SoXtClipboard</b></span> class handles the details of exchanging data according to the ICCCM guidelines. This class includes a constructor, as well as <a name="idch16104"></a><span class="bold"><b>copy()</b></span> and <a name="idch16105"></a><span class="bold"><b>paste()</b></span> methods.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5512581"></a>Creating an Instance of SoXtClipboard</h3></div></div>
+<p>The constructor for <span class="bold"><b>SoXtClipboard</b></span> has the following syntax:</p>
+<p><span class="bold"><b>SoXtClipboard</b></span>(Widget <i>w</i>, Atom <i>selectionAtom</i> = _XA_CLIPBOARD_);</p>
+<p>The clipboard is associated with a particular widget, such as a render area widget or a top-level widget. For example, you could pass in</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+renderArea-&gt;getWidget() 
+</pre></td></tr></table><p>as the first parameter of this constructor.</p>
+<p>The X Toolkit supports several types of selections (primary, secondary, and clipboard; these are also referred to as <i>selection atoms</i>). By default, Inventor supports the clipboard selection (_XA_CLIPBOARD_). If you need to perform data transfers from the primary or secondary selections, you can specify the selection type in the constructor for <a name="idch16106"></a><span class="bold"><b>SoXtClipboard</b></span>. In most cases, however, you use the default selection type.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5512680"></a>Copying Data onto the Clipboard<a name="idch16107"></a><a name="idch16108"></a></h3></div></div>
+<p>Use one of Inventor's three <a name="idch16109"></a><span class="bold"><b>copy()</b></span> methods to copy data onto the <span class="bold"><b>SoXtClipboard</b></span>. You can specify a node, a path, or a path list to copy:</p>
+<p><span class="bold"><b>copy</b></span>(SoNode <i>*node</i>, Time <i>eventTime</i>);</p>
+<p><span class="bold"><b>copy</b></span>(SoPath <i>*path</i>, Time <i>eventTim</i>e);</p>
+<p><span class="bold"><b>copy</b></span>(SoPathList <i>&amp;pathList</i>, Time <i>eventTime</i>);</p>
+<p>The <span class="bold"><b>copy()</b></span> and <span class="bold"><b>paste()</b></span> methods require an event time, which is the time stamp from the user event that triggered the copy or paste request. This event could be a keyboard press event or a menu pick event, for example, and is used by the X server to synchronize copy and paste requests. Behind the scenes, the data is copied into a bytestream and made available to any X client that requests it. </p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5512820"></a>Pasting Data from the Clipboard<a name="idch16110"></a></h3></div></div>
+<p>The <span class="bold"><b>paste()</b></span> method also requires a callback function that is invoked with<br>
+the paste data. The paste data is always a path list, regardless of what was copied originally:</p>
+<p><span class="bold"><b>paste</b></span>(Time <i>eventTime</i>, SoXtClipboardPasteCB <i>pasteDoneFunc</i>,<br>
+	void <i>userData</i> = NULL);</p>
+<p>The <a name="idch16111"></a><span class="bold"><b>paste()</b></span> method requests data from the X server and calls the <i>pasteDoneFunc</i> when the data is ready. A paste is asynchronous. It simply makes a request to the X server for data to paste and then returns. When the data is delivered, the <i>pasteDoneFunc</i> is called and passed the user data along with a list of paths that were pasted. If no data is delivered, the <i>pasteDoneFunc</i> is never called. It is up to the application to delete the path list for the paste data when the application is finished with it.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b><span class="bold"><b>SoXtClipboard</b></span> can easily be used along with <a name="idch16112"></a><span class="bold"><b>SoSelection</b></span>. You can obtain a path list from the selection node and then tell the clipboard to copy that path list.
+</td></tr></table><hr noshade="noshade"></div><br></div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch15.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch17.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 15. Draggers and Manipulators </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 17. Using Inventor with OpenGL </td></tr></table></div></body></html>

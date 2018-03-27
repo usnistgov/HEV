@@ -1,0 +1,105 @@
+#
+# Makefile.def.in for all toolkit code
+# The use of the following code requires:
+#  (a) definition of srcdir
+#  (b) definition of VPATH without using any Makefile variables (optional)
+#  (c) definition of LOCALDEFS an LOCALDEBUG (optional)
+#
+
+prefix = /usr/local/HEV/external/dcmtk
+exec_prefix = ${prefix}
+datarootdir = ${prefix}/share
+
+bindir = ${exec_prefix}/bin
+etcdir = ${prefix}/etc/dcmtk
+datadir = ${datarootdir}/dcmtk
+docdir = ${datarootdir}/doc/dcmtk
+mandir = ${datarootdir}/man
+man1dir = ${datarootdir}/man/man1
+htmldir = ${docdir}/html
+pdfdir = ${docdir}
+libdir = ${exec_prefix}/lib
+includedir = ${prefix}/include
+
+INSTALL = /usr/bin/install -c
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_PROGRAM = ${INSTALL}
+
+PACKAGE_NAME = dcmtk
+PACKAGE_DATE = 2011-01-06
+PACKAGE_TARNAME = dcmtk-3.6.0
+PACKAGE_VERSION = 3.6.0
+PACKAGE_VERSION_NUMBER = 360
+PACKAGE_VERSION_SUFFIX = 
+PACKAGE_STRING = dcmtk 3.6.0
+PACKAGE_BUGREPORT = dicom-bugs@offis.de
+
+#
+# Definition of dependencies file
+#
+
+DEP = Makefile.dep
+
+# Toolkit wide definitions for DEBUGGING
+#
+#  -DDEBUG   Compile with debug code and assertions
+#  -DNDEBUG  Compile without debug code and assertions
+
+DEBUG = -DNDEBUG
+
+#
+# Global definitions
+#
+
+# We want the old behavior of OFString(NULL) for now, no crashes.
+GLOBALDEFS = -DHAVE_CONFIG_H -DUSE_NULL_SAFE_OFSTRING
+# -DDCMTK_BUILD_DATE=\"YYYY-MM-DD\"
+
+#
+# ARCH defines special machine archtecture compiler settings
+# (e.g. -arch i386 on NeXT)
+#
+
+# ARCH =
+
+CC = gcc
+CFLAGS = -O -I/usr/include/libxml2 -D_REENTRANT -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L -Wall 
+CXX = c++
+CXXFLAGS = -O -I/usr/include/libxml2 -D_REENTRANT -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L -Wall 
+CPPFLAGS = 
+LDFLAGS = 
+RANLIB = ranlib
+AR = ar
+ARFLAGS = cruv
+LIBS = -lrt -lpthread -lnsl 
+MATHLIBS = -lm
+OPENSSLLIBS = -lssl -lcrypto -ldl
+TIFFLIBS = -ltiff -ljpeg -lz
+PNGLIBS = -lpng
+ZLIBLIBS = -lz
+XMLLIBS = -lxml2
+TCPWRAPPERLIBS = -lwrap
+SNDFILELIBS = 
+LIBEXT = a
+BINEXT = 
+
+#
+# for clean and distclean
+#
+TRASH = *~ "\#*\#" *.bak core
+DISTTRASH = $(TRASH) Makefile *.cache *.log *.status
+
+includes = -I. -I$(srcdir) -I$(top_srcdir)/include -I$(configdir)/include $(LOCALINCLUDES)
+defines = $(GLOBALDEFS) $(LOCALDEFS) $(DEBUG) $(LOCALDEBUG)
+
+
+.SUFFIXES:
+.SUFFIXES: .o .cc .c .h
+
+.cc.o:
+	$(CXX)	$(defines) -c $(includes) $(ARCH) \
+		$(CPPFLAGS) $(CXXFLAGS) $<
+
+.c.o:
+	$(CC)	$(defines) -c $(includes) $(ARCH) \
+		$(CPPFLAGS) $(CFLAGS) $<

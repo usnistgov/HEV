@@ -1,0 +1,18 @@
+# create node with branches for objects and volume
+LOAD volume volume.fxcam
+ADDCHILD volume world 
+
+# geometry that will interact with the volume, rendered to texture
+LOAD cessna cessna.osg.(.1).scale
+ADDCHILD cessna pre_volume
+
+# display the rendered texture (so we can see the cessna)
+LOAD fxcopy fxCopyFrame.osg
+ADDCHILD fxcopy post_volume
+
+# attach the volume
+LOAD bucky bucky.osg
+ADDCHILD bucky post_volume
+
+# apply texture
+EXEC ./texture

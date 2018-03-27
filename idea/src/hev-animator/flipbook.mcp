@@ -1,0 +1,5 @@
+BUTTON anim
+  FIRST exec hev-animator tmp/hev-animator --time .5 --noescape flipbook.iris > $IRIS_CONTROL_FIFO
+  FIRST WAIT irisfly-addAndShowWindow hev-animator
+  ON WAIT irisfly-addAndShowWindow hev-animator
+  OFF WAIT irisfly-removeAndHideWindow hev-animator

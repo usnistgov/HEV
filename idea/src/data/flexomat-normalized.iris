@@ -1,0 +1,10 @@
+# iris-DCS applied the following options to create the DCS:
+#  nodeName = "tape"
+#  examine
+# and loaded the following files:
+#  "flexomat.osg" with node name "FLEXOMET.3DS"
+#examine: radius = 323.654724, center = 995.354126 31.542694 -57.547821
+DCS "tape" -3.0753581523895264 1.9025421142578125 0.17780621349811554  -0 0 -0  0.0030897124670445919
+LOAD "FLEXOMET.3DS" "flexomat.osg"
+ADDCHILD "FLEXOMET.3DS" "tape"
+RETURN "tape"

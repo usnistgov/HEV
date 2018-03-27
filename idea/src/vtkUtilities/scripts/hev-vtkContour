@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+
+import sys
+import vtk
+
+def showHelp():
+    sys.stderr.write('\nUsage:\nhev-vtkContour contourVal inFName outFName\nor\nhev-vtkContour nContours rangeStart rangeEnd inFName outFName\n')
+    sys.exit(1)
+
+inputdatafile = sys.argv[-2]
+outputdatafile = sys.argv[-1]
+
+#reading command line - depending on how many arguments the command line has, assign the correct values
+if len(sys.argv) == 6:
+    numContours = sys.argv[-5]
+    rangeStart = sys.argv[-4]
+    rangeEnd = sys.argv[-3]
+
+elif len(sys.argv) == 4:
+    numContours = 1
+    rangeStart = sys.argv[-3]
+    rangeEnd = sys.argv[-3]
+
+else:
+    showHelp()
+
+#data reader set up and fed with inputdata
+reader = vtk.vtkGenericDataObjectReader()
+reader.SetFileName(inputdatafile)
+
+#contourfilter set up and executed
+contour = vtk.vtkContourFilter()
+contour.SetInput(reader.GetOutput())
+contour.GenerateValues(int(numContours),float(rangeStart),float(rangeEnd))
+
+#filewriter set up and executed
+writef = vtk.vtkGenericDataObjectWriter()
+writef.SetFileTypeToASCII()
+writef.SetInput(contour.GetOutput())
+writef.SetFileName(outputdatafile)
+writef.Write()
+writef.Update()

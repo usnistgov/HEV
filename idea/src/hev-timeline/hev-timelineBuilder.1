@@ -1,0 +1,52 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-timelineBuilder 1 "November, 2011" "NIST/MCSD" "MCSD HEV"
+.SH NAME
+hev-timelineBuilder
+- interactively build a timeline file
+
+
+.SH DESCRIPTION
+.B "hev-timelineBuilder"
+builds a timeline file by prompting the user for a delta time or comment,
+and if a delta time is supplied, offers to fill in the current position from
+a running IRIS process, or lets the user supply a control command or other
+position.
+
+All of \fBhev-timelineBuilder\fR's prompts and error messages are sent to
+stderr, so the output of \fBhev-timelineBuilder\fR can be redirected to a
+file for editing, or passing to hev-timelineToIris(1).
+
+.SH EXAMPLE
+
+.IP "example 1:"
+# start any IRIS process
+.br
+irisfly --ex cow.osg &
+.br
+# write timeline commands to the file cow.timeline
+.br
+hev-timelineBuilder > cow.timeline
+
+
+.IP "example 2:"
+# start any IRIS process
+.br
+irisfly --ex cow.osg &
+.br
+# write timeline commands and convert to iris commands
+.br
+hev-timelineBuilder | hev-timelineToIris > cow.iris
+.br
+# test the path
+.br
+cat cow.iris > $IRIS_CONTROL_FIFO
+
+
+.SH SEE ALSO
+hev-timeline, hev-timelineToIris
+
+.SH AUTHOR
+
+John Kelso, kelso@nist.gov,  NIST/ITL/MCSD
+

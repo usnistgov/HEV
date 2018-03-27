@@ -1,0 +1,6 @@
+# load volume
+LOAD bucky bucky.osg
+ADDCHILD bucky world
+
+# apply texture
+EXEC ./texture

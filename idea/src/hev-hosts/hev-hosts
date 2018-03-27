@@ -1,0 +1,133 @@
+#! /bin/sh
+
+# hev-hosts - print a list of the current HEV hosts
+
+# April 19, 2012
+# steve@nist.gov
+
+# 2/2/2011   revived as hev-hosts
+# 11/27/2012 fixed typos
+# 7/1/2014   fixed small bug
+# 7/9/2015   added --up
+# 3/5/2015   remove message about getting new list from dradis
+# 9/8/2016   remote host file name based on $HEVROOT
+
+if [ "$HEVROOT" == "" ]
+then
+   echo 'HEVROOT not defined'
+   exit
+fi
+
+function usage {
+
+cat <<EOF
+Usage: hev-hosts [--ping] [--newlist] [--all] [--up]
+
+Print to stdout the list of HEV clients (hosts HEV is being pushed to).
+
+       --newlist  force a new list to be obtained from server
+
+       --ping     ping the hosts instead of printing the list
+
+       --all      include the push host name in the list
+
+       --up       ping the list and only print those that are up
+
+       Options are order dependent.
+       
+hev-ping is a short cut: hev-hosts --ping --all
+
+To see only down hosts:    hev-ping | grep down
+EOF
+exit 1
+}
+
+Src="dradis.cam.nist.gov"
+
+ping=0
+case $1 in
+--p*|-p*)
+	ping=1
+	shift
+	;;
+esac
+
+localFile="/tmp/HEVhostList_${USER}_`date \"+%Y%m%d%H\"`"
+#remoteFile="${Src}:/local/HEV/admin/push-HEV/HostList"
+remoteFile="${Src}:${HEVROOT}/admin/push-HEV/HostList"
+
+case $1 in
+--n*|-n*)
+	rm -f $localFile
+	shift
+	;;
+esac
+
+
+pServer=""
+case $1 in
+--a*|-a*)
+	pServer=$Src
+	shift
+	;;
+esac
+
+up=0 
+case $1 in
+--u*|-u*)
+	up=1
+	shift
+	;;
+esac
+
+case $# in
+0)
+	:
+	;;
+*)
+	usage
+	;;
+esac
+
+
+if [ ! -f $localFile ]
+then
+    #echo "scp $remoteFile $localFile" > /dev/stderr
+    #echo "Getting a fresh list from $Src" > /dev/stderr
+    scp -q $remoteFile $localFile
+fi
+
+LIST=`(echo $pServer; cat $localFile) | sed -e '/^$/d' -e s'/#.*//' -e '/^$/d' | sort`
+
+if [ "$ping" == "1" ]
+then
+
+    for host in $LIST
+    do
+	echo -n $host ... ''
+	if ping -c 1 -n -q -w 2 $host > /dev/null
+	then
+	    echo ok
+	else
+	    echo down
+	fi
+    done
+
+else
+
+    if [ "$up" == "0" ]
+    then
+	for host in $LIST
+	do
+	    echo $host
+	done
+    else
+	for host in $LIST
+	do
+	    if ping -c 1 -n -q -w 2 $host > /dev/null
+	    then
+		echo $host
+	    fi
+	done
+    fi
+fi

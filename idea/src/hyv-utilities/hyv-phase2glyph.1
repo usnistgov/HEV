@@ -1,0 +1,128 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hyv-phase2glyph 1 "July 2011" "NIST/ITL/ACMD/HPCVG" "HEV"
+.SH NAME
+hyv-phase2glyph
+- convert *.phase files to *.savg files as a glyph representation
+
+.SH SYNOPSIS
+.B "hyv-phase2glyph"
+[--parallel n] [--size value] phaseNumber i j k r g b  dataDir | phaseFile 
+.br
+or
+.br
+.B "hyv-phase2glyphVarying"
+[--parallel n] [--size value] [--scale value] phaseNumber i j k r g b  dataDir | phaseFile 
+
+.SH DESCRIPTION
+.PP
+.I
+hyv-phase2glyph
+will convert
+.B *.phase files
+for a specified phaseNumber to
+.B *_g.savg
+with a glyph
+at each voxel position with a value greater than the iso value.
+The iso value is specified by the corresponding
+.B *.iso
+file.
+
+.PP
+.I
+hyv-phase2glyphVarying
+will convert
+.B *.phase files
+for a specified phaseNumber to
+.B *_g.savg
+with a glyph
+at each voxel position with a value greater than 0.
+The glyph size varies based the voxel data value.
+.B *.iso
+file.
+
+
+
+.SH OPTIONS
+.IP "\fB--parallel n\fR"
+specifies how many concurrent processes to be used convert
+in parallel. On a 2 CPU machine, n of 2 is a good number.
+
+.IP "\fB--size value\fR"
+is the size of the glyph specified in the range 0.0 to 1.0.
+1.0 creates a glyph 100% the voxel size. 0.0 is generally
+not a useful value. The default value is .25
+
+.IP "\fB--scale value\fR"
+The final glyph size is scaled by the specified value.
+The default value is 1.
+
+
+.IP "\fBphaseNumber\fR"
+is an integer used to identify the phase being processed.
+This command is invoked multiple times for each desired 
+phase.
+
+
+.IP "\fBi j k\fR"
+is the dimensions of the image that created the
+.B phase
+file. For example: \fI25 25 25\fB.
+
+.IP "\fBr g b\fR"
+is the color to be applied to the resulting isosurface.
+These values are specified in the range 0.0 to 1.0.
+
+
+
+.IP "\fBdataDir\fR"
+is an existing directory containing the 
+.B img
+file.
+The resulting
+.B phase
+files are written to
+.B dataDir
+with names in the form of 
+.B *_{P}.phase
+where
+.B {P}
+is the specified
+.B phaseNumber.
+
+.IP "\fBphaseFile\fR"
+if a
+.B phase
+file is specified rather than a directory name,
+then the single specified
+.B phase
+file is converted to a
+.B vtk
+file in the current directory.
+
+
+
+.SH EXAMPLE
+
+.PP
+Run with 2 parallel processes converting 25x25x25 phase files to a glyph
+representation. The glyphs will have a yellow color (RGB is .8 .8 0).
+
+
+.IP
+hyv-phase2glyph --debug --size .25 1 25 25 25  .8 .8 0 C3Ssmall
+
+
+
+
+.SH SEE ALSO
+.I
+hyv-utilities(3)
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,
+
+

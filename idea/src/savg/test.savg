@@ -1,0 +1,23 @@
+# vertex attribute 1 has 3 floats
+att 1 3
+
+# a hexagon with vertex data
+polygon 1 1 1 .8
+ 1.0  0.0  0.0      0.0 -1.0 0.0  att 1 1 0 0  # red
+ 0.5  0.0  0.866025 0.0 -1.0 0.0  att 1 1 1 0  
+-0.5  0.0  0.866025 0.0 -1.0 0.0  att 1 0 1 0  # green
+-1.0  0.0  0.0      0.0 -1.0 0.0  att 1 0 1 1
+-0.5 -0.0 -0.866025 0.0 -1.0 0.0  att 1 0 0 1  # blue
+ 0.5 -0.0 -0.866025 0.0 -1.0 0.0  att 1 1 0 1
+
+# add a vertex shader named "test.vert" and 
+# bind attribute 1 to the attribute variable named "color"
+# the vert shader copies the attribute variable to a varying variable
+program vertex test.vert 1 color
+
+# the fragement shader uses the varying variable to color each pixel
+program fragment test.frag
+
+# alternatively you could just have the vertex shader use the attribute data
+# to color each pixel and skip the fragment shader, but I thought it would
+# be nice to show how to pass the data on to a fragment shader.

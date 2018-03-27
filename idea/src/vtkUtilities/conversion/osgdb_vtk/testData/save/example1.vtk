@@ -1,0 +1,77 @@
+# vtk DataFile Version 2.0
+Really cool data
+ASCII
+DATASET POLYDATA
+POINTS 8 long
+0 0 0
+1 0 0
+1 1 0
+0 1 0
+0 0 1
+1 0 1
+1 1 1
+0 1 1
+POLYGONS 6 30
+4 0 1 2 3
+4 4 5 6 7
+4 0 1 5 4
+4 2 3 7 6
+4 0 4 7 3
+4 1 2 6 5
+
+POINT_DATA 8
+SCALARS sample_scalars long 1
+LOOKUP_TABLE sample_scalars
+0
+1
+2
+3
+4
+5
+6
+7
+
+LOOKUP_TABLE my_table 8
+0 0 0 1
+1 0 0 1
+0 1 0 1
+1 1 0 1
+0 0 1 1
+1 0 1 1
+0 1 1 1
+1 1 1 1
+
+CELL_DATA 6
+SCALARS cell_scalars long 1
+LOOKUP_TABLE cell_scalars
+0
+1
+2
+3
+4
+5
+
+NORMALS cell_normals long
+0 0 -1
+0 0 1
+0 -1 0
+0 1 0
+-1 0 0
+1 0 0
+
+FIELD Field0 2
+cellIds 1 6 long
+0
+1
+2
+3
+4
+5
+faceAttributes 2 6 long
+0 1
+1 2
+2 3
+3 4
+4 5
+5 6
+

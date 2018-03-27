@@ -1,0 +1,92 @@
+#! /bin/bash
+
+# hev-pullBeta  - script to manually pull HEV-beta tree to local machine
+#
+# steve@nist.gov
+#
+# September 17, 2007
+# October 10, 2007   - exclude admin
+# March 16, 2009 - convert to hev32 and hev64
+# Janurary 25, 2011 - remove hev32
+# February 23, 2011 - update for HEV-IRIS exclude conventions 
+# May 25, 2011 - scrap the idea of not pulling src in the demos
+# November 4, 2014 - add don't pull .get and related 
+#
+# Don't pull:
+#    admin
+#        use /admin here instead of /admin/ because its a sym link in beta
+#    any directory named 'noPush'
+#    .git directory and related git files
+#
+
+
+# see rsync(1) INCLUDE/EXCLUDE PATTERN RULES
+
+EXCLUDE="--delete-excluded \
+--exclude /admin \
+--exclude  noPush/ \
+\
+--exclude /.git \
+--exclude /.gitignore \
+--exclude /bootstrap* \
+--exclude /.bootstrap.stamp \
+"
+
+case $# in
+0)
+    echo "Usage: hev-pullBeta --dry-run | --copy"
+    exit
+    ;;
+esac
+
+
+case $1 in
+--dry-run)
+    DRYRUN="--dry-run"
+    ;;
+--copy)
+    DRYRUN=""
+    ;;
+*)
+    echo "Usage: hev-pullBeta --dry-run | --copy"
+    exit
+    ;;
+esac
+
+SERVER="hev64.cam.nist.gov"
+
+
+# Don't to exectute this command on the hev servers
+
+HOSTOK=0
+me=`hostname -i 2>/dev/null`
+
+if [ $? -eq 0 ] ; then
+    serv=$(nslookup ${SERVER} | grep "Address:" | sed -e "1d" -e "s/Address: //")
+    #echo me= ${me} serv=  ${serv}
+    if [ "${me}" == "${serv}" ]
+	then
+	HOSTOK=1
+    fi
+    
+    
+    HOST=`hostname -s`
+    
+    
+    if [ $HOSTOK == 1 ]
+	then
+	echo "This command can not be executed on ${HOST} becuase its an HEV server."
+	echo "Run this command only on an HEV client."
+	exit
+    fi
+else
+    HOST=`hostname`
+fi
+
+echo "Pull HEV-beta from ${SERVER} to ${HOST}" `date`
+
+rsync ${DRYRUN}  ${EXCLUDE} -avH --delete ${SERVER}::HEV-beta /usr/local/HEV-beta
+
+echo
+echo "--> Typically two 'Operation not permitted' messages are normal."
+echo "--> Other error messages may indicate a problem that should be resolved."

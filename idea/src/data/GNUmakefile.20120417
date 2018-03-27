@@ -1,0 +1,75 @@
+#!gmake
+
+############# define MACROS #########################################
+
+# define PROJECT to be the directory name containing this software.  If not
+# defined, it defaults to name of this directory.
+PROJECT = 
+
+# these are the binaries that get compiled AND installed as public binaries
+# in $HEV_IDEA_DIR/bin/*
+PUBLIC_BINS = 
+
+# these are the binaries that get compiled AND installed as private binaries
+# in $HEV_IDEA_DIR/etc/$(PROJECT)/bin/*
+PRIVATE_BINS =
+
+# these are DSOs that get compiled AND installed as public DSOs
+# in $HEV_IDEA_DIR/lib/*
+PUBLIC_DSOS = 
+
+# these are the DSOs that get compiled AND installed as private DSOs
+# in $HEV_IDEA_DIR/etc/$(PROJECT)/lib/*
+PRIVATE_DSOS =
+
+# same thing for scripts that get installed
+PUBLIC_SCRIPTS = 
+
+# these are scrpts that get copied to $HEV_IDEA_DIR/etc/$(PROJECT)/scripts/*
+PRIVATE_SCRIPTS =
+
+# these are data files used by the project, and others too
+# in $HEV_IDEA_DIR/data
+PUBLIC_DATA = tape.osg cinta.png flashlight.iris \
+caffeine.osg capsaicin.osg smartgel.osg \
+*.mcp pointerGlyph.osg plus3d.osg
+
+# these are data files used by the project, private,
+# in $HEV_IDEA_DIR/etc/$(PROJECT)/data
+PRIVATE_DATA = 
+
+# these are the man pages that get installed in $HEV_IDEA_DIR/man
+MAN_PAGES = 
+
+################## makefile.include ##################################
+# define CXX, CFLAGS, LIBS, etc.
+
+# creates phoney target build
+
+# creates real target test, and targets for PUBLIC_DSOS, PRIVATE_DSOS,
+# PUBLIC_BINS, PRIVATE_BINS, install, clean, cleaner, distclean
+
+# add or modify or make dependencies to them as needed after the include
+# statement
+
+include $(HEV_IDEA_DIR)/gnumakefile.include
+
+pointerGlyph.osg: pointerGlyph.savg
+	iris-convert pointerGlyph.savg pointerGlyph.osg
+
+plus3d.osg: plus3d.savg
+	iris-convert plus3d.savg plus3d.osg
+
+# the front of the glyph lines up with the front of wand.osg
+pointerGlyph.savg:
+	savg-arrow | savg-rotate 0 -90 0 | savg-scale .1 .25 .1 | savg-translate 0 -.25 0 | savg-rgb .8 .8  0 > pointerGlyph.savg
+
+#this pops up at the end of the probe
+plus3d.savg:
+	savg-plus3d | savg-rgb 1 .1 .1 | savg-scale .025 > plus3d.savg
+
+DISTCLEAN_FILES := pointerGlyph.savg plus3d.savg 
+
+CLEAN_FILES := pointerGlyph.osg plus3d.osg
+
+build: pointerGlyph.osg plus3d.osg

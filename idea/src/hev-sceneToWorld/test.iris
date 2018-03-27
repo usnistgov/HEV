@@ -1,0 +1,24 @@
+# so the wand node gets updated as the wand shared memory changes, use "W" to see the wand move
+# and use the desktopWand to move the wand
+DSO setHeadWand
+
+# create a process to turn the wand position into a matrix in world coords
+EXEC hev-sceneToWorld wand tmp/worldWand
+
+# and another process to turn it back into scene coords
+EXEC hev-worldToScene tmp/worldWand tmp/sceneWand
+
+# this node reads the worldWand matrix from shared memory when left button is pressed
+SHMMATRIXTRANSFORM worldWand tmp/worldWand buttons 1
+ADDCHILD worldWand world
+
+# put an object under it
+LOAD axis axis.osg
+ADDCHILD axis worldWand
+
+# this node reads the sceneWand matrix from shared memory when right button is pressed
+# you'll get a frame of latency
+#SHMMATRIXTRANSFORM sceneWand tmp/sceneWand buttons 4
+#ADDCHILD sceneWand scene
+# hopefully you'll only see one axis, as both of them are im the same place
+#ADDCHILD axis sceneWand

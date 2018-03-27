@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Appendix A. An Introduction to Object-Oriented Programming for C Programmers</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch17.html" title="Chapter 17. Using Inventor with OpenGL"><link rel="next" href="apb.html" title="Appendix B. An Introduction to the C API"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Appendix A. An Introduction to Object-Oriented Programming for C Programmers</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch17.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="apb.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="appendix"><div class="titlepage"><div><h2 class="title"><a name="id5516550"></a>Appendix A. <a name="id41783"></a>An Introduction to Object-Oriented Programming for C Programmers</h2></div></div>
+<p>Open Inventor is an object-oriented toolkit for developing 3D programs. It is written in C++, but it includes a C programming interface. This book is full of references to classes, subclasses, and other concepts from object-oriented programming. All examples are in C++. You will get the most from this book if you have a reasonable understanding of classes and objected-oriented programming before you begin reading it.</p>
+<p>This appendix provides an informal introduction to object-oriented programming for C programmers and an overview of the concepts behind the C interface. If you are comfortable with object-oriented programming, you can skip the first section and just skim the example in this appendix. For the specifics of Inventor's C programming interface, see <a href="apb.html#id23008">Appendix B</a>.</p>
+<p>This chapter contains the following sections:</p>
+<div class="itemizedlist"><ul type="disc"><li><p><a href="apa.html#id55737">&#8220;What Is Object-Oriented Programming?&#8221;</a> introduces you to the two fundamental concepts of object-oriented programming: data abstraction and inheritance.</p>
+</li>
+<li><p><a href="apa.html#id23964">&#8220;An Example of a Class: Sphere&#8221;</a> develops a substantial example of a C++ class that illustrates the concepts of object-oriented programming.</p>
+</li>
+<li><p><a href="apa.html#id29104">&#8220;Suggested Reading&#8221;</a> points you to further information on C++.</p>
+</li>
+</ul></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5516670"></a><a name="id55737"></a>What Is Object-Oriented Programming?</h2></div></div>
+<p>Many successful programmers use object-oriented techniques without knowing it. You have probably heard programmers complimenting an implementation by describing it as <i>modular</i>. Modular code has a well-defined interface that works without requiring its users to know how it was written. Modular code can be reused by many applications, cuts down on programmer learning time, and allows the implementation internals to change without affecting the programs that use it. It protects the programmer from the implementation details. The programming interface defines the functionality.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5516697"></a>Data Abstraction</h3></div></div>
+<p>For an example, look at the file I/O functions provided in the standard C library: <span class="bold"><b>creat()</b></span>, <span class="bold"><b>open()</b></span>, <span class="bold"><b>read()</b></span>, <span class="bold"><b>write()</b></span>, and <span class="bold"><b>close()</b></span>. These routines clearly define the I/O functionality without revealing the file system details or implementation. Each function uses a file descriptor to identify the data representing the file, device, or socket. The data structures that represent these objects are different for each file type, yet they are completely hidden from you as a programmer. The open/close/read/write semantics apply consistently to each object.</p>
+<p>This technique of hiding internal data structures is known as <i>data abstraction</i>&#8212;the first fundamental concept of object-oriented programming. It's good programming practice to confine access to data structures to the code that is intended to modify the structures. Revealing private data allows the programmer using the structure to modify things that perhaps he shouldn't modify. The programmer is then relying on details of the internal implementation, so the implementor can't make changes to that internal representation.</p>
+<p><i>Objects</i> represent the building blocks from which programs are constructed. They consist of data structures and some associated functions that operate on those data structures. Objects perform functions on themselves rather than allowing applications to have access to their internal implementation. In our example, the C file I/O routines define a generic file (the object) that is accessed through the open/close/read/write functions.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5516859"></a>Inheritance</h3></div></div>
+<p>So far, we've described good, modular code, but not specifically object-oriented programming. <i>Inheritance</i> is the concept that sets object-oriented code apart from well-written modular code. Inheritance allows you to create new objects from existing objects. It makes it easy to customize and specialize your programs. Inheritance is the second fundamental concept of object-oriented programming.</p>
+<p>You've probably often wanted to reuse some existing code, but you couldn't because you needed to make minor changes. So you copied the code with the changes into an independent implementation. This reinvention is tedious, error-prone, and a waste of your time. Inheritance provides you with a mechanism for reusing your existing code and adding small changes, without starting over. </p>
+<p>The C file I/O routine example actually defines three object types: files, devices, and sockets. These objects are created from the generic file object, which defines the open/close/read/write semantics. Writing the I/O routines is just a matter of implementing those functions for each type of file object. The implementation differences stay hidden from the programmer.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5516901"></a>Implementing Data Abstraction and Inheritance: Classes</h3></div></div>
+<p>Object-oriented programming languages use the techniques we've described in a formal manner. C++ provides a few extra constructs on top of C that enforce these techniques. The most basic of these constructs is the <i>class</i>.You can think of a class either as a data structure with relevant functions attached, or as a group of related functions with some data attached. It doesn't matter which model you prefer. The important concept to understand is that objects encapsulate related data and functions into a single package, called a <i>class</i>. </p>
+<p>Functions within a class are usually called <i>member functions</i>, or more generically, <i>methods</i>. The data structures within a class are referred to as <i>member variables</i>. So a class is composed of member functions and variables.</p>
+<p>Note that we're using the term <i>class</i> to represent the abstract notion of an object, much like a structure in C. The term <i>object</i> usually refers to an instance of a class. You create an object from a given class when you instantiate the class. The C parallel would be allocating memory to make a copy of a structure. You can refer to that copy of the structure as an <i>instance</i> of the structure, or as an <i>object</i> with the same type as the structure.</p>
+<p>When new classes are defined, they can be derived from an existing class. The existing class is called a <i>base</i> or <i>parent</i> class, and the new class is called the <i>derived class</i> or <i>subclass</i>. New classes created this way typically inherit all of the methods and variables that were defined in the base class.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5516997"></a>Class Hierarchies</h3></div></div>
+<p>Open Inventor is composed of a large set of related classes that implement many aspects of 3D programming. These classes are implemented in C++. The Open Inventor C programming interface allows you to use these classes from C programs. So you can write C programs that reap the benefits of C++ inheritance without needing to learn C++ first. But the C interface does not hide the fact that there are classes. Your programming tasks will be easier if you understand the Inventor classes and how they relate to each other. For example, you need to know which class each class is derived from to know which functions apply. </p>
+<p>Class relationships in object-oriented systems are often illustrated through <i>class hierarchy diagrams</i>, or <i>class trees</i>. <a href="apa.html#id39902">Figure A-1</a> is an example. It illustrates a fictitious class hierarchy. Note that this example is not based on Inventor. It is used to convey key concepts in a simple manner, but its sphere, cone and quad mesh are for example only and are not the same as the Inventor classes with similar names.</p>
+<p><div class="figure"><p><a name="id5517087"></a><b>Figure A-1. <a name="id39902"></a>Sample Class Hierarchy Diagram</b></p>
+<div class="mediaobject"><img src="figures/A-1.gif"></div></div><br>
+</p>
+<p>Functions and variables defined in the class <span class="bold"><b>Geometry</b></span> also exist for every subclass. So if <span class="bold"><b>Geometry</b></span> has a variable <span class="bold"><b>Bbox</b></span> and a function<span class="bold"><b> getBbox()</b></span>, all the subclasses of <span class="bold"><b>Geometry</b></span> also have <span class="bold"><b>Bbox</b></span> and<span class="bold"><b> getBbox()</b></span>.</p>
+<p>See <a href="ch01.html#id29544">Chapter 1</a> for a summary of the Open Inventor class tree.</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5517196"></a><a name="id23964"></a>An Example of a Class: Sphere</h2></div></div>
+<p>This section discusses an example of a C++ class and its member functions. The class we'll consider is one from the fictional class tree shown in <a href="apa.html#id39902">Figure A-1</a>: <span class="bold"><b>Sphere</b></span>, which represents and operates on a sphere. The <span class="bold"><b>Sphere</b></span> class is defined below with several member functions and some member variables:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+class Sphere {
+public:
+	   Sphere();				         // creates a sphere with default values
+	   ~Sphere();				        // destructor, which deletes a sphere
+	   void render()    				 // renders the sphere
+	   Boolean pick(int x, int y); // picks the sphere
+
+	   float radius;  					   // radius of the sphere
+	   float center[3];  					// center of the sphere
+};
+</pre></td></tr></table><p><span class="bold"><b>Sphere</b></span> is a class that creates, manages, and operates on a geometric sphere object. The internal implementation details of the sphere are not exposed to you.</p>
+<p>Notice that the functions of <span class="bold"><b>Sphere</b></span> do not have a sphere argument. When <br>
+you invoke these functions from C++, you invoke them from the class itself. Each function has an implied sphere argument. For example, this is how you would create a sphere, set its radius, and then render it in C++:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Sphere *mySphere;							        // pointer to a sphere object
+mySphere = new Sphere();							 // creates and initializes sphere
+mySphere-&gt;radius = 3.0;							  // sets the radius
+mySphere-&gt;render();							      // renders it
+</pre></td></tr></table><p>The <span class="bold"><b>sphere-&gt;</b></span> syntax accesses a member variable or invokes a member function in the same way that C accesses structure members. For example,<span class="bold"><b> mySphere-&gt;render()</b></span> invokes the <span class="bold"><b>render() </b></span>function on <span class="bold"><b>mySphere</b></span>. The <span class="bold"><b>new Sphere()</b></span> syntax creates a sphere, allocating memory for the object and initializing it.</p>
+<p>This is how the sphere class would look in the corresponding C interface:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Sphere *SphereCreate();
+void SphereDelete(Sphere *sphere);
+void SphereRender(Sphere *sphere);
+Boolean SpherePick(Sphere *sphere, int x, int y);
+</pre></td></tr></table><p>(This example follows the naming conventions for Inventor C functions. For details on those conventions, see <a href="apb.html#id23008">Appendix B</a>.)</p>
+<p>The C interface would also define a structure for the sphere:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+struct Sphere {
+	   char   		pad[48];			          /* padding generated by Inventor */
+	   float  		radius;
+	   float		  center[3];
+};
+</pre></td></tr></table><p>The <span class="bold"><b>pad[48]</b></span> is generated automatically from the C++ code. These <span class="bold"><b>pad</b></span> statements are a by-product of the generation of the C interface from the C++ classes. They protect private data that you as a programmer shouldn't need to access. </p>
+<p>To create a sphere, set its radius, and render it from C, you would write code like this:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Sphere *mySphere;						      /* my sphere object */
+
+mySphere = SphereCreate();
+mySphere-&gt;radius = 3.0;
+SphereRender(mySphere);
+</pre></td></tr></table><p>Notice how similar this code is to the C++ example. The main difference is syntax. (Again, note that this is a hypothetical example; this is not exactly how the radius for a sphere is specified in Inventor programs.)</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5517460"></a>An Example of Inheritance: HollowSphere</h3></div></div>
+<p>Recall that inheritance is the ability to build specialized classes from existing classes. In C++, you can create <i>subclasses</i> of a class, which are identical to the parent class with exceptions you can select. These exceptions can be different implementations of functions on the parent class, or extra added functions. Subclasses are said to be<i> derived from</i> or <i>subclassed from</i> the parent class.</p>
+<p>For example, we can build a subclass of <span class="bold"><b>Sphere</b></span> called <span class="bold"><b>HollowSphere</b></span>. <span class="bold"><b>HollowSphere</b></span> is identical to <span class="bold"><b>Sphere</b></span>, except that it has a thickness value and a new function that tells it whether to render translucently. <span class="bold"><b>HollowSphere</b></span> is derived from <span class="bold"><b>Sphere</b></span>. Since it's a subclass of <span class="bold"><b>Sphere</b></span>, all member functions of <span class="bold"><b>Sphere</b></span> also apply to <span class="bold"><b>HollowSphere</b></span>. Our definition of <span class="bold"><b>HollowSphere</b></span> does not have to define <span class="bold"><b>delete()</b></span>,<span class="bold"><b> render()</b></span>, or <span class="bold"><b>pick()</b></span> functions. <span class="bold"><b>HollowSphere</b></span> inherits these functions from the <span class="bold"><b>Sphere</b></span> class. The same is true of <span class="bold"><b>Sphere</b></span>'s member variables, <span class="bold"><b>radius</b></span> and<span class="bold"><b> center</b></span>: <span class="bold"><b>HollowSphere</b></span> inherits those as well.</p>
+<p>Here is the C++ class definition for <span class="bold"><b>HollowSphere</b></span>:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+class HollowSphere : public Sphere {											        // subclass of Sphere 
+	   void		   showEquator();					              // show equator during render
+	   float  		thickness;					                // stores thickness value
+}
+</pre></td></tr></table><p>The following C++ code fragment creates a hollow sphere, sets its radius and thickness, turns on the equator options, and renders it:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+HollowSphere *mySphere;
+mySphere = new HollowSphere();
+mySphere-&gt;radius = 3.0;
+mySphere-&gt;thickness = 0.25;
+mySphere-&gt;showEquator();
+mySphere-&gt;render();
+</pre></td></tr></table><p>To do the same using the C interface:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+HollowSphere *mySphere;
+mySphere = HollowSphereCreate();
+mySphere-&gt;radius = 3.0;
+mySphere-&gt;thickness = 0.25;
+HollowSphereShowEquator(mySphere);
+HollowSphereRender(mySphere);  /* inherited from parent class */
+</pre></td></tr></table><p>Note that when you invoke a method from the parent class, the method name is prefixed by the name of the subclass. See <a href="apb.html#id23008">Appendix B</a> for a fuller explanation of how the Inventor C interface names inheritance methods.</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5517781"></a><a name="id29104"></a>Suggested Reading</h2></div></div>
+<p>If you want to learn more about C++ and object-oriented programming, the following books are good starting points:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Dewhurst, Stephen C., and Kathy T. Stark,<i> Programming in C++</i>. Englewood Cliffs, N.J.: Prentice-Hall, Inc., 1989.</p>
+</li>
+<li><p>Ellis, Margaret A., and Bjarne Stroustrup<i>, The Annotated C++ Reference Manual</i>. Reading, Mass.: Addison-Wesley, 1990.</p>
+</li>
+<li><p>Lippman, Stanley B., <i>A C++ Primer</i>, 2e. Reading, Mass.: Addison-<br>
+Wesley, 1991.</p>
+</li>
+<li><p>Pohl, Ira, <i>C++ for C Programmers</i>. Redwood City, Ca.: The Benjamin/<br>
+Cummings Publishing Co., 1989.</p>
+</li>
+<li><p>Shapiro, Jonathan<span class="bold"><b>,</b></span><i> A C++ Toolkit</i>. Englewood Cliffs, N.J.: Prentice-Hall, Inc., 1991.</p>
+</li>
+<li><p>Weiskamp, Keith, and Bryan Flamig, <i>The Complete C++ Primer</i>, 2e. San Diego, Ca.: Academic Press, 1992.</p>
+</li>
+</ul></div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch17.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="apb.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 17. Using Inventor with OpenGL </td><td width="20%" align="center"> </td><td width="40%" align="right">Appendix B. An Introduction to the C API </td></tr></table></div></body></html>

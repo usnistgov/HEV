@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 2. An Inventor Sampler</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch01.html" title="Chapter 1. Overview"><link rel="next" href="ch03.html" title="Chapter 3. Nodes and Groups"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 2. An Inventor Sampler</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch03.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5438410"></a>Chapter 2. <a name="id36498"></a>An Inventor Sampler</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Explain the basic structure of an Inventor program</p>
+</li>
+<li><p>Describe the conventions used by Inventor</p>
+</li>
+</ul></div><p>This chapter provides an overview of the 5 percent of Inventor that is part of any program. It includes a short program that draws a red cone in a window. This program is gradually augmented to show the use of some important Inventor objects: engines, manipulators, and components. Inventor naming conventions and basic data types are also described.</p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5438456"></a>&#8220;Hello, Cone&#8221;</h2></div></div>
+<p>This chapter begins with a set of sample programs that illustrate the key aspects of Inventor. <a href="ch02.html#id10655">Example 2-1</a> creates a red cone and then renders it in a window (<a href="ch02.html#id64431">&#8220;A Red Cone&#8221;</a>). This example uses an Inventor Xt window, which is part of the Inventor Component Library. This library provides utilities for window management and event processing and also contains a set of Inventor components (viewers and editors). <a name="idch021"></a><a name="idch022"></a><a name="idch023"></a><a name="idch024"></a></p>
+<p>The code shown in <a href="ch02.html#id10655">Example 2-1</a> constructs a simple scene graph composed of a camera node, a light node, a material node, and a cone node. Later chapters go into specifics on creating nodes, setting values in fields, structuring the database, and applying actions. The purpose of this chapter is simply to convey a feel for the tools Inventor offers and to help you get started writing an Inventor program.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5362412"></a>A Red Cone </h3></div></div>
+<p>The first example program illustrates the basic steps in writing an Inventor program.<a name="idch025"></a></p>
+<div class="orderedlist"><ol type="1"><li><p>Create a window where the scene will be rendered. This example uses <span class="bold"><b>SoXtRenderArea<a name="idch026"></a></b></span>, the Inventor Xt window.</p>
+</li>
+<li><p>Build the scene graph by creating property and shape nodes and combining them into groups. </p>
+</li>
+</ol></div><p><a href="ch02.html#id10655">Example 2-1</a> gives the code to create the cone shown in  <a href="ch02.html#id64431">&#8220;A Red Cone&#8221;</a>.</p>
+<p><a name="id64431"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/fig2_1.iv"><div class="caption"><p>A Red Cone</p>
+</div></a></blockquote></div>
+</p>
+<p>
+<div class="example"><p><a name="id5362491"></a><b>Example 2-1. <a name="id24789"></a><a name="id10655"></a>Basic &#8220;Hello, Cone&#8221; Program</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt;
+#include &lt;Inventor/nodes/SoCone.h&gt;
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+
+main(int , char **argv)
+{
+   // Initialize Inventor. This returns a main window to use.
+   // If unsuccessful, exit.
+   Widget myWindow = SoXt::init(argv[0]); // pass the app name
+   if (myWindow == NULL) exit(1);
+
+   // Make a scene containing a red cone
+   SoSeparator *root = new SoSeparator;
+   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
+   SoMaterial *myMaterial = new SoMaterial;
+   root-&gt;ref();
+   root-&gt;addChild(myCamera);
+   root-&gt;addChild(new SoDirectionalLight);
+   myMaterial-&gt;diffuseColor.setValue(1.0, 0.0, 0.0);   // Red
+   root-&gt;addChild(myMaterial);
+   root-&gt;addChild(new SoCone);
+
+   // Create a renderArea in which to see our scene graph.
+   // The render area will appear within the main window.
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+
+   // Make myCamera see everything.
+   myCamera-&gt;viewAll(root, myRenderArea-&gt;getViewportRegion());
+
+   // Put our scene in myRenderArea, change the title
+   myRenderArea-&gt;setSceneGraph(root);
+   myRenderArea-&gt;setTitle(&quot;Hello Cone&quot;);
+   myRenderArea-&gt;show();
+
+   SoXt::show(myWindow);  // Display main window
+   SoXt::mainLoop();      // Main Inventor event loop
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5438872"></a>Using Engines to Make the Cone Spin</h3></div></div>
+<p><a name="idch027"></a><a href="ch02.html#id11478">Example 2-2</a> illustrates how to use engines to make the cone spin. An engine is attached to the angle field of an <a name="idch028"></a><span class="bold"><b>SoRotationXYZ</b></span> node in the scene graph. The engine changes the angle value in the rotationXYZ node in response to changes in the real-time clock, which in turn causes the cone to rotate. After each change, the scene is automatically rendered again by the render area. Successive rotations give the desired effect of a spinning cone.<a name="idch029"></a><a name="idch0210"></a></p>
+<div class="example"><p><a name="id5438912"></a><b>Example 2-2. <a name="id11478"></a>&#8220;Hello, Cone&#8221; Using Engines</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt;
+#include &lt;Inventor/engines/SoElapsedTime.h&gt;
+#include &lt;Inventor/nodes/SoCone.h&gt;
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoRotationXYZ.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+
+main(int , char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);  
+   if (myWindow == NULL) exit(1);     
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
+   root-&gt;addChild(myCamera);
+   root-&gt;addChild(new SoDirectionalLight);
+
+   // This transformation is modified to rotate the cone
+   SoRotationXYZ *myRotXYZ = new SoRotationXYZ;
+   root-&gt;addChild(myRotXYZ);
+
+   SoMaterial *myMaterial = new SoMaterial;
+   myMaterial-&gt;diffuseColor.setValue(1.0, 0.0, 0.0);   // Red
+   root-&gt;addChild(myMaterial);
+   root-&gt;addChild(new SoCone);
+
+   // An engine rotates the object. The output of myCounter 
+   // is the time in seconds since the program started.
+   // Connect this output to the angle field of myRotXYZ
+   myRotXYZ-&gt;axis = SoRotationXYZ::X;     // rotate about X axis
+   SoElapsedTime *myCounter = new SoElapsedTime;
+   myRotXYZ-&gt;angle.connectFrom(&amp;myCounter-&gt;timeOut);
+
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+   myCamera-&gt;viewAll(root, myRenderArea-&gt;getViewportRegion());
+   myRenderArea-&gt;setSceneGraph(root);
+   myRenderArea-&gt;setTitle(&quot;Engine Spin&quot;);
+   myRenderArea-&gt;show();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5438985"></a>Adding a Trackball Manipulator</h3></div></div>
+<p>The next two examples show additional methods for editing a node in the scene graph. <a name="idch0211"></a><a href="ch02.html#id15001">Example 2-3</a> adds a manipulator (a trackball) to the first example (see <a href="ch02.html#id20028">&#8220;Cone with Trackball Manipulator&#8221;</a>). The trackball itself appears as three rings around the cone. When the left mouse button is pressed on the trackball, it highlights itself in a different color to show it is active. While it is active, the mouse can be used to rotate the trackball and the object (here, the cone) inside it. In this example, a trackball is constructed instead of the <a name="idch0212"></a><span class="bold"><b>SoRotationXYZ</b></span> node in <a href="ch02.html#id11478">Example 2-2</a>. Each time the user rotates the trackball, its values change and the cone rotates as well. Because the render area has a sensor attached to the scene graph, the scene is automatically rendered again after each edit, and the cone appears to move.<a name="idch0213"></a></p>
+<p><a name="id20028"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/fig2_2.iv"><div class="caption"><p>Cone with Trackball Manipulator</p>
+</div></a></blockquote></div>
+</p>
+<p>
+</p>
+<p>
+<div class="example"><p><a name="id5439118"></a><b>Example 2-3. <a name="id15001"></a>&#8220;Hello, Cone&#8221; with a Trackball Manipulator</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt;
+#include &lt;Inventor/manips/SoTrackballManip.h&gt;
+#include &lt;Inventor/nodes/SoCone.h&gt;
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+
+main(int , char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) exit(1);
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+
+   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
+   root-&gt;addChild(myCamera);               // child 0
+   root-&gt;addChild(new SoDirectionalLight); // child 1
+   root-&gt;addChild(new SoTrackballManip);        // child 2
+
+   SoMaterial *myMaterial = new SoMaterial;
+   myMaterial-&gt;diffuseColor.setValue(1.0, 0.0, 0.0);
+   root-&gt;addChild(myMaterial);
+   root-&gt;addChild(new SoCone);
+
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+   myCamera-&gt;viewAll(root, myRenderArea-&gt;getViewportRegion());
+   myRenderArea-&gt;setSceneGraph(root);
+   myRenderArea-&gt;setTitle(&quot;Trackball&quot;);
+   myRenderArea-&gt;show();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5439161"></a>Adding the Examiner Viewer</h3></div></div>
+<p><a href="ch02.html#id10256">Example 2-4</a> replaces the render area in the first example with the examiner viewer, a component. This viewer, shown in ,<a name="idch0214"></a><a href="ch02.html#id14553">&#8220;Cone with Examiner Viewer&#8221;</a> modifies the camera node, which lets you view the cone from different positions. It provides a user interface that allows use of the mouse to modify camera placement in the scene. (Note that this example looks similar to the trackball in <a name="idch0215"></a><a href="ch02.html#id15001">Example 2-3</a>. Here, however, the camera is moving, not the cone itself.) This program does not need to set up a camera and call <span class="bold"><b>viewAll()<a name="idch0216"></a></b></span> because the viewer does this automatically.</p>
+<p><a name="id14553"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/fig2_3.iv"><div class="caption"><p>Cone with Examiner Viewer</p>
+</div></a></blockquote></div>
+</p>
+<p>
+<div class="example"><p><a name="id5439255"></a><b>Example 2-4. <a name="id10256"></a>&#8220;Hello, Cone&#8221; Using the Examiner Viewer</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+#include &lt;Inventor/nodes/SoCone.h&gt;
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+
+main(int , char **argv)
+{
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) exit(1);
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+   SoMaterial *myMaterial = new SoMaterial;
+   myMaterial-&gt;diffuseColor.setValue(1.0, 0.0, 0.0);
+   root-&gt;addChild(myMaterial);
+   root-&gt;addChild(new SoCone);
+
+   // Set up viewer:
+   SoXtExaminerViewer *myViewer = 
+            new SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;Examiner Viewer&quot;);
+   myViewer-&gt;show();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5439298"></a>Naming Conventions<a name="idch0217"></a></h2></div></div>
+<p>Basic types in Inventor begin with the letters <a name="idch0218"></a><a name="idch0219"></a><span class="bold"><b>Sb</b></span> (for scene basic; see the next section, <a href="ch02.html#id20603">&#8220;Scene Basic Types&#8221;</a>). For example:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>SbColor</p>
+</li>
+<li><p>SbViewVolume</p>
+</li>
+</ul></div><p>All other classes in Inventor are prefixed with the letters <a name="idch0220"></a><span class="bold"><b>So</b></span> (for scene object). For example:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>SoCone</p>
+</li>
+<li><p>SoPerspectiveCamera</p>
+</li>
+<li><p>SoMaterial</p>
+</li>
+<li><p>SoTransform</p>
+</li>
+</ul></div><p>Methods and variables begin with a lowercase letter. Each word within a class, method, or variable name begins with an uppercase letter. For example:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>getNormal()</p>
+</li>
+<li><p>setSceneGraph()</p>
+</li>
+<li><p>myCube</p>
+</li>
+</ul></div><p>Enumerated type values are in UPPERCASE. For example:<a name="idch0221"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>FILLED</p>
+</li>
+<li><p>PER_PART</p>
+</li>
+</ul></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5439484"></a><a name="id20603"></a>Scene Basic Types</h2></div></div>
+<p>This section discusses Inventor's <span class="bold"><b>Sb</b></span> classes, a set of basic types that are used in many Inventor objects. Inventor includes useful methods for converting between different types and performing specific 3D operations on them.<a name="idch0222"></a></p>
+<p>Inventor defines the following types:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>SbBool<a name="idch0223"></a></b></span></span></td><td width="10"> </td><td><p>Boolean value (TRUE or FALSE)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbBox<a name="idch0224"></a></b></span><i>nx</i></span></td><td width="10"> </td><td><p>2D or 3D box that has planes parallel to the major axes and is specified by two points on a diagonal (includes <span class="bold"><b>SbBox3f</b></span>, <span class="bold"><b>SbBox2f</b></span>, <span class="bold"><b>SbBox2s</b></span>); <i>n </i>is the number of values in the type (2 or 3), and x is the value type (f for float, s for short)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbColor<a name="idch0225"></a></b></span></span></td><td width="10"> </td><td><p>RGB (red/green/blue) color value with 	conversion routines to other color spaces</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbCylinder<a name="idch0226"></a></b></span></span></td><td width="10"> </td><td><p>cylinder</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbLine<a name="idch0227"></a></b></span></span></td><td width="10"> </td><td><p>directed 3D line</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbMatrix<a name="idch0228"></a></b></span></span></td><td width="10"> </td><td><p>4×4 matrix</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbName<a name="idch0229"></a></b></span></span></td><td width="10"> </td><td><p>character string stored in a special table for fast and easy comparison, typically for identifiers</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbPList<a name="idch0230"></a></b></span></span></td><td width="10"> </td><td><p>list of generic (<span class="bold"><b>void *</b></span>) pointers</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbPlane<a name="idch0231"></a></b></span></span></td><td width="10"> </td><td><p>oriented 3D plane</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbRotation<a name="idch0232"></a></b></span></span></td><td width="10"> </td><td><p>representation of a 3D rotation about an arbitrary axis</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbSphere<a name="idch0233"></a></b></span></span></td><td width="10"> </td><td><p>sphere</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbString<a name="idch0234"></a></b></span></span></td><td width="10"> </td><td><p>&#8220;smart&#8221; character strings that have many convenience methods for easy string manipulation</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbTime<a name="idch0235"></a></b></span></span></td><td width="10"> </td><td><p>representation of time&#8212;in seconds; seconds and microseconds; or using the <span class="bold"><b>timeval</b></span> structure</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbVec<a name="idch0236"></a></b></span><i>nx</i></span></td><td width="10"> </td><td><p>2D or 3D vector, used to represent points or directions (includes <span class="bold"><b>SbVec2f</b></span>, <span class="bold"><b>SbVec3f</b></span>, <span class="bold"><b>SbVec2s</b></span>); <i>n</i> is the number of values in the type (2, 3, or 4), and <i>x</i> is the value type (f for float; s for short)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbViewportRegion<a name="idch0237"></a></b></span></span></td><td width="10"> </td><td><p><br>
+active viewport region within a display window</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SbViewVolume<a name="idch0238"></a></b></span></span></td><td width="10"> </td><td><p><br>
+view volume (for example, see <span class="bold"><b>SoCamera</b></span>'s <span class="bold"><b>getViewVolume()</b></span> method in the <i>Open Inventor C++ Reference Manual</i>)</p>
+
+</td></tr></table></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5440076"></a>Methods</h3></div></div>
+<p>Each <a name="idch0239"></a><span class="bold"><b>Sb</b></span> class has useful operators associated with it. For example, you can negate a variable of type<span class="bold"><b> SbVec3f<a name="idch0240"></a></b></span>, multiply it by a matrix, or normalize it to unit length. The following code creates a unit-length vector, based on the specified direction:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SbVec3f v(1.0, 2.0, 3.0); // declares and initializes the vector
+v.normalize(); // normalizes the vector to unit length
+</pre></td></tr></table><p>Similarly, <span class="bold"><b>SbMatrix<a name="idch0241"></a></b></span> has useful methods including <span class="bold"><b>multVecMatrix()<a name="idch0242"></a></b></span>, which multiplies a row vector by the matrix and returns the result, and <span class="bold"><b>rotate()<a name="idch0243"></a></b></span>, which sets the matrix to rotate by a given amount. See the<a name="idch0244"></a><i> Open Inventor C++ Reference Manual</i> for a complete description of the available methods for each<span class="bold"><b> Sb</b></span> class.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5441479"></a>Types versus Fields</h3></div></div>
+<p><a name="idch0245"></a><a href="ch03.html#id18184">Chapter 3, &#8220;Nodes and Groups,&#8221;</a> contains a complete discussion of <i>fields</i>, which are the structures that store parameters for nodes. A field contains a value of a certain type. Fields are always contained within Inventor nodes. Many fields contain a corresponding <span class="bold"><b>Sb</b></span> type. For example:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>A field of type <span class="bold"><b>SoSFVec3f</b></span> contains an <span class="bold"><b>SbVec3f</b></span></p>
+</li>
+<li><p>A field of type <span class="bold"><b>SoSFRotation</b></span> contains an <span class="bold"><b>SbRotation</b></span></p>
+</li>
+<li><p>A field of type<span class="bold"><b> SoSFName</b></span> contains an <span class="bold"><b>SbName</b></span></p>
+</li>
+</ul></div></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5441565"></a>Coordinate Systems in Inventor</h2></div></div>
+<p>Inventor uses a right-handed coordinate system for 3D data, with <a name="idch0246"></a><i>+z</i> coming out of the screen. All angles are specified in radians. Objects are described in their own local coordinate space, known as<a name="idch0247"></a><a name="idch0248"></a><i> object coordinate space<a name="idch0249"></a></i>. After all transformations have been applied to the objects in the scene graph, they are said to be in <a name="idch0250"></a><i>world coordinate space</i>. This world coordinate space includes the camera and lights.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5441658"></a>Include Files</h2></div></div>
+<p>Inventor contains include files for every class. You need to include the appropriate file for each class used in your program. For example, <a name="idch0251"></a><span class="bold"><b>SoSphere</b></span> and <span class="bold"><b>SoTransform</b></span> nodes require you to include the files <tt>SoSphere.h</tt> and <tt>SoTransform.h</tt><tt>.</tt>Most include files are found in a subdirectory&#8212;for example, <i>nodes/SoSphere.h</i> and <i>sensors/SoNodeSensor.h</i>.</p>
+<p>In addition, you need to include the<tt> SoXt.h</tt> file if you are writing an interactive program that uses the Inventor Component Library.<a name="idch0252"></a></p>
+<p>If you are programming using the C application programming interface, use the <a name="idch0253"></a><i>Inventor_c</i> directory instead of the<i> Inventor</i> directory. </p>
+</div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 1. Overview </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 3. Nodes and Groups </td></tr></table></div></body></html>

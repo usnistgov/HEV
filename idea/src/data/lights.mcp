@@ -1,0 +1,129 @@
+# lights.mcp - Creates a menu that will turn on or off 7 lights at 
+#              fixed positions (the corners of the CAVE cube).
+#
+#              A radio button determines whether world or scene node for
+#              subsequent light actions.
+#
+#              Button labels "Behind***" and "Ahead***"  are relative
+#              to the user standing in the CAVE,
+#
+#
+# Steve Satterfield
+# September 18, 2015
+# June 7, 2016
+
+
+MENU Lights
+
+RADIO
+BUTTON Scene
+INIT
+ON   SET inActiveLight world
+ON   SET activeLight scene
+
+BUTTON World
+ON   SET inActiveLight scene
+ON   SET activeLight world
+
+END
+
+# Light0is tyically named light and turned on by irisfly
+BUTTON Default(irisfly)
+INIT
+ON    LIGHTNODE light ON
+OFF   LIGHTNODE light OFF
+
+
+BUTTON BehindUpLeft
+FIRST LIGHTNODE light1 AMBIENT   0.3   0.3   0.3  1.0
+FIRST LIGHTNODE light1 DIFFUSE   0.7   0.7   0.7  1.0
+FIRST LIGHTNODE light1 SPECULAR  0.2   0.2   0.2  1.0
+FIRST LIGHTNODE light1 POSITION -1.0  -1.0   1.0  0.0
+FIRST ADDCHILD light1 $(activeLight)
+FIRST SET light1Node $(activeLight)
+
+ON   ADDCHILD light1 $(activeLight)
+ON   SET light1Node $(activeLight)
+OFF  REMOVE light1 $(light1Node)
+
+
+BUTTON BehindUpRight
+FIRST LIGHTNODE light2 AMBIENT   0.3   0.3   0.3  1.0
+FIRST LIGHTNODE light2 DIFFUSE   0.7   0.7   0.7  1.0
+FIRST LIGHTNODE light2 SPECULAR  0.2   0.2   0.2  1.0
+FIRST LIGHTNODE light2 POSITION  1.0  -1.0   1.0  0.0
+FIRST ADDCHILD light2 $(activeLight)
+FIRST SET light1Node $(activeLight)
+
+ON   ADDCHILD light2 $(activeLight)
+ON   SET light1Node $(activeLight)
+OFF  REMOVE light2 $(light1Node)
+
+
+
+BUTTON BehindLwrLeft
+FIRST LIGHTNODE light3 AMBIENT   0.3   0.3   0.3  1.0
+FIRST LIGHTNODE light3 DIFFUSE   0.7   0.7   0.7  1.0
+FIRST LIGHTNODE light3 SPECULAR  0.2   0.2   0.2  1.0
+FIRST LIGHTNODE light3 POSITION -1.0  -1.0  -1.0  0.0
+FIRST ADDCHILD light3 $(activeLight)
+FIRST SET light1Node $(activeLight)
+
+ON   ADDCHILD light3 $(activeLight)
+ON   SET light1Node $(activeLight)
+OFF  REMOVE light3 $(light1Node)
+
+
+BUTTON BehindLwrRight
+FIRST LIGHTNODE light4 AMBIENT   0.3   0.3   0.3  1.0
+FIRST LIGHTNODE light4 DIFFUSE   0.7   0.7   0.7  1.0
+FIRST LIGHTNODE light4 SPECULAR  0.2   0.2   0.2  1.0
+FIRST LIGHTNODE light4 POSITION  1.0  -1.0  -1.0  0.0
+FIRST ADDCHILD light4 $(activeLight)
+FIRST SET light1Node $(activeLight)
+
+ON   ADDCHILD light4 $(activeLight)
+ON   SET light1Node $(activeLight)
+OFF  REMOVE light4 $(light1Node)
+
+
+BUTTON AheadUpLeft
+FIRST LIGHTNODE light5 AMBIENT   0.3   0.3   0.3  1.0
+FIRST LIGHTNODE light5 DIFFUSE   0.7   0.7   0.7  1.0
+FIRST LIGHTNODE light5 SPECULAR  0.2   0.2   0.2  1.0
+FIRST LIGHTNODE light5 POSITION -1.0   1.0   1.0  0.0
+FIRST ADDCHILD light5 $(activeLight)
+FIRST SET light1Node $(activeLight)
+
+ON   ADDCHILD light5 $(activeLight)
+ON   SET light1Node $(activeLight)
+OFF  REMOVE light5 $(light1Node)
+
+
+BUTTON AheadUpRight
+FIRST LIGHTNODE light6 AMBIENT   0.3   0.3   0.3  1.0
+FIRST LIGHTNODE light6 DIFFUSE   0.7   0.7   0.7  1.0
+FIRST LIGHTNODE light6 SPECULAR  0.2   0.2   0.2  1.0
+FIRST LIGHTNODE light6 POSITION  1.0   1.0   1.0  0.0
+FIRST ADDCHILD light6 $(activeLight)
+FIRST SET light1Node $(activeLight)
+
+ON   ADDCHILD light6 $(activeLight)
+ON   SET light1Node $(activeLight)
+OFF  REMOVE light6 $(light1Node)
+
+
+BUTTON AheadLwrRight
+FIRST LIGHTNODE light7 AMBIENT   0.3   0.3   0.3  1.0
+FIRST LIGHTNODE light7 DIFFUSE   0.7   0.7   0.7  1.0
+FIRST LIGHTNODE light7 SPECULAR  0.2   0.2   0.2  1.0
+FIRST LIGHTNODE light7 POSITION  1.0   1.0  -1.0  0.0
+FIRST ADDCHILD light7 $(activeLight)
+FIRST SET light1Node $(activeLight)
+
+ON   ADDCHILD light7 $(activeLight)
+ON   SET light1Node $(activeLight)
+OFF  REMOVE light7 $(light1Node)
+
+
+END

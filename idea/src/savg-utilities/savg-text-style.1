@@ -1,0 +1,48 @@
+.TH SAVG\-TEXT-STYLE 1 "26 May 2009"
+.SH NAME
+savg-text-style \- SAVG ToolBox: text-style
+.SH SYNOPSIS
+.B savg-text-style On/Off
+.SH DESCRIPTION
+.I savg-text-style
+adds the style keyword for \fIsavg\fP files (\fISAVG ToolBox\fP).  It 
+accepts input from
+.I stdin
+and outputs to
+.I stdout.
+If invalid arguments or no arguments are given, 
+then 
+.I savg-text-style TEXTURED/OUTLINE/MESH/EXTRUDED
+prints usage information and terminates.
+.SH OPTIONS
+.TP
+.B \   savg-text-style TEXTURED/OUTLINE/MESH/EXTRUDED
+.SH EXAMPLES
+.TP
+.B savg-text-style  TEXTURED < in.savg > out.savg
+Reads from 
+.I in.savg
+and sets the text-style to TEXTURED.  Then outputs to 
+.I out.savg.
+.SH BUGS
+(none)
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+March 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

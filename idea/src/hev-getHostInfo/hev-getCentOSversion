@@ -1,0 +1,92 @@
+#! /bin/bash
+
+# hev-getCentOSVersion - list CentOS version for HEV hosts
+# hev-getNVDriver      - get Nvidia driver number for HEV hosts
+# hev-getNVcards       - get Nvidia card(s) name for HEV hosts
+#
+# March 9, 2015
+# March 12, 2015       - implement some of Chris suggestions
+# Setpember 22, 2016   - add hev-getCPUcount
+
+# Steve
+
+
+#######  Specific Functions ########
+
+function centOSversion {
+
+        ssh  -o LogLevel=error $host 'printf %-30s $HOSTNAME; head -1 /etc/redhat-release'
+   
+}
+
+function nvDriver {
+
+	ssh -o LogLevel=error $host 'echo `hostname` `if [ -f /proc/driver/nvidia/version ] ;
+                                         then  cat /proc/driver/nvidia/version | head -1 ; \
+                                         else echo "                 File: /proc/driver/nvidia/version not found" ; fi`' | \
+        awk '{if ($2 == "File:" ) {print $0;} else {printf "%-30s %-15s   %s %s %s %s\n", $1,$9,$11,$12,$13,$14,$15;}}'
+   
+}
+ 
+
+
+function nvCards {
+
+	ssh -o LogLevel=error $host 'echo `hostname` ; if [ -d /proc/driver/nvidia ] ; then \
+               cat /proc/driver/nvidia/gpus/*/information  |\
+               grep Model | sed "s/Model://" ; else echo "                 Directory: /proc/driver/nvidia not found" ; fi'
+ 
+}
+
+function cpucount {
+
+	ssh -o LogLevel=error $host 'echo `hostname` `getconf _NPROCESSORS_ONLN`'
+ 
+}
+
+#######  General Main #######
+
+hev-which -q
+h=$?
+if [ $h -eq 0 ]
+then
+    echo No HEV environment set
+    exit 1
+fi
+
+myname=`basename $0`
+
+case $# in
+0)
+	H=`hev-hosts --all --up`
+	;;
+*)
+	case $1 in
+	--h*|-h*)
+		echo "Usage: $myname [--help] [host ...]"
+		exit 1
+		;;
+        esac
+	H="$*"
+	;;
+esac
+
+for host in $H
+do
+    case $myname in
+	hev-getCentOSversion)
+	    centOSversion
+	    ;;
+	hev-getNVdriver)
+	    nvDriver
+	    ;;
+	hev-getNVcards)
+	    nvCards
+	    ;;
+	hev-getCPUcount)
+	    cpucount
+	    ;;
+    esac
+done
+exit
+

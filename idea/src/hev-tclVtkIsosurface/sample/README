@@ -1,0 +1,7 @@
+hev-tclVtkIsosurface `cat v1.iso` v1.vtk t1a.iv
+
+hev-tclVtkIsosurfaceDecimate `cat v1.iso` v1.vtk t1b.iv .8
+
+hev-tclVtkIsosurfaceClean < t1b.iv | ivrgba .8 .8 0 1 > t1c.iv
+
+

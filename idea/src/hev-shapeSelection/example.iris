@@ -1,0 +1,67 @@
+# create shared memory- good to do to prevent race conditions, and delete it when done
+SET transformation tmp/shapeSelection/cubeTransformation
+WAIT hev-writeDoubles -c 16 $(transformation) 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+AFTER CLEANUP EXEC dtk-destroySharedMem $(transformation)
+
+SET eligible tmp/shapeSelection/eligible
+WAIT hev-writeButtons -c 8 $(eligible) 1 1 1 1 1 1 1 1
+AFTER CLEANUP EXEC dtk-destroySharedMem $(eligible)
+
+SET selected tmp/shapeSelection/selected
+WAIT hev-writeButtons -c 8 $(selected) 0 0 0 0 0 0 0 0
+AFTER CLEANUP EXEC dtk-destroySharedMem $(selected)
+
+# get the cube data from hev-cubeTransformationRollers
+EXEC hev-cubeTransformationRollers --shm $(transformation) --noescape
+
+# and a little shell script to turn the points on/off based on selected
+EXEC ./exampleOnOff.sh $(selected) > $IRIS_CONTROL_FIFO
+
+# load some points to give visual feedback
+GROUP litGroup
+STARTMODELDATA p1 savg
+POINTS
+-1 -1 -1  .3 .3 .3 1
+ENDMODELDATA 
+ADDCHILD p1 litGroup
+STARTMODELDATA p2 savg
+POINTS
+-1 -1  1  .3 .3 1 1
+ENDMODELDATA 
+ADDCHILD p2 litGroup
+STARTMODELDATA p3 savg
+POINTS
+-1  1 -1  .3 1 .3 1
+ENDMODELDATA 
+ADDCHILD p3 litGroup
+STARTMODELDATA p4 savg
+POINTS
+-1  1  1  .3 1 1 1
+ENDMODELDATA 
+ADDCHILD p4 litGroup
+STARTMODELDATA p5 savg
+POINTS
+ 1 -1 -1  1 .3 .3 1
+ENDMODELDATA 
+ADDCHILD p5 litGroup
+STARTMODELDATA p6 savg
+POINTS
+ 1 -1  1  1 .3 1 1
+ENDMODELDATA 
+ADDCHILD p6 litGroup
+STARTMODELDATA p7 savg
+POINTS
+ 1  1 -1  1 1 .3 1
+ENDMODELDATA 
+ADDCHILD p7 litGroup
+STARTMODELDATA p8 savg
+POINTS
+ 1  1  1  1 1 1 1
+ENDMODELDATA 
+ADDCHILD p8 litGroup
+
+LOAD litFatSphere litFatSphere.osg
+MERGESTATE litFatSphere litGroup
+UNIFORM litGroup fatpointSize .25
+ADDCHILD litGroup world
+EXAMINE world

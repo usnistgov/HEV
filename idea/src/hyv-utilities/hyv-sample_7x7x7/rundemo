@@ -1,0 +1,10 @@
+#! /bin/sh
+
+display vis/fullVolumeFraction.png &
+display vis/isovalues.png &
+
+display vis/legend.png &
+
+cd vis
+./runapp $*
+

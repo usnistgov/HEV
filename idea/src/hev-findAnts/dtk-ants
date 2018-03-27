@@ -1,0 +1,19 @@
+#!/bin/sh
+
+###############################
+# dtk-ants - a script to generate a list
+# of commands in the DTK family of
+# the "Army of Ants"  in $PATH. This
+# calls one or more helper script(s) so
+# the calling environment must be correctly
+# set to find them, usually by modifying
+# the PATH env var.
+
+#DEBUG echo "dtk-ants: PRIVATE_BINS: "${PRIVATE_BINS}
+#DEBUG echo "dtk-ants: PWD: "`pwd`
+
+echo
+echo "DTK Tools: " $@
+echo ---------
+${PRIVATE_BINS}/compc dtk $@
+echo

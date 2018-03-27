@@ -1,0 +1,6 @@
+run with the command: iris-viewer queryPing.iris
+then in another console window type:
+  echo QUERY /tmp/fooFifo PING "here's another" > $IRIS_CONTROL_FIFO
+
+you could also skip this program and run iris-readFifo instead if you
+just want to raed the fifo into stdout

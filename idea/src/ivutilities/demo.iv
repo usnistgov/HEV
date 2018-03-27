@@ -1,0 +1,318 @@
+#Inventor V2.0 ascii
+DEF part1 Group {
+Separator {
+Translation { translation .5 0 0 }
+Separator {
+Material {
+diffuseColor 1 0 0
+transparency 0
+}
+Separator {
+Cube { width 1 height .01 depth .01 }
+}
+}
+}
+Separator {
+Translation { translation 0 .5 0 }
+Separator {
+Material {
+diffuseColor 0 1 0
+transparency 0
+}
+Separator {
+Cube { width .01 height 1 depth .01 }
+}
+}
+}
+Separator {
+Translation { translation 0 0 .5 }
+Separator {
+Material {
+diffuseColor 0 0 1
+transparency 0
+}
+Separator {
+Cube { width .01 height .01 depth 1 }
+}
+}
+}
+Separator {
+Translation { translation .2 .2 .2 }
+Separator {
+Material {
+diffuseColor 1 1 0
+transparency 0
+}
+Separator {
+Cube { width .1 height .1 depth .1 }
+}
+}
+}
+Separator {
+Translation { translation .4 .4 .4 }
+Separator {
+Material {
+diffuseColor 0 1 1
+transparency 0
+}
+Separator {
+Cube { width .1 height .1 depth .1 }
+}
+}
+}
+Separator {
+Translation { translation .6 .6 .6 }
+Separator {
+Material {
+diffuseColor 1 0 1
+transparency 0
+}
+Separator {
+Cube { width .1 height .1 depth .1 }
+}
+}
+}
+Separator {
+Translation { translation .2 .2 .2 }
+Separator {
+Scale { scaleFactor .2 .4 .1 }
+Separator {
+Material {
+diffuseColor 1 0 0
+transparency 0.5
+}
+Separator {
+Sphere { radius .5 }
+}
+}
+}
+}
+Separator {
+Translation { translation .4 .4 .4 }
+Separator {
+Rotation { rotation 1 0 0 0.7875}
+Separator {
+Scale { scaleFactor .2 .4 .1 }
+Separator {
+Material {
+diffuseColor 0 1 0
+transparency 0.5
+}
+Separator {
+Sphere { radius .5 }
+}
+}
+}
+}
+}
+Separator {
+MatrixTransform { matrix 1 0 0 0 0 1 0 0 0 0 1 .6 .6 .6 .6 1}
+Separator {
+Rotation { rotation 1 0 0 1.575}
+Separator {
+Scale { scaleFactor .2 .4 .1 }
+Separator {
+Material {
+diffuseColor 0 1 0
+transparency 0.5
+}
+Separator {
+Sphere { radius .5 }
+}
+}
+}
+}
+}
+Separator {
+Translation { translation .2 .8 0 }
+Separator {
+Scale { scaleFactor .05 .08 .02 }
+Separator {
+Material {
+diffuseColor .2 .8 .8
+specularColor 1 0 0
+shininess .5
+}
+Separator {
+ Font {
+  name  "Times-Roman"
+  size 2
+ }
+ Text3 {
+   string ["ivUtilities Example"]
+ }
+}
+}
+}
+}
+Separator {
+Translation { translation -.1 -.1 0 }
+Separator {
+Scale { scaleFactor .04 .06 .01 }
+Separator {
+Material {
+diffuseColor 1 1 1
+transparency 0
+}
+Separator {
+ Font {
+  name  "Times-Roman"
+  size 2
+ }
+ Text3 {
+   string ["0,0,0"]
+ }
+}
+}
+}
+}
+Separator {
+Translation { translation .9 -.1 0 }
+Separator {
+Scale { scaleFactor .04 .06 .01 }
+Separator {
+Material {
+diffuseColor 1 0 0
+transparency 0
+}
+Separator {
+ Font {
+  name  "Times-Roman"
+  size 2
+ }
+ Text3 {
+   string ["1,0,0"]
+ }
+}
+}
+}
+}
+Separator {
+Translation { translation -.1 1 0 }
+Separator {
+Scale { scaleFactor .04 .06 .01 }
+Separator {
+Material {
+diffuseColor 0 1 0
+transparency 0
+}
+Separator {
+ Font {
+  name  "Times-Roman"
+  size 2
+ }
+ Text3 {
+   string ["0,1,0"]
+ }
+}
+}
+}
+}
+Separator {
+Translation { translation -.1 -.1 1 }
+Separator {
+Scale { scaleFactor .04 .06 .01 }
+Separator {
+Material {
+diffuseColor 0 0 1
+transparency 0
+}
+Separator {
+ Font {
+  name  "Times-Roman"
+  size 2
+ }
+ Text3 {
+   string ["0,0,1"]
+ }
+}
+}
+}
+}
+Separator {
+Translation { translation -.0125 -.0125 -.0125 }
+Separator {
+Translation { translation .5 .5 .5 }
+Separator {
+Scale { scaleFactor 1.25 1.25 1.25 }
+Separator {
+Translation { translation 0 -.5 -.5 }
+Separator {
+Cube { width 1 height .005 depth .005 }
+}
+}
+Separator {
+Translation { translation 0 .5 -.5 }
+Separator {
+Cube { width 1 height .005 depth .005 }
+}
+}
+Separator {
+Translation { translation 0 -.5 .5 }
+Separator {
+Cube { width 1 height .005 depth .005 }
+}
+}
+Separator {
+Translation { translation 0 .5 .5 }
+Separator {
+Cube { width 1 height .005 depth .005 }
+}
+}
+Separator {
+Translation { translation .5 0 .5 }
+Separator {
+Cube { width .005 height 1 depth .005 }
+}
+}
+Separator {
+Translation { translation -.5 0 .5 }
+Separator {
+Cube { width .005 height 1 depth .005 }
+}
+}
+Separator {
+Translation { translation .5 0 -.5 }
+Separator {
+Cube { width .005 height 1 depth .005 }
+}
+}
+Separator {
+Translation { translation -.5 0 -.5 }
+Separator {
+Cube { width .005 height 1 depth .005 }
+}
+}
+Separator {
+Translation { translation .5 .5 0 }
+Separator {
+Cube { width .005 height .005 depth 1 }
+}
+}
+Separator {
+Translation { translation -.5 .5 0 }
+Separator {
+Cube { width .005 height .005 depth 1 }
+}
+}
+Separator {
+Translation { translation -.5 -.5 0 }
+Separator {
+Cube { width .005 height .005 depth 1 }
+}
+}
+Separator {
+Translation { translation .5 -.5 0 }
+Separator {
+Cube { width .005 height .005 depth 1 }
+}
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+Translation { translation 2 0 0 }
+USE part1
+}

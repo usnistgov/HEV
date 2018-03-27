@@ -1,0 +1,69 @@
+.TH hev-boundsToWireCube 1 "May 2016"
+.SH NAME
+
+hev-boundsToWireCube
+
+.SH SYNOPSIS
+
+\fBhev-boundsToWireCube  
+
+.SH DESCRIPTION
+
+\fBhev-boundsToWireCube\fR is a convenience utility which reads the
+coordinates of the minimum and maximum corners of a box and creates a
+wireframe \fBsavg\fR file. The command is a filter reading from
+\fIstdin\fR and writing to \fIstdout\fR,
+
+\fBhev-boundsToWireCube\fR will accept two input formats:
+.IP
+The output of \fBiris-bounds\fR may be directly piped to \fIstdn\fR.
+See example balow.
+.IP
+Six numbers, representing the minimum xyz and the maximum xyz, on a
+single line separated by spaces.  Multiple lines may be supplied. See
+example below.
+
+
+.SH OPTIONS
+
+No command line options.
+
+.SH "EXAMPLEs"
+
+.PP
+\fBiris-bounds tape.osg | hev-boundsToWireCube > bounds.savg\fR
+.PP
+\fBirisfly --ex tape.osg bounds.savg\fR
+
+
+.PP
+\fBecho 1 1 1   3 4 5 | hev-boundsToWireCube  > sample.savg\fR
+.PP
+\fBirisfly --ex sample.savg\fR
+
+.PP
+\fBcat > sample.txt
+ 1  1  1   3  4  5
+.br
+-1 -1 -1  -3 -4 -5
+.br
+^D\fR
+.PP
+\fBhev-boundsToWireCube < sample.txt > sample.savg\fR
+.PP
+\fBirisfly --ex sample.savg\fR
+
+
+.SH "SEE ALSO"
+.PP
+irisfly(1), iris-bounds(1), savg-utilities(3)
+
+
+.SH AUTHOR
+.PP
+Steve Satterfield <steve@nist.gov>
+.br
+High Performance Computing & Visualization group
+.br
+NIST
+

@@ -1,0 +1,78 @@
+.TH hev-cubeTransformationRollers 1 "July 24, 2012"
+.SH NAME
+
+hev-cubeTransformationRollers
+
+.SH SYNOPSIS
+
+\fBhev-cubeTransformationRollers\fR [ --shm shmName ] [ --dcs nodeName ] [ --noEscape ] [ --xyz x y z ] [ --hpr h
+p r ] [ --scale xs ys zs ] [ --step s ] [ --extent file ]
+
+
+.SH DESCRIPTION
+
+\fBhev-cubeTransformationRollers\fR is a GUI that writes a transformation
+matrix (16 doubles in osg::Matrix order) to either DTK shared memory and/or an
+iris::MatrixTransform node using the IRIS MATRIX
+command.  It will hopefully facilitate the manipulation
+of an object in the virtual environment when running in a desktop window.
+
+.SH OPTIONS
+
+.IP "\fIshm\fR"
+specifies the dtk shared memory segment to use. If not specified, shared
+memory is not used.
+
+.IP "\fIdcs\fR"
+specifies the name of a node to be updatd by writing MATRIX control commands
+to standard output.
+
+.IP "noescape"
+if supplied, specifies that the GUI can't be killed by pressing the window
+manager's close button, or by pressing escape in the GUI window.
+
+.IP "\fIx y z\fR "
+species the initial x, y and z values to use.  The default is 0, 0, 0.
+
+.IP "\fIh p r\fR"
+species the initial h, p, and r values to use.  The default is 0, 0, 0.
+
+.IP "\fIxs ys zs\fR"
+species the initial x, y and z scale values to use.  The default is 1, 1, 1.
+
+.IP "\fIstep\fR"
+specifies the smallest amount to change the rollers when moved.  The default
+value is .002.
+
+.IP "\fIextent\fR"
+specifies the name of an OSG loadable file whose center and extents are used
+to set --xyz and --scale
+
+.P
+A light button labeled "uniform scale" can be used to change all three
+scales simultaneously.
+
+.P
+A reset button allows all values to be set to their original values.
+
+.P
+Each roller has a text box which displays the current value of the roller.
+Text can also be entered in these boxes to modify the roller's value.
+
+.SH EXAMPLES
+
+In the directory $HEVROOT/idea/src/hev-cubeTransformation run these commands:
+
+.IP "irisfly exampleRollersSHM.iris"
+to run using the --shm and --extent options
+
+.IP "irisfly exampleRollersDCS.iris"
+to run using the --dcs and --extent options
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+NIST/ITL/MCSD
+

@@ -1,0 +1,44 @@
+.TH SAVG\-CYLINDER 1 "16 July 2004"
+
+.SH NAME
+savg-cylinder \- SAVG Toolbox: cylinder
+.SH SYNOPSIS
+.B savg-cylinder
+[val] [top|bottom|open]
+.PP
+.br
+.SH DESCRIPTION
+.I Savg-cylinder
+generates a unit-sized cylinder (1 unit high, 1 unit radius) to stdout with the bottom surface centered at (0, 0, 0) and the rest extending in the positive z direction.
+Usage messages are produced when options are incorrectly specified.
+.SH OPTIONS
+.PP
+.TP
+.B val
+Specify the number of outer polygons to be used for the cylinder. (default 16).
+.TP
+.B top|bottom|open
+Specify the number of faces: open does not create surfaces at the ends; bottom creates a bottom surface; top creates a top surface. The default is completely closed, top + bottom
+.SH EXAMPLES
+.TP
+.B "savg-cylinder 30 bottom > cylA.savg"
+Creates a cylinder from 30 polygons with 1 face (at bottom) and puts it in the SAVG file cylA.savg.
+.SH SEE ALSO
+savg-cone, savg-cylinder, savg-cube, savg-tetra, savg-octa, savg-sphere, 
+savg-regpoly, savg-sor
+.PP
+.SH AUTHORS
+.PP
+Adele Peskin, 
+Brandon M. Smith
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Summer 2004, modified June 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

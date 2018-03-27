@@ -1,0 +1,279 @@
+#! /usr/bin/perl
+#
+# hyv-legend - see usage message below
+#
+# steve@nist.gov
+#
+
+$version="200829";
+
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hyv-legend [--nodisplay] [--bg r g b] [-size n m] [--mvgsave file.mvg]  [config.prgb]  legend.png
+
+  Generate and display a png image of a legend to correlate color (r,g,b) to
+  a text string name
+
+
+  --nodisplay   generate but don\'t display the plot. Normally, the plot is
+                displayed when it is generated.
+
+  --bg r g b    optionally specify a background color. Default is 1 1 1 (white).
+
+  --size n m    optionally specify an image size. The default is 110 90 which
+                is appropriate for four entries
+
+  --mvgsave file.mvg   will save the intermediate mvg (ImageMagick) commands
+                       to a specified file. Normally, this intermediate
+                       temporary file is deleted. Useful for manual
+                       modifications. See: http://www.imagemagick.org/
+
+  config.prgb   is a config file of the phases to be plotted and the RGB
+                color of the plotted curves. See below for the format.
+                If not specified, then it is assumed legend.png has been
+		previously generated and is displayed.
+
+
+  legend.png    is the output png image file
+
+
+  config.prgb format:
+    
+     It contains lines of the form: phase  red  green blue name
+     where the color are floats in the range 0.0 to 1.0.
+     For example:
+
+                    1 1.0   0.498 0.941  C3S
+		    2 1.0   0.757 0.498  Ca(OH)2
+		    3 0.867 1.0   0.498  CSH
+		    4 0.498 0.741 1.0    CSH(m)
+
+
+     The phase value is actually ignored in this command. It is included
+     in the file format to be compatible with the config.prgb format used
+     in other hyv-utilities commands
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+$helpFlag=0;
+$nodisplay=0;
+undef(@bg);
+undef(@size);
+undef($mvgsave);
+
+GetOptions("debug"       => \$debugFlag,
+           "nodisplay"   => \$nodisplay,
+	   "bg:f{3}"     => \@bg,
+	   "size:f{2}"   => \@size,
+	   "mvgsave:s{1}"   => \$mvgsave,
+           "help"        => \$helpFlag);
+
+if (@bg != 3) {
+    @bg=(1,1,1);
+}
+
+if (@size !=2) {
+    @size=(110,90);
+}
+
+
+usage() if ($helpflag);
+
+if (@ARGV == 1) {
+    # Simple case, just display the existing file
+    $legendPng = shift;
+    if (!-e $legendPng) {
+	print STDERR "File $legendPng does not exist\n";
+	usage();
+    }
+	    
+    $cmd="hev-imageDisplay -title Legend $legendPng";
+    if ($debugFlag) {
+	print STDERR "\n$cmd\n";
+    }
+    system($cmd);
+    exit(0);
+} elsif (@ARGV == 2) {
+    $configFile = shift;
+    $legendPng= shift;
+} else {
+    usage();
+}
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "configFile= $configFile\n";
+    print STDERR "legendPng= $legendPng\n";
+    print STDERR "bg= $bg[0] $bg[1] $bg[2]\n";
+    print STDERR "size= $size[0] $size[1]\n";
+    print STDERR "mvgsave= $mvgsave\n";
+}
+
+
+#
+# Read the config file
+#
+
+open (CONFIG,"<$configFile") || die("Can not open $configFile\n");
+
+if ($debugFlag) {
+    print STDERR "Reading $configFile\n";
+}
+$i=0;
+while (<CONFIG>) {
+    if (/(\s*)\#/) {
+	#chop; print STDERR "Found comment line: >$_<\n";
+	next
+    }
+#    if (/(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)
+    if (/(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+((\S+\s+)*)
+            /x)
+        {
+	    $pn=$5;
+	    chop $pn;
+	    if ($debugFlag) {
+		printf STDERR "%d %g %g %g name= %s\n",$1,$2,$3,$4,$pn;
+	    }
+	    $phase[$i]=$1;
+	    $r[$i]=$2;
+	    $g[$i]=$3;
+	    $b[$i]=$4;
+	    $pname[$i]=$pn;
+	    $i++;
+	}
+    else {
+	chop;
+	die "Bad data in $configFile at line -->$_<--\n";
+    }
+}
+
+#length of config file
+$l=@phase;
+if ($debugFlag) {
+    print "length of data in $configFlag: $l\n";
+}
+
+
+#
+# Build the mvg file used by convert to create the legend
+#
+
+
+if (!defined($mvgsave)) {
+    $mvgFile="/tmp/hyv-legend_".$<."_".$$.".mvg";
+} else {
+    $mvgFile=$mvgsave;
+}
+
+if ($debugFlag) {
+    print "mvgFile: $mvgFile\n";
+}
+
+buildMvgscript();
+
+
+# Now execute convert to generate the png file
+$cmd= "gm convert $mvgFile $legendPng";
+system($cmd);
+
+# and display
+if ($nodisplay==0) {
+    $cmd="hev-imageDisplay -title Legend $legendPng";
+}
+system($cmd);
+
+if (!defined($mvgsave)) {
+#    system("rm -f $mvgFile");
+    unlink $mvgFile;
+}
+
+
+if ($debugFlag) {
+    print STDERR "hyv-legend all done\n";
+}
+exit(0);
+
+#
+# End
+#
+
+
+
+sub buildMvgscript {
+
+    open (MVG,">$mvgFile") || die("Can not open mvg output file: $mvgFile\n");
+
+    print MVG "# $mvgFile - create a legend png image\n";
+    print MVG "#\n";
+    $date=localtime;
+    print MVG "# This mvg script was created by hyv-legend: $date\n";
+    print MVG "#\n";
+    print MVG "# Execute with the following command to create $legendPng\n";
+    print MVG "#        convert $mvgFile $legendPng\n";
+    print MVG "\n";
+
+    print MVG "push graphic-context\n";
+    print MVG "font Courier\n";
+    print MVG "font-size 16\n";
+    print MVG "viewbox 0 0 $size[0] $size[1]\n";
+    $rPercent=$bg[0]*100.;
+    $gPercent=$bg[1]*100.;
+    $bPercent=$bg[2]*100.;
+    printf MVG "fill rgb(%g%,%g%,%g%)\n",$rPercent, $gPercent, $bPercent;
+    print MVG "rectangle 0 0 110 90\n";
+    print MVG "stroke 'black'\n";
+    print MVG "stroke-width 1\n";
+    print MVG "\n";
+
+    # The following loop does something like this for each entry
+    #fill #ff7eef
+    #rectangle 10,10 20,20
+    #text 30,20 "C3S"
+
+    $xdelta=10;
+    $ydelta=10;
+    $xstart=10;
+    $ystart=10;
+
+    for ($i=0; $i<$l; $i++) {
+	$rPercent=$r[$i]*100.;
+	$gPercent=$g[$i]*100.;
+	$bPercent=$b[$i]*100.;
+	printf MVG "fill rgb(%g%,%g%,%g%)\n",$rPercent, $gPercent, $bPercent;
+	printf MVG "rectangle %g,%g,%g,%g\n",$xstart,$ystart,$xstart+$xdelta,$ystart+$ydelta;
+	printf MVG "text %g, %g \"%s\"\n",$xstart+20,$ystart+$ydelta,$pname[$i];
+	print  MVG "\n";
+	$ystart=$ystart+$ydelta+10;
+    }
+
+
+    print MVG "pop graphic-context\n";
+    close MVG;
+
+}

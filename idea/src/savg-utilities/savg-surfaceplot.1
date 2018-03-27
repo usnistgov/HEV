@@ -1,0 +1,53 @@
+.TH SAVG\-SURFACEPLOT 1 "February 2007"
+.SH NAME
+savg-surfaceplot
+.SH SYNOPSIS
+.B savg-surfaceplot 
+filename [xmarks ymarks zmarks]
+.PP
+.br
+.SH DESCRIPTION 
+.I savg-surfaceplot 
+creates a unit-sized surface plot based on data read in from a file in a specified format.
+Usage messages are produced when options are incorrectly specified.
+.SH OPTIONS
+.PP
+.TP
+.B filename
+Specify the file name of the data file for the graph.
+
+FILE FORMAT:
+          # of rows
+          # of columns
+          data(0,0)
+          data(1,0)
+          ...
+
+
+.TP
+.B xmarks ymarks zmarks
+Specify the number of tick marks along each axis; default = 3 3 3
+
+
+.SH EXAMPLES
+.TP
+.B "savg-surfaceplot surfdata 5 5 5 > surfaceplot.savg"
+This creates a surface plot at the origin with 5 tick marks along each axis, reading data from surfdata.
+.PP
+.SH AUTHOR
+.PP
+Adele Peskin
+.TP
+Version 1.0
+.br
+February, 2007
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+

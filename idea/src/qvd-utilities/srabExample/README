@@ -1,0 +1,27 @@
+January 16, 2013
+
+An example of qvd-shearingRocksAppBuilder based on 
+
+/home/steve/SuspensionFlow/LaFarge/lafarge_20121205/iris_lafarge_20121205
+
+To build two versions:
+
+   tar xvf savg.66.tar.gz
+   gunzip data3.qvisdat
+
+   ./build.sh  --tim 
+   mv shearingRocksVis shearingRocksVis_tim
+
+   ./build.sh  --iris 
+   mv shearingRocksVis shearingRocksVis_iris
+
+
+
+To Clean up:
+   rm -fr shearingRocksVis*
+   gzip data3.qvisdat
+   rm -r savg.66
+
+
+
+

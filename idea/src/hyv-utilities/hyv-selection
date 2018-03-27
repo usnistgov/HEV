@@ -1,0 +1,197 @@
+#! /bin/sh
+
+# hyv-selection 
+
+# steve@nist.gov
+
+version="20110505"
+
+function usage {
+cat <<EOF
+
+Usage: hyv-selection [-s] [nStart nStop nStep] inDir outDir
+
+  Utility to assist with making selection a sub-set of the img files from
+  the specified input directory and copy (or symlink) to the output directory
+
+  Especially useful for picking a few img file for testing from a large
+  collection in a source directory
+
+  -s       if specified will cause the files to be sym links instead of copied
+
+  nStart nStop nStep   sort of like a C for loop. The *.img files are
+                       implicitly numbered. File nStart to nStop with increment
+                       nStep are specified.
+
+  inDir    source directory containing *.img files.
+           Compressed (.gz) files in the source directory are uncompressed
+           when copied. Compressed files are always copied.
+
+  outDir   destination directory. Typically a sub-directory of the current
+           working directory.
+
+
+
+  Note: outDir is assumed to exist. The user is responsible for deleting any
+        old files than my not get updated. Many of the hyv-utilities work
+	as '*.img', so unexpected files can cause problems.
+
+EOF
+exit 1
+
+}
+
+
+debugFlag=0
+symlinkFlag=""
+
+# Hidden option
+if [ "$1" == "-d" ]
+then
+    debugFlag=1
+    shift
+fi
+
+
+case $# in
+2)
+   inDir=$1
+   outDir=$2
+   ;;
+
+3)
+   if [ "$1" == "-s" ]
+   then
+      symlinkFlag="-s"
+   else
+      echo "unexpected parameter:" $1
+      usage
+   fi
+   inDir=$2
+   outDir=$3
+   ;;
+5)
+   nStart=$1
+   nStop=$2
+   nStep=$3
+   inDir=$4
+   outDir=$5
+   ;;
+6)
+   if [ "$1" == "-s" ]
+   then
+      symlinkFlag="-s"
+   else
+      usage
+   fi
+   nStart=$2
+   nStop=$3
+   nStep=$4
+   inDir=$5
+   outDir=$6
+   ;;
+
+*)
+   usage
+esac
+
+
+
+if [ "$debugFlag" == "1" ]
+then
+  echo symlinkFlag= $symlinkFlag
+  echo nStart nStop nStep= $nStart $nStop $nStep
+  echo inDir= $inDir
+  echo outDIr= $outDir
+  if [ "$nStart" == "" ]
+  then
+    echo All files selected
+  else
+    echo Sequence of files selected
+  fi
+
+fi
+
+# Output Directory must exist
+if [ ! -d $outDir ]
+then
+    echo "Output directory does not exist:" $outDir
+    exit 1
+fi
+
+# Determine if absolute or relative path name and modify input appropriately
+if [ "${inDir:0:1}" == "/" ]
+then
+    in=$inDir
+else
+    in="../$inDir"
+fi
+
+# All or Partial
+if [ "$nStart" == "" ]
+then
+    # This case is easy
+    cd $outDir
+    #cp -a $symlinkFlag $in/*.img .
+    for f in $in/*.img $in/*.img.gz
+    do
+      if [ ! -f $f ]    # skip the case *.img or *.img.gz doesn't match
+      then
+          continue
+      fi
+      b=${f%.gz}
+      if [ "${b}.gz" == "$f" ]
+      then
+	  cp $f .
+	  gunzip ${f##*/}
+      else
+	  cp $symlinkFlag $f .
+      fi
+    done
+else
+    # This case is a bit more difficult
+    cd $outDir
+    i=$nStart
+    j=1
+    for f in $in/*.img $in/*.img.gz
+    do
+      if [ ! -f $f ]    # skip the case *.img or *.img.gz doesn't match
+      then
+          continue
+      fi
+      fb=${f##*/}  #basename
+      if [ "$i" == "$j" ]
+      then
+	  if [ "$debugFlag" == "1" ]
+	  then
+	      echo $i $fb
+	  fi
+	  #cp -a $symlinkFlag $in/$fb .
+
+          b=${f%.gz}
+	  if [ "${b}.gz" == "$f" ]
+	  then
+	      cp $f .
+	      gunzip ${f##*/}
+	  else
+	      cp $symlinkFlag $f .
+          fi
+
+
+
+          i=$(($i+nStep))
+	  if [ "$i" -gt "$nStop" ]
+	  then
+	      break
+	  fi
+     fi
+      j=$((j+1))
+    done
+
+
+fi
+
+
+# All done
+
+

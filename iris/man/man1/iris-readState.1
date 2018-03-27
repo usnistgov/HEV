@@ -1,0 +1,30 @@
+.TH iris-readState 1 "February 2011"
+
+.SH NAME
+iris-readState
+
+.SH SYNOPSIS 
+
+.B iris-readState [--usleep t]
+
+.SH DESCRIPTION
+
+\fBiris-readState\fR reads the data written by the writeState DSO in a loop and prints it to standard output.
+
+.SH OPTIONS
+
+.IP "--usleep t"
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+ 

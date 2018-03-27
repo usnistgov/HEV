@@ -1,0 +1,2 @@
+# run this script when the right button is pressed
+ON exec $HEV_IDEA_DIR/etc/hev-probe/bin/probeEventRight.sh

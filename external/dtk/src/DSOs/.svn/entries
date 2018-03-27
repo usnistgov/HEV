@@ -1,0 +1,49 @@
+10
+
+dir
+995
+https://diverse.svn.sourceforge.net/svnroot/diverse/trunk/dtk/DSOs
+https://diverse.svn.sourceforge.net/svnroot/diverse
+
+
+
+2012-08-07T17:20:30.396272Z
+991
+pshinpaugh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+507ea766-9cfe-0310-9089-a533cff91c67
+
+augmentDSO
+dir
+
+serviceDSO
+dir
+
+filterDSO
+dir
+
+CMakeLists.txt
+file
+
+
+
+
+2011-01-24T20:43:33.000000Z
+c27b20d3d652e41e61a4be4a58933785
+2007-06-13T21:51:15.268882Z
+574
+pshinpaugh
+

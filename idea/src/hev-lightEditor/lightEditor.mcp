@@ -1,0 +1,9 @@
+
+# Specifies a botton on the MCP menu for hev-lightEditor
+
+SIZE 90 20
+BUTTON LightEdit
+FIRST EXEC hev-lightEditor | $IRIS_CONTROL_FIFO
+ON EXEC hev-showWindow hev-lightEditor
+OFF EXEC hev-hideWindow hev-lightEditor
+

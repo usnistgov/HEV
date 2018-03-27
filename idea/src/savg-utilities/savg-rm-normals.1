@@ -1,0 +1,42 @@
+.TH SAVG\-RM-NORMALS 1 "31 March 2005"
+.SH NAME
+savg-rm-normals \- SAVG ToolBox: rm-normals
+.SH SYNOPSIS
+.B savg-rm-normals
+
+.SH DESCRIPTION
+.I savg-rm-normals
+removes normal values from any point data line containing them.
+.I stdin
+and outputs to
+.I stdout.
+There are no command line arguments.
+.SH EXAMPLES
+.TP
+.B cat file.savg | savg-rm-normals > file-rm-norm.savg
+Reads from 
+.I in.savg
+and removes normal values from each line containing them.  Then outputs to 
+.I out.savg.
+.SH BUGS
+(none)
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Spring 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

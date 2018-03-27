@@ -1,0 +1,16 @@
+#Inventor V2.0 ascii
+Separator {
+Translation { translation -.65 0 -1.9 }
+Separator {
+Scale { scaleFactor .1 .2 .1 }
+Separator {
+ Font {
+  name  "Arial"
+  size 2
+ }
+ Text3 {
+   string ["NIST"]
+ }
+}
+}
+}

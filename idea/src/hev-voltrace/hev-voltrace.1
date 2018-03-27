@@ -1,0 +1,281 @@
+.TH HEV-VOLTRACE 1 "25 June 2010"
+
+
+.SH NAME
+
+hev-voltrace
+
+
+.SH SYNOPSIS
+
+.B hev-voltrace
+.I [options] [xsize ysize zsize] result.osg
+
+
+.SH DESCRIPTION
+
+\fBhev-voltrace\fR creates an object for ray traced volume rendering.
+
+.TP 
+.B xsize, ysize, and zsize
+are the geometric sizes of the volume. These need not match the exact
+voxel dimensions, though they will usually at least match the
+proportions. 
+
+.TP
+.B result.osg
+is the name of the OpenSceneGraph geometry file to create.
+
+.SH OPTIONS
+
+.SS "Geometric options"
+
+.TP
+.B --geometry | --no-geometry \fR(default --geometry)
+Include volume geometry, or just shaders in the output file. The
+--no-geometry option can be used with \fBhev-applyState\fR to swap
+shaders on a single volume. If --no-geometry is used, the remainder of
+the options in this section have no effect.
+
+.TP
+.B --box | --no-box \fR(default --box)
+Include or don't include the outer box. This is the primary object for
+spawning volume rendering rays, so normally you would always want
+this. Can be disabled if using purely texture-slice volume rendering
+(with non-zero \fB--slices\fR), though even texture slice rendering
+will be better quality with the box.
+
+.TP
+.B --objects | --no-objects \fR(default --no-objects)
+Include or don't include support for solid objects embedded in the
+volume. If \fB--object\fR is specified, the objects should be attached
+to the \fIpre-\fR branch of an \fB.fxcam\fR, and the volume should be
+attached to the the \fIpost-\fR branch.
+
+.TP
+.B --near | --no-near \fR(default --near)
+Include or don't include support for a near clipping plane. Without
+\fB--near\fR, the volume will disappear where clipped by the near
+clipping plane. Use \fB--no-near\fR if you know the volume will only
+ever be viewed from the outside.
+
+.TP
+.B --clip | --no-clip \fR(default --clip)
+Include or don't include support for user clipping. Without
+\fB--clip\fR, the volume will disappear where clipped by the user
+controlled clipping (windshield, slice, box, etc.). Use
+\fB--no-clip\fR if you know user clipping will not be used with this
+volume.
+
+.TP 
+.B --slices \fInumber\fR (default 0)
+If non-zero, include additional internal texture slices. Texture
+slicing is an alternate form of volume rendering, in which the volume
+is reconstructed through a large number of parallel planes slicing
+through it (typically twice the number of voxels in the longest
+dimension). Slices will be oriented parallel to the screen, however
+you turn the volume. The spacing will remain constant, so the maximum
+number of texture slices will only be visible when you look down the
+diagonal of the volume. As implemented here, the volume renderer will
+actually cast a ray between the slices, allowing coarser slice
+spacing. Adding slices allow an alternative to \fB--near\fR,
+\fB--clip\fR and \fB--objects\fR to support clipping and objects
+embedded in the volume. In general, those other methods will produce
+better quality and faster results than \fB--slices\fR.
+
+.SS "Ray traversal options"
+
+.TP 
+.B --scale \fIfloat\fR (default 1)
+Scale factor between the geometric sizes and optical depth. Increasing
+the scale factor will make the volume more opaque. Decreasing it will
+make the volume more transparent. The same changes can be achieved for
+preintegrated volume rendering through the scale factor in
+\fBhev-preintegrate\fR, though extreme scaling in the preintegration
+texture can introduce precision problems.
+
+.TP
+.B --step \fIfloat\fR (default 0.5)
+Minimum ray step (in voxels) to take when marching through the
+volume. Larger numbers will run faster by taking larger steps, but may
+skip voxel data. If you really need a large step to make the volume
+rendering interactive, consider applying a blur to the volume with
+radius equal to the step size.
+
+.TP
+.B --randstep | --no-randstep \fR(default --randstep)
+Take a random partial first step in the ray tracing. Turns some
+coherent artifacts caused by having all of the rays marching together
+into noise.
+
+.SS "Ray casting shader options"
+
+.TP
+.B --voldata \fItype\fR (default lookup)
+How to get volume data. The following voldata function types are
+pre-installed:
+.RS
+.IP \(bu 4
+.B lookup:
+Look up in a 3D texture named \fIvolumeTexture\fR for data. 
+.IP \(bu 4
+.B scaled:
+Look up in a 3D texture named \fIvolumeTexture\fR for data, then scale
+data range based on \fIuniform vec4\fR parameters \fIvolmin\fR and
+\fIvolrange\fR. Can be used to adjust for data that does not fill the
+full range, or to scale data to physical values.
+.P
+This option operates by including a voldata() shader function from a
+shader file with the name \fBvoltrace-voldata-\fItype\fB.glsl\fR,
+allowing user-created data functions. Voldata functions should use the
+following function name and prototype:
+.IP
+.B vec4 voldata(vec3 position)
+.P
+This function should return the data value for the given 3D
+\fIposition\fR in the volume. The \fIposition\fR parameter is scaled
+from -1 to 1 in each dimension. For consistency with default transfer
+and integration functions, scalar volumes should return data in the
+red channel of the result.
+.RE
+
+.TP
+.B --transfer \fItype\fR (default preint)
+What kind of transfer function to use. The following transfer function types are pre-installed:
+.RS
+.IP \(bu 4
+.B preint:
+Use a 2D preintegration texture named \fIvolumeLUT\fR. The entry at
+\fIu,v\fR in the texture gives the color and opacity for integrating
+along a unit-length ray as values change uniformly from u to v. This
+transfer ffunction gives the highest quality results, but requires the
+preintegration table to be computed (which can be slow for large
+tables), and only works for scalar volumes with an
+emmission-absorption transfer function. The preintegration texture can
+be created with \fBhev-preintegrate\fR constructs a 2D table from a 1D
+transfer look up table. Should only be used with the \fIpoint\fR
+integration function
+.IP \(bu 4
+.B emit:
+Simple emission/absorption model in which the volume emits color and
+absorbs light passing through on the way to the viewer. The mapping of
+values to color and opacity is given by a texture named
+\fIvolumeLUT\fR.
+.IP \(bu 4
+.B lit:
+A modification of the \fIemit\fR transfer function, where opaque
+material in the transfer table (with alpha=1) is rendered with diffuse
+shading to appear as an isosurface.
+.P
+This option operates by including a transfer() shader function from a
+shader file with the name \fBvoltrace-transfer-\fItype\fB.glsl\fR,
+allowing user-created transfer functions. Transfer functions should
+use the following function name and prototype:
+.IP
+.B vec4 transfer(vec3 position, vec4 value, vec4 previous)
+.P
+This function should return the color and opacity (RGBA) for the given
+3D \fIposition\fR in the volume. The value at \fIposition\fR is
+\fIvalue\fR, and the value one step back was \fIprevious\fR. For
+scalar volumes, the scalar value is value.r.
+.RE
+
+.TP
+.B --integration \fItype\fR (default point)
+Specify what kind of ray integration use for a step through the
+volume. Predefined integration functions include:
+.RS
+.IP \(bu 4
+.B point:
+The volume rendering integral is approximated by simple
+piecewise-constant Euler integration along the ray. Volume rendering
+quality will not be as good as with other methods (unless used with
+the \fBpreint\fR transfer function), but this is the simplest and
+fastest integration method.
+
+.IP \(bu 4
+.B linear:
+Approximates integrating along each step of the ray, assuming the
+color and opacity changes linearly along the step. Flexible (allows
+multidimensional transfer functions and volume lighting), and probably
+about as fast as point integration.
+.P
+The actual integration step will be defined by the
+integration() function in a shader file with the name
+voltrace-integration-<type>.glsl. Integration functions should use the
+following function name and prototype:
+.IP
+.B vec4 integration(vec3 position, float step, vec4 value, inout vec4 previous)
+.P
+The return value should be the color and opacity for integrating a
+distance of \fIstep\fR along a ray to position \fIposition\fR, where
+the value at \fIposition\fR is \fIvalue\fR, and the previous value was
+\fIprevious\fR. The integration function should update \fIprevious\fR,
+and also should call the \fItransfer\fR function as
+necessary. 
+.RE
+
+.TP
+.B --include \fIdirectory\fR
+Add directories to be searched for the transfer function shader file
+and other files #included by it. May be repeated to add additional
+directories.
+
+.SH SHADER SETUP
+
+Several uniform shader variables and 2D and 3D textures need to be
+provided for correct functioning:
+
+.TP
+.B volumeTexture
+There should be a 3D texture containing the scalar volume data with
+shader name \fIvolumeTexture\fR. If the transfer function will not
+change, this volume can be preprocessed with \fBhev-volOptimize\fR to
+improve the rendering speed. If you change the tranfer function after
+running \fBhev-volOptimize\fR, be sure to use it again to either
+refresh or remove the optimization data to avoid incorrect volume
+rendering.
+
+.TP
+.B voxelSize
+In addition, there should be a \fIvec3\fR shader variable named
+\fIvoxelSize\fR. \fIvoxelSize.xyz\fR should be the actual size in
+voxels of the volume.
+
+.TP
+.B volumeLUT
+There should be a 1D or 2D transfer function.
+
+.TP
+.B fxcam
+Finally, if the volume is to interact with polygonal geometry using an
+\fIfxcam\fR node, there should be a 2D depth texture with shader name
+\fIfxcamDepth\fR. This would normally be provided by the \fIfxcam\fR
+node if the polygonal geometry is on the \fIpre-\fR branch of the
+\fIfxcam\fR and the volume is on the \fIpost-\fR branch.
+
+.SH EXAMPLES
+
+See \fB$HEVROOT/savg/dgl/src/hev-voltrace/voltest\fR for examples of
+how to load volume data and a transfer function, and how to either
+display just the volume or hook up the volume renderer to an fxcam
+node to function with polygonal objects.
+
+.SH SEE ALSO
+
+\fBhev-applyState\fR(1), \fBhev-preintegrate\fR(1),
+\fBhev-volOptimize\fR(1), \fBfxcam\fR(5)
+
+.SH AUTHOR
+
+Marc Olano
+
+.PP
+June 2010
+
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

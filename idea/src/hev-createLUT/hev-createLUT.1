@@ -1,0 +1,243 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-createLUT 1 "October 2012" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-createLUT - create a color look up table
+.br
+hev-LUT2png - convert look up table to png for display
+.br
+hev-LUT2plot - plot the separate R, G, B, A components of a LUT
+.br
+hev-blueYellowLUT - create a blue to yellow look up table
+.br
+hev-rgbSwatch - display a color swatch of the specified r g b value
+.br
+hev-LUT2data - apply a look up table to data on stdin
+.br
+hev-LUT2tf - convert LUT format to \fBtf\fR format, see \fBvol-visBuilder(1)\fR
+
+.SH SYNOPSIS
+.B "hev-createLUT"
+[-h]|[-v]
+.br
+.B "hev-LUT2png
+[-a] [-s float] in.lut [outImage]
+.br
+.B "hev-LUT2plot"
+[-h] [s float] in.lut [outImage]
+.br
+.B "hev-yellowBlueLUT
+.br
+.B "hev-rgbSwatch"
+[--size NxM] [--float|--int]  r g b [a] [file]
+.br
+.B "hev-LUT2data"
+[--help] [--rgba] file.lut
+.br
+.B "hev-LUT2tf"
+[--help] funcName
+
+.SH DESCRIPTION
+.PP
+.I
+hev-createLUT
+is a filter to create an ASCII color Look Up Table with 256 entries to
+.I stdout.
+.IP
+The LUT format is
+
+	index red green blue alpha
+
+.IP
+The index value is an integer 0 to 255. The R G B A values are float
+values typically 0.0 to 1.0. Values greater than 1.0 are possible
+depending on the purpose of the specific LUT.  Comments are allowed in
+the file with a '#' at the beginning of the line.
+
+.IP
+The \fB-h\fR option prints a short help message.
+The \fB-v\fR option prints a bit of \fIverbosity\fB.
+
+.IP
+The input used to generate the table is a table of key values in the same
+format. The output LUT is interpolated between the key values.
+Usage is best explained with an example, see below.
+
+
+.PP
+.I hev-LUT2png
+can be used to create a
+.B png
+image file for viewing the LUT.
+.IP
+If the \fB-a\fR option is specified, the alpha value is ignored and an
+alpha=1.0 is used.  If \fBoutImage\fR is not specified, the image is
+displayed and no output file is created.  If floating scale value is
+specified with the \fB-s\fR option, the scale is applied to the r,g,b,a
+values. This is useful useful to scale LUT values greater than 1 into the
+0 to 1.0 range. Otherwise, large values are truncated to 1.0.
+
+.PP
+.I hev-LUT2plot
+can be used to create a plot of the R,G,G,A components of a LUT.
+.IP
+The
+\fBoutImage\fR is a \fBpng\fR format that can be displayed with the
+\fIdisplay\fR command. If \fBoutImage\fR is not specified, the plot is
+displayed and no output file is created.
+.IP
+The backgound of each component plot is an image created by
+.I hev-LUT2png.
+
+.PP
+.I hev-blueYellowLUT
+will write a sample blue to yellow LUT to
+.I stdout
+
+.PP
+.I hev-rgbSwatch
+will display a color swatch of the specified r g b a values.
+.IP
+This command is useful to see what a particular r,g,b,a, value will look like.
+The \fIa\fR (alpha) value is optional and if not specified, is 1.0.
+The parameter
+.B --float/-int
+allows the colors to be specified as a float value, 0.0 to 1.0, or a integer value, 0 to 255.
+.B --size
+specifies the size of the display image swatch. If
+.B file
+is specified, the swatch is saved to the file instead of being displayed.
+The file must be a type that the
+.I convert
+command can create.
+
+.PP
+.I  hev-LUT2data
+will apply a look up table to data on
+.I stdin
+and send result to
+.I stdout.
+.IP
+The output is
+suitable
+for conversion to an image with the convert command.
+The input on stdin must be one ASCII string per line representing a number in
+the range 0 to 1.
+The output will a binary stream of RGBA bytes (the default).
+.IP
+The
+\fBconvert\fR command can be used to create a display able image
+.IP
+If the \fB--rgba\fR parameter is specified, the the output will be ASCII RGBA
+in range 0 to 1 in 4 columns instead of the normal binary output.
+
+.PP
+.I hev-LUT2tf
+convert a LUT file on \fIstdin\fR to \fB.tf\fR format on \fIstdout\fR.
+This command is a convenience utility command to create a transfer
+function files suitable for use with the \fBvol-visBuilder(1)\fR
+command.  The output can also be considered a sample \fB.tf\fR file
+that can be hand edited to modify the various options available in the
+\fB.tf\fR format. The parameter \fIfuncName\fR is the transfer function name.
+See \fBvol-transferFuncFmt(5)\fR.
+
+.SH SAMPLE LUT FILES
+.PP
+There are a series of example LUT files stored available in the directory:
+.IP
+${HEVROOT}/idea/src/hev-createLUT/lutSamples 
+
+.PP
+The best way to look them is with a web browser and open the file:
+.IP
+${HEVROOT}/idea/src/hev-createLUT/lutSamples/samples.html
+
+.PP
+Depending on your environment, you may need to substitute \fI/usr/local/HEV\fR
+for \fI${HEVROOT}\fR. For example:
+.IP
+file:///usr/local/HEV/idea/src/hev-createLUT/lutSamples/samples.html
+
+
+
+
+.SH EXAMPLE: hev-createLUT
+
+Assuming the file
+.B sample.dat
+contains the following:
+.IP
+# Blue to yellow to red
+.br
+  0  0.0  0.0  1.0  1.0
+.br
+ 64  1.0  1.0  0.0  1.0
+.br
+255  1.0  0.0  0.0  1.0
+
+.PP
+Then to create a full look up table with a color range from blue to yellow to
+red, use:
+.IP
+hev-createLUT < sample.dat > sample.lut
+
+.PP
+To create an image file and display the image file use.
+.IP
+hev-LUT2png sample.lut sample.png
+.br
+
+.br
+display sample.png
+
+
+.SH EXAMPLE: hev-rgbSwatch
+Display a swatch:
+.IP
+hev-rgbSwatch 1.0 .75 .25
+.PP
+Create a file and display with separate command:
+.IP
+hev-rgbSwatch --size 200x300 1.0 .75 .25 sample.png
+.br
+display sample.png
+
+	
+.SH EXAMPLE: hev-LUT2plot
+Starting with an file named \fItransfer.dat\fR create the component plot:
+.IP
+hev-createLUT < transfer.dat > transfer.lut
+.br
+hev-LUT2plot transfer.lut transfer.png
+.br
+display transfer.png
+
+
+.SH EXAMPLE: hev-LUT2data
+Assuming an Input file representing a 128x128 2D image as 16384 (ASCII) numbers
+in the range 0.0 to 1.0
+.IP
+hev-LUT2data sample.lut < sample.dat > sample.raw
+.br
+convert -depth 8 -size 128x128 rgba:sample.raw sample.png
+.br
+display sample.png
+
+
+.SH "SEE ALSO"
+.I
+display(1), convert(1), vol-visBuilder(1)
+
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,  NIST/ITL/ACMD/HPCVG
+
+
+\"  LocalWords:  hev createLUT NIST br LUT2png png LUT2plot LUT blueYellowLUT
+\"  LocalWords:  rgbSwatch LUT2data stdin LUT2tf fBtf fR fBvol visBuilder lut
+\"  LocalWords:  outImage yellowBlueLUT NxM rgba stdout IP fB fIverbosity fBpng
+\"  LocalWords:  fBoutImage fIdisplay backgound fIa fBconvert fIstdin tf fI dat
+\"  LocalWords:  fIstdout HEVROOT 200x300 fItransfer 128x128 2D

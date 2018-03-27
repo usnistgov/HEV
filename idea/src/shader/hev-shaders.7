@@ -1,0 +1,60 @@
+.TH HEV-SHADERS 7 "May 2013" "NIST/ACMD" "HCPVG HEV"
+
+.SH NAME
+hev-shaders
+- common GLSL shaders.
+
+.SH DESCRIPTION
+
+\fBhev-shaders\fR is a set of shaders for use in demos and other applications.
+
+.SH SHADERS
+
+.TP
+.B fatglyph.{vert,frag}
+
+.TP
+.B gpuSphere.{vert,geom,frag}
+\fBgpuSphere.vert\fR is a vertex shader for drawing gpuSpheres.
+\fBgpuSphere.geom\fR is a geometry shader for drawing gpuSpheres. Only one of
+either the vertex or geometry shader should be used and combined with 
+\fBgpuSphere.frag\fR to complete gpuSphere drawing. Based Jim Blinn's Corner,
+How to Draw a Sphere: Part 1, IEEE CG&A, January 1995.
+
+.TP
+.B lineLight.{vert,frag}
+
+.TP
+.B simple.vert
+Simple vertex shader for approximating fixed-function lighting, except for
+distance attenuation and spot falloff.
+
+.TP
+.B tim.{vert,frag}
+Vertex and fragment shaders for Things in Motion. See .BR hev-tim (1).
+
+.TP
+.B wand.vert
+
+.TP
+.B red.frag
+Outputs a red color for every fragment.
+
+.SH DEPRECATED
+
+.TP
+.B litFatSphere.{vert,frag}, fatsphere.{vert,frag}, fatpoint.{vert,frag}
+These shaders have been superseded by the gpuSphere shaders:
+\fBgpuSphere.{vert,geom,frag}\fR.
+
+.SH TODO
+
+The vol.* shaders in $HEV_IDEA_DIR/shader
+
+.SH AUTHOR
+Marc Olano
+
+.SH SEE ALSO
+.BR hev-shaderLibrary (7),
+.BR hev-tim (1).
+

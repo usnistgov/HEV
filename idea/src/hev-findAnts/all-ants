@@ -1,0 +1,36 @@
+#!/bin/sh
+
+###############################
+# all-ants - a script to generate a list
+# of commands in each of the familes of
+# the "Army of Ants"  in $PATH. This
+# calls one or more helper script(s) so
+# the calling environment must be correctly
+# set to find them, usually by modifying
+# the PATH env var.
+
+echo
+${PRIVATE_BINS}/hev-ants ${KSTR}
+#sleep 10
+${PRIVATE_BINS}/iris-ants ${KSTR}
+#sleep 10
+${PRIVATE_BINS}/savg-ants ${KSTR}
+#sleep 10
+${PRIVATE_BINS}/netx-ants ${KSTR}
+#sleep 10
+${PRIVATE_BINS}/qvd-ants ${KSTR}
+#sleep 10
+${PRIVATE_BINS}/hyv-ants ${KSTR}
+#sleep 10
+${PRIVATE_BINS}/osg-ants ${KSTR}
+#sleep 10
+${PRIVATE_BINS}/dgl-ants ${KSTR}
+#sleep 10
+${PRIVATE_BINS}/dtk-ants ${KSTR}
+#sleep 10
+${PRIVATE_BINS}/vtk-ants ${KSTR}
+#sleep 10
+${PRIVATE_BINS}/itk-ants ${KSTR}
+#sleep 10
+${PRIVATE_BINS}/iv-ants ${KSTR}
+echo

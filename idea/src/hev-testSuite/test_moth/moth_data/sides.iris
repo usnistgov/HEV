@@ -1,0 +1,127 @@
+GROUP moth_Sides
+
+LOAD moth-0.0_Sides /home/griffin/hev/idea/testSuite/moth_data/0.0_Sides.ive
+NODEMASK moth-0.0_Sides OFF
+ADDCHILD moth-0.0_Sides moth_Sides
+
+
+LOAD moth-0.2_Sides /home/griffin/hev/idea/testSuite/moth_data/0.2_Sides.ive
+NODEMASK moth-0.2_Sides OFF
+ADDCHILD moth-0.2_Sides moth_Sides
+
+
+LOAD moth-0.4_Sides /home/griffin/hev/idea/testSuite/moth_data/0.4_Sides.ive
+NODEMASK moth-0.4_Sides OFF
+ADDCHILD moth-0.4_Sides moth_Sides
+
+
+LOAD moth-0.5_Sides /home/griffin/hev/idea/testSuite/moth_data/0.5_Sides.ive
+NODEMASK moth-0.5_Sides OFF
+ADDCHILD moth-0.5_Sides moth_Sides
+
+
+LOAD moth-0.7_Sides /home/griffin/hev/idea/testSuite/moth_data/0.7_Sides.ive
+NODEMASK moth-0.7_Sides OFF
+ADDCHILD moth-0.7_Sides moth_Sides
+
+
+LOAD moth-0.8_Sides /home/griffin/hev/idea/testSuite/moth_data/0.8_Sides.ive
+NODEMASK moth-0.8_Sides OFF
+ADDCHILD moth-0.8_Sides moth_Sides
+
+
+LOAD moth-1.0_Sides /home/griffin/hev/idea/testSuite/moth_data/1.0_Sides.ive
+NODEMASK moth-1.0_Sides OFF
+ADDCHILD moth-1.0_Sides moth_Sides
+
+
+LOAD moth-1.2_Sides /home/griffin/hev/idea/testSuite/moth_data/1.2_Sides.ive
+NODEMASK moth-1.2_Sides OFF
+ADDCHILD moth-1.2_Sides moth_Sides
+
+
+LOAD moth-1.4_Sides /home/griffin/hev/idea/testSuite/moth_data/1.4_Sides.ive
+NODEMASK moth-1.4_Sides OFF
+ADDCHILD moth-1.4_Sides moth_Sides
+
+
+LOAD moth-1.5_Sides /home/griffin/hev/idea/testSuite/moth_data/1.5_Sides.ive
+NODEMASK moth-1.5_Sides OFF
+ADDCHILD moth-1.5_Sides moth_Sides
+
+
+LOAD moth-1.7_Sides /home/griffin/hev/idea/testSuite/moth_data/1.7_Sides.ive
+NODEMASK moth-1.7_Sides OFF
+ADDCHILD moth-1.7_Sides moth_Sides
+
+
+LOAD moth-1.8_Sides /home/griffin/hev/idea/testSuite/moth_data/1.8_Sides.ive
+NODEMASK moth-1.8_Sides OFF
+ADDCHILD moth-1.8_Sides moth_Sides
+
+
+LOAD moth-2.0_Sides /home/griffin/hev/idea/testSuite/moth_data/2.0_Sides.ive
+NODEMASK moth-2.0_Sides OFF
+ADDCHILD moth-2.0_Sides moth_Sides
+
+
+LOAD moth-2.2_Sides /home/griffin/hev/idea/testSuite/moth_data/2.2_Sides.ive
+NODEMASK moth-2.2_Sides OFF
+ADDCHILD moth-2.2_Sides moth_Sides
+
+
+LOAD moth-2.4_Sides /home/griffin/hev/idea/testSuite/moth_data/2.4_Sides.ive
+NODEMASK moth-2.4_Sides OFF
+ADDCHILD moth-2.4_Sides moth_Sides
+
+
+LOAD moth-2.5_Sides /home/griffin/hev/idea/testSuite/moth_data/2.5_Sides.ive
+NODEMASK moth-2.5_Sides OFF
+ADDCHILD moth-2.5_Sides moth_Sides
+
+
+LOAD moth-2.7_Sides /home/griffin/hev/idea/testSuite/moth_data/2.7_Sides.ive
+NODEMASK moth-2.7_Sides OFF
+ADDCHILD moth-2.7_Sides moth_Sides
+
+
+LOAD moth-2.8_Sides /home/griffin/hev/idea/testSuite/moth_data/2.8_Sides.ive
+NODEMASK moth-2.8_Sides OFF
+ADDCHILD moth-2.8_Sides moth_Sides
+
+
+LOAD moth-3.0_Sides /home/griffin/hev/idea/testSuite/moth_data/3.0_Sides.ive
+NODEMASK moth-3.0_Sides OFF
+ADDCHILD moth-3.0_Sides moth_Sides
+
+
+LOAD moth-3.2_Sides /home/griffin/hev/idea/testSuite/moth_data/3.2_Sides.ive
+NODEMASK moth-3.2_Sides OFF
+ADDCHILD moth-3.2_Sides moth_Sides
+
+
+LOAD moth-3.4_Sides /home/griffin/hev/idea/testSuite/moth_data/3.4_Sides.ive
+NODEMASK moth-3.4_Sides OFF
+ADDCHILD moth-3.4_Sides moth_Sides
+
+
+LOAD moth-3.5_Sides /home/griffin/hev/idea/testSuite/moth_data/3.5_Sides.ive
+NODEMASK moth-3.5_Sides OFF
+ADDCHILD moth-3.5_Sides moth_Sides
+
+
+LOAD moth-3.7_Sides /home/griffin/hev/idea/testSuite/moth_data/3.7_Sides.ive
+NODEMASK moth-3.7_Sides OFF
+ADDCHILD moth-3.7_Sides moth_Sides
+
+
+LOAD moth-3.8_Sides /home/griffin/hev/idea/testSuite/moth_data/3.8_Sides.ive
+NODEMASK moth-3.8_Sides OFF
+ADDCHILD moth-3.8_Sides moth_Sides
+
+
+LOAD moth-4.0_Sides /home/griffin/hev/idea/testSuite/moth_data/4.0_Sides.ive
+NODEMASK moth-4.0_Sides OFF
+ADDCHILD moth-4.0_Sides moth_Sides
+
+RETURN moth_Sides

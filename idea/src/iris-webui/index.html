@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="hev-webui">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="bootstrap-3.3.5.min.css" rel="stylesheet">
+    <link href="webui.css" rel="stylesheet">
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="d3-3.5.6.min.js"></script>
+  </head>
+
+  <body>
+
+    <div class="container-fluid form-horizontal" ng-controller="IrisController">
+
+      <div class="form-group">
+        <div class="col-xs-12 page-header">
+          <h1>HEV <small>Controls</small></h1>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="echo" class="col-xs-2 control-label">Echo</label>
+        <div class="col-xs-1">
+          <button type="button" class="btn btn-primary" ng-model="echo" ng-change="updateEcho(echo)" btn-checkbox>{{echo ? "ON" : "OFF"}}</button>
+        </div>
+
+        <label for="background" class="col-xs-2 control-label">Background</label>
+        <div class="col-xs-2">
+          <input type="color" name="background" class="form-control" ng-model="background" ng-change="updateBackground(background)">
+        </div>
+      </div> <!-- /.form-group -->
+
+      <div class="form-group">
+        <label for="response" class="col-xs-2 control-label">Response</label>
+        <div class="col-xs-10">
+          <alert id="response" ng-model="response" type="info">{{response}}</alert>
+        </div>
+      </div> <!-- /.form-group -->
+
+      <div class="form-group">
+        <label for="notify" class="col-xs-2 control-label">Notify</label>
+        <div class="col-xs-10">
+          <alert id="notify" ng-model="notify" type="info">{{notify}}</alert>
+        </div>
+      </div> <!-- /.form-group -->
+
+      <div class="form-group">
+        <label class="col-xs-2 control-label">SceneGraph</label>
+        <div id="scenegraph" class="col-xs-10">
+          <hev-scenegraph></hev-scenegraph>
+        </div>
+      </div> <!-- /.form-group -->
+
+    </div> <!-- /.container-fluid -->
+
+    <script src="angular-1.4.3.min.js"></script>
+    <script src="angular-socket-io-0.7.0.min.js"></script>
+    <script src="ui-bootstrap-tpls-0.13.0.min.js"></script>
+    <script src="webui.js"></script>
+
+  </body>
+</html>

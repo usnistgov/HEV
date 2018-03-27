@@ -1,0 +1,5 @@
+This version shifts the program away from a GUI based implementation to an
+object oriented implementation, with separate classes for the window shards,
+the environment, and the world, making it easier to adapt for other purposes.
+It also adds experimental scale control, but this is disabled in the current
+version until the bugs are worked out.

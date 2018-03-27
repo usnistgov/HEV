@@ -1,0 +1,4 @@
+RADIO
+ READ gnomon.mcp
+ READ clip.mcp
+END

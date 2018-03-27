@@ -1,0 +1,46 @@
+#! /bin/bash
+
+# 1/17/2014
+# steve@nist.gov
+
+function usage {
+cat <<EOF
+
+Usage: irisfly-goto --create | --goto    file.timeline
+
+  Utility to reproduce the same position and orientation for multiple
+  irisfly executions.
+
+    --create | -c  create a one line hev-timeline file for the
+                   current running irisfly position and orientation
+
+    --goto | -g    cause current running irisfly to go to the position
+                   and orientation in the specified timeline file,
+                   typically created with --create
+
+EOF
+}
+
+
+case $# in
+1)
+	case $1 in
+	-h*|--h*)
+		usage
+		;;
+	esac
+	;;
+2)
+	case $1 in
+	-c*|--c*)
+	          (echo 0; echo ) | hev-timelineBuilder 2> /dev/null > $2
+		  ;;
+        -g*|--g*)
+	           cat $2 | hev-timelineToIris > $IRIS_CONTROL_FIFO
+        esac
+	;;
+
+*)
+	usage
+	;;
+esac

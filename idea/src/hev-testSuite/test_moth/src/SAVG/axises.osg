@@ -1,0 +1,185 @@
+Group {
+  UniqueID Group_0
+  DataVariance UNSPECIFIED
+  name "Axises"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  num_children 2
+  Group {
+    DataVariance STATIC
+    name "AxisesLines"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    num_children 3
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        StateSet {
+          DataVariance STATIC
+          rendering_hint TRANSPARENT_BIN
+          renderBinMode USE
+          binNumber 10
+          binName DepthSortedBin
+          GL_LIGHTING PROTECTED|OFF
+          GL_DEPTH_TEST PROTECTED|ON
+          GL_BLEND PROTECTED|OFF
+          LineWidth {
+            DataVariance UNSPECIFIED
+            width 1
+          }
+        }
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays LINE_STRIP 0 2
+        }
+        VertexArray Vec3Array 2
+        {
+          -0.1 0 0
+          1 0 0
+        }
+        ColorBinding PER_VERTEX
+        ColorArray Vec4Array 2
+        {
+          1 0 0 1
+          1 0 0 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        StateSet {
+          DataVariance STATIC
+          rendering_hint TRANSPARENT_BIN
+          renderBinMode USE
+          binNumber 10
+          binName DepthSortedBin
+          GL_LIGHTING PROTECTED|OFF
+          GL_DEPTH_TEST PROTECTED|ON
+          GL_BLEND PROTECTED|OFF
+          LineWidth {
+            DataVariance UNSPECIFIED
+            width 1
+          }
+        }
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays LINE_STRIP 0 2
+        }
+        VertexArray Vec3Array 2
+        {
+          0 -0.1 0
+          0 1 0
+        }
+        ColorBinding PER_VERTEX
+        ColorArray Vec4Array 2
+        {
+          0 1 0 1
+          0 1 0 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        StateSet {
+          DataVariance STATIC
+          rendering_hint TRANSPARENT_BIN
+          renderBinMode USE
+          binNumber 10
+          binName DepthSortedBin
+          GL_LIGHTING PROTECTED|OFF
+          GL_DEPTH_TEST PROTECTED|ON
+          GL_BLEND PROTECTED|OFF
+          LineWidth {
+            DataVariance UNSPECIFIED
+            width 1
+          }
+        }
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays LINE_STRIP 0 2
+        }
+        VertexArray Vec3Array 2
+        {
+          0 0 -0.1
+          0 0 1
+        }
+        ColorBinding PER_VERTEX
+        ColorArray Vec4Array 2
+        {
+          0 0 1 1
+          0 0 1 1
+        }
+      }
+    }
+  }
+  PositionAttitudeTransform {
+    DataVariance STATIC
+    name "Z"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    referenceFrame RELATIVE
+    position 0 0 1
+    attitude 0 0 0 1
+    scale 1 1 1
+    pivotPoint 0 0 0
+    num_children 1
+    Geode {
+      DataVariance UNSPECIFIED
+      name "ZName"
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      StateSet {
+        DataVariance STATIC
+        rendering_hint DEFAULT_BIN
+        renderBinMode INHERIT
+        GL_LIGHTING PROTECTED|OFF
+      }
+      num_drawables 1
+      osgText::Text {
+        DataVariance STATIC
+        StateSet {
+          UniqueID StateSet_1
+          DataVariance STATIC
+          rendering_hint TRANSPARENT_BIN
+          renderBinMode USE
+          binNumber 10
+          binName DepthSortedBin
+        }
+        supportsDisplayList FALSE
+        useDisplayList FALSE
+        useVertexBufferObjects FALSE
+        font /local/HEV/apps/osg/OpenSceneGraph-Data/fonts/arial.ttf
+        fontResolution 100 100
+        characterSize 0.05 1
+        characterSizeMode OBJECT_COORDS
+        alignment LEFT_BASE_LINE
+        autoRotateToScreen TRUE
+        layout LEFT_TO_RIGHT
+        position 0 0 0
+        color 0 0 1 1
+        drawMode 1
+        text "Energy"
+      }
+    }
+  }
+}

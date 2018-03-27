@@ -1,0 +1,71 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-speakDigits 1 "June 2010" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-speakDigits
+- Speak a number as a series of audio digits.
+
+
+.SH SYNOPSIS
+.B hev-speakDigits
+[--help] [--verbose]
+
+.SH DESCRIPTION
+.PP
+.I hev-speakDigits
+is a utility to \fIspeak\fR a number read as an ASCII string on \fIstdin\fR
+by playing a series of \fIwav\fR to the audio device.
+For example, \fB3.14\fR as \fIthree, point, one, four.
+
+
+.SH  OPTIONS
+.PP
+.TP
+.B --help
+print a help message.
+
+.TP 
+.B --verbose
+print a bit of verbosity
+
+
+
+.SH INPUT
+.PP
+Only one string per line, consisting of "0" to "9","+","-","e","E".
+
+.PP
+Lines beginning with "#" are ignored, i.e. comments
+
+.PP
+A string beginning with "@", i.e. "@file.wav" is taken as a .wav
+file to be used directly.
+"file" can be full or relative path.
+
+.SH EXAMPLE
+.IP
+
+# sample.dat
+.br
+3.14
+.br
+-5
+.br
+1e37
+.br
+@sphere.wav
+.br
+42
+	
+.IP
+cat sample.dat | hev-speakDigits
+
+.IP
+echo 3.14 | hev-speakDigits
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov,  NIST/ITL/ACMD/HPCVG
+.br
+Original implementation April 19, 2009.
+
+

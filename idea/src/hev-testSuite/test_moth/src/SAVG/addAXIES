@@ -1,0 +1,87 @@
+#
+# addAXSIES - adds an axises to a Selection App Builder visualization.
+#             The axises lines are colored X = Red, Y = Green, Z = Blue.
+#             They are 1.1 units long and insect at the origin. The
+#             long side extend 1.0 units in the positive direction and
+#             the short side extend 0.1 units in the negative direction.
+#
+#             The label text is billboarded so it always faces the
+#             screen. The default label text is X, Y and Z. If blank
+#             labels are desired, the user must explicitly specify
+#             blank string on the command line. The label text options
+#             are positional. If there is one, it used as the X  label,
+#             two, they are X and Y label, three are X Y and Z labels,
+#             respectively.
+#
+#             This script generates three files: axises.savg contains
+#             the geometry for the axises lines; axises.sge combines
+#             that with the label text. The SGE file is converted to
+#             and OSG file called axises.osg for speedier display.
+#
+#             If any of the files exists in the current directory,
+#             the user is prompted confirm overwriting. If the user
+#             responds 'no' then the script exits without doing
+#             anything and the user must resolve the file conflict(s).
+#
+#  addAXSIES [XLabel [YLabel [ZLabel]]]
+
+AXISES_SAVG="./axsies.savg"
+AXISES_SGE=">/axsies.sge
+AXISES_OSG="./axsies.osg"
+
+#
+# Check if any of the files are preexisting...
+#
+
+#
+# Set label text...
+#
+if [ $# = 1 ]; 
+then
+  
+# Output axises.savg
+echo "
+lines
+-0.100000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000
+1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000
+lines
+0.000000 -0.100000 0.000000 0.000000 1.000000 0.000000 1.000000
+0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 1.000000
+lines
+0.000000 0.000000 -0.100000 0.000000 0.000000 1.000000 1.000000
+0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 1.000000" > ./$AXISES_SAVG
+
+#Output axises.sge
+echo "
+SCSQ X 1 0 0
+SCSQ Y 0 1 0
+SCSQ Z 0 0 1
+
+TEXT XName STRING \"$XNAME\" SIZE 0.05 COLOR 1 0 0 1 AXIS SCREEN
+ON XName X
+TEXT YName STRING \"$YNAME\" SIZE 0.05 COLOR 0 1 0 1 AXIS SCREEN
+ON YName Y
+TEXT ZName STRING \"$ZNAME\"  SIZE 0.05 COLOR 0 0 1 1 AXIS SCREEN
+ON ZName Z
+
+GROUP Axises
+
+load AxisesLines axises.savg
+ON AxisesLines Axises
+
+ON X Axises
+ON Y Axises
+ON Z Axises
+
+RETURN Axises" > $AXISES_SGE
+
+#Convert to OSG
+osgconv $AXSIES_SGE $AXSIES_OSG
+
+#
+# Add axises file to SGE File for loading, and to On/Off button menu...
+#
+
+#
+# Add axises files to SAB clean up script...
+#

@@ -1,0 +1,204 @@
+/*
+ *
+ * plane.c (OpenGL version)
+ * Draws rotating paper airplane in stereo. 
+ *
+ * Converted to use OpenGL Utility Toolkit
+ * Rick Hammerstone, Digital, December 1996.
+ *
+ * Converted to OpenGL by Silicon Graphics Corp. 4Dgifts program tool.
+ * Further modified by James S. Lipscomb and Keh-Shin Cheng, IBM Research,
+ * March 1995. Uses Motif.
+ *
+ * Original program in GL by Robert Akka
+ * StereoGraphics Corporation * April 2, 1991
+ *
+ * Compile with:
+ * cc -o plane plane.c -lglut -lGLU -lGL -lXmu -lXi -lXext -lX11 -lm
+ *
+ * Hit escape to stop program. */ 
+
+#include <stdio.h> 
+#include <string.h> 
+#include <math.h> 
+
+#include <GL/glut.h>
+
+/* * Speed of rotation in degrees per update. */ 
+
+#define VELOCITY -0.2
+float yAngle = 0;
+
+ GLenum rgb, doubleBuffer;
+
+void Reshape(int width, int height) 
+{
+     glViewport(0, 0, width, height);
+}
+
+void Key(unsigned char key, int x, int y) 
+{
+     if (key == 27) exit(0);
+}
+
+void Init()
+{
+     glMatrixMode(GL_PROJECTION);
+}
+
+void DrawAirplane() 
+{
+     static float airplane[9][3] = {
+     { 0.0, 0.5, -4.5},
+     { 3.0, 0.5, -4.5},
+     { 3.0, 0.5, -3.5}, 
+     { 0.0, 0.5, 0.5}, 
+     { 0.0, 0.5, 3.25}, 
+     { 0.0, -0.5, 5.5}, 
+     {-3.0, 0.5, -3.5}, 
+     {-3.0, 0.5, -4.5}, 
+     { 0.0, -0.5, -4.5} 
+};
+
+     glColor3f(1.00, 0.19, 0.69);
+          /* violet: r=1, g=.19, b=.69 */
+
+     glBegin(GL_LINE_LOOP);
+     glVertex3fv(airplane[6]);
+     glVertex3fv(airplane[7]);
+     glVertex3fv(airplane[1]);
+     glVertex3fv(airplane[2]);
+     glVertex3fv(airplane[4]);
+     glEnd();
+     glBegin(GL_LINE_LOOP);
+     glVertex3fv(airplane[0]);
+     glVertex3fv(airplane[4]);
+     glVertex3fv(airplane[5]);
+     glVertex3fv(airplane[8]);
+     glEnd();
+     glBegin(GL_LINE_LOOP);
+     glVertex3fv(airplane[6]);
+     glVertex3fv(airplane[3]);
+     glVertex3fv(airplane[2]);
+     glEnd();
+ 
+}
+void Plane(float yAngle) 
+{
+     glRotatef(yAngle, 0, 1, 0);
+     glRotatef(-10, 1, 0, 0);
+     DrawAirplane();
+}
+
+void StereoProjection(float left, float right, float bottom, float top, float near, float far, float   
+                       zero_plane, float dist, float eye)
+
+/* Perform the perspective projection for one eye's subfield. The projection is in the direction
+of the negative z axis. -6.0, 6.0, -4.8, 4.8, left, right, bottom, top = the coordinate range, in
+the plane of zero parallax setting, which will be displayed on the screen. The ratio between
+(right-left) and (top-bottom) should equal the aspect ratio of the display.
+6.0, -6.0, near, far = the z-coordinate values of the clipping planes. 0.0, zero_plane = the
+z-coordinate of the plane of zero parallax setting. 14.5, dist = the distance from the center of
+projection to the plane of zero parallax. -0.31 eye = half the eye separation;
+ positive for the right eye subfield, negative for the left eye subfield. */ 
+
+{
+     float xmid, ymid, clip_near, clip_far, topw, bottomw, leftw, rightw, dx, dy, n_over_d;
+     dx = right - left;
+     dy = top - bottom;
+     xmid = (right + left) / 2.0;
+     ymid = (top + bottom) / 2.0;
+     clip_near = dist + zero_plane - near;
+     clip_far = dist + zero_plane - far;
+     n_over_d = clip_near / dist;
+     topw = n_over_d * dy / 2.0;
+     bottomw = -topw;
+     rightw = n_over_d * (dx / 2.0 - eye);
+     leftw = n_over_d *(-dx / 2.0 - eye);
+          /* Need to be in projection mode for this. */ 
+     glLoadIdentity();
+     glFrustum(leftw, rightw, bottomw, topw, clip_near, clip_far);
+     glTranslatef(-xmid - eye, -ymid, -zero_plane - dist);
+}
+
+void DrawScene(void) 
+{
+     glDrawBuffer(doubleBuffer ? GL_BACK : GL_FRONT);
+     glClearColor(0.0, 0.0, 0.0, 0.0);
+     glClear(GL_COLOR_BUFFER_BIT);
+     glDrawBuffer(doubleBuffer ? GL_BACK_LEFT : GL_FRONT_LEFT);
+     glPushMatrix();
+     StereoProjection(-6.0, 6.0, -4.8, 4.8, 6.0, -6.0, 0.0, 14.5, -0.31);
+     Plane(yAngle);
+     glPopMatrix();
+     glDrawBuffer(doubleBuffer ? GL_BACK_RIGHT : GL_FRONT_RIGHT);
+     glPushMatrix();
+     StereoProjection(-6.0, 6.0, -4.8, 4.8, 6.0, -6.0, 0.0, 14.5, 0.31);
+     Plane(yAngle);
+     glPopMatrix();
+
+     if (doubleBuffer) glutSwapBuffers();
+     else glFlush();
+     yAngle -= VELOCITY;
+     if (yAngle < 0) yAngle = 360.0 + yAngle;
+           /* degrees */ 
+}
+
+GLenum Args(int argc, char **argv) 
+{
+     GLint i;
+     rgb = GL_TRUE;
+     doubleBuffer = GL_TRUE;
+     for (i = 1;i < argc; i++) 
+     {
+          if (strcmp(argv[i], "-ci") == 0) 
+          {
+          rgb = GL_FALSE;
+          }
+
+          else if (strcmp(argv[i], "-rgb") == 0) 
+          {
+          rgb = GL_TRUE;
+          }
+
+          else if (strcmp(argv[i], "-sb") == 0) 
+          {
+          doubleBuffer = GL_FALSE;
+          }
+
+          else if (strcmp(argv[i], "-db") == 0) 
+          {
+          doubleBuffer = GL_TRUE;
+          }
+
+          else 
+{
+          printf("%s (Bad option).\n", argv[i]);
+          return GL_FALSE;
+          }
+ 
+     }
+     return GL_TRUE;
+}
+
+main(int argc, char **argv) 
+{
+     GLenum type;
+     glutInit(&argc, argv);
+     Args(argc, argv);
+     type = GLUT_STEREO;
+     type |= (rgb) ? GLUT_RGB : GLUT_INDEX;
+     type |= (doubleBuffer) ? GLUT_DOUBLE : GLUT_SINGLE;
+     glutInitDisplayMode(type);
+     glutInitWindowSize(300, 300);
+     glutCreateWindow("Airplane");
+     Init();
+     glutReshapeFunc(Reshape);
+     glutKeyboardFunc(Key);
+     glutIdleFunc(DrawScene);
+     glutDisplayFunc(DrawScene);
+     glutMainLoop();
+}
+
+ 
+

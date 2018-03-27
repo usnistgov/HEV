@@ -1,0 +1,9 @@
+hyd_util.so
+hyd-BIMGtoOSG
+hyd-BIMGtoRAW
+*.savg
+*.iris
+*.mcp
+*.txt
+test/
+**.sw?

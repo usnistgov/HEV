@@ -1,0 +1,102 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-tclVtkIsosurface 1 "March 4, 2008" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hev-tclVtkIsosurface
+- create an isosurface as an Inventor file from an VTK input file
+
+.SH SYNOPSIS
+.B "hev-tclVtkIsosurface"
+isoValue input.vtk output.iv
+.br
+.B "hev-tclVtkIsosurfaceDecimate"
+isoValue input.vtk output.iv decimationValue
+.br
+.B "hev-tclVtkIsosurfaceClean"
+< input.iv > output.iv
+
+.SH DESCRIPTION
+.PP
+.B hev-tclVtkIsosurface
+is a command written as a  TCL (www.tcl.tk) script calling VTK
+to create an Inventor (.iv) isosurface from an input VTK (.vtk) file.
+The
+.B hev-tclVtkIsosurfaceDecimate
+variation includes a VTK
+.I decimation
+routine.
+
+.PP
+Its a script. It can be used as is or its source can be used as a model to be
+modified for a specific application.
+
+.PP
+.B hev-tclVtkIsosurfaceClean
+is a utility command to
+.I "clean up"
+the output .iv file.  The output produced by VTK includes a specific color and
+other material property statements. This utility removes those statements so
+that application specific materials can be added. The additional Inventor 
+commands can be added manually or with the
+.B ivutilities
+filters.
+
+
+
+.SH  PARAMETERS
+.PP
+.TP
+.B isoValue
+is the isosurface value
+
+.TP
+.B input.vtk
+is the input VTK file
+
+.TP 
+.B output.iv
+is the created Inventor output file
+
+.TP
+.B decimationValue
+is a percent (0.0 to 1.0) of decimation to be applied. Larger number means
+more decimation and smaller output file.
+
+
+
+
+.SH EXAMPLES
+Create a isosurface from input VTK file.
+.IP
+hev-tclVtkIsosurface .9  sample.vtk sample.iv
+
+.PP
+Use the version that includes decimation:
+.IP
+hev-tclVtkIsosurfaceDecimate  .9  sample.vtk sample.iv
+
+.PP
+Add a a specific color to the surface:
+.IP
+hev-tclVtkIsosurfaceClean < sample.iv | ivrgba .8 .8 0 1 > final.iv
+
+
+
+
+
+
+.SH SEE ALSO
+.I
+savgfly(usage), ivutilities(3), www.vtk.org
+
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov,  NIST/ITL/MCSD/SAVG
+.br
+Based on examples from:
+.br
+www.rug.nl/cit/hpcv/visualisation/VTK/rugVtk_text.html
+.br
+Original implementation November 2007.
+Installed in HEV March 4, 2008.
+

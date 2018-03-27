@@ -1,0 +1,12 @@
+# config.prgb
+1 1.0   0.498 0.941 C3S
+2 1.0   0.757 0.498 Ca(OH)2
+3 0.867 1.0   0.498 CSH
+4 0.498 0.741 1.0   CSH(m)
+5 1 0 1 hi there
+6 1 1 0 another one with five words
+#
+#1 1  0 0 C3S
+#2 0  1 0 Ca(OH)2
+#3 0  0 1 CSH
+#4 1  0 1 CSH(m)

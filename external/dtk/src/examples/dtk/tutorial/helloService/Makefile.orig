@@ -1,0 +1,62 @@
+#!gmake
+
+# IRIX make has a make directive that lets you
+# execute an alternate interpreter
+#  #!alternate_make
+# GNU make will ignore it
+
+# This file works with GNU make
+# you can get it at
+# ftp://prep.ai.mit.edu/pub/gnu/make/
+
+#################################################################
+
+
+#
+# At this point the DTK library should be installed
+# and `dtk-config' should be in your PATH.  `dtk-config'
+# helps make this makefile work on different OSs.
+#
+
+#
+# You must run `dtk-server' from this directory or
+# it will not be able to find the DSO "hello.so" to
+# load it, or else you can set the environment variable
+# DTK_DSO_PATH to include this directory, or else
+# copy "hello.so" to `dtk-config --server-dso-dir`.
+#
+
+CXX = $(shell dtk-config --compiler)
+CXXFLAGS += $(shell dtk-config --cxxflags) $(shell dtk-config --include)
+LIBS =   $(shell dtk-config --libs)
+
+
+DSO = helloService.so
+
+build: test $(DSO) $(BIN)
+
+
+install: test  $(DSO) $(BIN)
+	mkdir -p $(shell dtk-config --server-dso-dir)
+	cp $(DSO) $(shell dtk-config --server-dso-dir)
+
+test:
+	@if ! dtk-config --test ; \
+          then echo; \
+          echo "You must put \`dtk-config' in your path" ;\
+          exit 1; fi
+
+.SUFFIXES: .cpp
+
+$(DSO): %.so: %.cpp
+	$(CXX) $(CXXFLAGS) -elf -shared -Wl,-soname,$@ -o $@ $^
+
+
+clean:
+	-rm -f $(DSO) $(BIN) so_locations
+
+cleaner distclean: clean
+	-rm -f *~ core
+
+depend:
+#

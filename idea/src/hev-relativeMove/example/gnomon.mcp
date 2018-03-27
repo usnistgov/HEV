@@ -1,0 +1,33 @@
+BUTTON gnomon
+ # choose a unique name for your application
+ # this gives relativeMove.iris a unique name for setting node names, shared
+ # memory names, a fifo name and a selector name. It allows relativeMove.iris
+ # to be loaded multiple times and not cause interference.
+ FIRST SET RELATIVE_MOVE gnomon
+ 
+ # set the selector
+ FIRST WAIT irisfly-select $(RELATIVE_MOVE)
+
+ # load this file to set up the relative move
+ FIRST LOAD relativeMove.iris
+ 
+ # load any object(s) you need
+ FIRST LOAD $(RELATIVE_MOVE) gnomon.osg 
+ 
+ # add as a child to the scene and world nodes created by relativeMove.iris
+ FIRST ADDCHILD $(RELATIVE_MOVE) relativeMoveSceneNode-$(RELATIVE_MOVE)
+ FIRST ADDCHILD $(RELATIVE_MOVE) relativeMoveWorldNode-$(RELATIVE_MOVE)
+ 
+ # intially turn world on and scene off. the object will appear at the scene origin
+ FIRST NODEMASK relativeMoveSceneNode-$(RELATIVE_MOVE) OFF
+ # see note in relativeMove.iris for why it's done this way
+ FIRST NODEMASK relativeMoveWorldNode-$(RELATIVE_MOVE) OFF
+ FIRST AFTER FRAME 0 NODEMASK relativeMoveWorldNode-$(RELATIVE_MOVE) ON
+
+ # ON is a subset of FIRST- just set the IRIS variable and the selector
+ ON SET RELATIVE_MOVE gnomon
+ ON WAIT irisfly-select $(RELATIVE_MOVE)
+
+ # OFF unsets the IRIS variable and the selector
+ OFF WAIT irisfly-deselect
+ OFF SET RELATIVE_MOVE

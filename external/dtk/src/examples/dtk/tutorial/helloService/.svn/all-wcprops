@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/759/trunk/dtk/examples/dtk/tutorial/helloService
+END
+help.sh
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tutorial/helloService/help.sh
+END
+hello.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/730/trunk/dtk/examples/dtk/tutorial/helloService/hello.cpp
+END
+Makefile.orig
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/diverse/!svn/ver/759/trunk/dtk/examples/dtk/tutorial/helloService/Makefile.orig
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/diverse/!svn/ver/759/trunk/dtk/examples/dtk/tutorial/helloService/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tutorial/helloService/README
+END
+demo.sh
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tutorial/helloService/demo.sh
+END

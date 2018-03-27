@@ -1,0 +1,13 @@
+#! /bin/sh
+
+# hev-blueYellowLUT - create a blue to yellow LUT to stdout
+#
+# March 14, 2008
+# May 29, 2009
+# steve@nist.gov
+
+(echo 0   0.0  0.0  1.0    1;\
+echo 255  1.0  1.0  0.0    1) | hev-createLUT
+
+
+

@@ -1,0 +1,78 @@
+#! /bin/bash
+#
+#  hev-killStrays - use hev-stray to find stray HEV processes, parse out the PIDs
+#   and kill them. All comand line paramenters are passed through to hev-stray.
+#   So extra search terms are treated in the same way as hev-stray.
+#
+#  NOTE: not all HEV processes are are owned by the user executing this script.
+#   This script finds and kills only HEV processes owned ${USER}. Also some
+#   processes may look like strays but are not. They could part of an running
+#   HEV visualization/process, or an indenpendent process, such as editing a
+#   with 'hev' in the name. 
+#
+#  2011-06-30 [TJG]: filter out process(es) with 'hev-killStrays'
+#
+
+function FindStrays
+{
+  hev-stray ${*} | grep -v hev-killStrays | grep ${USER} | sort -r
+}
+
+INTERACTIVE=0
+case $1 in                                     # Check for -i, interactive kill
+-i)
+  INTERACTIVE=1
+  shift;;
+esac
+
+STRAYS=`FindStrays ${*}`                       # Get list of strays
+
+if [ -n "$STRAYS" ]                            # STRAY is not empty: strays found
+then                                           # List processes to be killed
+  echo
+  echo 'This command will attempt to kill the following HEV processes:'
+  echo
+  ps -ef | head -1
+  FindStrays ${*}
+  P='Are you sure (yes/no)? '                  # And prompt for conformation
+  read -p "$P" x
+
+  if [ ${x}x != "yesx" ]                       # Check responce. If not 'yes'
+  then                                         # Don't kill and exit
+    echo "No processes killed."
+    echo "To kill HEV processes, run this script again and enter 'yes'"
+    exit
+  fi
+
+  # Otherwise, trim extra spaces from the ps output and parse out PIDs
+  for procID in `FindStrays ${*} | sed -e "s/ \+ / /g" | cut -d\  -f 2`
+  do                                           # For each PID found...
+    if [ $INTERACTIVE == 1 ]                   # If interactive, prompt to kill
+    then                                       # Put prompt, response and result on one line
+      i=''                                     # Reset prompt response string
+      echo -n 'Kill process '$procID' (y/n)? ' # Output prompt
+      while [ 1 ]                              # Loop 'forever'...
+      do
+        read -sn 1 ch                          # Silently read exactly one char of response
+        if [ -z $ch ]                          # If <CR>, then $ch is zero lenth...
+        then
+          break;                               # ...so break out of while loop
+        fi
+        echo -n $ch                            # Otherwise echo character w/o a newline
+        i=$i$ch                                # and add character to prompt response string
+      done
+      
+      if [ $i = 'y' ] || [ $i = 'Y' ]          # Test response strinf. If y or Y...
+      then
+        kill $procID                           # ...Kill process and
+        echo ' Killed'                         # Echo result w/ newline
+      else
+        echo ' Not Killed'                     # Othersie don't kill and echo result w/ newline
+      fi
+    else                                       # Not interactive so kill each process
+      kill $procID 
+    fi
+  done
+else                                           # Process list is empty: no strays found
+  echo "No strays found."
+fi

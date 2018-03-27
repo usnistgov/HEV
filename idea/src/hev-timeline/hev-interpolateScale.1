@@ -1,0 +1,97 @@
+.TH hev-interpolateScale 1 "November 2011"
+
+.SH NAME
+hev-interpolateScale
+
+.SH SYNOPSIS 
+.B hev-interpolateScale  [ --s0 \fIs\fB ] [ --s1 \fIs\fB ]  [ --absolute ] [ --startTime \fIt\fB ] [ --duration \fIt\fB ] [ --frameRate \fIr\fB ] [ --deltaScale \fIs\fB ]
+
+.SH OPTIONS
+
+.IP "--s0 \fIs\fR"
+specifies the initial scale. If not specified, 1.0 is used.
+
+.IP "--s1 \fIs\fR"
+specifies the final scale. If not specified, 1.0 is used.
+
+.IP "--absolute"
+specifies that the times used in the IRIS control commands be absolute
+times. i.e. OSG reference times. The default is to use time values that are
+relative to the time the control command was processed.
+
+.IP "--startTime \fIt\fR"
+specifies the initial time offset in seconds to be added to all IRIS control
+commands.  The default value is 0.
+
+.IP "--duration \fIt\fR"
+specifies the number of seconds to scale from s0 to s1. If not supplied,
+duration will be set to 1.0 second.
+
+.IP "--frameRate \fIr\fR"
+specifies the number of times per second \fBhev-interpolateScale\fR
+will interpolate between the scales. If \fIframeRate\fR is not specified, 60 will be used.
+
+.IP "--deltaScale \fIs\fR"
+specifies the amount that the navigation node's scale value needs to
+change before a command is written. The amount is the geometric difference from the last
+written scale, or its inverse, whichever is largest.
+
+If \fIdeltaScale\fR is not specified, it defaults to .001.
+
+If \fIdeltaScale\fR is set to zero a command containing a scale
+value will be written \fIframeRate\fR times a second.
+
+.SH DESCRIPTION
+
+\fBhev-interpolateScale\fR will write IRIS control commands that will
+modify the navigation node's scale to go from \fIs0\fR to
+\fIs1\fR over the course of \fIduration\fR seconds, writing up to \fIframerate\fR commands
+per second.
+
+\fBhev-interpolateScale\fR liberally comments the control commands it
+generates. Like any IRIS control command file, the results can be edited with any text
+editor.
+
+.SH EXAMPLE
+
+hev-interpolateScale --s0 1 --s1 3  --start 10 --duration 2.5  --frameRate 4 > /tmp/scoot.iris
+
+will generate and store in the file /tmp/scoot.iris:
+
+AFTER TIME 10.000000 NAV SCALE 1.000000
+.br
+AFTER TIME 10.250000 NAV SCALE 1.200000
+.br
+AFTER TIME 10.500000 NAV SCALE 1.400000
+.br
+AFTER TIME 10.750000 NAV SCALE 1.600000
+.br
+AFTER TIME 11.000000 NAV SCALE 1.800000
+.br
+AFTER TIME 11.250000 NAV SCALE 2.000000
+.br
+AFTER TIME 11.500000 NAV SCALE 2.200000
+.br
+AFTER TIME 11.750000 NAV SCALE 2.400000
+.br
+AFTER TIME 12.000000 NAV SCALE 2.600000
+.br
+AFTER TIME 12.250000 NAV SCALE 2.800000
+.br
+AFTER TIME 12.500000 NAV SCALE 3.000000
+
+
+
+.SH SEE ALSO
+
+hev-timeline, hev-navigationToInterpolate, hev-timelineToIris, hev-interpolateRotation, hev-interpolateTranslation, hev-readNav
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+November 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

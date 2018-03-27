@@ -1,0 +1,98 @@
+.TH hev-interpolateTranslation 1 "November 2011"
+
+.SH NAME
+hev-interpolateTranslation
+
+.SH SYNOPSIS 
+.B hev-interpolateTranslation  [ --t0 \fIx y z\fB ] [ --t1 \fIx y z\fB ]  [ --absolute ] [ --startTime \fIt\fB ] [ --duration \fIt\fB ] [ --frameRate \fIr\fB ] [ --deltaTranslation \fIt\fB ]
+
+.SH OPTIONS
+
+.IP "--t0 \fIx y z\fR"
+specifies the initial position. If not specified, 0, 0, 0, is used.
+
+.IP "--t1 \fIx y z\fR"
+specifies the final position. If not specified, 0, 0, 0, is used.
+
+.IP "--absolute"
+specifies that the times used in the IRIS control commands be absolute
+times. i.e. OSG reference times. The default is to use time values that are
+relative to the time the control command was processed.
+
+.IP "--startTime \fIt\fR"
+specifies the initial time offset in seconds to be added to all IRIS control
+commands.  The default value is 0.
+
+.IP "--duration \fIt\fR"
+specifies the number of seconds to move from t0 to t1. If not supplied,
+duration will be set to 1.0 second.
+
+.IP "--frameRate \fIr\fR"
+specifies the number of times per second \fBhev-interpolateTranslation\fR
+will interpolate between the positions. If \fIframeRate\fR is not specified, 60 will be used.
+
+.IP "--deltaTranslation \fIt\fR"
+specifies the amount that the navigation node's translation value needs to
+change before a command is written. The amount is the distance from the
+last written translation.
+
+If \fIdeltaTranslation\fR is not specified, it defaults to .001.
+
+If \fIdeltaTranslation\fR is set to zero a command containing a translation
+value will be written \fIframeRate\fR times a second.
+
+.SH DESCRIPTION
+
+\fBhev-interpolateTranslation\fR will write IRIS control commands that will
+modify the navigation node's translation to go from \fIt0\fR to
+\fIt1\fR over the course of \fIduration\fR seconds, writing up to \fIframerate\fR commands
+per second.
+
+\fBhev-interpolateTranslation\fR liberally comments the control commands it
+generates. Like any IRIS control command file, the results can be edited with any text
+editor.
+
+.SH EXAMPLE
+
+hev-interpolateTranslation --t0 1 1 1 --t1 10 20 30 --start 10 --duration 2.5 --frameRate 4 > /tmp/scoot.iris
+
+will generate and store in the file /tmp/scoot.iris:
+
+AFTER TIME 10.000000 NAV POSITION 1.000000 1.000000 1.000000
+.br
+AFTER TIME 10.250000 NAV POSITION 1.900000 2.900000 3.900000
+.br
+AFTER TIME 10.500000 NAV POSITION 2.800000 4.800000 6.800000
+.br
+AFTER TIME 10.750000 NAV POSITION 3.700000 6.700000 9.700001
+.br
+AFTER TIME 11.000000 NAV POSITION 4.600000 8.600000 12.600000
+.br
+AFTER TIME 11.250000 NAV POSITION 5.500000 10.500000 15.500000
+.br
+AFTER TIME 11.500000 NAV POSITION 6.400000 12.400001 18.400002
+.br
+AFTER TIME 11.750000 NAV POSITION 7.300000 14.300000 21.299999
+.br
+AFTER TIME 12.000000 NAV POSITION 8.200001 16.200001 24.200001
+.br
+AFTER TIME 12.250000 NAV POSITION 9.099999 18.100000 27.099998
+.br
+AFTER TIME 12.500000 NAV POSITION 10.000000 20.000000 30.000000
+
+
+
+.SH SEE ALSO
+
+hev-timeline, hev-navigationToInterpolate, hev-timelineToIris, hev-interpolateRotation,
+hev-interpolateScale, hev-readNav
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+November 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

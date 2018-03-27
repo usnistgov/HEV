@@ -1,0 +1,37 @@
+#! /bin/bash
+
+function cleanup {
+    jk=$(jobs -p)
+    [ ! -z $jk ] && kill $jk
+}
+
+trap 'cleanup' 0
+
+[ -z $HEVROOT ] && echo "HEVROOT not defined" && exit 1;
+
+case $1 in
+    -h*|--h*)
+	echo "Usage: hev-demoRunner [pathToDirectory]"
+	exit
+	;;
+esac
+
+
+
+case $# in
+    0)
+	cd ${HEVROOT}/demos/.demoRunner
+	;;
+    1)
+	cd $1
+	;;
+esac
+
+
+dtk-demoRunner -g 300x350+500+400
+
+
+
+
+
+

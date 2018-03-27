@@ -1,0 +1,36 @@
+#! /bin/sh
+
+# ivcomplexity
+
+echo "#Inventor V2.0 ascii"
+#echo "Separator {"
+
+case $# in
+1)
+	case $1 in
+	-h)
+		echo "Usage: ivcomplexity [type] value"
+		echo
+		echo "   type  'OBJECT_SPACE'   default"
+		echo "         'SCREEN_SPACE'"
+		echo "         'BOUNDING_BOX'"
+		echo
+		echo "   value  0.0 to 1.0   default is .5"
+		exit
+		;;
+	*)
+		echo "Complexity {value $1}"
+		;;
+	esac
+	;;
+2)
+	echo "Complexity {type $1 value $2}"
+	;;
+*)
+	ivcomplexity -h
+	exit
+	;;
+esac
+iv_stdin_out
+#echo "}"
+

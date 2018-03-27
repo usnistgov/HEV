@@ -1,0 +1,31 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include "showCursorPositionInImageFunctions.h"} {} 
+
+Function {make_main_window()} {open
+} {
+  Fl_Window main_window {open
+    xywh {118 850 85 30} type Double visible
+  } {
+    Fl_Light_Button imageButton {
+      label image
+      callback {image(bool(o->value()));}
+      xywh {5 5 75 20}
+      code0 {imageButton = o ;}
+      code1 {o->value(imageState) ;}
+    }
+  }
+} 
+
+Function {make_sub_window()} {open
+} {
+  Fl_Window sub_window {open
+    xywh {479 665 400 300} type Double visible
+  } {
+    Fl_Box image_box {selected
+      xywh {25 25 35 17} when 1
+    }
+  }
+} 

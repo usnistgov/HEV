@@ -1,0 +1,52 @@
+#!/bin/bash
+
+INSTALLED_VERSION=$HEV_IDEA_DIR/etc/hev-version/installed-version.txt
+
+function remote_git {
+    local git_host=dradis.cam.nist.gov
+
+    if [ $(hostname) == $git_host ]; then
+        cd $HEVROOT && git $*
+    else
+        ssh -o LogLevel=error $git_host "cd $HEVROOT && git $*"
+    fi
+}
+
+verbose=false
+while getopts "hV" opt; do
+    case $opt in
+        V) verbose=true;;
+        ?|h) echo "usage: $0 [-V]"; exit 1;;
+    esac
+done
+
+tags=$(remote_git tag -l "v*.*.*")
+
+ts=-1
+for tag in $tags; do
+    tts=$(remote_git show --pretty=format:%at $tag | tail -n 1)
+    ttsl=$(echo $tts | wc -c)
+    if (($ttsl == 11)); then
+        if (($tts > $ts)); then ts=$tts; tst=$tag; fi
+    fi
+done
+
+if $verbose; then
+    tts=$(remote_git show --pretty=format:%at,%an,%ai $tst | tail -n 1)
+    IFS=',' read -a info <<< "$tts"
+    echo $tst Tagged by ${info[1]} on ${info[2]}
+else
+    echo $tst
+fi
+
+if [ ! -f $INSTALLED_VERSION ]; then
+    echo "*** WARNING: No $INSTALLED_VERSION to verify --- did you run make install?"
+else
+    ivt=$(cat $INSTALLED_VERSION)
+    if [ "$ivt" != "$tst" ]; then
+        echo "*** WARNING: installed version '$ivt' does not match current version '$tst' --- did you run make install?"
+    elif $verbose; then
+        echo "Installed version '$ivt' matches current version '$tst'."
+    fi
+fi
+

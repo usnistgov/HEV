@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svnroot/diverse/!svn/ver/892/trunk/dtk/include/dtkAL
+END
+dtkSoundSource.h
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/diverse/!svn/ver/892/trunk/dtk/include/dtkAL/dtkSoundSource.h
+END
+dtkSoundBuffer.h
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/diverse/!svn/ver/859/trunk/dtk/include/dtkAL/dtkSoundBuffer.h
+END
+dtkSoundSyncedSources.h
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/diverse/!svn/ver/859/trunk/dtk/include/dtkAL/dtkSoundSyncedSources.h
+END
+dtkSoundManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/862/trunk/dtk/include/dtkAL/dtkSoundManager.h
+END

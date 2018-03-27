@@ -1,0 +1,8 @@
+000.savg
+001.savg
+010.savg
+011.savg
+100.savg
+101.savg
+110.savg
+111.savg

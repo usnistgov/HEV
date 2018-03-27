@@ -1,0 +1,14 @@
+To Build:
+
+   tar xvf savg.66.tar.gz
+   gunzip data.qvisdat
+   ./build.sh
+
+   ./rundemo
+
+
+To clean up:
+
+   ./cleanup.sh
+   rm -r savg.66
+   gzip data.qvisdat

@@ -1,0 +1,2802 @@
+#! /usr/bin/env python3
+
+"""
+hev-brokenWindow is deseigned to read inputs from a user input file and
+automatically generate a randomized window breakage pattern.  The outputs are
+SAVG format files which can be displayed using the irisfly command in order to
+view the entire window.  The program also outputs a data file specifying the
+window's break point.  The user may also choose to have the program output
+an adjacency file (which lists out all the neighboring shards fo each shard)
+and a centroid file (which lists the centroid of each shard).
+
+Whenever you see the variable 'inputs,' it refers to the dictionary containing
+all the user input values.  It is used in various parts of the program. 
+"""
+
+import math
+import random
+import sys
+import copy
+import os
+
+
+
+# NOTE: 
+# This project was initially split up into modules.  Everything is now
+#     combined into one file, but each of the original module's content
+#     is clearly separated and labeled.
+
+
+##############################################################################
+############################ PARAMETERS MODULE ###############################
+# Description: This module was designed to contain all the parameter values
+#              used in the different parts of the program.  This gives the
+#              programmer one defined place where he/she can experiment with
+#              different values, without having to go through all the other
+#              code to figure out where the values are hidden.  Most of the
+#              parameters that were here have been now placed in the input
+#              file, so that the user has control over those values.  
+#
+
+# The number of decimals to round a point to - used in certain function(s)
+#      so that calculations speed up
+ROUND_PRECISION = 5
+
+##################### END PARAMETERS MODULE ##################################
+##############################################################################
+
+r = -1
+g = -1
+b = -1
+a = -1
+
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+
+##############################################################################
+################################# FILEIO #####################################
+# Description:  This module contains functions pertaining to file input and 
+#               output. These functions are used to read in input from a file 
+#               as well as output files of certain formats (such as .savg 
+#               files).
+
+
+def get_inputs(filename):
+    """ Return dictionary mapping variables to values contained in file
+    with the given filename.
+    
+    Note: it is assumed that the file will separate variable names with their
+    values using a colon (':').  Each variable name/value pair should be in
+    a single line.  
+
+    """
+    
+    inputs = dict()
+    f = open(filename, 'r')
+
+    for line in f:
+        line = line.strip()
+
+        # ignore blank lines and comment lines
+        if not line or line[0] == "#":
+            continue
+
+        # Check if line contains a ':' >> if not, then variable info not
+        #    contained in that line, so can ignore
+        # (Note that this is checked separate from blank lines/commented
+        #    lines to allow for easier changes in implementation later)
+        ind = line.find(':')
+        if ind == -1:
+            continue
+
+        # The variable is whatever comes before the first ':'
+        # The value is whatever comes after
+        var = line[0:ind]
+        val = line[ind+1:].strip()
+
+        if not val:
+            continue
+        
+        val = parse(val)
+        inputs[var] = val
+
+    return inputs
+
+
+def parse(val):
+    """ Return parsed value on the val passed.  Parses string into a float,
+    integer, boolean, list, tuple, dictionary, or String, depending on the
+    val.
+
+    NOTE: Function assumes a String value if the val cannot be parsed into a 
+    float, integer, boolean, list, tuple, or dictionary.  Thus, the user
+    does not need to put values in quotes (though may do so).  Quotes 
+    should be used in the case that something should be read as a string
+    but could be interpreted as another type.
+    
+    Examples:
+    parse("4") returns 4 (type int)
+    parse("'4'") returns '4' (type String)
+    
+    This method recursively parses in the case of data structures. 
+    Example:
+    parse("[(1,2),(3,4)]") returns [(1,2),(3,4)] (a list of tuple of 
+    integers) 
+         
+    """
+    
+    # Checks different data types - as soon as found that val is a certain
+    #     data type, return the parsed value
+    
+    val = val.strip()
+    # Check if value is a float or integer
+    try:
+        num = float(val)
+
+        if int(num) == float(num):
+            num = int(num)
+
+        return num
+
+    # If not a number, check  if it is a boolean
+    except ValueError:
+        if val.lower() == "true":
+            val = True
+            return val
+        elif val.lower() == "false":
+            val = False
+            return val
+
+    # Check if a data structure (list, tuple, or dictionary)
+    # If so, recursively parse the elements inside the structure)
+    
+    # Check if list
+    if val[0] == "[" and val[-1] == "]":
+        lst = [parse(elem) for elem in mod_split(val[1:-1],',')]
+        return lst
+
+    # Check if tuple
+    if val[0] == "(" and val[-1] == ")":
+        tup = tuple(parse(elem) for elem in mod_split(val[1:-1],','))
+        return tup
+
+    # Check if dictionary
+    if val[0] == "{" and val[-1] == "}":
+        d = dict()
+        for elem in mod_split(val[1:-1],','):
+            key, val = tuple(s for s in elem.split(':'))
+            key = parse(key)
+            val = parse(val)
+            d[key] = val
+
+        return d
+
+    # If a string with quotes around it, return it w/out quotes (will still be
+    #     a string)
+    if ((val[0] == "'" and val[-1] == "'") or
+        (val[0] == '"' and val[-1] == '"')):
+
+        return val[1:-1]
+
+    # If not found to be anything else, return the val itself as it is 
+    # probably a string
+    return val
+
+
+def mod_split(val, sep = ","):
+    """ 
+    Return list of strings that given val is split into.  The sep string
+    is the delimeter, marking where the string should be split.
+    
+    This is a modification of the original string's split function as it keeps
+    elements within parenthesis ( '(...)', '[...]', '{...}' ) together.
+    
+    Examples: 
+    mod_split("1, 2, 3",  ",") will return ['1', '2', '3']
+    mod_split("(1,2),(3,4),(5,3)", ",") will return ['(1,2)', '(3,4)', 
+    '(5,3)']
+    
+    Consecutive delimeters are not grouped together and are considered to 
+    delimit empty strings.  
+    
+    Example:
+    mod_split("(1,2),,(3,4),", ",") returns ['(1,2)', '', '(5,3)', '']
+    """
+    
+    # the list of strings to be returned
+    lst = []
+
+    # Keeps track of how many pairs of parenthesis ( '(...)', '[...]', 
+    #     '{...}' ) the current character is between 
+    in_btwn = 0
+
+    # The current string >> keeps track of what string should be added
+    #     to lst next
+    current = ""
+
+    # Goes through each character in the given val.  If the sep string is
+    #     encountered, given the character is not between a set of 
+    #     parenthesis, then the string stored in the 'current' variable is 
+    #     added to lst, and 'current' is reset to the empty string
+
+    for char in val:
+        
+        if (char == "(" or char == "[" or char == "{"):
+            in_btwn += 1
+            current += char
+            continue
+
+        if (char == ")" or char == "]" or char == "}"):
+            in_btwn -= 1
+            current += char
+            continue
+
+        if in_btwn:
+            current += char
+            continue
+
+        if not in_btwn:
+            if char == sep:
+                lst.append(current)
+                current = ""
+            else:
+                current += char
+
+    # Append the last string in val to lst
+    lst.append(current)
+
+    return lst
+
+
+
+def write_savg_files_separate(shards, dir, main_filename, shard_basename,
+                             tang_basename):
+    """
+    Create one text file and 2 .savg files for each of the given shards.  
+    
+    --
+    Parameters:
+    shards is the list of Shard objects.  
+    
+    dir is the directory where the output files should be stored.  It is 
+    assumed that this directory already exists.
+    
+    main_filename is the name to be given to the main text file (should 
+    contain appropriate file extension - '.txt').
+    
+    shard_basename is the name each of the .savg files containing the polygon
+    definitions should begin with.
+    
+    tang_basename is the name each of the .savg files containing the shard
+    outline definitions should begin with.    
+    ---
+    
+    
+    --
+    Outputs:
+    One main text file that lists the names of all the .savg files created 
+    
+    For each shard, one .savg file is created for all the polygons that define
+    the shard, and one .savg file is created that lists the lines that define
+    the outlines for that shard.  These line definitions also contain the 
+    appropriate tangents.  
+    
+    The former .savg file is named using the shard_basename, followed by '-', 
+    then the shard id number, and finally a '.savg' extension.  The latter 
+    .savg file is named using the tang_basename, followed by a '-', then the 
+    shard id number.  The shard id number is padded with 0's such that all the
+    id numbers have the same number of digits.  
+    
+    Example:
+    let shards be a list of 105 shards.
+    
+    write_savg_files_separate(shards, 'files', 'main_file.txt', 'shard', 
+    'tang') will output the following files into the files directory:
+    
+    main_file.txt, shard-000.savg, tang-000.savg, shard-001.savg, 
+    tang-001.savg, ... , shard-104.savg, tang-104.savg
+    
+    --
+    
+    The savg files can be displayed using the irisfly command to see the 
+    entire window
+    
+    """
+
+    # Figure out the padding needed when numbering the shards - based upon 
+    #     the number of shards created (so each shard id is same number of
+    #     digits)
+    padding = len(str(len(shards)-1))
+
+    shard_prefix = dir + "/" + shard_basename
+    tang_prefix = dir + "/" + tang_basename
+
+
+    # Remove existing shard and tangented savg files in the given directory
+    os.system("rm " + shard_prefix + "-*.savg -f")
+    os.system("rm " + tang_prefix + "-*.savg -f")
+
+    # name of intermediate file needed to create tangented lines
+    # This file will be deleted at end
+    inter_fname_full = dir + "/inter.savg"
+    
+    f_main = open(dir + "/" + main_filename, 'w')
+
+
+    # Create the 2 savg files for each shard, and add the names of each 
+    #     savg files into the main text file.
+    for s in shards:
+
+        shard_fname = shard_basename + "-" + s.id_str(padding) + ".savg"
+        shard_fname_full = dir + "/" + shard_fname
+
+        tang_fname = tang_basename + "-" + s.id_str(padding) + ".savg"
+        tang_fname_full = dir + "/" + tang_fname
+
+
+        f_main.write(shard_fname)
+        f_main.write("\n")
+        f_main.write(tang_fname)
+        f_main.write("\n")
+
+
+        f = open(shard_fname_full, 'w')
+        f.write(s.savg_str(padding))
+        f.close()
+
+        # Use savg-wireframe to create the outlines using the polygon 
+        #     definitions now contained in the shard savg file.
+        os.system("savg-wireframe < " + shard_fname_full +
+                  " > " + inter_fname_full)
+        os.system("savg-lineTangent < " + inter_fname_full + " > " + 
+                  tang_fname_full)
+
+    # Delete intermediate file
+    os.system("rm " + inter_fname_full)
+        
+        
+
+
+
+
+# Parameters:
+#     shards: list of Shard objects
+#     filename: name of savg file to create (should have .savg at the end)
+# Output:
+#     Outputs a file with the given file name that contains the information
+#         to display the polygons that make up each shard in the given list
+#         of shards
+
+def write_savg_files(shards, dir, shard_filename, tang_filename):
+    """ Create a savg file with the given shard_filename, containing the 
+    polygon definitions for all the Shard objects contained in the given
+    shards list, and create savg file with the given tang_filename 
+    containing the lines along with their tangents that define the outlines
+    of all the shards.  These files are put into the given directory dir.  It 
+    is assumed that this given directory already exists. 
+
+    """
+
+    # Figure out the padding needed when numbering the shards - based upon 
+    #     the number of shards created (so each shard id is same number of
+    #     digits)
+    padding = len(str(len(shards)-1))
+
+
+    shard_fname_full = dir + "/" + shard_filename
+    tang_fname_full = dir + "/" + tang_filename
+    
+    # name of intermediate file needed to create tangented lines
+    # This file will be deleted at end
+    inter_fname_full = dir + "/inter.savg"
+
+    # Figure out the padding needed when numbering the shards - based upon 
+    #     the number of shards created (so each shard id is same number of
+    #     digits)
+    padding = len(str(len(shards)-1))
+
+    f = open(shard_fname_full, 'w')
+
+    for s in shards:
+        f.write(s.savg_str(padding)+"\n")
+
+
+    f.close()
+
+    # Use savg-wireframe to create the outlines using the polygon 
+    #     definitions now contained in the shard savg file.
+    os.system("savg-wireframe < " + shard_fname_full +
+               " > " + inter_fname_full)
+    os.system("savg-lineTangent < " + inter_fname_full + " > " + 
+               tang_fname_full)
+
+    # Delete intermediate file
+    os.system("rm " + inter_fname_full)
+
+
+    
+     
+    
+        
+def write_breakpoint_file(break_point, dir, filename):
+    """ 
+    Create a file of the given filename in the given directory, dir, that
+    stores the coordinates of the given break point.
+    """
+
+    # full filename, including directory
+    f_name =  dir + "/" + filename
+    
+    f = open(f_name, 'w')
+    
+    f.write(break_point.savg_str() + "\n")
+    
+    f.close()
+    
+
+
+def write_centroid_file(shards, dir, filename):
+    """ Create a file (of the given file name) in the given directory, dir, 
+    listing the centroid for each shard.
+
+    """
+
+    # Figure out the padding needed when numbering the shards - based upon 
+    #     the number of shards created (so each shard id is same number of
+    #     digits)
+    padding = len(str(len(shards)-1))
+    
+    # full filename, including directory
+    f_name = dir + "/" + filename
+    
+    f = open(f_name,'w')
+    
+    for s in shards:
+        f.write(s.centroid_str(padding)+"\n")
+
+    f.close()
+
+# Parameters:
+#     shards: list of Shard objects
+#     filename: name of text file to create
+#
+# Note: Shards should already contain neighbor information
+#       Make sure the find_neighbors method has already been called
+
+def write_adjacency_file(shards, dir, filename):
+    """ Creates a text file (of the given file name) in the given directory, 
+    dir, containing information on what Shards each of the given Shards 
+    neighbor
+
+    """
+    
+    # full filename, including directory
+    f_name = dir + "/" + filename
+    
+    f = open(f_name,'w')
+    
+    for s in shards:
+        f.write(s.adjacency_str()+"\n")
+
+    f.close()
+
+############################### END FILEIO ###################################
+##############################################################################
+
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+
+##############################################################################
+############################ HELPER FUNCS ####################################
+
+# Description: This module contains functions for certain calculations such as
+#              finding the intersection between two lines, or finding the 
+#              distance between two points, so that they may be used in other
+#               modules.  
+
+
+def frange(start, end, inc):
+    """ Return list of values going from start (inclusive) to stop
+    (exclusive) with the given step size (inc).
+
+    This is a modification of the normal range function as it allows for
+    float increments.
+    """
+
+    num_dec_inc = get_num_dec(inc)
+    num_dec_start = get_num_dec(start)
+    num_dec_end = get_num_dec(end)
+
+    num_dec = max(num_dec_inc, num_dec_start, num_dec_end)
+          
+    factor = 10**num_dec
+
+
+    start_new = round(start*factor)
+    end_new = round(end*factor)
+    inc_new = round(inc*factor)
+    
+    return [i/factor for i in range(start_new, end_new, inc_new)]
+
+
+
+def get_num_dec(dec):
+    """ Returns the number of digits after the decimal point in the
+    given decimal value.
+
+    """
+    dec_str = str(dec)
+
+    dec_index = dec_str.find('.')
+
+    num_dec = 0
+    if dec_index != -1:
+        num_dec = len(dec_str[dec_index + 1:])
+
+    return num_dec
+
+
+def getSignedShapeArea(shape):
+    """ Return signed area of given shape.  
+    
+    The shape should be a Polygon object or a list of 2D points.  The 
+    2D points can be defined as Point_2D objects, or a tuple or list 
+    containing the x,y coordinates (So, if x = 3, and y = 6, then the point 
+    can be defined as Point_2D(3,6), as (3,6) or as [3,6]). 
+    
+    If the point has more than 2 dimensions, just the first two coordinates
+    will be used.  
+    
+    Note: The points must go in the order that defines the shape.  The shape
+    is assumed to be simple and closed.
+    
+    """
+
+    area = 0
+    n = len(shape)
+
+    for i in range(0,n):
+        j = (i + 1) % n
+        area += shape[i][0] * shape[j][1]
+        area -= shape[i][1] * shape[j][0]
+
+    area /= 2.0
+
+    return area
+
+
+# Parameters:
+#     shape: Polygon with 2D points (Point_2D)
+#            (Note that shape would also work if it were a list of points
+#             describing the vertices in order (does not need to be a polygon;
+#             Also, if points are of type Point_3D, then the z-coordinate
+#             will simply be ignored)
+# Returns the centroid of the shape as a 2D point (Point_2D)
+#
+# Note that the vertices must go in the order that defines the polygon
+
+def getShapeCOM(shape):
+    """ 
+    Return centroid of given 2D shape as a Point_2D object
+
+    The shape should be a Polygon object or a list of 2D points.  The 
+    2D points can be defined as Point_2D objects, or a tuple or list 
+    containing the x,y coordinates (So, if x = 3, and y = 6, then the point 
+    can be defined as Point_2D(3,6), as (3,6) or as [3,6]). 
+    
+    If the point has more than 2 dimensions, just the first two coordinates
+    will be used.  
+    
+    Note: The points must go in the order that defines the shape.  The shape
+    is assumed to be simple and closed.
+    
+    """
+    cx = 0
+    cy = 0
+    n = len(shape)
+
+    
+        
+    area = getSignedShapeArea(shape)
+
+    
+    if area == 0:
+        if len(shape) == 1:
+            return Point_2D(shape[0][0], shape[0][1])
+        elif len(shape) == 2:
+            cx = (shape[0][0] + shape[1][0])/2.0
+            cy = (shape[0][1] + shape[1][1])/2.0
+            return Point_2D(cx, cy)
+
+    for i in range(0,n):
+        j = (i + 1)%n
+        factor = (shape[i][0] * shape[j][1] - shape[j][0] * shape[i][1])
+        cx+=(shape[i][0] + shape[j][0])*factor
+        cy+=(shape[i][1]+shape[j][1])*factor
+
+    factor = 1/(6*area)
+    cx *= factor
+    cy *= factor
+
+    return Point_2D(cx,cy)
+
+
+def get_intersection(point1, point2, point3, point4, 
+                     force_point_return = False):
+    
+    """ 
+    Return intersection between line segment defined by the endpoints point1 
+    and  point2, and line defined by the endpoints point3 and point4, if 
+    line segments intersect.  (Return type is a Point_2D object). 
+    Return False if lines do not intersect.
+    
+    If force_point_return is True, then return the point at which the lines 
+    would intersect if they were infinitely long.  Return False only if the 
+    lines are parallel.
+    
+    """
+    
+    # How many decimal places to round the coordinates
+    # Rounding is done to save time on calculation.      
+    precision = ROUND_PRECISION
+    
+    # The amount of rounding error there might be
+    err = 2*(10**(-precision))
+    
+    x1,y1 = round(point1[0],precision), round(point1[1],precision)
+    x2,y2 = round(point2[0],precision), round(point2[1],precision)
+    x3,y3 = round(point3[0],precision), round(point3[1],precision)
+    x4,y4 = round(point4[0],precision), round(point4[1],precision)
+
+
+
+    den = (x1 - x2)*(y3 - y4) - (y1-y2)*(x3-x4)
+
+    # Parallel lines...
+    if abs(den) < err:
+        return False
+
+    x_int = ((x1*y2 - y1*x2)*(x3-x4) - (x1 - x2)*(x3*y4 - y3*x4))/den
+
+    y_int = ((x1*y2 - y1*x2)*(y3-y4) - (y1 - y2)*(x3*y4 - y3*x4))/den
+
+    x_int, y_int = round(x_int, precision), round(y_int, precision)
+
+    if force_point_return:
+        return Point_2D(x_int, y_int)
+    
+    # no intersection w/in the line segments >> return false
+    if (x_int+err < min(x1,x2) or x_int+err < min(x3,x4) or
+        x_int-err > max(x1,x2) or x_int-err > max(x3,x4) or
+        y_int+err < min(y1,y2) or y_int+err < min(y3,y4) or
+        y_int-err > max(y1,y2) or y_int-err > max(y3,y4)):
+
+
+        return False
+
+    return Point_2D(x_int, y_int)
+
+
+def get_distance(point1, point2):
+    """ 
+    Return distance between the two given points.  
+    Given points should be be both Point_2D or or both Point_3D objects.
+    """
+    (x1,y1,z1) = point1[0], point1[1], 0 
+    (x2,y2,z2) = point2[0], point2[1], 0
+    
+    if (type(point1).__name__ == "Point_3D" and
+        type(point2).__name__ == "Point_3D"):
+        z1 = point1[2]
+        z2 = point2[2]
+
+    return math.sqrt((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2)
+
+
+def get_distance_point_line(point, line_point1, line_point2):
+    """
+    Return the distance between given point and line defined by the two points
+    line_point1 and line_point2.  
+    
+    Note: All the points must be either all Point_2D objects or Point_3D 
+    objects. 
+     
+    """
+    num = ((line_point2 - line_point1).cross_prod(line_point1 -
+                                                    point)).magnitude()
+
+    dist = num/(line_point2 - line_point1).magnitude()
+
+    return dist    
+
+
+def get_inter_pt_at_dist(point, line_pt1, line_pt2, dist):
+    """
+    Return point that intersects the line defined by line_pt1 and line_pt2 at 
+    the given distance from the given point.  Points must all be Point_2D 
+    objects.
+    
+    Will return None if no intersection at that distance.
+    """
+    angle = get_inner_angle(point, line_pt1, line_pt2)
+
+
+    
+    b = get_distance(point, line_pt1)
+    c = dist
+
+
+    det = c**2 - (b**2)*(math.sin(angle))**2
+
+
+
+    if det < 0:
+        return None
+
+    a1 = b*math.cos(angle) + det**0.5
+    a2 = b*math.cos(angle) - det**0.5
+
+    if a2 < 0:
+        a = a1
+    else:
+        a = min(a1,a2)
+
+
+    
+
+
+    line_angle = (line_pt2 - line_pt1).theta()
+    pt = line_pt1 + Point_2D(a*math.cos(line_angle),
+                             a*math.sin(line_angle))
+
+    return pt
+        
+
+
+def get_inner_angle(pt1, pt2, pt3):
+    """ 
+    Return the inner angle (angle less than pi) of the angle defined by the
+    given 3 points.  Points assumed to be Point_2D objects.
+    
+    """
+    angle1 = (pt1 - pt2).theta() % (2*math.pi)
+    angle2 = (pt3 - pt2).theta() % (2*math.pi)
+    angle = (angle1-angle2) % (2*math.pi)
+
+
+
+    if (angle > math.pi):
+        angle = 2*math.pi - angle
+
+    return angle
+
+
+
+def point_at_dist(point_start, point_end, dist):
+    """
+    Return point at given distance, dist, from point_start, on line defined
+    by point_start and point_end.
+    
+    """
+    (x_start, y_start) = (point_start.x, point_start.y)
+    (x_end, y_end) = (point_end.x, point_end.y)
+
+    x_dist = x_end - x_start
+    y_dist = y_end - y_start
+
+    theta = math.atan2(y_dist, x_dist)
+        
+    x = x_start + dist*math.cos(theta)
+    y = y_start + dist*math.sin(theta)
+
+    return Point_2D(x,y)
+
+
+
+
+def calc_is_convex(polygon):
+    num_vert = len(polygon)
+
+    convex = True
+    last = 0
+
+    
+    for i in range(num_vert):
+        v1 = polygon[(i+1)%num_vert] - polygon[i]
+        v2 = polygon[(i+2)%num_vert] - polygon[(i+1)%num_vert]
+
+
+        
+        perp_dot = (v1.perp()).dot_prod(v2)
+
+
+        if last == 0:
+            if perp_dot < 0:
+                last = -1
+            elif perp_dot > 0:
+                last = 1
+            continue
+
+        if last < 0:
+            if perp_dot > 0:
+                convex = False
+                break
+        elif last > 0:
+            if perp_dot < 0:
+                convex = False
+                break
+
+    return convex
+                
+                
+def get_const_coord_index(vertices):
+    for i in range(len(vertices[0])):
+        if (sum([pt[i] for pt in vertices])/len(vertices)) == vertices[0][i]:
+            return i
+    
+        
+
+
+############################ END HELPER FUNCS ################################
+##############################################################################
+
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+
+##############################################################################
+################################# POINT ######################################
+
+class Point_2D:
+    """ 
+    Representation of a 2D point.
+    """
+    
+    def __init__(self, x=0,y=0):
+        """ 
+        Initialize point with given x and y coordinates.
+        
+        """
+        self.x = x
+        self.y = y
+
+    def __eq__(self, other):
+        """ 
+        Return True if coordinate pair equivalent for both self, and other 
+        Point_2D object.  Return False otherwise.
+        
+        """
+        
+        return self.x == other.x and self.y == other.y
+
+    def __add__(self, other):
+        """
+        Return a Point_2D object that is the sum of the self, and other 
+        Point_2D objects.  Respective coordinates are added together.
+        """
+        
+        return Point_2D(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        """
+        Return a Point_2D object that is the difference between the other and 
+        self Point_2D objects.  Respective coordinates are subtracted.
+        """        
+        return Point_2D(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, f):
+        """
+        Return a Point_2D object that is the scalar multiple of the original 
+        Point_2D object.  Coordinates are multiplied by the given scalar 
+        factor f.  
+        
+        """
+        return Point_2D(self.x*f, self.y*f)
+
+    def __getitem__(self, key):
+        """ 
+        Return value of x-coordinate if key is 0, and value of y-coordinate 
+        if key is 1.
+        """
+        
+        if key == 0:
+            return self.x
+        elif key == 1:
+            return self.y
+
+    def __setitem__(self, key, value):
+        """ 
+        Set value of x-coordinate if key is 0, and value of y-coordinate if 
+        key is 1, to the given value.
+        """
+        
+        if key == 0:
+            self.x = value
+        elif key == 1:
+            self.y = value
+
+    def __len__(self):
+        """ Return the number of coordinates in the point (2).
+        
+        """
+        return 2
+
+    def theta(self):
+        """
+        Return the angle formed by the point from the x-axis.
+        """
+        
+        return math.atan2(self.y, self.x)
+    
+    def dot_prod(self, other):
+        """
+        Return the dot product of the self and other Point_2D objects.
+        
+        """
+        return self.x*other.x + self.y*other.y
+
+    def cross_prod(self, other):
+        """
+        Return the cross product of the self and other Point_2D objects.
+        
+        """
+        return Point_3D(0, 0, self.x*other.y - self.y*other.x)
+
+    def magnitude(self):
+        """
+        Return the magnitude of the point (measured from the origin).  
+        
+        """
+        return (self.x**2 + self.y**2)**0.5
+
+    def perp(self):
+        """
+        Returns point defining the perpendicular vector of vector defined by 
+        the current point.  (Perpendicular vector used is the one 90 degrees
+        left of current vector).  
+        
+        """
+        return Point_2D(-self.y, self.x)
+
+    def to_Point_2D(self, axis = None):
+        """ Return new Point_2D object with same coordinates.
+        
+        This method is defined so generic code that works for both Point_2D
+        and Point_3D objects can be written.
+        
+        The axis parameter is just used for Point_3D objects but needs to
+        be included in this method definition.
+        """
+        return Point_2D(self.x, self.y)
+
+    def to_Point_3D(self, coord=0, axis = 'z'):
+        """ Returns a Point_3D object using x,y coordinates from current
+        point and given coord for the given axis.    
+        
+        Note that the given coord is used as the new coordinate for the
+        given axis.  The original x, y coordinates are used for the
+        coordinates of the remaining two axes in the same order. 
+
+        """
+        if axis == 'x' or axis == 0:
+            return Point_3D(coord, self.x, self.y)
+        elif axis == 'y' or axis == 1:
+            return Point_3D(self.x, coord, self.y)
+        else:
+            return Point_3D(self.x, self.y, coord)
+        
+
+    def __round__(self, n = 0):
+        """ 
+        Returns point with coordinates rounded to n digits (the number of 
+        decimal places) 
+        
+        """
+        return Point_2D(round(self.x, n), round(self.y, n))
+
+    def __repr__(self):
+        return "("+str(self.x)+", "+str(self.y)+")"
+    
+    def centroid_str(self):
+        """ Return string that can be written in a savg file to represent
+        the coordinates of the point.
+
+        """
+        return str(self.x) + " " + str(self.y)  + " "
+    
+
+
+class Point_3D:
+    """ 
+    Representation of a 3D point.
+    """
+    def __init__(self, x=0, y=0, z=0):
+        self.x = x
+        self.y = y
+        self.z = z
+
+
+    
+    def __eq__(self, other):
+        """ 
+        Return True if coordinate triple equivalent for both self, and other 
+        Point_3D object.  Return False otherwise.
+        
+        """       
+        return self.x == other.x and self.y == other.y and self.z == other.z
+
+    def __repr__(self):
+        return "("+str(self.x)+", "+str(self.y)+", "+str(self.z)+")"
+
+    def __add__(self, other):
+        """
+        Return a Point_3D object that is the sum of the self, and other 
+        Point_3D objects.  Respective coordinates are added together.
+        """       
+        
+        return Point_3D(self.x + other.x, self.y + other.y, self.z + other.z)
+
+    def __sub__(self, other):
+        """
+        Return a Point_3D object that is the difference between the other and 
+        self Point_3D objects.  Respective coordinates are subtracted.
+        """
+        return Point_3D(self.x - other.x, self.y - other.y, self.z - other.z)
+
+    def __mul__(self, f):
+        """
+        Return a Point_3D object that is the scalar multiple of the original 
+        Point_3D object.  Coordinates are multiplied by the given scalar 
+        factor f.  
+        
+        """
+        return Point_3D(self.x*f, self.y*f, self.z*f)
+
+    def __getitem__(self, key):
+        """ 
+        Return value of x-coordinate if key is 0, value of y-coordinate if 
+        key is 1, or value of z-coordinate if the key is 2.
+        """
+        if key == 0:
+            return self.x
+        elif key == 1:
+            return self.y
+        elif key == 2:
+            return self.z
+
+    def __setitem__(self, key, value):
+        """ 
+        Set value of x-coordinate if key is 0, value of y-coordinate if 
+        key is 1, or value of z-coordinate if key is 2, to the given value.
+        """
+        
+        if key == 0:
+            self.x = value
+        elif key == 1:
+            self.y = value
+        elif key == 2:
+            self.z = value
+
+    def __len__(self):
+        """ Return the number of coordinates in the point (3).
+        
+        """
+        return 3
+
+    def dot_prod(self, other):
+        """
+        Return the dot product of the self and other Point_3D objects.
+        
+        """        
+        return self.x*other.x + self.y*other.y + self.z*other.z
+
+    def cross_prod(self, other):
+        """
+        Return the cross product of the self and other Point_3D objects.
+        
+        """        
+        return Point_3D(self.y*other.z - self.z*other.y,
+                        self.z*other.x - self.x*other.z,
+                        self.x*other.y - self.y*other.x)
+
+
+    def magnitude(self):
+        """
+        Return the magnitude of the point (measured from the origin).  
+        
+        """
+        return (self.x**2 + self.y**2 + self.z**2)**0.5
+
+    def __round__(self, n = 0):
+        """ 
+        Returns point with coordinates rounded to n digits (the number of 
+        decimal places) 
+        
+        """        
+        return Point_3D(round(self.x, n), round(self.y, n), round(self.z, n))
+
+
+    def to_Point_2D(self, axis = 'z'):
+        """ 
+        Return Point_2D object by removing the coordinate of the given axis.
+        """
+        
+        if axis == 'x' or axis == 0:
+            return Point_3D(self.y, self.z)
+        elif axis == 'y' or axis == 1:
+            return Point_3D(self.x, self.z)
+        else:
+            return Point_3D(self.x, self.y)
+
+
+    def to_Point_3D(self, coord=0, axis = 'z'):
+        """ Returns a Point_3D object with the same coordinates as current 
+        point, except the coordinate of the given axis is replaced by the
+        given coord.  
+        
+        This method should probably be never called but is in place to allow
+        for generic code that works for both Point_2D and Point_3D objects.  
+
+        """
+        if axis == 'x' or axis == 0:
+            return Point_3D(coord, self.y, self.z)
+        elif axis == 'y' or axis == 1:
+            return Point_3D(self.x, coord, self.z)
+        else:
+            return Point_3D(self.x, self.y, coord)
+        
+
+    def savg_str(self):
+        """ Return string that can be written in a savg file to represent
+        the coordinates of the point.
+
+        """
+        return str(self.x) + " " + str(self.y) + " " + str(self.z) + " "
+
+
+    def centroid_str(self):
+        """ Return string that can be written in a savg file to represent
+        the coordinates of the point.
+
+        """
+        return str(self.x) + " " + str(self.y) + " " + str(self.z) + " "
+    
+
+
+
+############################### END POINT ####################################
+##############################################################################
+
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+
+##############################################################################
+################################# POLYGON ####################################
+
+class Polygon:
+    """ 
+    Representation of a Polygon.
+    
+    Acts as a list of Point_2D or Point_3D objects (can use some basic list
+    functionality, such as append, extend, and pop, and can index Polygon like
+    a list).  
+     
+    """
+
+    def __init__(self, points):
+        """ Initializes Polygon based on list of points (either all of type 
+        Point_2D or all of type Point_3D)
+        
+        May create a Polygon with empty list and then append to the list of
+        points later.  
+
+        """
+        self.points = points
+
+    def __equal__(self, other):
+        """ 
+        Return True if all the points in this Polygon in other Polygon are 
+        the same and in the exact same order; Return False otherwise.
+        
+        Currently, does not check if the points are rotated - thus the first 
+        point must match in both, the second point must match in both, etc.
+        """
+        
+        if len(self.points) != len(other.points):
+            return False
+        
+        for (pt_self, pt_other) in zip(self.points, other.points):
+            if pt_self != pt_other:
+                return False
+        return True
+
+    def __repr__(self):
+        rep = ""
+        for pt in self.points:
+            rep = rep+str(pt)+", "
+
+        return rep[0:-2]
+
+
+
+    # Overriding and adding some functions so Polygon acts almost
+    #       like a list of Points
+
+    def __len__(self):
+        """ 
+        Return number of vertices in the polygon (number of points)
+
+        """
+        return len(self.points)
+
+    def __getitem__(self, key):
+        """ 
+        Return object (either Point_2D or Point_3D) at given index (key)
+        from the list of points defining the polygon.
+
+        """
+        return self.points[key]
+        
+    def __setitem__(self, key, value):
+        """ 
+        Set given value at given index (key) in the list of points
+        defining the polygon
+
+        """
+        
+        self.points[key] = value
+
+    def append(self, value):
+        """ Append given value to the end of the list of points
+
+        """
+        self.points.append(value)
+
+    def extend(self, values):
+        """ Add the values in the given list of values to the end of the
+        list of points
+
+        """
+        self.points.extend(values)
+
+    def pop(self, index = -1):
+        """Remove the point at the given position in the list of points, and 
+        return it. If no index is specified, the last point in the list of 
+        points will be removed and returned.  
+        """
+        
+        return self.points.pop(index)
+
+    def reverse(self):
+        """
+        Reverse the list of points defining the polygon.
+        """
+        self.points.reverse()
+
+    def is_convex(self, axis = 'z'):
+        """ 
+        Return True if the polygon is convex; Return False otherwise.  
+        
+        Only works on polygons with Point_2D objects.  Specify axis if using 
+        with a Polygon with Point_3D objects to specify which axis should be
+        ignored. 
+        
+        """
+        return calc_is_convex(self.to_2D())
+
+    def to_3D(self, coord = 0, axis = 'z'):
+        """ 
+        Return a new polygon with all the points converted from
+        Point_2D to Point_3D objects by using the given coordinate for the
+        given axis.
+
+        """
+        
+        poly_3D = Polygon([])
+        for pt in self.points:
+            poly_3D.append(pt.to_Point_3D(coord, axis))
+
+        return poly_3D
+
+    def to_2D(self, axis = 'z'):
+        """ 
+        Return a new polygon with all the points converted from
+        Point_3D to Point_2D objects.  The coordinate of the given axis is
+        removed.  Note that if the points are all already Point_2D objects,
+        then a Polygon with new, but equivalent Point_2D objects will be 
+        returned.
+
+        """
+        
+        poly_2D = Polygon([])
+        for pt in self.points:
+            poly_2D.append(pt.to_Point_2D(axis))
+
+        return poly_2D 
+
+    def savg_str(self):
+        """ 
+        Return string that can be written in a savg file to represent
+        the Polygon.
+        """
+        if r != -1 :
+            st = "Polygon "+str(r)+" "+str(g)+" "+str(b)+" "+str(a)+"\n"
+        else :
+            st = "Polygon\n"
+        for pt in self.points:
+            st += pt.savg_str()
+            st += "\n"
+        
+        return st
+############################### END POLYGON ##################################
+##############################################################################
+
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+
+##############################################################################
+################################# SHARD ######################################
+# Description: Defines Shard class and related functions.
+#              Primary purpose of Shard object is to define all the 3D 
+#              polygons that compose the shard, given the 2D shape of the 
+#              shard and the two coordinates along the third axis that define
+#              where the shard lies (the outside pane and inside pane 
+#              coordinates)
+
+
+class Shard:
+
+    
+    def __init__(self, id, outer_coord, inner_coord, shape, perp_axis):
+        """ Initializes a Shard object with the given defining 2D shape and
+        coordinates specifying the shard on the last axis (the perp_axis)
+        
+        Parameters:
+        id: unique number for the shard
+        
+        outer_coord: coordinate along the thickness dimension axis of the 
+                     outside pane
+    
+        inner_coord: coordinate along the thickness dimension axis of the 
+                     inside pane
+    
+        shape: Polygon containing 2D Points (Point_2D objects) that defines
+              shape of shard parallel to the panes
+              
+        perp_axis: The axis perpendicular to the window (the thickness
+                   dimension axis) - specifies which axis the outer and inner
+                   coords belong to.  (Can be 'x', 'y', 'z' or 0, 1, 2)       
+
+
+        """
+        self.id = id
+        self.outer_coord = outer_coord
+        self.inner_coord = inner_coord
+        self.shape = shape
+
+        self._polygons = None
+        self.neighbor_ids = [] # list of ids of neighboring shards
+        self.perp_axis = perp_axis
+
+    def __repr__(self):
+        """ 
+        Return a string representation of Shard object.
+        """
+        rep = "Shard "+str(self.id) + "\n"
+        rep = rep + "Polygons: \n"
+        for p in self.polygons:
+            rep = rep+str(p)+"\n"
+
+        return rep
+
+
+    def get_polygons(self):
+        """ 
+        Return list of Polygons with 3D points (Point_3D objects) that
+        define the Shard.  This includes the polygons on the outside and 
+        inside pane, along with the polygons that connect these two 
+        polygons to form an entire glass shard.    
+        
+        This method is automatically called when getting the polygons 
+        attribute (shard.polygons).  
+
+        """
+        if self._polygons == None:
+            self._polygons = []
+            
+            # Polygon to define the polygon of the shard on the window's
+            #     outer pane
+            poly_outer = self.shape.to_3D(self.outer_coord, self.perp_axis)
+
+            # Polygon to define the polygon of the shard on the window's
+            #     inner pane
+            poly_inner = self.shape.to_3D(self.inner_coord, self.perp_axis)
+
+            self._polygons.append(poly_outer)
+
+            num_vert = len(self.shape) # number of vertices
+
+            # making the polygons that are perpendicular to the outer and
+            #     inner panes >> they are the polygons that connect the
+            #     edge of the polygon on the outer pane to the respective
+            #     edge of the polygon on the inner pane
+            for i in range(num_vert):
+
+                pt1_2D = self.shape[i]
+                pt2_2D = self.shape[(i+1)%num_vert]
+
+                connecting_poly = Polygon([
+                    pt1_2D.to_Point_3D(self.outer_coord, self.perp_axis),
+                    pt2_2D.to_Point_3D(self.outer_coord, self.perp_axis),
+                    pt2_2D.to_Point_3D(self.inner_coord, self.perp_axis),
+                    pt1_2D.to_Point_3D(self.inner_coord, self.perp_axis)])
+
+                self._polygons.append(connecting_poly)
+
+            self._polygons.append(poly_inner)
+
+        return self._polygons
+
+    polygons = property(get_polygons)
+
+
+    def is_neighbor(self, other):
+        """ 
+        Return True if this shard neighbors the given other shard;
+        return False otherwise.
+
+        """
+        match_count = 0
+
+        # determine number of points that are the same between the
+        #     two shards >> there needs to be at least 2 matches for the
+        #     shards to be neighbors
+        for pt_self in self.shape:
+            for pt_other in other.shape:
+                if pt_self == pt_other:
+                    match_count += 1
+
+        return match_count >=2
+
+
+
+    def add_neighbor_id(self, id):
+        """ 
+        Add given shard id to the neighbor_ids list
+
+        """
+        self.neighbor_ids.append(id)
+
+    def get_centroid(self):
+        """ 
+        Return centroid (as a Point_3D object) of the shape of the shard on
+        the outer pane
+
+        """
+        
+        c_2D = getShapeCOM(self.shape)
+        return c_2D.to_Point_3D(self.outer_coord, self.perp_axis)
+
+
+    def is_convex(self):
+        """ Return True if the shard is convex; return False otherwise
+        
+        """
+        
+        return self.polygons[0].is_convex()
+    
+    def centroid_str(self, padding = None):
+        """ 
+        Return string that can be written in centroid file to represent
+        the shard location information.
+
+        """
+        
+	
+        st = self.id_str(padding) + " " + self.get_centroid().centroid_str()
+        
+
+        return st
+
+
+    def id_str(self, padding = None):
+        """ 
+        Return id as a string, padded with appropriate number of 0s such that
+        the number of the digits in the id is equivalent to the given padding
+        value.  
+        
+        Note: Padding value must be greater or equal to the number of digits 
+        in the id
+        
+        """ 
+        if padding == None:
+            return str(self.id)
+
+        st = str(self.id)
+        st = "0" * max(0, (padding - len(st))) + st
+
+        return st
+
+    def savg_str(self, padding = None, basename = "shard"):
+        """ 
+        Return string that can be written in a savg file to draw
+        the shard with all its polygons.
+
+        """
+
+        st = "# " + basename + "-" + self.id_str(padding) + "\n"
+        
+        
+        for p in self.polygons:
+            st += p.savg_str()
+            
+
+        return st
+
+    def adjacency_str(self):
+        """ 
+        Return string that can be written in adjacency file to store
+        neighbor information of shard.
+
+        """
+        
+        st = str(self.id) + " "
+
+        for n in self.neighbor_ids:
+            st += str(n) + " "
+
+        return st
+
+
+# Parameters:
+#     shapes: list of Polygon objects with 2D points (Point_2D)
+#     outer_coord: The z-coordinate of the outer pane
+#     inner_coord: The z-coordinate of the inner pane
+# Returns list of Shard objects
+#
+# Note: each shape just represents the shape of the shard on the outer pane
+#       which is why it is defined by 2D points.  It is assumed that the
+#       shapes are defined on the x,y plane, though the axis can be
+#       switched around later when creating the output files.  
+
+def generate_shards(shapes, outer_coord, inner_coord, perp_axis):
+    """ 
+    Return list of Shard objects created from the given shapes.
+    
+    Assumes these are all the shapes for a given window.  The window should
+    be parallel to the xy-, yz-, or xz-plane, meaning the outer coordinate
+    should be the same for all the shards, as should the inner coordinate. 
+    
+    Parameters:
+     shapes: list of Polygon objects containing 2D Points (Point_2D objects) 
+             that define shape of shard parallel to the panes
+            
+     outer_coord: coordinate along the thickness dimension axis of the 
+                  outside pane
+    
+     inner_coord: coordinate along the thickness dimension axis of the 
+                  inside pane
+    
+              
+     perp_axis: The axis perpendicular to the window (the thickness
+                dimension axis) - specifies which axis the outer and inner
+                coords belong to.  (Can be 'x', 'y', 'z' or 0, 1, 2)       
+        
+
+    """
+    
+    id = 0  # unique number for each shard
+    shards = []
+
+    for s in shapes:
+        shards.append(Shard(id, outer_coord, inner_coord, s, perp_axis))
+        id = id + 1
+
+    return shards
+
+
+def find_neighbors(shards):
+    """ 
+    Determine what Shards each Shard from the list neighbors and
+    modifies each Shard object by adding the ids of each of the neighboring
+    shards.
+    
+    This method should only be called once for each set of shards because
+    othrewise, the list of neighboring ids will just double.  
+
+    """
+    
+    num_shards = len(shards)
+
+    for i in range(num_shards-1):
+        for j in range(i+1,num_shards):
+            if shards[i].is_neighbor(shards[j]):
+                shards[i].add_neighbor_id(shards[j].id)
+                shards[j].add_neighbor_id(shards[i].id)
+                
+
+
+
+############################### END SHARD ####################################
+##############################################################################
+
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+
+##############################################################################
+################################# SPOKE ######################################
+
+
+# Description: Representation of a spoke - a crack radiating outwards from
+#              the window's break point.
+
+class Spoke:
+    """
+    Representation of a Spoke - a crack radiating outwards from the window's
+    break point.
+
+    A Spoke object is used to create a random path from the given start point
+    to an edge of the window, at roughly the given angle.  The Spoke stores
+    this path,  as well as where the break points occur along this path.
+
+    The object also provides a method that allows the Spoke to be connected
+    with another spoke - it returns the 2D Polygons that would fall in
+    between the two spokes.
+    """
+
+    def __init__(self, start_point, angle, window_shape, break_distances,
+                 leniency_angle, sigma_del_angle, inputs):
+
+        """
+        Initializes Spoke object.
+
+        Parameters:
+         start_point: The point at which the Spoke begins (the window's break
+                      point)
+
+         angle: The angle of the spoke in reference to the x-axis.
+
+         window_shape: The 2D vertices that define the shape of the window
+
+         break_distances: The distance from the start point at which the
+                          breaks occur on the spoke - this should include
+                          breaks even if they would be outside the spoke
+                          (All spokes for a given window should be initialized
+                          with the same number of break distances)
+
+         leniency_angle: The amount the path's angle can deviate from the
+                         given angle.  This angle should be such that if
+                         the Spoke goes at this angle, it should not intersect
+                         the path of any other spoke (except at the start
+                         point)
+
+         sigma_del_angle: The standard deviation of the change in angle for
+                          creating the randomized Spoke path
+                         
+        """
+        self.start_point = start_point
+        self.angle = angle
+        self.window_shape = window_shape
+        self.inputs = inputs
+        self.sigma_del_angle = sigma_del_angle
+
+        # self.side: The side of the window the spoke intersects
+        # self.end_point: The point at which the spoke intersects the window's
+        #                 edge
+        self.side, self.end_point = self.get_side_and_end_point()
+
+        # self.path: The path the spoke follows
+        # Generating a random path for the spoke to follow so it is not
+        #    just a straight line.
+        # Stored as a list of lists of 2D points.  The inner lists are
+        #       separated from each other whenever a break point occurs.
+        #       Break points are the points at which the circular cracks
+        #       of the window intersect the spoke.  They are calculated
+        #       based on the break distances.  
+        self.path = self.get_random_walk_path(leniency_angle)
+
+
+        sigma_f = self.inputs["sigma_br_inter"]
+
+        break_distances = self.get_mod_break_distances(break_distances,
+                                                             sigma_f,
+                                                             1)
+        
+        
+        self.break_distances = break_distances
+
+        # self.path is simplified such that each of the inner lists of
+        #     2D points only contains 2 points - where it begins and ends.
+        #     This is so that we get more simplified polygons when
+        #     connecting the spokes.  (The spokes will look like they change
+        #     from going in a straight path only at break points)
+
+        if self.inputs["simplify_path"]:
+            
+            self.path = self.get_endpoint_path(self.path)
+            
+        
+
+
+    def get_side_and_end_point(self):
+        """
+        Return window side and point at which the Spoke would intersect
+        window edge if it were traveling a perfectly straight path at its
+        angle (self.angle).
+        """
+
+        # Add 0.01 because okay to overshoot but not undershoot
+        # Allows us to avoid any round off errors
+        max_dist = self.get_max_dist() + 0.01
+
+        x = self.start_point.x + max_dist*math.cos(self.angle)
+        y = self.start_point.y + max_dist*math.sin(self.angle)
+                
+        point = Point_2D(x,y)
+
+        num_corners = len(self.window_shape)
+
+        for i in range(num_corners):
+            inter = get_intersection(self.start_point, point,
+                                     self.window_shape[i],
+                                     self.window_shape[(i+1)%num_corners])
+
+            if inter:
+                end_point = inter
+                side = i
+                break
+                                                                        
+        
+        return (side, end_point)
+
+
+    def get_max_dist(self):
+        """
+        Return maximum distance from the start point to the window edges.
+
+        """
+
+        # The maximum distance has to be one of the distances to the corners 
+        corner_distances = [get_distance(self.start_point, corner)
+                            for corner in self.window_shape]
+
+        max_dist = max(corner_distances)
+
+        return max_dist
+
+
+
+    def get_random_walk_path(self, leniency_angle):
+        """
+        Return a randomized path for the Spoke to follow given the leniency
+        angle (the amount the path can deviate from the original angle)
+
+        This path does not take into account the breaks between the path.
+        It only returns a random route for the spoke to follow.
+
+        NOTE: This method modifies self.side and self.end_point but returns
+        path (instead of modifying self.path)
+
+        A path is stored as a list of lists of 2D points.  The inner lists
+        are separated whenever a break point occurs.  Since this method does
+        not take into account break points, it returns a list of a single list
+        of 2D points.
+
+        """
+
+        max_dist = get_distance(self.start_point, self.end_point)
+        
+        # find the bounding min and max angle
+        # they should be such that no spokes can intersect with each other
+        min_angle = self.angle - leniency_angle
+        max_angle = self.angle + leniency_angle
+
+        # the average step size for the random path the spoke takes
+        mu_step = max_dist*self.inputs["mu_step_factor"]
+
+        sigma_step = max_dist*self.inputs["sigma_step_factor"]
+
+
+        # the average change in angle at every step
+        # should just be 0...
+        mu_del_angle = 0
+
+        
+
+        path = [self.start_point]
+
+        angle = random.uniform(min_angle, max_angle)
+
+       
+        while True:
+
+            # while loop to gaurantee that the angle will be within the
+            # bounds
+            while True:
+                angle_step = random.gauss(mu_del_angle, self.sigma_del_angle)
+                if min_angle <= angle + angle_step <= max_angle:
+                    angle += angle_step
+                    break
+
+            # absolute value to gaurantee step size is positive
+            step = abs(random.gauss(mu_step, sigma_step))
+
+            next_point = path[-1] + Point_2D(step*math.cos(angle),
+                                             step*math.sin(angle))
+
+
+            num_corners = len(self.window_shape)
+
+            # check if path intersects with window edges
+            # the path is done once there is an interesction with one of the
+            #     edges
+            
+            for i in range(num_corners):
+                inter = get_intersection(path[-1], next_point,
+                                         self.window_shape[(self.side+i)
+                                                           %num_corners],
+                                         self.window_shape[(
+                    self.side+i+1)%num_corners])
+
+                if inter:
+                    
+                    self.side = (self.side + i)%num_corners
+                    break
+
+
+            
+            
+            # if intersection, then the intersection is the next (and last)
+            #    point in the path
+            if inter:
+                path.append(inter)
+                self.end_point = inter
+                break
+
+            else:
+                path.append(next_point)
+
+        
+
+        return [path]
+
+
+    def skip_breaks(self, self_path, self_br_pts, other_path,
+                    other_br_pts, chance_skip = 0):
+        """
+        Return modified self's path and given other Spoke's path along with
+        ther modified break points after removing breaks from the path with
+        the given chance of skipping a break.
+
+        Method only returns modified values - does not change any of the
+        Spoke's actual attributes.  
+
+        """
+
+        # Make a deepcopy of everything so that modifications do not cause
+        #     a change anywhere else in the program
+        self_path = copy.deepcopy(self_path)
+        other_path = copy.deepcopy(other_path)
+        self_br_pts = copy.deepcopy(self_br_pts)
+        other_br_pts = copy.deepcopy(other_br_pts)
+
+        # The list of indices indicating which breaks to skip
+        # Note: A break in the path is indicated by the start of a new inner
+        #       list
+        to_skip = []
+
+        
+        for i in range(min(len(self_path), len(other_path))-1):
+            if random.random() < chance_skip:
+                to_skip.append(i)
+
+        to_skip.reverse()
+
+        for i in to_skip:
+            self_path[i].extend(self_path.pop(i+1)[1:])
+            other_path[i].extend(other_path.pop(i+1)[1:])
+            self_br_pts.pop(i)
+            other_br_pts.pop(i)
+
+        return self_path, self_br_pts, other_path, other_br_pts
+        
+
+
+
+    
+    def get_mod_break_distances(self, break_distances, sigma_factor = 0,
+                                chance_diverge = 1):
+        """
+        Return a copy of the given list of break distances with modified
+        values for these distances.  The distances will diverge from the
+        original, following a gaussian pattern using the given sigma factor.
+
+        The sigma factor is multiplied by the separation between the
+        current distance and the neighboring distance (if there are two
+        neighboring distances, the less greater one is taken) to get the
+        sigma value.  
+        
+        """
+
+        break_distances_copy = copy.deepcopy(break_distances)
+
+        
+
+        for i in range(len(break_distances_copy)):
+            if random.random() > chance_diverge:
+                continue
+
+            if i > 0:
+                dist_a = break_distances_copy[i] - break_distances_copy[i-1]
+            else:
+                dist_a = break_distances_copy[i]
+
+            if i < len(break_distances_copy)-1:
+                dist_b = break_distances_copy[i+1] - break_distances_copy[i]
+            else:
+                dist_b = dist_a
+
+            sigma = min(dist_a, dist_b)*sigma_factor
+            
+            break_distances_copy[i] = random.gauss(break_distances_copy[i],
+                                                   sigma)
+
+        break_distances_copy.sort()
+        return break_distances_copy
+
+
+    def mod_breaks(self, self_path, break_points, chance_diverge = 0,
+                   diverge_factor = 0.2):
+        """
+        Return a modified copy of the given path and break points after
+        modifying the break points such that they diverge from their original
+        location.
+
+        chance_diverge specifies the probability that the break point will
+        actually diverge from its original.
+
+        The diverge_factor is the fraction of the distance between a given
+        break point and the neighboring points in the path that the break
+        point can diverge to at the most. It must be less than 1. 
+
+        """
+
+        
+        self_path = copy.deepcopy(self_path)
+        break_points = copy.deepcopy(break_points)
+
+        for i in range(len(self_path)-1):
+            if random.random() > chance_diverge:
+                continue
+
+            # dist_a: the distance between current break point and previous
+            #         point in path
+            dist_a = get_distance(self_path[i][-1], self_path[i][-2])
+
+            # dist_b: the distance between current break point and next point
+            #         in path
+
+            
+            dist_b = get_distance(self_path[i+1][0], self_path[i+1][1])
+            
+
+            # Half probability that break point will go closer to start point;
+            # half probability that it will go closer to end point
+            #
+            # In both cases, path has to modified such that the original break
+            #     point is still part of the path, but no longer a break 
+            #     point. The new break point should be added to the path as a
+            #     break point.
+            # The original break point must be preserved in the path so that
+            #     the spoke's path remains unchanged.  The new break point 
+            #     will not change the path the Spoke takes - it will only 
+            #     change the location of the break point.
+            if random.random() < 0.5:
+                dist = random.uniform(0, dist_a*diverge_factor)
+                angle = (self_path[i][-2] - self_path[i][-1]).theta()
+                new_point = (self_path[i][-1] + 
+                             Point_2D(dist*math.cos(angle),
+                                      dist*math.sin(angle)))
+
+                
+                self_path[i].pop(-1)
+                self_path[i].append(new_point)
+                self_path[i+1].insert(0, new_point)
+                break_points[i] = new_point
+                
+
+            else:
+                dist = random.uniform(0, dist_b*diverge_factor)
+                angle = (self_path[i+1][1] - self_path[i+1][0]).theta()
+                new_point = (self_path[i+1][0] + 
+                             Point_2D(dist*math.cos(angle),
+                                      dist*math.sin(angle)))
+
+                self_path[i+1].pop(0)
+                self_path[i+1].insert(0,new_point)
+                self_path[i].append(new_point)
+
+                break_points[i] = new_point
+
+        
+
+        return self_path, break_points
+
+
+
+    def set_break_distances(self, break_distances):
+        """
+        Set break distances to the given break distances.  Modify self.path
+        and self.break_points to reflect the changes in the break distances.
+
+        (Part of break_distances property.  Can just call
+        spoke.break_distances = break_distances, instead of calling this 
+        method itself)
+        """
+
+        self._break_distances = break_distances
+        self._break_distances.sort()
+        
+        self.path, self.break_points = self.get_path_and_br_points(
+            break_distances)
+        
+
+        
+
+    def get_break_distances(self):
+        """
+        Return break distances.
+
+        (Part of break_distances property.  Can just call
+        break_distances = spoke.break_distances, instead of calling this 
+        method itself)
+        """
+        
+        return self._break_distances
+
+
+    break_distances = property(get_break_distances, set_break_distances)
+
+    def get_path_and_br_points(self, break_distances, path = None):
+        """
+        Return path and break points based on the given break distances.
+        If no path is supplied, then use self.path
+
+        Break points are added to the path such that the direction of the
+        path is preserved.
+        
+        """
+
+        if (path == None):
+            path = self.path
+            
+        break_distances.sort()
+
+        path_new = []
+
+        # all points in path in a single list, as opposed to separated by
+        # breaks
+        path_merged = self.get_path_merged(path)
+
+        # there is one break point for every break distance, even if it goes
+        #     beyond the length of the spoke.
+        break_points = []
+
+        # append an inner list to path_new, with the first point in
+        #     path_merged >> each inner list represents part of the path
+        #     up to the break point (or the end of the window)
+        path_new.append([path_merged[0]])
+
+        # last_dist: stores distance between current point in path_merged
+        #            and the first point
+        last_dist = 0
+        last_pt = path_merged[0]
+        
+        num_distances = len(break_distances)
+
+        br_dist_index = 0  #index of current break distance
+        i = 1 #index of current point in path_merged
+
+        # iterate through each point in path_merged
+        while i < len(path_merged):
+            cur_pt = path_merged[i]
+            cur_dist = get_distance(self.start_point, cur_pt)
+
+            # if the current break distance is between the last point's
+            #     distance and the current point's distance from the start
+            #     point: 
+            if (br_dist_index < num_distances and
+                (last_dist <= break_distances[br_dist_index] <= cur_dist or
+                 cur_dist <= break_distances[br_dist_index] <= last_dist)):
+
+                # determine at which point on the line segment
+                #     defined by the current point and last point, the 
+                #     distance from the start point is equivalent to the 
+                #     current break distance
+                pt = get_inter_pt_at_dist(self.start_point,
+                                               last_pt, cur_pt,
+                                               break_distances[br_dist_index])
+               
+                # append this break point to the current inner path and then
+                #     start a new inner path with the break point
+                path_new[-1].append(pt)
+                path_new.append([pt])
+
+
+                last_pt = pt
+                last_dist = get_distance(self.start_point, pt)
+                break_points.append(pt)
+
+
+                # shouldn't increment the i index unless the new point is the
+                #      same as the current point, because that implies the
+                #      current point has not been added to the path yet
+                if round(pt,3) == round(cur_pt,3):
+                    i+=1
+
+                
+                br_dist_index += 1
+
+            # if the distance is not between the last and current distances:
+            else:
+
+                # add the current point to the current inner path
+                path_new[-1].append(cur_pt)
+                last_pt = cur_pt
+                last_dist = cur_dist
+                i += 1
+
+
+
+        # Figure out the appropriate break point for all the remaining
+        #      break distances
+        angle = (path_merged[-1] - self.start_point).theta()
+        for dist in break_distances[len(path_new)-1:]:
+            pt_new = self.start_point + Point_2D(dist*math.cos(angle),
+                                                 dist*math.sin(angle))
+
+            break_points.append(pt_new)
+
+
+        
+        if len(path_new[-1]) == 1:
+            if path_new[-1][0] == path_new[-2][-1]:
+                path_new.pop(-1)
+
+
+        
+        return(path_new, break_points)
+
+
+
+
+     
+
+    
+    def get_path_merged(self, path = None):
+        """
+        Return path merged into a singe list (as opposed to a list of inner
+        lists).
+
+        If no path is given, self.path will be used.  The given path itself is
+        not modified, but a merged path is returned.
+
+        It is assumed that the last value in every inner list (except for the
+        last inner list) will be the same as the first value of the next
+        inner list - thus one duplicate value will be removed.
+
+        """
+        
+        if path == None:
+            path = self.path
+
+        
+
+        path_merged = []
+
+        for i in range(len(path)-1):
+            path_merged.extend(path[i][:-1])
+
+        path_merged.extend(path[-1][:])
+
+        return path_merged
+        
+
+
+    def connect(self, other):
+
+        """
+        Return list of 2D shapes that would connect this Spoke with the
+        given other Spoke.
+
+        It is assumed that the window_shape for both Spokes are equivalent.
+
+        """
+    
+        shapes = []
+
+
+        
+        #sigma_f = SIGMA_BR_DIVERGE_FACTOR
+        ch_div = self.inputs["chance_diverge"]
+        ch_skip = self.inputs["chance_skip"]
+        div_f = self.inputs["diverge_factor"]
+
+
+
+        skip_res = self.skip_breaks(self.path, self.break_points, other.path,
+                                    other.break_points,
+                                                 ch_skip)
+
+        self_path, self_br_pts, other_path, other_br_pts = skip_res
+
+        self_path, self_br_pts  = self.mod_breaks(self_path,
+                                                        self_br_pts, ch_div,
+                                                        div_f)
+        other_path, other_br_pts = other.mod_breaks(other_path,
+                                                          other_br_pts, 
+                                                          ch_div,
+                                                          div_f)
+
+
+        
+        len_self = len(self_path)
+        len_other = len(other_path)
+        num_breaks = len(self_br_pts)
+
+        num_corners = len(self.window_shape)
+        
+        doneFlag = False
+        inner_pts_old = []
+        for i in range(max(len_self, len_other, num_breaks+1)):
+            if doneFlag:
+                break
+
+            inner_pts = []
+            
+            cur_shape = Polygon([])
+
+            # append path from self 
+            if (i < len_self):
+                
+                cur_shape.extend(self_path[i])
+            else:
+                
+
+                cur_shape.append(inner_pts_old[0])
+
+
+
+            # get self inner points as needed...
+            
+            doneFlag = False
+            
+            if (i>=len_self-1 and i < num_breaks):
+                intersection = get_intersection(self_br_pts[i],
+                                                other_br_pts[i],
+                                                self.window_shape[self.side],
+                                                self.window_shape[(self.side
+                                                             +1)%num_corners])
+                
+
+                if not intersection:
+                    doneFlag = True
+                    
+                else:
+                    inner_pts.append(intersection)
+
+            if (doneFlag or (i >= len_self-1 and i == num_breaks)):
+                cur_side = self.side
+
+                while cur_side != other.side:
+                    cur_side = (cur_side + 1)%num_corners
+                    inner_pts.append(self.window_shape[cur_side])
+
+
+            # get other inner points as needed...
+
+            if (i>=len_other-1 and i < num_breaks):
+                                    
+                intersection = get_intersection(self_br_pts[i],
+                                               other_br_pts[i],
+                                               other.window_shape[other.side],
+                                               other.window_shape[(other.side
+                                                             +1)%num_corners])
+
+                if not intersection:
+                    doneFlag = True
+                else:
+                    inner_pts.append(intersection)
+
+
+            cur_shape.extend(inner_pts)
+
+            # append path from other
+            if (i < len_other):
+
+                
+                cur_shape.extend([pt for pt in reversed(other_path[i])])
+            else:
+                cur_shape.append(inner_pts_old[-1])
+
+            if cur_shape[0] == cur_shape[-1]:
+                cur_shape.pop(-1)
+
+            inner_pts_old = inner_pts
+
+            shapes.append(cur_shape)
+
+
+
+            
+
+        return shapes
+
+
+
+    def get_endpoint_path(self, path):
+        """
+        Return given path with all inner points inside the inner lists
+        removed.  (A path is a list of lists of points.  This method will
+        remove all the points except for the first and the last in each
+        of the inner lists).
+        """
+        path_new = []
+
+        for p in path:
+            inner_path = []
+            inner_path.append(p[0])
+
+            if (len(p) > 1):
+                inner_path.append(p[-1])
+
+            path_new.append(inner_path)
+
+        return path_new
+
+############################### END SPOKE ####################################
+##############################################################################
+
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+
+##############################################################################
+############################### PATTERNS #####################################
+# Description:  Responsible for creating the glass breakage patterns.
+#              Designed to contain functions that return a tuple with two
+#              elements: the first element is the list of the polygons that
+#              define each shard's shape; the second is the window's break
+#              point location.  
+#                
+#              Currently, one function specified (get_shard_shapes_and_br_pt)
+#              that returns tuple described, though other functions may be
+#              written as well, that return the same type of tuple.   
+ 
+
+
+def get_shard_shapes_and_br_pt(inputs):
+    """ 
+    Return the list of 2D polygon shapes that define the window 
+    breakage pattern parallel to the window, and the window's break point,
+    as a tuple.  
+    
+    The return value will be of the form: (shapes_list, break_point)
+ 
+    The window's 2D vertices specify the four corners that define the window, 
+    ignoring the thickness dimension.   
+    
+    The pattern will use the given number of spokes and have the given number
+    of circular breaks (num_breaks).  The break point is specified by 
+    (x_br, y_br).  If the break point is not specified or is outside or too 
+    close to the window's boundaries, then a random break point will be 
+    generated.  
+    """
+
+    # extract values from inputs
+    num_spokes = inputs["num_spokes"]
+    num_breaks = inputs["num_breaks"]
+    window_2D_vertices = inputs["window_2D_vertices"]
+    #x_br = inputs.get("x_br")
+    #y_br = inputs.get("y_br")
+    
+
+    # convert given window 2D vertices to a Polygon object
+    window_shape = Polygon([Point_2D(pt[0], pt[1]) for pt
+                            in window_2D_vertices])
+    
+    # If the signed area is negative, that implies a clockwise direction of
+    #      vertices - so reverse order of vertices to ensure counterclockwise
+    #      direction
+    if getSignedShapeArea(window_shape) < 0:
+        window_shape.reverse()
+    
+    (x_br, y_br) = get_break_point(window_shape, inputs)
+    
+
+    pt_break = Point_2D(x_br,y_br)
+    
+
+
+    # Generate the spokes that define the break pattern for the window
+    # Most of the pattern generating is actually done using methods of the 
+    #      Spoke object
+    spokes = get_spokes(window_shape, pt_break, inputs)
+    
+    # List of 2D Polygons defining the basic shape of each shard of the 
+    #     broken window
+    shapes = []
+    
+    # For each Spoke, connect it to the next Spoke to get the shapes of the 
+    #     shards
+    #     that are between those two spokes
+    for i in range(num_spokes):
+
+        shapes.extend(spokes[i].connect(spokes[(i+1)%num_spokes]))
+        
+
+    return (shapes, pt_break)
+
+
+# HELPER FUNCTIONS
+
+def get_spokes(window_shape, pt_break, inputs):
+    """
+    Return list of Spoke objects.
+    
+    Will return num_spokes Spokes.  The spacing between each spoke will be
+    equal.  The Spoke object will be told the number of breaks, break point, 
+    and window shape, so the object itself will be able to generate a more
+    realistic path for the Spoke.
+    
+    (Spokes are the crack lines that radiate outward from the break point)
+    """
+
+    num_spokes = inputs["num_spokes"]
+    #num_breaks = inputs["num_breaks"]
+    
+    cur_angle = 0 # current angle
+    inc_angle = 2*math.pi/num_spokes # The angle between each spoke
+
+    spokes = []
+
+    # The circular breaks that go around the break point are modeled as
+    #     ellipses.  Break distances for each spoke are the distances from
+    #     the spoke's start point (the break point) at which a given ellipse
+    #     will intersect the Spoke.  
+
+    # Get the params needed to figure out elliptical break distances
+    params = get_ellipse_params(window_shape, pt_break, inputs)
+
+
+    leniency_angle = inc_angle*inputs["leniency_angle_factor"]
+    sigma_del_angle = inc_angle*inputs["sigma_del_angle_factor"]
+    for i in range(num_spokes):
+
+        # Elliptical break distances for a spoke 
+        dists = get_elliptical_break_dists(cur_angle,**params)
+        
+        spokes.append(Spoke(pt_break, cur_angle, window_shape, dists,
+                            leniency_angle, sigma_del_angle, inputs))
+
+        cur_angle += inc_angle
+
+    return spokes
+
+
+
+def get_ellipse_params(window_shape, pt_break, inputs):
+    """ 
+    Return a dictionary of the parameters needed to generate elliptical 
+    break distances.  
+    
+    The parameters are semimajor axis (a_vals), the semiminor axis (b_vals)
+    and the angle of rotation for the ellipse.  Each of these parameters
+    in the dictionary will serve as keys and will be paired with a list of
+    n values, where n is the given number of breaks (num_breaks).  
+    
+    The a, b, and angle values will be randomly generated.  
+    
+    The ellipses will follow an exponential distribution - the larger the 
+    ellipse is, the lower the probability of it occurring.  
+    """
+
+    num_breaks = inputs["num_breaks"]
+    
+    max_dist = max([get_distance(pt_break, corner)
+                            for corner in window_shape])
+    
+    min_a_dist = inputs["min_a_factor"]*max_dist
+    max_a_dist = inputs["max_a_factor"]*max_dist
+
+
+    a_vals = []
+    
+    
+    # Get a set of parameters for each break needed
+    for i in range(num_breaks):
+
+        # Get a random a value until it fits between the min and max a 
+        #     distances
+        while True:
+            #a = random.expovariate(lambd)
+            a = random.uniform(min_a_dist, max_a_dist)
+            if min_a_dist < a < max_a_dist:
+                break
+
+        a_vals.append(a)
+
+
+    mu = inputs["mu_b_factor"]
+    sigma = inputs["sigma_b_factor"]
+
+    b_vals = [random.gauss(mu,sigma)*a for a in a_vals]
+
+    angles = [random.uniform(0, 2*math.pi) for i in range(num_breaks)]
+
+    # The break distances must be in order
+    a_vals.sort()
+    b_vals.sort()
+
+    return {'a_vals':a_vals, 'b_vals':b_vals, 'angles':angles }
+
+
+
+def get_elliptical_break_dists(cur_angle, a_vals, b_vals, angles):
+    """
+    Return the distances at which the ellipses with the given parameter values
+    will intersect a Spoke going in the given angle (cur_angle) direction. 
+    
+    cur_angle is the angle at which the Spoke is going from the break_point to
+    the window's edges
+    
+    a_vals and b_vals are the lists of semimajor and semiminor axes values for
+    each ellipse, respectively.  
+    
+    angles is the list of angles of rotation of each of the ellipses.  
+    
+    It is assumed that the length of the three given lists are the same. 
+    """
+    
+    dists = []
+    for (a, b, angle) in zip(a_vals, b_vals, angles):
+        dist = a*b/(math.sqrt((b*math.cos(angle+cur_angle))**2 +
+                              (a*math.sin(angle+cur_angle))**2))
+        dists.append(dist)
+
+    return dists
+
+
+def get_break_point(window_shape, inputs):
+    """
+    Returns a tuple of x,y coordinates specifying the break point.  
+    If x_br, and y_br values are given and fit inside the boundaries of the
+    window (specified by the window_shape) and aren't too close to the
+    boundaries, then the same x_br, y_br values are returned.  Otherwise,
+    a random pair of coordinates that fit this criteria is generated.  
+    """
+
+    x_br = inputs.get("x_br")
+    y_br = inputs.get("y_br")
+
+    margin = inputs["boundary_margin_factor"]
+
+    # Figure out what the minimum and maximum x and y values can be
+    # Note that the break point shouldn't be touching the boundaries either,
+    #      and so the boundary margin factor is used to set a limit of how
+    #      close the break point can get.  
+    min_x = min([pt.x for pt in window_shape])
+    max_x = max([pt.x for pt in window_shape])
+
+    min_x = min_x + (max_x - min_x)*0.1
+    max_x = max_x - (max_x - min_x)*0.1
+
+    
+    min_y = min([pt.y for pt in window_shape])
+    max_y = max([pt.y for pt in window_shape])
+
+    min_y = min_y + (max_y - min_y)*margin
+    max_y = max_y - (max_y - min_y)*margin
+
+
+    # If no x_br and y_br info inputted, or values not following constraints,
+    #     then generate random values following the criteria
+    if not x_br or not (min_x <= x_br <= max_x):
+        x_br = random.uniform(min_x, max_x)
+
+    if not y_br or not (min_y <= y_br <= max_y):
+        y_br = random.uniform(min_y, max_y)
+
+    return (x_br, y_br)
+
+
+
+############################# END PATTERNS ###################################
+##############################################################################
+
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+##############################################################################
+
+##############################################################################
+#################################### MAIN ####################################
+def main(argv):
+
+    if len(argv) < 3:
+        sys.exit("Usage: hev-brokenWindow inputFileName ouptutDirectoryName [r g b a]")
+
+    # the user input file
+    in_filename = argv[1]
+
+    if not (os.path.exists(in_filename)):
+        sys.exit("input file cannot be found")
+
+    # The directory of the output files
+    dir = argv[2]
+    if not (os.path.exists(dir)):
+        sys.exit("output file directory does not already exist")
+    
+    if len(argv) == 7:
+        global r
+        global g
+        global b
+        global a
+        r = argv[3]
+        g = argv[4]
+        b = argv[5]
+        a = argv[6]
+
+    # dictionary of all the user inputs
+    inputs = get_inputs(in_filename)
+    
+    # set random seed
+
+    #s = 5919, 3606, 2787
+    #s = 1873, 2933
+    
+    random.seed(inputs.get("seed"))
+    
+    # get needed inputs
+    separate = inputs.get("separate", True)
+    
+    display = inputs.get("display", False)
+    adj_file = inputs.get("write_adj_file", False)
+    cent_file = inputs.get("write_centroid_file", False)
+
+
+    v_inner = inputs["vertices_inner"]
+    v_outer = inputs["vertices_outer"]
+
+    # Get the axis that is perpendicular to the window's outside and 
+    #    inside pane.
+    # (Parallel to the thickness of the window)
+    # (Getting the index - 0 for x-axis, 1 for y-axis, and 2 for z-axis)
+    perp_axis_index = get_const_coord_index(v_inner)
+
+    
+    # window_2D_vertices are the2D vertices of the window - Takes out the 
+    #    coordinate of the axis perpendicular to the window pane 
+    # Can be done with either v_inner or v_outer because only their 2D 
+    #     vertices should be the same 
+    window_2D_vertices = [list(pt) for pt in v_inner]
+    
+    # Taking out the extra coordinate from window_2D_vertices
+    for pt in window_2D_vertices:
+        pt.pop(perp_axis_index)
+        
+        
+    inputs["window_2D_vertices"] = window_2D_vertices    
+    # list of 2D polygons that define the break patterns of the window 
+    shapes, br_pt  = get_shard_shapes_and_br_pt(inputs)
+    
+
+    
+
+    # The coordinate along the axis perpendicular to the window defining
+    #     where the inside pane lies and where the outside pane lies
+    # (Remember: The window MUST be parallel to either the xy-, yz- or 
+    #     xz-plane, meaning the coordinate on the perpendicular axis should
+    #     remain constant for all of the inside pane, and remain constant
+    #     for all of the outside pane)
+    coord_inner = inputs["vertices_inner"][0][perp_axis_index]
+    coord_outer = inputs["vertices_outer"][0][perp_axis_index]
+
+    # Create the Shard objects based on the 2D shapes generated, and the 
+    #     inner and outer coordinates.  A Shard stores all the 3D polygons
+    #     that are used to define it. 
+    shards = generate_shards(shapes, coord_inner, coord_outer,
+                                   perp_axis_index)
+
+
+
+    br_pt = br_pt.to_Point_3D(coord_outer, perp_axis_index)
+    write_breakpoint_file(br_pt, dir, inputs["break_point_filename"])
+
+
+    # Call appropriate write savg file function depending on whether the user
+    #     wants all shards to be defined in separate .savg files or if the 
+    #     user wants combined files.  
+    # Also, figures out appropriate irisfly command to display the window
+    if separate:
+        
+        write_savg_files_separate(shards, dir, inputs["main_filename"],
+                                  inputs["shard_basename"],
+                                  inputs["tang_basename"])
+
+        shard_prefix = dir + "/" + inputs["shard_basename"]
+        tang_prefix = dir + "/" + inputs["tang_basename"]
+        
+        ex_string = ("irisfly --examine " + tang_prefix + "*.savg " +
+                     shard_prefix + "*.savg &")
+
+    else:
+        write_savg_files(shards, dir, inputs["shard_filename"],
+                        inputs["tang_filename"])
+
+        shard_fname = dir + "/" + inputs["shard_filename"]
+        tang_fname = dir + "/" + inputs["tang_filename"]
+
+        ex_string = ("irisfly --examine " + tang_fname + " " + shard_fname +
+                     " & ")
+
+    
+    # If the user does not want the window to be displayed right after 
+    #     running the program, then print out the irisfly command they would 
+    #     need to execute to display the window
+    
+    #if not display:
+
+        #print("Run the following command to display the broken window ")
+        #print("using the savg-software:")
+        #print(ex_string)
+        
+        #print()
+
+    # Print out the command the user would need to run to apply the lighting 
+    #     to the window
+    #print("Run the following command to apply lighting:")
+    #print("hev-applyState -v lineLight.vert -f lineLight.frag world")
+
+    # If the user wants to display the window at the end, then run the irisfly
+    #     command
+    if display:  
+        os.system(ex_string)
+        
+
+    # Generate the adjacency file and the centroid file depending on whether 
+    #     the user wants them
+    if adj_file:
+        
+        find_neighbors(shards)
+        write_adjacency_file(shards, dir, inputs["adj_filename"])
+
+    if cent_file:
+        write_centroid_file(shards, dir, inputs["centroid_filename"])
+
+
+
+################################ END MAIN ####################################
+##############################################################################
+
+main(sys.argv)

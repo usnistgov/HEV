@@ -1,0 +1,65 @@
+.TH SAVG\-SOR 1 "06 July 2004"
+
+.SH NAME
+savg-sor \- SAVG Toolbox: surface of revolution
+.SH SYNOPSIS
+.B savg-sor
+[x/y/z] [val] [val]
+.PP
+.br
+.SH DESCRIPTION
+.I Savg-sor
+reads an input SAVG format file of any profile and rotates the 
+object about the axis specified, producing a surface of revolution (SOR). 
+Only lines are used.  All other points (i.e. those associated with surfaces) 
+are ignored.  
+Therefore, attempting to create a SOR using a 3-D surface will 
+produce nothing.  It may work, however, to use savg-wireframe on a 3-D surface before using savg-sor.  Only one axis may be specified at one time.  
+The input file is read from 
+.I stdin
+and output to
+.I stdout.
+Usage messages are produced when options are incorrectly specified.
+.SH OPTIONS
+.PP
+The axis rotation options can be specified either with or without a 
+value.  In the latter case, the angle of rotation is 360 degrees.
+.TP
+.B x|y|z
+Specify the axis of rotation.
+.TP
+.B val
+Specify the number of polygons in the direction of the rotation.
+The default is 16.
+.TP
+.B val
+Specify the angle the rotation in degrees, default 360.
+Use negative values for left-handed rotations.
+.SH EXAMPLES
+.TP
+.B savg-sor z < profile.savg > name.savg
+This rotates the series of lines in 
+.I profile.savg
+360 degrees about the \fIz-axis\fP and places
+into the \fISAVG toolbox\fP format file 
+.I name.savg.
+.TP
+.B savg-sor  y 16 -180 < profile.savg
+This rotates the line in 
+.I profile.savg
+about the \fIy-axis\fP 180 degrees to the left.
+.PP
+.SH AUTHOR
+.PP
+Brandon Smith
+.TP
+SAVG Toolbox Project
+Version 2.0
+.br
+Summer 2004, modified June 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

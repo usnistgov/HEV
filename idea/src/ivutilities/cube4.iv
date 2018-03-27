@@ -1,0 +1,13 @@
+#Inventor V2.0 ascii
+Separator {
+Translation { translation .4 .4 .4 }
+Separator {
+Material {
+diffuseColor 0 1 1
+transparency 0
+}
+Separator {
+Cube { width .1 height .1 depth .1 }
+}
+}
+}

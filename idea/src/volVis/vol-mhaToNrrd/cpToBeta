@@ -1,0 +1,3 @@
+
+cp -f vol-mhaToNrrd /usr/local/HEV-beta/idea/bin
+cp -f vol-nrrdToMha /usr/local/HEV-beta/idea/bin

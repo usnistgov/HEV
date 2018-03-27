@@ -1,0 +1,28 @@
+creates a fltk two-state button
+
+need to specify:
+
+- name of a dtk shared memory file to read/write state, creates if doesn't
+  exist
+
+- text to send to stdout when button is pressed, released
+
+- initialize shared memory and buttons on startup
+
+- button label
+
+need to do:
+
+- have a timer callback that polls shared memory and if the value changes,
+  calls the button's action and sets the button's widget
+
+- have a button callback that calls the button's actions and sets the shared
+  memory
+
+need to resolve:
+
+- how to handle connecting the shared memory buttons to the dtk servers?
+  (look at collabfly notes)
+
+- can two copies of hev-collabButton share the same shared memory file on a
+  local machone, as well as two copies of same file via remote dtk server?

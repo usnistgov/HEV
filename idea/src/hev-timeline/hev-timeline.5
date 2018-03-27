@@ -1,0 +1,144 @@
+.TH hev-timeline 5 "November 2011"
+
+.SH NAME
+hev-timeline
+
+.SH DESCRIPTION
+
+timeline file format:
+
+.P
+An ASCII file, with one or more whitespaces between each word. Blank spaces
+and all data after and including a "#" are ignored.
+
+Each line has the form: \fIdt\fR [\fIcoordinate\fR] | [\fIcommand\fR]
+
+where
+
+.IP \fIdt\fR 
+
+is a delta time, a non-negative integer or floating point number, in seconds. 
+
+\fIdt\fR is the time it will take to get to \fIcoordinate\fR from the current
+position, or how long to wait before issuing a \fIcommand\fR.
+
+If \fIdt\fR is zero and a \fIcommand\fR is supplied, it will be processed
+immediately after the previous timeline command. If a \fIcoordinate\fR is
+supplied the navigation will jump to \fIcoordinate\fR immediately after the
+preceding timeline command.
+
+A timeline line with just \fIdt\fR with no \fIcommand\fR or \fIcoordinate\fR
+causes a pause for \fIdt\fR seconds before executing the next timeline command
+
+.IP "\fIcoordinate\fR is of the form: \fIxyz\fR [ [ \fIhpr\fR ] \fIs\fR ]"
+
+\fIxyz\fR consists of three integers or floating point numbers
+representing an x, y and z position in "nav" coordinates.
+
+\fIhpr\fR consists of three integers or floating point numbers representing
+an h, p and r Euler angle in degrees. If \fIhpr\fR is omitted 0 0 0 is used.
+
+\fIs\fR is a uniform scale, a single integer or floating point number. If
+\fIs\fR is omitted 1 is used.
+
+Any component of \fIxyz hpr s\fR can be set to a "-" and the value from the
+previous coordinate will be used. For example, if the previous line is:
+
+ .5 1 2 3 30 60 90
+
+and the next line is:
+
+ .5 2 - 5 90 - 45
+
+this would be equivalent to the line:
+
+ .5 2 2 5 90 60 45
+
+If no value has been set, as is the case with the first coordinate, \fIxyz\fR = "0 0 0"
+\fIhpr\fR = "0 0 0" and \fIs\fR = "1"
+
+.IP "\fIcommand\fR is any IRIS control command"
+
+.P
+The timeline file parser determines if the line contains a \fIcommand\fR by
+looking at the second word of the line. If it is a valid integer or floating point
+number or "-" it assumes a \fIcoordinate\fR, otherwise it assumes a \fIcommand\fR.
+
+The hev-timelineBuilder(1) command provides an easy way to create a timeline
+file when running an IRIS application.
+
+A timeline file can be converted to an iris file with the
+hev-timelineToIris(1) command. A timeline can not be directly loaded into an
+IRIS application.
+
+Timeline files can be concatenated to create a single, longer timeline file.
+
+To merge timeline files convert each timefile to an iris file and
+concatenate the iris files into a single iris file.
+
+.SH EXAMPLES
+
+In the below examples, \fIt1\fR, \fIt2\fR, \fIt3\fR, and \fIt4\fR are any valid \fIdt\fR; 
+\fIcoord1\fR, \fIcoord2\fR, \fIcoord3\fR and \fIcoord4\fR are any valid \fIcoordinate\fR; and \fIcmd\fR is
+a valid \fIcommand\fR.
+
+.IP "ex 1:"
+   \fIt1\fR \fIcoord1\fR
+   0 \fIcmd\fR
+   \fIt2\fR \fIcoord2\fR
+
+will move to \fIcoord1\fR in \fIt1\fR seconds and immediately issue the control command \fIcmd\fR, then move to \fIcoord2\fR in \fIt2\fR seconds
+
+.IP "ex 2:"
+   \fIt1\fR \fIcoord1\fR
+   \fIt2\fR
+   \fIt3\fR \fIcoord3\fR
+
+ will move to \fIcoord1\fR in \fIt1\fR seconds, will sit at \fIcoord1\fR for \fIt2\fR seconds, then
+ move to \fIcoord3\fR in time \fIt3\fR
+
+.P
+When there is no previous \fIcoordinate\fR, as in the first line of the file or if
+there hasn't been a \fIcoordinate\fR specified yet, the navigation jumps to
+\fIcoordinate\fR instead of smoothly moving. The next two examples
+illustrate this:
+
+.IP "ex 3:"
+   # first line of the timeline file
+   \fIt1\fR \fIcoord1\fR
+
+ wait for \fIt1\fR then jump to \fIcoord1\fR
+
+.IP "ex 4:"
+   # first line of the timeline file
+  \fIt1\fR \fIcmd\fR
+  \fIt2\fR \fIcoord2\fR
+
+ wait for \fIt1\fR, issue \fIcmd\fR, then at time \fIt1\fR + \fIt2\fR jump to \fIcoord2\fR
+
+.P
+To jump instead of smoothly move, just give a time of 0
+
+.IP "ex 5:"
+   \fIt1\fR \fIcoord1\fR
+   0 \fIcoord2\fR
+   \fIt3\fR
+   \fIt4\fR \fIcoord4\fR
+
+ will move to \fIcoord1\fR in \fIt1\fR seconds, then jump to \fIcoord2\fR and sit there for \fIt3\fR
+ seconds, then move to \fIcoord4\fR in \fIt4\fR seconds
+
+.SH SEE ALSO
+
+hev-timelineBuilder, hev-timelineToIris, hev-navigationToTimeline, hev-interpolateRotation,
+hev-interpolateScale, hev-interpolateTranslation, hev-readNav, hev-readWorld
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+November 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

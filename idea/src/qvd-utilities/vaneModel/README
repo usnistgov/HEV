@@ -1,0 +1,26 @@
+March 18, 2013
+
+./buildVane6 - create vane6.savg, a 6 blade model
+
+
+
+April 23,2012
+
+Build the Rheometer model.
+
+./buildRheometerModel creates:
+
+      vane.savg  is the 4 blade paddle
+
+      halfCylinder.savg is a half cylinder container
+
+      rhometer.osg is combined model
+
+./buildVane is used by buildRheometer to create vane.savg
+
+
+As of this date, vane.savg is the only important piece.
+If updated, it should be manually copied to ..
+
+
+

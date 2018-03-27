@@ -1,0 +1,93 @@
+########################################################################
+#
+# HEV start-up commands: $HEVROOT/.bashhev
+#
+# Last updated: May 13, 2016
+#
+#
+# For HPCVG hosts, if the file ~/.hev-env exists,
+# then this file is automatically sourced.
+#
+# Do the following command:
+#         touch ~/.hev-env 
+#
+# For other hosts add the following line to your .bashrc
+#
+#         source /usr/local/HEV/.bashhev
+#
+#
+#
+# Command     Functionality
+# -----       -------------
+#
+# hev         Set the production HEV/IRIS/IDEA environment
+#
+# hevd        Set the Development version of hev
+#
+# hevb        Set the Beta version of hev
+#
+# hevhere     Set the current directory as the  HEV/IRIS/IDEA environment
+#             Example:   cd ~steve/hev
+#                        hevhere
+#
+########################################################################
+
+
+
+function hev {
+     unset DTK_SHAREDMEM_DIR;
+     export HEVROOT=/usr/local/HEV
+     source $HEVROOT/profile $1 iris
+}
+
+function hevd {
+     unset DTK_SHAREDMEM_DIR;
+     export HEVROOT=$HOME/hev
+     source $HEVROOT/profile $1 iris
+}
+
+function hevb {
+     unset DTK_SHAREDMEM_DIR;
+     export HEVROOT=/usr/local/HEV-beta
+     source $HEVROOT/profile $1 iris
+}
+
+function hevhere {
+      unset DTK_SHAREDMEM_DIR;
+      export HEVROOT=$(pwd)
+      source $HEVROOT/profile $1 iris
+}
+
+
+
+# hevc        Set the HEV/classic environment
+#             Note: Classic mode not available on mosts systems
+function hevc {
+     unset DTK_SHAREDMEM_DIR;
+     export HEVROOT=/usr/local/HEV
+     source $HEVROOT/profile $1 savg
+}
+
+# hevcb       Set the Beta version of hevc
+#             Note: Classic mode not available on mosts systems
+function hevcb {
+     unset DTK_SHAREDMEM_DIR;
+     export HEVROOT=/usr/local/HEV-beta
+     source $HEVROOT/profile $1 savg
+}
+
+# dgldemos    cd to the classic demos directory
+#             Note: Classic mode not available on mosts systems
+function dgldemos {
+     if [ "${HEVROOT}" == "" ]
+     then
+ 	echo "'HEVROOT' not defined"
+     else
+         cd ${HEVROOT}/savg/dgl/demos
+     fi
+}
+
+#######
+# End #
+#######
+

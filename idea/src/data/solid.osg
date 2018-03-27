@@ -1,0 +1,7 @@
+Node {
+  StateSet {
+    PolygonMode {
+      mode FRONT_AND_BACK FILL
+    } 
+  }
+}

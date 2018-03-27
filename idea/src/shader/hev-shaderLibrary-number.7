@@ -1,0 +1,49 @@
+.TH HEV-SHADERLIBRARY-NUMBER 7 "May 2013" "NIST/ACMD" "HCPVG HEV"
+
+.SH NAME
+hev-shaderLibrary-number
+- print numbers from within a fragment shader.
+
+.SH SYNOPSIS
+\fB#include <number.glsl>\fR
+.PP
+\fBfloat number(float\fR \fIvalue\fR\fB, float\fR \fIdigits\fR\fB, vec2\fR \fIcoord\fR\fB);\fR
+
+.SH DESCRIPTION
+
+The function
+.BR number ()
+returns a per-pixel greyscale value for a printed number,
+.IR value .
+This version only
+prints in a fixed decimal format similar to C's %f printf format, where
+.IR digits
+as the number of digits to print to the right of the decimal, and
+.IR coord
+is the pixel position in a 2D space for printing.
+.PP
+The decimal point will be
+placed at coord=0,0. The baseline will be at coord.y=0, and the number will be
+1/3 unit high. Individual characters will be spaced at 4 characters per unit
+of coord.x. 
+
+.SH REQUIRED STATE
+\fBuniform sampler2D numbers;\fR
+.IP
+A Texture2D containing a grid of equally spaced numbers in the desired font.
+The basic texture layout is:
+.IP
+0123
+.br
+4567
+.br
+89.-
+
+.SH AUTHOR
+Marc Olano
+
+.SH SEE ALSO
+.BR hev-shaders (7),
+.BR hev-shaderLibrary (7),
+.BR printf (3).
+

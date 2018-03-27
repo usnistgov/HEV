@@ -1,0 +1,39 @@
+VoumeAppBuilder - refer to man page for details
+
+
+July 18, 2012
+
+   Converted to IRIS/IDEA. THere may be details needing cleanup
+
+
+
+
+
+----------------------------------------------------
+
+I need to look further at non-square dimensions.
+I never properly tested no-square dimensions.
+
+6/24/09
+-SGS
+
+----------------------------------------------------
+
+April 4, 2011 -SGS
+
+  Made some updates to volumeAppBuilder per updates to hev-voltrace
+  by Marc Olano
+ 
+  Added option: --scale float
+
+  Added option --transfer type
+
+    These options pass though to hev-voltrace(1)
+
+  Added an "Glowing Data Example"
+
+  See man page and background information in ./Notes_20110404.txt
+
+
+
+

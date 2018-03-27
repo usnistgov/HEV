@@ -1,0 +1,7 @@
+#Inventor V2.0 ascii
+
+Separator {
+    TrackballManip {}
+    Material { diffuseColor 1 0 0 specularColor 1 1 1 shininess 0.75 }
+    Cone{}
+}

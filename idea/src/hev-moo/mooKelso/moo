@@ -1,0 +1,60 @@
+#!/bin/sh
+
+if [ $# -lt 2 ]
+then echo Usage: moo label file ...
+     exit 1
+fi
+
+label=$1
+shift
+
+# this stores the buttons you use to turn each file on/off
+cat /dev/null > $label.mcp
+
+# this'll store two points to let --ex work
+# make two black bounding points for the data
+p1=`iris-bounds --box $* | grep box_min: | sed -e 's/box_min://'`
+p2=`iris-bounds --box $* | grep box_max: | sed -e 's/box_max://'`
+echo -e "POINTS 0 0 0 0\n$p1\n$p2" > $label-box.savg
+#echo p1=$p1
+#echo p2=$p2
+#cat $label-box.savg
+osgconv $label-box.savg $label-box.osg
+rm $label-box.savg
+
+# this stores the file you load in irisfly
+echo LOAD moo-$label-box $label-box.osg > $label.iris
+echo ADDCHILD moo-$label-box world >> $label.iris
+
+for f in $*
+do  b=`echo $f | sed -e 's/\..*$//'` # name without suffix
+    # load files in iris file
+    echo LOAD moo-$label-$f $f >> $label.iris
+    echo NODEMASK moo-$label-$f OFF >> $label.iris
+    echo ADDCHILD moo-$label-$f world >> $label.iris
+    # turn on off in MCP file
+    echo BUTTON $b >> $label.mcp
+    echo ON NODEMASK moo-$label-$f ON >> $label.mcp
+    echo OFF NODEMASK moo-$label-$f OFF >> $label.mcp
+done
+
+
+
+# add a reset button
+echo RESET hide show COLOR .7 .8 1 >> $label.mcp
+
+# this stores the button you load into MCP to launch a new MCP
+cat /dev/null >$label-button.mcp 
+echo BUTTON $label >> $label-button.mcp
+echo FIRST EXEC env MCP_FILES= hev-masterControlPanel -title $label --noescape $label.mcp \> $IRIS_CONTROL_FIFO >> $label-button.mcp
+echo ON EXEC hev-showWindow $label >> $label-button.mcp
+echo OFF EXEC hev-hideWindow $label >> $label-button.mcp
+
+# this loads it with irisfly
+echo EXEC irisfly-addToMCP $label-button.mcp >> $label.iris
+
+
+
+
+
+

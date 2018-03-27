@@ -1,0 +1,4 @@
+# example of how to to use iris-readState
+# iris-viewer --ex cow.osg readState.iris
+DSO writeState
+AFTER REALIZE EXEC xterm  -geometry 85x8 +sb -e iris-readState

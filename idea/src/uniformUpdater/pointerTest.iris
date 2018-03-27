@@ -1,0 +1,11 @@
+LOAD tape tape.osg
+ADDCHILD tape world
+EXAMINE
+DSO uniformUpdater
+LOAD pointer wand.osg
+CULLING pointer OFF
+STARTMODELDATA wandShader osg
+Node{ StateSet{ Program{ Shader{ type VERTEX file "wand.vert" }}}}
+ENDMODELDATA
+MERGESTATE wandShader pointer
+ADDCHILD pointer world

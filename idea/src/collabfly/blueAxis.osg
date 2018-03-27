@@ -1,0 +1,71 @@
+MatrixTransform {
+  UniqueID MatrixTransform_0
+  DataVariance DYNAMIC
+  name "blueAxis"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  StateSet {
+    DataVariance DYNAMIC
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+  }
+  referenceFrame RELATIVE
+  Matrix {
+    1 0 0 0
+    0 1 0 0
+    0 0 1 0
+    0 0 0 1
+  }
+  num_children 1
+  Geode {
+    UniqueID Geode_1
+    name "blueAxis.savg"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    StateSet {
+      rendering_hint DEFAULT_BIN
+      renderBinMode INHERIT
+      GL_LIGHTING PROTECTED|OFF
+    }
+    num_drawables 1
+    Geometry {
+      DataVariance STATIC
+      useDisplayList FALSE
+      useVertexBufferObjects TRUE
+      PrimitiveSets 3
+      {
+        DrawElementsUInt LINE_STRIP 2
+        {
+          0 1 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          2 3 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          4 5 
+        }
+      }
+      VertexArray Vec3Array 6
+      {
+        -0.1 0 0
+        0.1 0 0
+        0 -0.1 0
+        0 0.1 0
+        0 0 -0.1
+        0 0 0.1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 6
+      {
+        0.2 0.7 1 1
+        0.2 0.7 1 1
+        0.2 0.7 1 1
+        0.2 0.7 1 1
+        0.2 0.7 1 1
+        0.2 0.7 1 1
+      }
+    }
+  }
+}

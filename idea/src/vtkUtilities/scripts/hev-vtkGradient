@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+
+import sys
+import vtk
+
+def showHelp():
+    sys.stderr.write('\nUsage:\nhev-vtkGradient inFName outFName\n')
+    sys.exit(1)
+
+#SET INPUT AND OUTPUT FILE
+if len(sys.argv) == 3:
+    inputdatafile = sys.argv[-2]
+    outputdatafile = sys.argv[-1]
+else:
+    showHelp()
+
+#INITIAL READER
+read1 = vtk.vtkGenericDataObjectReader()
+read1.SetFileName(inputdatafile)
+
+#DETERMINE INPUT TYPE - PROCESS DATA
+if read1.IsFileStructuredPoints():
+    read2 = vtk.vtkStructuredPointsReader()
+    read2.SetFileName(inputdatafile)
+    gradient = vtk.vtkImageGradient()
+    gradient.SetInput(read2.GetOutput())
+    gradient.SetDimensionality(3)
+    gradName = "SCALARS"
+
+else:
+    read2 = vtk.vtkGenericDataObjectReader()
+    read2.SetFileName(inputdatafile)
+    gradient = vtk.vtkGradientFilter()
+    gradient.SetInput(read2.GetOutput())
+    gradName = "Gradients"
+
+
+assignAttrib = vtk.vtkAssignAttribute ()
+assignAttrib.SetInput (gradient.GetOutput())
+# assignAttrib.Assign ("Gradients", "VECTORS", "POINT_DATA")
+assignAttrib.Assign (gradName, "VECTORS", "POINT_DATA")
+
+#FILEWRITER
+write = vtk.vtkGenericDataObjectWriter()
+write.SetInput(assignAttrib.GetOutput())
+write.SetFileName(outputdatafile)
+write.Write()
+write.Update()

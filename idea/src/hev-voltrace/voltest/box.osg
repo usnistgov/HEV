@@ -1,0 +1,142 @@
+Group {
+  UniqueID Group_0
+  name "qvd_ncbox"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  StateSet {
+    DataVariance STATIC
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+    GL_CLIP_PLANE0 PROTECTED|OFF
+    GL_CLIP_PLANE1 PROTECTED|OFF
+    GL_CLIP_PLANE2 PROTECTED|OFF
+    GL_CLIP_PLANE3 PROTECTED|OFF
+    GL_CLIP_PLANE4 PROTECTED|OFF
+    GL_CLIP_PLANE5 PROTECTED|OFF
+  }
+  num_children 1
+  Geode {
+    UniqueID Geode_1
+    name "qvd_box"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    StateSet {
+      DataVariance STATIC
+      rendering_hint DEFAULT_BIN
+      renderBinMode INHERIT
+      GL_LIGHTING PROTECTED|OFF
+    }
+    num_drawables 1
+    Geometry {
+      DataVariance STATIC
+      useDisplayList FALSE
+      useVertexBufferObjects TRUE
+      PrimitiveSets 12
+      {
+        DrawElementsUInt LINE_STRIP 2
+        {
+          0 1 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          2 3 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          4 5 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          6 7 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          8 9 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          10 11 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          12 13 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          14 15 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          16 17 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          18 19 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          20 21 
+        }
+        DrawElementsUInt LINE_STRIP 2
+        {
+          22 23 
+        }
+      }
+      VertexArray Vec3Array 24
+      {
+        -0.5 0.5 -0.5
+        0.5 0.5 -0.5
+        0.5 0.5 -0.5
+        0.5 -0.5 -0.5
+        0.5 -0.5 -0.5
+        -0.5 -0.5 -0.5
+        -0.5 -0.5 -0.5
+        -0.5 0.5 -0.5
+        0.5 0.5 0.5
+        -0.5 0.5 0.5
+        -0.5 0.5 0.5
+        -0.5 -0.5 0.5
+        -0.5 -0.5 0.5
+        0.5 -0.5 0.5
+        0.5 -0.5 0.5
+        0.5 0.5 0.5
+        0.5 0.5 0.5
+        0.5 0.5 -0.5
+        -0.5 0.5 -0.5
+        -0.5 0.5 0.5
+        0.5 -0.5 -0.5
+        0.5 -0.5 0.5
+        -0.5 -0.5 0.5
+        -0.5 -0.5 -0.5
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 24
+      {
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+        1 1 1 1
+      }
+    }
+  }
+}

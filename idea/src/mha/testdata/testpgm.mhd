@@ -1,0 +1,6 @@
+NDims = 2
+DimSize = 2 2
+ElementNumberOfChannels = 1
+HeaderSize = -1
+ElementType = MET_UCHAR
+ElementDataFile = test.pgm

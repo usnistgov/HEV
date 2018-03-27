@@ -1,0 +1,175 @@
+#! /usr/bin/perl
+#
+# hev-LUT2data - apply look up table to input data
+#
+# See usage message
+#
+# steve@nist.gov
+#
+
+$version="20090601";
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hev-LUT2data [--help] [--rgba] file.lut < input > output
+
+  Apply a look up table to data on stdin and send result to stdout
+  suitable for conversion to an image with the convert command.
+
+    The input on stdin must be one ASCII string per line representing
+    a number in the range 0 to 1.
+
+    The output will a binary stream of RGBA bytes.  This is the default. The
+    convert command can be used to create a display able image
+
+     --help    print this help message
+
+     --rgba    specifies that the output will be ASCII RGBA in range 0 to 1
+               in 4 columns instead of the normal binary output.
+     
+   
+   Example:
+
+       # Input file representing a 128x128 2D image as 16384 (ASCII) numbers
+
+       hev-LUT2data blueRed6.lut < sample.dat > sample.raw
+
+       convert -depth 8 -size 128x128 rgba:sample.raw sample.png
+
+       display sample.png
+
+
+Version: $version
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+$verboseFlag=0;
+$rgbaFlag=0;
+
+GetOptions("debug"       => \$debugFlag,
+	   "verbose"     => \$verboseFlag,
+	   "rgba"        => \$rgbaFlag
+           );
+
+
+#print "@ARGV\n";
+#$sgs=@ARGV;
+#print "number args = $sgs\n";
+usage() if (@ARGV != 1);
+
+$lutFile= shift;
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "verboseFlag= $verboseFlag\n";
+    print STDERR "rgbaFlag= $rgbaFlag\n";
+    print STDERR "lutFile= $lutFile\n";
+    print STDERR "\n";
+}
+
+
+############
+# Read LUT #
+############
+
+
+open(LUT,"<$lutFile") || die("Can not open file: $lutFile\n");
+
+$r=0; $g=1; $b=2; $a=3;
+
+$l=0;
+while (<LUT>) {
+    chop;
+    @in=split(' ',$_,-1);
+    $n=@in;
+    $l++;
+    #print STDERR "in: $in[0] $in[1] $in[2] $in[3] $in[4]\n";
+    if ($n != 5) {
+	print STDERR "LUT input format error near line: @in\n";
+    }
+    $i=$in[0];
+    
+    $lut[$i][$r]=$in[1];
+    $lut[$i][$g]=$in[2];
+    $lut[$i][$b]=$in[3];
+    $lut[$i][$a]=$in[4];
+}
+
+
+#$i=0;
+#print STDERR "$i $lut[$i][0] $lut[$i][$g] $lut[$i][$b]  $lut[$i][$a] \n";
+#$i=128;
+#print STDERR "$i $lut[$i][$r] $lut[$i][$g] $lut[$i][$b] $lut[$i][$a] \n";
+#$i=255;
+#print STDERR "$i $lut[$i][$r] $lut[$i][$g] $lut[$i][$b] $lut[$i][$a] \n";
+#print STDERR "exit early\n";
+#exit;
+
+
+#######################################
+# Read stdin, apply LUT, write stdout #
+#######################################
+
+
+$l=0;   # Line count
+
+while (<STDIN>) {
+    chop;
+    ($v)=split(' ', $_, -1);
+    $l++;
+    if (($v < 0.0) || ($v > 1.0)) {
+	print STDERR "Input data out of range near line $l : $v\n";
+	exit(1);
+    }
+    # convert to input  lut index
+    $i=int($v*255.);
+
+    $red=$lut[$i][$r];
+    $grn=$lut[$i][$g];
+    $blu=$lut[$i][$b];
+    $alp=$lut[$i][$a];
+
+
+    if ($rgbaFlag) {
+	print STDOUT "$red $grn $blu $alp\n";
+    } else {
+	$ired=int($red*255);
+	$igrn=int($grn*255);
+	$iblu=int($blu*255);
+	$ialp=int($alp*255);
+	print STDOUT pack("c*",$ired,$igrn,$iblu,$ialp);
+    }
+    
+    if ($debugFlag) {
+	print STDERR "$i $v: $red $grn $blu $alp : $ired $igrn $iblu $ialp\n";
+    }
+
+}
+
+
+
+# End

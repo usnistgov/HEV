@@ -1,0 +1,91 @@
+
+immersive work bench -- input devices
+
+   o   Polhemus 3space Fastrak tracker
+
+   o   custom 3 button mouse device thingy
+
+This works on the Virginia Tech immersive work bench.
+It's not much code, and could be modified.
+
+To Use and Install
+
+0. Choose your coordinate system parameters.  For example, the
+   physical location of the tracker's origin, and unit distance.
+
+   If you are using dgiPf, you should coordinate this with the dgiPf
+   DSO for this device, so that the origin and unit distance of the
+   display is the same as for the tracker.
+
+   This file is coordintaed with the
+	`dgiPf-config --source`/library/vtIwbDisplay.C
+   The origin is 24 inches (see Note) behind the desk,
+   72 inches from the floor, and centered on the display screen.
+   One DIVERSE length unit is 36 inches.
+
+   The display is 72 inches wide, 54 inches deep, and 36 inches above
+   the floor.  It can be tilted off the horizontal by up to 18 degrees.
+
+   Note: 1 inch == 2.54cm
+
+1. Edit iwbFastrak.C
+
+   Set the scaling and shift constants in the code as determined in step 0.
+
+   Keep the editor running for following parts.
+
+   edit: DEVICE_FILE
+   edit: below the comments: /** EDIT * SCALING for wand **/
+   and                       /** EDIT * SCALING for head **/
+
+2. In this directory run:
+
+   `gmake install'
+   `dtk-server --daemon iwbFastrak'
+
+3. In a separate window, run:
+   `dtk-readFloats -r head'
+   
+   If you press Enter in this window it'll "capture" a output line by
+   scrolling it up.
+
+4. Iterate by moving the tracker to specific coordinates, editing the
+   offsets and scale values, until the tracker data is correct for your
+   purposes.
+
+   Unload, make and load the service- for example, run:
+
+     dtk-unloadService iwbFastrak; gmake install; dtk-loadService iwbFastrak
+
+   Repeat the "capture/edit/unload/remake/reload" cycle until all data
+   is of desired values.
+
+
+Virginia Tech's IWB uses a serial mouse as its button device, which
+works for this service.  The source code is iwbButtons.C
+
+The dtk-iwb executable shell-script will start and stop the DTK
+server.  It'll load the button and tracker services, iwbButtons and
+iwbFastrak, respectively.
+
+
+------------------------------------------------------------------------
+ The DIVERSE Toolkit
+Copyright (C) 2000 - 2003  Virginia Tech
+
+This is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License (GPL) as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+This software is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this software, in the top level source directory in a file
+named "COPYING.GPL"; if not, see it at:
+http://www.gnu.org/copyleft/gpl.html or write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA.

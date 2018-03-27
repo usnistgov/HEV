@@ -1,0 +1,1571 @@
+Color_GUI_S.cpp:	int inRgbMode = ((Fl_Light_Button *)w)->value();
+Color_GUI_S.cpp:				((Fl_Light_Button *)w)->value();
+Color_GUI_S.cpp:	if (id != ls->currEditColor)
+Color_GUI_S.cpp:			rgbColorGroup[ls->currEditColor]->deactivate();
+Color_GUI_S.cpp:			rgbColorGroup[ls->currEditColor]->box(FL_NO_BOX);
+Color_GUI_S.cpp:			grayColorGroup[ls->currEditColor]->deactivate();
+Color_GUI_S.cpp:			grayColorGroup[ls->currEditColor]->box(FL_NO_BOX);
+Color_GUI_S.cpp:		ls->currEditColor = id;
+Color_GUI_S.cpp:			rgbColorGroup[ls->currEditColor]->activate();
+Color_GUI_S.cpp:			rgbColorGroup[ls->currEditColor]->box(FL_THIN_UP_FRAME);
+Color_GUI_S.cpp:			grayColorGroup[ls->currEditColor]->activate();
+Color_GUI_S.cpp:			grayColorGroup[ls->currEditColor]->box (FL_THIN_UP_FRAME);
+Color_GUI_S.cpp:		MIN (MAX(ls->color[icolor][0],0.0),1.0),
+Color_GUI_S.cpp:		MIN (MAX(ls->color[icolor][1],0.0),1.0),
+Color_GUI_S.cpp:		MIN (MAX(ls->color[icolor][2],0.0),1.0),
+Color_GUI_S.cpp:		MIN (MAX(ls->color[icolor][3],0.0),1.0));
+Color_GUI_S.cpp:#define ALL_COLOR_COMPONENTS (-1)
+Color_GUI_S.cpp:#define ALL_COLORS (-1)
+Color_GUI_S.cpp:		LightSourceWidgets.rgbInput[whichColor][0]->input.value(rgbStr);
+Color_GUI_S.cpp:		LightSourceWidgets.rgbInput[whichColor][1]->input.value(rgbStr);
+Color_GUI_S.cpp:		LightSourceWidgets.rgbInput[whichColor][2]->input.value(rgbStr);
+Color_GUI_S.cpp:		LightSourceWidgets.grayInput[whichColor]->input.value(rgbStr);
+Color_GUI_S.cpp:		LightSourceWidgets.rgbInput[whichColor][0]->value(clampedVal);
+Color_GUI_S.cpp:		LightSourceWidgets.rgbInput[whichColor][1]->value(clampedVal);
+Color_GUI_S.cpp:		LightSourceWidgets.rgbInput[whichColor][2]->value(clampedVal);
+Color_GUI_S.cpp:		LightSourceWidgets.grayInput[whichColor]->value(clampedVal);
+Color_GUI_S.cpp:		LightSourceWidgets.rgbInput[whichColor][whichComponent]->
+Color_GUI_S.cpp:		LightSourceWidgets.rgbInput[whichColor][whichComponent]->
+Color_GUI_S.cpp:		    // if factor is non-neg then use it as a factor
+Color_GUI_S.cpp:		    LightSourceWidgets.rgbInput[i][j]->value(rgbStr);
+Color_GUI_S.cpp:		    LightSourceWidgets.rgbInput[i][j]->
+Color_GUI_S.cpp:		LightSourceWidgets.grayInput[i]->value(rgbStr);
+Color_GUI_S.cpp:		LightSourceWidgets.grayInput[i]->value(CLAMP01(sum/3.0));
+Color_GUI_S.cpp:	sscanf (fltIn->value(), "%lf", &val);
+Color_GUI_S.cpp:	val = fltIn->value();
+Color_GUI_S.cpp:		// printf ("sb value = %ld\n", sb->value());
+Color_GUI_S.cpp:		if ( (sb->value() / 1000.0) != val)
+Color_GUI_S.cpp:			((Fl_Valuator *)sb)->value (1000*val);
+Color_GUI_S.cpp:	sscanf (fltIn->value(), "%lf", &val);
+Color_GUI_S.cpp:	val = fltIn->value();
+Color_GUI_S.cpp:	factor = (oldVal == 0) ? -1 : (val / oldVal);
+Color_GUI_S.cpp:		// printf ("sb value = %ld\n", sb->value());
+Color_GUI_S.cpp:		if ( (sb->value() / 1000.0) != val)
+Color_GUI_S.cpp:			((Fl_Valuator *)sb)->value (1000*val);
+Color_GUI_S.cpp:	double val = (((Fl_Scrollbar *)w)->value ())/1000.0;
+Color_GUI_S.cpp:	//printf ("scrollbarCB : %d   %d\n", id, ((Fl_Scrollbar *)w)->value ());
+Color_GUI_S.cpp:	double val = (((Fl_Scrollbar *)w)->value ())/1000.0;
+Color_GUI_S.cpp:	double factor = (oldVal == 0) ? -1 : (val / oldVal);
+Color_GUI_S.cpp:	// printf ("scaleRGBCB: value = %f\n", ((Fl_Roller *)w)->value());
+Color_GUI_S.cpp:		((Fl_Roller *)w)->value(1.0);
+Color_GUI_S.cpp:	val = ((Fl_Roller *)w)->value();
+Color_GUI_S.cpp:	factor = 1.0 - (10*(1.0 - ratio));
+Color_GUI_S.cpp:		sum += ls->color[ls->currEditColor][j];
+Color_GUI_S.cpp:	((Fl_Valuator *)LightSourceWidgets.grayScrollbar)->value (1000*sum);
+Color_GUI_S.cpp:	((Fl_Valuator *)LightSourceWidgets.rgbScrollbar[0])->
+Color_GUI_S.cpp:			  value (1000*ls->color[ls->currEditColor][0]);
+Color_GUI_S.cpp:	((Fl_Valuator *)LightSourceWidgets.rgbScrollbar[1])->
+Color_GUI_S.cpp:			  value (1000*ls->color[ls->currEditColor][1]);
+Color_GUI_S.cpp:	((Fl_Valuator *)LightSourceWidgets.rgbScrollbar[2])->
+Color_GUI_S.cpp:			  value (1000*ls->color[ls->currEditColor][2]);
+Color_GUI_S.cpp:	rtnGroup->end();
+Color_GUI_S.cpp:	// resetButton->deactivate();
+Color_GUI_S.cpp:	resetButton->callback (colorResetCB);
+Color_GUI_S.cpp:	rtnGroup->add (resetButton);
+Color_GUI_S.cpp:	// rtnGroup->add (label);
+Color_GUI_S.cpp:	Fl_Group *modeGroup = new Fl_Group (currX, currY, 380-x, y+120);
+Color_GUI_S.cpp:	modeGroup->end();
+Color_GUI_S.cpp:		new Fl_Round_Button (currX, currY, 380-x, 40, 
+Color_GUI_S.cpp:	grayMode->type (FL_RADIO_BUTTON);
+Color_GUI_S.cpp:	grayMode->callback (lscolorModeCB, 0);
+Color_GUI_S.cpp:	modeGroup->add (grayMode);
+Color_GUI_S.cpp:	grayMode->set ();
+Color_GUI_S.cpp:		(currX, currY, 380-x, 40, "Edit R, G, and B \nIndependently");
+Color_GUI_S.cpp:	rgbMode->type (FL_RADIO_BUTTON);
+Color_GUI_S.cpp:	rgbMode->callback (lscolorModeCB, 1);
+Color_GUI_S.cpp:	modeGroup->add (rgbMode);
+Color_GUI_S.cpp:	colorEditModeButton->callback (lscolorMode2CB);
+Color_GUI_S.cpp:	linkAmbDiffSpec->callback (linkAmbDiffSpecCB);
+Color_GUI_S.cpp:	linkAmbDiffSpec->callback (linkAmbDiffSpecCB);
+Color_GUI_S.cpp:	colorEditModeButton->callback (lscolorMode2CB);
+Color_GUI_S.cpp:	Fl_Roller *scaleRGB = new Fl_Roller (currX+60, currY, 20, 380-(y+170), 
+Color_GUI_S.cpp:	scaleRGB->range (2.0, 0.0);
+Color_GUI_S.cpp:	Fl_Roller *scaleRGB = new Fl_Roller (currX, currY, 390-(x+10), 20, 
+Color_GUI_S.cpp:	scaleRGB->type (FL_HORIZONTAL);
+Color_GUI_S.cpp:	scaleRGB->range (0.0, 2.0);
+Color_GUI_S.cpp:	scaleRGB->callback (scaleRGBCB);
+Color_GUI_S.cpp:	scaleRGB->step (0.0001);
+Color_GUI_S.cpp:	// scaleRGB->range (2.0, 0.0);
+Color_GUI_S.cpp:	scaleRGB->value (1.0);
+Color_GUI_S.cpp:	scaleRGB->when (FL_WHEN_RELEASE_ALWAYS | FL_WHEN_CHANGED);
+Color_GUI_S.cpp:	rtnGroup->add (linkAmbDiffSpec);
+Color_GUI_S.cpp:	rtnGroup->add (scaleRGB);
+Color_GUI_S.cpp:	rtnGroup->add (modeGroup);
+Color_GUI_S.cpp:	rtnGroup->add (LightSourceWidgets.rgbEditMode);
+Color_GUI_S.cpp:	// rtnGroup->hide ();
+Color_GUI_S.cpp:	rtnGroup->end();
+Color_GUI_S.cpp:	rtnGroup->hide ();
+Color_GUI_S.cpp:	// rtnGroup->add (label);
+Color_GUI_S.cpp:        rtnGroup->add (label);
+Color_GUI_S.cpp:	rtnGroup->add (ambButton);
+Color_GUI_S.cpp:        Fl_Group *ambGroup = new Fl_Group (subGrpX+2, subGrpY-3, 182, height+6);
+Color_GUI_S.cpp:        ambGroup->end();
+Color_GUI_S.cpp:	ambInput->range (0.0, 1.0);
+Color_GUI_S.cpp:	ambInput->step (0.001);
+Color_GUI_S.cpp:	ambInput->value (0.0);
+Color_GUI_S.cpp:	ambGroup->add (ambInput);
+Color_GUI_S.cpp:	rtnGroup->add (ambGroup);
+Color_GUI_S.cpp:	rtnGroup->add (difButton);
+Color_GUI_S.cpp:        Fl_Group *difGroup = new Fl_Group (subGrpX+2, subGrpY-3, 182, height+6);
+Color_GUI_S.cpp:        difGroup->end();
+Color_GUI_S.cpp:	difInput->range (0.0, 1.0);
+Color_GUI_S.cpp:	difInput->step (0.001);
+Color_GUI_S.cpp:	difInput->value (0.0);
+Color_GUI_S.cpp:	difGroup->add (difInput);
+Color_GUI_S.cpp:	rtnGroup->add (difGroup);
+Color_GUI_S.cpp:	rtnGroup->add (specButton);
+Color_GUI_S.cpp:        Fl_Group *specGroup = new Fl_Group (subGrpX+2, subGrpY-3, 182, height+6);
+Color_GUI_S.cpp:        specGroup->end();
+Color_GUI_S.cpp:	specInput->range (0.0, 1.0);
+Color_GUI_S.cpp:	specInput->step (0.001);
+Color_GUI_S.cpp:	specInput->value (0.0);
+Color_GUI_S.cpp:	specGroup->add (specInput);
+Color_GUI_S.cpp:	rtnGroup->add (specGroup);
+Color_GUI_S.cpp:	ambButton->callback (colorButtonCB, 0);
+Color_GUI_S.cpp:	difButton->callback (colorButtonCB, 1);
+Color_GUI_S.cpp:	specButton->callback (colorButtonCB, 2);
+Color_GUI_S.cpp:	LightSourceWidgets.grayInput[0]->callback (floatInputCB, 003);
+Color_GUI_S.cpp:	LightSourceWidgets.grayInput[1]->callback (floatInputCB, 103);
+Color_GUI_S.cpp:	LightSourceWidgets.grayInput[2]->callback (floatInputCB, 203);
+Color_GUI_S.cpp:	height = 390-subGrpY;
+Color_GUI_S.cpp:	grayScrollbar->callback (scrollbarCB, 3);
+Color_GUI_S.cpp:        grayScrollbar->bounds (1000.0, 0.0);
+Color_GUI_S.cpp:        grayScrollbar->step(10.0);
+Color_GUI_S.cpp:        grayScrollbar->linesize (1);
+Color_GUI_S.cpp:	rtnGroup->add (grayScrollbar);
+Color_GUI_S.cpp:                new Fl_Box (subGrpX+95, subGrpY+height-43, 30, 40, "0.0");
+Color_GUI_S.cpp:        rtnGroup->add (zeroLabel);
+Color_GUI_S.cpp:        rtnGroup->add (oneLabel);
+Color_GUI_S.cpp:	rtnGroup->end();
+Color_GUI_S.cpp:	rtnGroup->add (rLabel);
+Color_GUI_S.cpp:	rtnGroup->add (gLabel);
+Color_GUI_S.cpp:	rtnGroup->add (bLabel);
+Color_GUI_S.cpp:	Fl_Group *ambGroup = new Fl_Group (subGrpX+2, subGrpY-3, 230-2, height+6);
+Color_GUI_S.cpp:	ambGroup->end();
+Color_GUI_S.cpp:	rtnGroup->add (ambButton);
+Color_GUI_S.cpp:	ambButton->callback (colorButtonCB, 0);
+Color_GUI_S.cpp:	ambR->range (0.0, 1.0);
+Color_GUI_S.cpp:	ambR->step (0.001);
+Color_GUI_S.cpp:	ambR->value (0.0);
+Color_GUI_S.cpp:	ambGroup->add (ambR);
+Color_GUI_S.cpp:	ambG->range (0.0, 1.0);
+Color_GUI_S.cpp:	ambG->step (0.001);
+Color_GUI_S.cpp:	ambG->value (0.1);
+Color_GUI_S.cpp:	ambGroup->add (ambG);
+Color_GUI_S.cpp:	ambB->range (0.0, 1.0);
+Color_GUI_S.cpp:	ambB->step (0.001);
+Color_GUI_S.cpp:	ambB->value (0.2);
+Color_GUI_S.cpp:	ambGroup->add (ambB);
+Color_GUI_S.cpp:	rtnGroup->add (ambGroup);
+Color_GUI_S.cpp:	Fl_Group *difGroup = new Fl_Group (subGrpX+2, subGrpY-3, 230-2, height+6);
+Color_GUI_S.cpp:	difGroup->end();
+Color_GUI_S.cpp:	rtnGroup->add (difButton);
+Color_GUI_S.cpp:	difButton->callback (colorButtonCB, 1);
+Color_GUI_S.cpp:	difR->range (0.0, 1.0);
+Color_GUI_S.cpp:	difR->step (0.001);
+Color_GUI_S.cpp:	difR->value (0.0);
+Color_GUI_S.cpp:	difGroup->add (difR);
+Color_GUI_S.cpp:	difG->range (0.0, 1.0);
+Color_GUI_S.cpp:	difG->step (0.001);
+Color_GUI_S.cpp:	difG->value (0.1);
+Color_GUI_S.cpp:	difGroup->add (difG);
+Color_GUI_S.cpp:	difB->range (0.0, 1.0);
+Color_GUI_S.cpp:	difB->step (0.001);
+Color_GUI_S.cpp:	difB->value (0.2);
+Color_GUI_S.cpp:	difGroup->add (difB);
+Color_GUI_S.cpp:	rtnGroup->add (difGroup);
+Color_GUI_S.cpp:	Fl_Group *specGroup = new Fl_Group (subGrpX+2, subGrpY-3, 230-2, height+6);
+Color_GUI_S.cpp:	specGroup->end ();
+Color_GUI_S.cpp:	specGroup->add (specLabel);
+Color_GUI_S.cpp:	rtnGroup->add (specButton);
+Color_GUI_S.cpp:	specButton->callback (colorButtonCB, 2);
+Color_GUI_S.cpp:	specR->range (0.0, 1.0);
+Color_GUI_S.cpp:	specR->step (0.001);
+Color_GUI_S.cpp:	specR->value (0.0);
+Color_GUI_S.cpp:	specGroup->add (specR);
+Color_GUI_S.cpp:	specG->range (0.0, 1.0);
+Color_GUI_S.cpp:	specG->step (0.001);
+Color_GUI_S.cpp:	specG->value (0.1);
+Color_GUI_S.cpp:	specGroup->add (specG);
+Color_GUI_S.cpp:	specB->range (0.0, 1.0);
+Color_GUI_S.cpp:	specB->step (0.001);
+Color_GUI_S.cpp:	specB->value (0.2);
+Color_GUI_S.cpp:	specGroup->add (specB);
+Color_GUI_S.cpp:	rtnGroup->add (specGroup);
+Color_GUI_S.cpp:			LightSourceWidgets.rgbInput[i][j]->
+Color_GUI_S.cpp:	height = 390-subGrpY;
+Color_GUI_S.cpp:	sliderGroup->end();
+Color_GUI_S.cpp:	rtnGroup->add (sliderGroup);
+Color_GUI_S.cpp:	rSlider->bounds (0.0, 1.0);
+Color_GUI_S.cpp:	rSlider->step(0.01);
+Color_GUI_S.cpp:	gSlider->bounds (0.0, 1.0);
+Color_GUI_S.cpp:	gSlider->step(0.01);
+Color_GUI_S.cpp:	bSlider->bounds (0.0, 1.0);
+Color_GUI_S.cpp:	bSlider->step(0.01);
+Color_GUI_S.cpp:	rScrollbar->bounds (1000.0, 0.0);
+Color_GUI_S.cpp:	rScrollbar->step(10.0);
+Color_GUI_S.cpp:	rScrollbar->linesize (1);
+Color_GUI_S.cpp:	gScrollbar->bounds (1000.0, 0.0);
+Color_GUI_S.cpp:	gScrollbar->step(10.0);
+Color_GUI_S.cpp:	gScrollbar->linesize (1);
+Color_GUI_S.cpp:	bScrollbar->bounds (1000.0, 0.0);
+Color_GUI_S.cpp:	bScrollbar->step(10.0);
+Color_GUI_S.cpp:	bScrollbar->linesize (1);
+Color_GUI_S.cpp:	rScrollbar->callback (scrollbarCB, 0);
+Color_GUI_S.cpp:	gScrollbar->callback (scrollbarCB, 1);
+Color_GUI_S.cpp:	bScrollbar->callback (scrollbarCB, 2);
+Color_GUI_S.cpp:	// rScrollbar->when (FL_WHEN_CHANGED | FL_WHEN_RELEASE);
+Color_GUI_S.cpp:	// gScrollbar->when (FL_WHEN_CHANGED | FL_WHEN_RELEASE);
+Color_GUI_S.cpp:	// bScrollbar->when (FL_WHEN_CHANGED | FL_WHEN_RELEASE);
+Color_GUI_S.cpp:	rScrollbar->when (FL_WHEN_CHANGED);
+Color_GUI_S.cpp:	gScrollbar->when (FL_WHEN_CHANGED);
+Color_GUI_S.cpp:	bScrollbar->when (FL_WHEN_CHANGED);
+Color_GUI_S.cpp:	sliderGroup->add (rScrollbar);
+Color_GUI_S.cpp:	sliderGroup->add (gScrollbar);
+Color_GUI_S.cpp:	sliderGroup->add (bScrollbar);
+Color_GUI_S.cpp:		new Fl_Box (subGrpX+60, subGrpY+height-43, 30, 40, "0.0");
+Color_GUI_S.cpp:	sliderGroup->add (zeroLabel);
+Color_GUI_S.cpp:	sliderGroup->add (oneLabel);
+Color_GUI_S.cpp:	rtnGroup->end();
+Color_GUI_S.cpp:	// rtnGroup->add (label);
+Color_GUI_S.cpp:	// rtnGroup->box (FL_BORDER_BOX);
+Color_GUI_S.cpp:	rtnGroup->box (FL_SHADOW_BOX);
+Color_GUI_S.cpp:	rtnGroup->add (rgbBox);
+Color_GUI_S.cpp:	rtnGroup->add (grayBox);
+Color_GUI_S.cpp:	grayBox->hide ();
+Color_GUI_S.cpp:	rtnGroup->add (otherBox);
+Binary file Color_GUI_S.o matches
+File_GUI_S.cpp:		if (LButtons[1][i]->value())
+File_GUI_S.cpp:	strcpy (fn, InputFNWidget->value());
+File_GUI_S.cpp:		if (LButtons[1][i]->value())
+File_GUI_S.cpp:	if (LButtons[1][8]->value())
+File_GUI_S.cpp:				if (strcmp (fn+(len-4), ".osg") == 0)
+File_GUI_S.cpp:					fn[len-4] = 0;
+File_GUI_S.cpp:	ReadDoneWin->getRelPos (relPos);
+File_GUI_S.cpp:	ReadDoneWin->position (MainWindow->x()+relPos[0], 
+File_GUI_S.cpp:                           MainWindow->y()+relPos[1]);
+File_GUI_S.cpp:	ReadDoneWin->set_modal();
+File_GUI_S.cpp:	ReadDoneWin->show();
+File_GUI_S.cpp:		if (LButtons[0][i]->value())
+File_GUI_S.cpp:	strcpy (fn, OutputFNWidget->value());
+File_GUI_S.cpp:		if (LButtons[0][i]->value())
+File_GUI_S.cpp:	if (LButtons[0][8]->value())
+File_GUI_S.cpp:				if (strcmp (fn+(len-4), ".osg") == 0)
+File_GUI_S.cpp:					fn[len-4] = 0;
+File_GUI_S.cpp:	WriteDoneWin->getRelPos (relPos);
+File_GUI_S.cpp:	WriteDoneWin->position (MainWindow->x()+relPos[0], 
+File_GUI_S.cpp:                            MainWindow->y()+relPos[1]);
+File_GUI_S.cpp:	WriteDoneWin->set_modal();
+File_GUI_S.cpp:	WriteDoneWin->show();
+File_GUI_S.cpp:		LButtons[forInput][i]->set ();
+File_GUI_S.cpp:				fnIn, fnIn->value(), forInput);
+File_GUI_S.cpp:		InputFileChooserWidget->show ();
+File_GUI_S.cpp:		while (InputFileChooserWidget->visible())
+File_GUI_S.cpp:		const char *fn = InputFileChooserWidget->value();
+File_GUI_S.cpp:			InputFileChooserWidget->value());
+File_GUI_S.cpp:		InputFNWidget->value (locFN);
+File_GUI_S.cpp:		InputFNWidget->position (len-1,len-1);
+File_GUI_S.cpp:		OutputFileChooserWidget->show ();
+File_GUI_S.cpp:		while (OutputFileChooserWidget->visible())
+File_GUI_S.cpp:		const char *fn = OutputFileChooserWidget->value();
+File_GUI_S.cpp:			OutputFileChooserWidget->value());
+File_GUI_S.cpp:		OutputFNWidget->value (locFN);
+File_GUI_S.cpp:		OutputFNWidget->position (len-1,len-1);
+File_GUI_S.cpp:	// printf ("fileChooserCB : <%s>\n", fc->value());
+File_GUI_S.cpp:                        WriteGroup->hide();
+File_GUI_S.cpp:                        ReadGroup->show();
+File_GUI_S.cpp:                        WriteGroup->show();
+File_GUI_S.cpp:                        ReadGroup->hide();
+File_GUI_S.cpp:	strcpy (fn, fnw->value());
+File_GUI_S.cpp:		if (strcmp (".osg", fn+(len-4)) == 0)
+File_GUI_S.cpp:			fn[len-4] = 0;
+File_GUI_S.cpp:			len -= 4;
+File_GUI_S.cpp:				if ( isdigit (*(fn+len-1)) )
+File_GUI_S.cpp:					fn[len-1] = 0;
+File_GUI_S.cpp:					if ( (strcasecmp (fn+(len-5), "model") 
+File_GUI_S.cpp:						fn[len-5] = 0;
+File_GUI_S.cpp:	fnw->value (fn);
+File_GUI_S.cpp:	fnw->position (len-1,len-1);
+File_GUI_S.cpp:	if (strstr (fnw->value(), "%ID") == NULL)
+File_GUI_S.cpp:		but->activate ();
+File_GUI_S.cpp:		but->deactivate ();
+File_GUI_S.cpp:	lselGroup->end ();
+File_GUI_S.cpp:	lLabel->labelfont (FL_HELVETICA_ITALIC);
+File_GUI_S.cpp:	lselGroup->add (lLabel);
+File_GUI_S.cpp:	lselGroup->add (selAllButton);
+File_GUI_S.cpp:	SelAll[forInput]->callback (selAllCB, forInput);
+File_GUI_S.cpp:		lselGroup->add (lButton);
+File_GUI_S.cpp:	lselGroup->add (lButton);
+File_GUI_S.cpp:	// lButton->deactivate ();
+File_GUI_S.cpp:	fnGroup->end ();
+File_GUI_S.cpp:	fnLabel->align (FL_ALIGN_INSIDE | FL_ALIGN_LEFT);
+File_GUI_S.cpp:	fnLabel->labelfont (FL_HELVETICA_ITALIC);
+File_GUI_S.cpp:	fnGroup->add (fnLabel);
+File_GUI_S.cpp:		InputFNWidget = new Fl_Input (currX, currY, (w-currX)-10, 30);
+File_GUI_S.cpp:		InputFNWidget->value ("Light_%ID.osg");
+File_GUI_S.cpp:		fnGroup->add (InputFNWidget);
+File_GUI_S.cpp:		InputFNWidget->callback (fnCB, forInput);
+File_GUI_S.cpp:		OutputFNWidget = new Fl_Input (currX, currY, (w-currX)-10, 30);
+File_GUI_S.cpp:		OutputFNWidget->value ("Light_%ID.osg");
+File_GUI_S.cpp:		fnGroup->add (OutputFNWidget);
+File_GUI_S.cpp:		OutputFNWidget->callback (fnCB, forInput);
+File_GUI_S.cpp:	browserButton->callback (browserButtonCB, forInput);
+File_GUI_S.cpp:	fnGroup->add (browserButton);
+File_GUI_S.cpp:		new Fl_Button (w-190, currY, 180, 30, 
+File_GUI_S.cpp:	templateButton->callback (templateButtonCB, forInput);
+File_GUI_S.cpp:	fnGroup->add (templateButton);
+File_GUI_S.cpp:	templateButton->deactivate ();
+File_GUI_S.cpp:	writeGroup->end ();
+File_GUI_S.cpp:	int currW = w-5;
+File_GUI_S.cpp:	writeGroup->add (lightSelGroup);
+File_GUI_S.cpp:	writeGroup->add (fnGroup);
+File_GUI_S.cpp:  	OutputFileChooserWidget->callback(fileChooserCB);
+File_GUI_S.cpp:	OutputFileChooserWidget->newButton->hide();
+File_GUI_S.cpp:	OutputFileChooserWidget->previewButton->hide();
+File_GUI_S.cpp:	WriteDoneWin = new Msg_Window (100, y+h-150, 200, 100, 
+File_GUI_S.cpp:		new Fl_Button (x+w/2-100, y+h-48, 200, 40, "Write File(s)");
+File_GUI_S.cpp:	doIO->box (FL_ROUND_UP_BOX);
+File_GUI_S.cpp:	doIO->labelsize (18);
+File_GUI_S.cpp:	doIO->callback (writeFilesCB);
+File_GUI_S.cpp:	writeGroup->add (doIO);
+File_GUI_S.cpp:	readGroup->end ();
+File_GUI_S.cpp:	int currW = w-5;
+File_GUI_S.cpp:	readGroup->add (fnGroup);
+File_GUI_S.cpp:	readGroup->add (lightSelGroup);
+File_GUI_S.cpp:  	InputFileChooserWidget->callback(fileChooserCB);
+File_GUI_S.cpp:	InputFileChooserWidget->newButton->hide();
+File_GUI_S.cpp:	InputFileChooserWidget->previewButton->hide();
+File_GUI_S.cpp:	ReadDoneWin = new Msg_Window (100, y+h-150, 200, 100, 
+File_GUI_S.cpp:		new Fl_Button (x+w/2-100, y+h-48, 200, 40, "Read File(s)");
+File_GUI_S.cpp:	doIO->box (FL_ROUND_UP_BOX);
+File_GUI_S.cpp:	doIO->labelsize (18);
+File_GUI_S.cpp:	doIO->callback (readFilesCB);
+File_GUI_S.cpp:	readGroup->add (doIO);
+File_GUI_S.cpp:	fileIOGroup->end();
+File_GUI_S.cpp:        modeGroup->end();
+File_GUI_S.cpp:	readMode->labelsize (20);
+File_GUI_S.cpp:        readMode->type (FL_RADIO_BUTTON);
+File_GUI_S.cpp:        readMode->set ();
+File_GUI_S.cpp:        readMode->callback (rwModeCB, 1);
+File_GUI_S.cpp:	modeGroup->add (readMode);
+File_GUI_S.cpp:	writeMode->labelsize (20);
+File_GUI_S.cpp:        writeMode->type (FL_RADIO_BUTTON);
+File_GUI_S.cpp:        writeMode->callback (rwModeCB, 2);
+File_GUI_S.cpp:	modeGroup->add (writeMode);
+File_GUI_S.cpp:	fileIOGroup->add (modeGroup);
+File_GUI_S.cpp:	Fl_Box *sep = new Fl_Box (H_CENTER_LINE_BOX, x+40, y+36, w-80, 3, "");
+File_GUI_S.cpp:	fileIOGroup->add (sep);
+File_GUI_S.cpp:	WriteGroup = buildWriteGroup (x, y+30, w, h-30);
+File_GUI_S.cpp:	fileIOGroup->add (WriteGroup);
+File_GUI_S.cpp:	WriteGroup->hide ();
+File_GUI_S.cpp:	ReadGroup = buildReadGroup (x, y+30, w, h-30);
+File_GUI_S.cpp:	fileIOGroup->add (ReadGroup);
+File_GUI_S.cpp:	ReadGroup->show ();
+File_GUI_S.cpp:	osg::Light *light = lsNode->getLight();
+File_GUI_S.cpp:	osg::StateSet *ss = lsNode->getOrCreateStateSet ();
+File_GUI_S.cpp:	light->setConstantAttenuation (ls->atten[0]);
+File_GUI_S.cpp:	light->setLinearAttenuation (ls->atten[1]);
+File_GUI_S.cpp:	light->setQuadraticAttenuation (ls->atten[2]);
+File_GUI_S.cpp:	color[0] = ls->color[0][0];
+File_GUI_S.cpp:	color[1] = ls->color[0][1];
+File_GUI_S.cpp:	color[2] = ls->color[0][2];
+File_GUI_S.cpp:	color[3] = ls->color[0][3];
+File_GUI_S.cpp:	light->setAmbient (color);
+File_GUI_S.cpp:	color[0] = ls->color[1][0];
+File_GUI_S.cpp:	color[1] = ls->color[1][1];
+File_GUI_S.cpp:	color[2] = ls->color[1][2];
+File_GUI_S.cpp:	color[3] = ls->color[1][3];
+File_GUI_S.cpp:	light->setDiffuse (color);
+File_GUI_S.cpp:	color[0] = ls->color[2][0];
+File_GUI_S.cpp:	color[1] = ls->color[2][1];
+File_GUI_S.cpp:	color[2] = ls->color[2][2];
+File_GUI_S.cpp:	color[3] = ls->color[2][3];
+File_GUI_S.cpp:	light->setSpecular (color);
+File_GUI_S.cpp:	if (ls->referenceFrameIsRelative)
+File_GUI_S.cpp:		lsNode->setReferenceFrame (osg::LightSource::RELATIVE_RF);
+File_GUI_S.cpp:		lsNode->setReferenceFrame (osg::LightSource::ABSOLUTE_RF);
+File_GUI_S.cpp:	// Note that the cutoff angle will be over-ridden below when we
+File_GUI_S.cpp:	direction[0] = ls->spotDirection[0];
+File_GUI_S.cpp:	direction[1] = ls->spotDirection[1];
+File_GUI_S.cpp:	direction[2] = ls->spotDirection[2];
+File_GUI_S.cpp:	light->setDirection (direction);
+File_GUI_S.cpp:	light->setSpotExponent (ls->spotExponent);
+File_GUI_S.cpp:        switch (ls->type)
+File_GUI_S.cpp:			position[0] = ls->infDirection[0];
+File_GUI_S.cpp:			position[1] = ls->infDirection[1];
+File_GUI_S.cpp:			position[2] = ls->infDirection[2];
+File_GUI_S.cpp:			// cutoff = ls->spotCutoff;
+File_GUI_S.cpp:			position[0] = ls->localLocation[0];
+File_GUI_S.cpp:			position[1] = ls->localLocation[1];
+File_GUI_S.cpp:			position[2] = ls->localLocation[2];
+File_GUI_S.cpp:			position[0] = ls->localLocation[0];
+File_GUI_S.cpp:			position[1] = ls->localLocation[1];
+File_GUI_S.cpp:			position[2] = ls->localLocation[2];
+File_GUI_S.cpp:			cutoff = ls->spotCutoff;
+File_GUI_S.cpp:	light->setPosition (position);
+File_GUI_S.cpp:	light->setSpotCutoff (cutoff);
+File_GUI_S.cpp:		ss->removeMode (GL_LIGHT0+i);
+File_GUI_S.cpp:	osg::Light *light = lsNode->getLight();
+File_GUI_S.cpp:	osg::StateSet *ss = lsNode->getOrCreateStateSet ();
+File_GUI_S.cpp:	strcpy (tmpName, ls->name);
+File_GUI_S.cpp:	int on = ls->on;
+File_GUI_S.cpp:	int node = ls->node;
+File_GUI_S.cpp:	strcpy (ls->name, tmpName);
+File_GUI_S.cpp:	ls->on = on;
+File_GUI_S.cpp:	ls->node = node;
+File_GUI_S.cpp:        ls->atten[0] = light->getConstantAttenuation ();
+File_GUI_S.cpp:        ls->atten[1] = light->getLinearAttenuation ();
+File_GUI_S.cpp:        ls->atten[2] = light->getQuadraticAttenuation ();
+File_GUI_S.cpp:	color = light->getAmbient ();
+File_GUI_S.cpp:	ls->color[0][0] = color[0];
+File_GUI_S.cpp:	ls->color[0][1] = color[1];
+File_GUI_S.cpp:	ls->color[0][2] = color[2];
+File_GUI_S.cpp:	ls->color[0][3] = color[3];
+File_GUI_S.cpp:	color = light->getDiffuse ();
+File_GUI_S.cpp:	ls->color[1][0] = color[0];
+File_GUI_S.cpp:	ls->color[1][1] = color[1];
+File_GUI_S.cpp:	ls->color[1][2] = color[2];
+File_GUI_S.cpp:	ls->color[1][3] = color[3];
+File_GUI_S.cpp:	color = light->getSpecular ();
+File_GUI_S.cpp:	ls->color[2][0] = color[0];
+File_GUI_S.cpp:	ls->color[2][1] = color[1];
+File_GUI_S.cpp:	ls->color[2][2] = color[2];
+File_GUI_S.cpp:	ls->color[2][3] = color[3];
+File_GUI_S.cpp:	ls->referenceFrameIsRelative =  
+File_GUI_S.cpp:	    (lsNode->getReferenceFrame () == osg::LightSource::RELATIVE_RF);
+File_GUI_S.cpp:	direction = light->getDirection ();
+File_GUI_S.cpp:	ls->spotDirection[0] = direction[0];
+File_GUI_S.cpp:	ls->spotDirection[1] = direction[1];
+File_GUI_S.cpp:	ls->spotDirection[2] = direction[2];
+File_GUI_S.cpp:	ls->spotExponent = light->getSpotExponent ();
+File_GUI_S.cpp:	position = light->getPosition ();
+File_GUI_S.cpp:	sc = light->getSpotCutoff ();
+File_GUI_S.cpp:		ls->type = INFINITE;
+File_GUI_S.cpp:		ls->infDirection[0] = position[0];
+File_GUI_S.cpp:		ls->infDirection[1] = position[1];
+File_GUI_S.cpp:		ls->infDirection[2] = position[2];
+File_GUI_S.cpp:		ls->localLocation[0] = position[0];
+File_GUI_S.cpp:		ls->localLocation[1] = position[1];
+File_GUI_S.cpp:		ls->localLocation[2] = position[2];
+File_GUI_S.cpp:		ls->spotCutoff = sc;
+File_GUI_S.cpp:		ls->localLocation[0] = position[0] / position[3];
+File_GUI_S.cpp:		ls->localLocation[1] = position[1] / position[3];
+File_GUI_S.cpp:		ls->localLocation[2] = position[2] / position[3];
+File_GUI_S.cpp:			ls->type = OMNI;
+File_GUI_S.cpp:			ls->spotCutoff = 20.0;
+File_GUI_S.cpp:			ls->infDirection[0] = ls->localLocation[0];
+File_GUI_S.cpp:			ls->infDirection[1] = ls->localLocation[1];
+File_GUI_S.cpp:			ls->infDirection[2] = ls->localLocation[2];
+File_GUI_S.cpp:			ls->type = SPOT;
+File_GUI_S.cpp:			ls->spotCutoff = sc ;
+File_GUI_S.cpp:			ls->infDirection[0] = - ls->spotDirection[0];
+File_GUI_S.cpp:			ls->infDirection[1] = - ls->spotDirection[1];
+File_GUI_S.cpp:			ls->infDirection[2] = - ls->spotDirection[2];
+File_GUI_S.cpp:	if (ls->spotCutoff > 90.0)
+File_GUI_S.cpp:		ls->spotCutoff = 90.0;
+File_GUI_S.cpp:	ls->spotLookAtPt[0] = ls->spotDirection[0]+ls->localLocation[0];
+File_GUI_S.cpp:	ls->spotLookAtPt[1] = ls->spotDirection[1]+ls->localLocation[1];
+File_GUI_S.cpp:	ls->spotLookAtPt[2] = ls->spotDirection[2]+ls->localLocation[2];
+File_GUI_S.cpp:		  "hev-lightEditor: "
+File_GUI_S.cpp:		return -1;
+File_GUI_S.cpp:	  "hev-lightEditor: Error parsing light model file \"%s\" on line:\n",
+File_GUI_S.cpp:		  "hev-lightEditor: "
+File_GUI_S.cpp:		return -1;
+File_GUI_S.cpp:		  "hev-lightEditor: "
+Binary file File_GUI_S.o matches
+General_GUI_S.cpp:		msgLabel->label (title);
+General_GUI_S.cpp:		msgLabel->label ("");
+General_GUI_S.cpp:	doneButton = new Fl_Button ((w/2)-50, h-50, 100, 30);
+General_GUI_S.cpp:	doneButton->label ("OK");
+General_GUI_S.cpp:	doneButton->callback (Msg_Window::cb, (void *)this);
+General_GUI_S.cpp:	((Msg_Window *)v)->hide();
+General_GUI_S.cpp:	msgLabel->label (msg);
+General_GUI_S.cpp:	x = pos->xvalue ();
+General_GUI_S.cpp:	y = pos->yvalue ();
+General_GUI_S.cpp:	pos->label (lab[id]);
+General_GUI_S.cpp:	positioner = new Fl_Positioner (4, 4, w-8, h-28, "Test Label");
+General_GUI_S.cpp:	positioner->xbounds (-180.0, 180.0);
+General_GUI_S.cpp:	positioner->ybounds (90.0, -90.0);
+General_GUI_S.cpp:	positioner->xstep (0.5);
+General_GUI_S.cpp:	positioner->ystep (0.5);
+General_GUI_S.cpp:	positioner->callback (hpCB, 0);
+General_GUI_S.cpp:	// printf ("adjuster %d   val = %f\n", id, ((Fl_Adjuster *)w)->value());
+General_GUI_S.cpp:	XYZ_Edit_Window *win = (XYZ_Edit_Window *) w->parent();
+General_GUI_S.cpp:		// win->xyzAdj[0]->value(),
+General_GUI_S.cpp:		// win->xyzAdj[1]->value(),
+General_GUI_S.cpp:		// win->xyzAdj[2]->value());
+General_GUI_S.cpp:	// sprintf (win->xyzTxtVal[id], "%g", win->xyzAdj[id]->value());
+General_GUI_S.cpp:	// sprintf (win->xyzTxtVal[id], "%.5f", win->xyzAdj[id]->value());
+General_GUI_S.cpp:	formatDouble ( win->xyzAdj[id]->value(), 4, win->xyzTxtVal[id]);
+General_GUI_S.cpp:	win->xyzLabel[id]->damage (FL_DAMAGE_ALL);
+General_GUI_S.cpp:	adjRange[0] = -10.0;
+General_GUI_S.cpp:	int startX = (width/6) - 10;
+General_GUI_S.cpp:		xyzAdj[i] = new Fl_Adjuster (xx, startY+17, 20, height-80);
+General_GUI_S.cpp:		xyzAdj[i]->callback (adjCB, i);
+General_GUI_S.cpp:		xyzAdj[i]->range (adjRange[0], adjRange[1]);
+General_GUI_S.cpp:		xyzAdj[i]->step (adjStep);
+General_GUI_S.cpp:		xyzAdj[i]->value (0.0);
+General_GUI_S.cpp:		xyzAdj[i]->soft (0);
+General_GUI_S.cpp:		xyzAdj[i]->when (FL_WHEN_RELEASE_ALWAYS | FL_WHEN_CHANGED);
+General_GUI_S.cpp:		    ( FL_FLAT_BOX, (xx+10)-(incX/2), xyzAdj[i]->y()+xyzAdj[i]->h()+3, 
+General_GUI_S.cpp:	startY += height-40;
+General_GUI_S.cpp:	Fl_Box *box = new Fl_Box (1, startY, width, height - startY,
+General_GUI_S.cpp:	box->labelsize (10);
+General_GUI_S.cpp:	box->labelfont (FL_HELVETICA_ITALIC);
+General_GUI_S.cpp:	adjRange[0] = -1.0;
+General_GUI_S.cpp:		xyzAdj[i]->range (adjRange[0], adjRange[1]);
+General_GUI_S.cpp:		xyzAdj[i]->step (adjStep);
+General_GUI_S.cpp:		xyzAdj[i]->soft (1);
+General_GUI_S.cpp:	LightSourceWidgets.ltypeMenu->value (ls->type);
+General_GUI_S.cpp:	ltypeCB (LightSourceWidgets.ltypeMenu, (void *)(ls->type));
+General_GUI_S.cpp:		LightSourceWidgets.spot.xyzPosAdj[i]->
+General_GUI_S.cpp:				value (ls->localLocation[i]);
+General_GUI_S.cpp:        	LightSourceWidgets.spot.xyzPosFI[i]->
+General_GUI_S.cpp:				value (ls->localLocation[i]);
+General_GUI_S.cpp:		LightSourceWidgets.local.xyzPosAdj[i]->
+General_GUI_S.cpp:				value (ls->localLocation[i]);
+General_GUI_S.cpp:        	LightSourceWidgets.local.xyzPosFI[i]->
+General_GUI_S.cpp:				value (ls->localLocation[i]);
+General_GUI_S.cpp:		LightSourceWidgets.spot.xyzDirAdj[i]->value (ls->spotDirection[i]);
+General_GUI_S.cpp:        	LightSourceWidgets.spot.xyzDirFI[i]->
+General_GUI_S.cpp:				value (ls->spotDirection[i]);
+General_GUI_S.cpp:	xyzToHP (ls->spotDirection, hp);
+General_GUI_S.cpp:	hp[0] = 90 - hp[0];
+General_GUI_S.cpp:		hp[0] -= 360;
+General_GUI_S.cpp:	LightSourceWidgets.spot.hpDirPos->xvalue(hp[0]);
+General_GUI_S.cpp:	LightSourceWidgets.spot.hpDirPos->yvalue(hp[1]);
+General_GUI_S.cpp:        	LightSourceWidgets.spot.hpDirFI[i]->value (hp[i]);
+General_GUI_S.cpp:	LightSourceWidgets.spot.dirMenu->
+General_GUI_S.cpp:        LightSourceWidgets.spot.xyzDirGrp->hide();
+General_GUI_S.cpp:        LightSourceWidgets.spot.hpDirGrp->hide();
+General_GUI_S.cpp:        LightSourceWidgets.spot.lookAtDirGrp->hide();
+General_GUI_S.cpp:                        LightSourceWidgets.spot.xyzDirGrp->show ();
+General_GUI_S.cpp:                        LightSourceWidgets.spot.hpDirGrp->show ();
+General_GUI_S.cpp:                        LightSourceWidgets.spot.lookAtDirGrp->show ();
+General_GUI_S.cpp:	lookAtDir[0] = ls->spotLookAtPt[0] - ls->localLocation[0] ;
+General_GUI_S.cpp:	lookAtDir[1] = ls->spotLookAtPt[1] - ls->localLocation[1] ;
+General_GUI_S.cpp:	lookAtDir[2] = ls->spotLookAtPt[2] - ls->localLocation[2] ;
+General_GUI_S.cpp:	memcpy (currDir, ls->spotDirection, 3*sizeof(double));
+General_GUI_S.cpp:		ls->spotLookAtPt[0] = ls->spotDirection[0]+ls->localLocation[0];
+General_GUI_S.cpp:		ls->spotLookAtPt[1] = ls->spotDirection[1]+ls->localLocation[1];
+General_GUI_S.cpp:		ls->spotLookAtPt[2] = ls->spotDirection[2]+ls->localLocation[2];
+General_GUI_S.cpp:		LightSourceWidgets.spot.lookAtDirAdj[i]->
+General_GUI_S.cpp:					value(ls->spotLookAtPt[i]);
+General_GUI_S.cpp:		LightSourceWidgets.spot.lookAtDirFI[i]->
+General_GUI_S.cpp:					value (ls->spotLookAtPt[i]);;
+General_GUI_S.cpp:		LightSourceWidgets.inf.xyzDirAdj[i]->value (ls->infDirection[i]);
+General_GUI_S.cpp:        	LightSourceWidgets.inf.xyzDirFI[i]->value (ls->infDirection[i]);
+General_GUI_S.cpp:	xyzToHP (ls->infDirection, hp);
+General_GUI_S.cpp:		hp[0] -= 360;
+General_GUI_S.cpp:	LightSourceWidgets.inf.hpDirPos->xvalue(hp[0]);
+General_GUI_S.cpp:	LightSourceWidgets.inf.hpDirPos->yvalue(hp[1]);
+General_GUI_S.cpp:        	LightSourceWidgets.inf.hpDirFI[i]->value (hp[i]);
+General_GUI_S.cpp:	LightSourceWidgets.spot.angleFI->value(ls->spotCutoff);
+General_GUI_S.cpp:	((Fl_Slider *)LightSourceWidgets.spot.angleSB)->value(ls->spotCutoff);
+General_GUI_S.cpp:	LightSourceWidgets.spot.expFI->value(ls->spotExponent);
+General_GUI_S.cpp:	((Fl_Slider *)LightSourceWidgets.spot.expSB)->value(ls->spotExponent);
+General_GUI_S.cpp:	LightSourceWidgets.attenVI[0]->
+General_GUI_S.cpp:	LightSourceWidgets.attenVI[1]->
+General_GUI_S.cpp:	LightSourceWidgets.attenVI[2]->
+General_GUI_S.cpp:		LightSourceWidgets.attenGrp->deactivate();
+General_GUI_S.cpp:		LightSourceWidgets.attenGrp->activate();
+General_GUI_S.cpp:	LightSourceWidgets.lnumMenu->value (ls->glLightNum);;
+General_GUI_S.cpp:	LightSourceWidgets.onOff->
+General_GUI_S.cpp:			value (ls->on);;
+General_GUI_S.cpp:	LightSourceWidgets.nodeMenu->
+General_GUI_S.cpp:			value (ls->node);;
+General_GUI_S.cpp:	LightSourceWidgets.showGlyph->
+General_GUI_S.cpp:			value (ls->showGlyph);;
+General_GUI_S.cpp:	LightSourceWidgets.positionMode->
+General_GUI_S.cpp:			value (ls->inPositionMode);
+General_GUI_S.cpp:	LightSourceWidgets.colorMode->
+General_GUI_S.cpp:			value (! ls->inPositionMode );
+General_GUI_S.cpp:		sum += ls->color[ls->currEditColor][j];
+General_GUI_S.cpp:	((Fl_Valuator *)LightSourceWidgets.grayScrollbar)->value (1000*sum);
+General_GUI_S.cpp:	if (! ls->inRgbMode )
+General_GUI_S.cpp:		ls->color[ls->currEditColor][0] =
+General_GUI_S.cpp:		ls->color[ls->currEditColor][1] =
+General_GUI_S.cpp:		ls->color[ls->currEditColor][2] = sum;
+General_GUI_S.cpp:	((Fl_Valuator *)LightSourceWidgets.rgbScrollbar[0])->
+General_GUI_S.cpp:			  value (1000*ls->color[ls->currEditColor][0]);
+General_GUI_S.cpp:	((Fl_Valuator *)LightSourceWidgets.rgbScrollbar[1])->
+General_GUI_S.cpp:			  value (1000*ls->color[ls->currEditColor][1]);
+General_GUI_S.cpp:	((Fl_Valuator *)LightSourceWidgets.rgbScrollbar[2])->
+General_GUI_S.cpp:			  value (1000*ls->color[ls->currEditColor][2]);
+General_GUI_S.cpp:	LightSourceWidgets.rgbColorGroup[0]->deactivate();
+General_GUI_S.cpp:	LightSourceWidgets.rgbColorGroup[1]->deactivate();
+General_GUI_S.cpp:	LightSourceWidgets.rgbColorGroup[2]->deactivate();
+General_GUI_S.cpp:	LightSourceWidgets.rgbColorGroup[ls->currEditColor]->activate();
+General_GUI_S.cpp:	LightSourceWidgets.rgbColorGroup[ls->currEditColor]->box (FL_THIN_UP_FRAME);
+General_GUI_S.cpp:	LightSourceWidgets.grayColorGroup[0]->deactivate();
+General_GUI_S.cpp:	LightSourceWidgets.grayColorGroup[1]->deactivate();
+General_GUI_S.cpp:	LightSourceWidgets.grayColorGroup[2]->deactivate();
+General_GUI_S.cpp:	LightSourceWidgets.grayColorGroup[ls->currEditColor]->activate();
+General_GUI_S.cpp:	LightSourceWidgets.grayColorGroup[ls->currEditColor]->box (FL_THIN_UP_FRAME);
+General_GUI_S.cpp:		LightSourceWidgets.rgbInput[i][j]->
+General_GUI_S.cpp:	    LightSourceWidgets.grayInput[i]->value (CLAMP01 (sum/3));
+General_GUI_S.cpp:	LightSourceWidgets.linkAmbDiffSpec->
+General_GUI_S.cpp:	LightSourceWidgets.rgbEditMode->
+General_GUI_S.cpp:		LightSourceWidgets.rgbEditGroup->show();
+General_GUI_S.cpp:		LightSourceWidgets.grayEditGroup->hide();
+General_GUI_S.cpp:		LightSourceWidgets.scaleRGB->activate();
+General_GUI_S.cpp:		LightSourceWidgets.rgbEditGroup->hide();
+General_GUI_S.cpp:		LightSourceWidgets.grayEditGroup->show();
+General_GUI_S.cpp:		LightSourceWidgets.scaleRGB->deactivate();
+General_GUI_S.cpp:		   rgbInput[j]->value ( CLAMP01 (LightModel.ambient[j]));
+General_GUI_S.cpp:	LightModelWidgets.grayInput->value (CLAMP01 (sum));
+General_GUI_S.cpp:	((Fl_Valuator *)LightModelWidgets.grayScrollbar)->value (1000*sum);
+General_GUI_S.cpp:	((Fl_Valuator *)LightModelWidgets.rgbScrollbar[0])->
+General_GUI_S.cpp:	((Fl_Valuator *)LightModelWidgets.rgbScrollbar[1])->
+General_GUI_S.cpp:	((Fl_Valuator *)LightModelWidgets.rgbScrollbar[2])->
+General_GUI_S.cpp:	LightModelWidgets.rgbColorGroup->activate();
+General_GUI_S.cpp:	LightModelWidgets.grayColorGroup->activate();
+General_GUI_S.cpp:	LightModelWidgets.rgbEditMode->
+General_GUI_S.cpp:		LightModelWidgets.rgbEditGroup->show();
+General_GUI_S.cpp:		LightModelWidgets.grayEditGroup->hide();
+General_GUI_S.cpp:		LightModelWidgets.scaleRGB->activate();
+General_GUI_S.cpp:		LightModelWidgets.rgbEditGroup->hide();
+General_GUI_S.cpp:		LightModelWidgets.grayEditGroup->show();
+General_GUI_S.cpp:		LightModelWidgets.scaleRGB->deactivate();
+General_GUI_S.cpp:	LightModelWidgets.twoSided->value (LightModel.twoSided);
+General_GUI_S.cpp:	LightModelWidgets.localViewer->value (LightModel.localViewer);
+General_GUI_S.cpp:	LightModelWidgets.colorControl->value(LightModel.colorControlSeparate);
+General_GUI_S.cpp:// ----------------- Separator ------------------------
+General_GUI_S.cpp:        fl_line (x, y+(h/2), x+w-1, y+(h/2));
+General_GUI_S.cpp:        fl_line (x+(w/2), y, x+(w/2), y+h-1);
+General_GUI_S.cpp:	window->end();
+General_GUI_S.cpp:	outerTabs->end();
+General_GUI_S.cpp:	window->add (outerTabs);
+General_GUI_S.cpp:	outerTabs->selection_color ( fl_rgb_color (230, 210, 160) );
+General_GUI_S.cpp:	outerTabs->selection_color ( fl_rgb_color (184, 191, 167) );
+General_GUI_S.cpp:	model ->selection_color (fl_rgb_color (213, 204, 186));
+General_GUI_S.cpp:	model ->selection_color (fl_rgb_color (170, 163, 149));
+General_GUI_S.cpp:	sources->end();
+General_GUI_S.cpp:	// sources->selection_color (fl_rgb_color (0, 0, 128));
+General_GUI_S.cpp:	sources->selection_color (fl_rgb_color (170, 163, 149));
+General_GUI_S.cpp:	global->selection_color (fl_rgb_color (170, 163, 149));
+General_GUI_S.cpp:	files->selection_color (fl_rgb_color (170, 163, 149));
+General_GUI_S.cpp:	outerTabs->add (sources);
+General_GUI_S.cpp:	outerTabs->add (model);
+General_GUI_S.cpp:	outerTabs->add (global);
+General_GUI_S.cpp:	outerTabs->add (files);
+General_GUI_S.cpp:	sources->color (fl_rgb_color (127, 201, 127));
+General_GUI_S.cpp:	model->color (fl_rgb_color (190, 174, 212));
+General_GUI_S.cpp:	global->color (fl_rgb_color (253, 192, 134));
+General_GUI_S.cpp:	files->color (fl_rgb_color (255, 255, 153));
+General_GUI_S.cpp:        MainWindow->show(argc, argv);
+General_GUI_S.h:// ----------------- Separator ------------------------
+General_GUI_S.h:	// void value (float *x, float *y) {positioner->value(x, y);};
+General_GUI_S.h:	void value (float *x, float *y) {*x = positioner->xvalue(); *y = positioner->yvalue();};
+General_GUI_S.h:// throughout hev-lightEditor.
+Binary file General_GUI_S.o matches
+Global_GUI_S.cpp:	globalGroup->end();
+Global_GUI_S.cpp:	globalGroup->add (label);
+Binary file Global_GUI_S.o matches
+GNUmakefile:all: hev-lightEditor
+GNUmakefile:PUBLIC_BINS = hev-lightEditor
+GNUmakefile:# part of the global OSG file search path- you need to add it yourself
+GNUmakefile:            hev-lightEditor.o  \
+GNUmakefile:hev-lightEditor: $(localObjs)
+GNUmakefile:	$(CXX) $(localObjs) $(library) $(LIBS) $(LDFLAGS) $(LOADLIBS) $(LDLIBS) -o $@
+GNUmakefile:#	@dtk-msgNotice -p Makefile creating file $@
+GNUmakefile:#	@iris-convert $< $@
+Binary file hev-lightEditor matches
+hev-lightEditor.cpp:    strcpy (fifoName, "/tmp/hev-lightEditor-fifo-");
+hev-lightEditor.cpp:				"hev-lightEditor: "
+hev-lightEditor.cpp:        return -1;
+hev-lightEditor.cpp:	fprintf (stderr, "Usage:  hev-lightEditor [ options ]\n");
+hev-lightEditor.cpp:	fprintf (stderr, "		-e  echo all communication with sge\n");
+hev-lightEditor.cpp:	fprintf (stderr, "		-h  display help message\n");
+hev-lightEditor.cpp:	"          file:///usr/local/HEV/savg/dgl/doc/hev-lightEditor/hev-lightEditor.html\n");
+hev-lightEditor.cpp:        "        or at the corresponding location in /usr/local/HEV-beta.\n");
+hev-lightEditor.cpp:		if (strcmp (argv[i], "-e") == 0)
+hev-lightEditor.cpp:		else if (strcmp (argv[i], "-h") == 0)
+hev-lightEditor.cpp:				"hev-lightEditor: "
+hev-lightEditor.cpp:			exit (-1);
+hev-lightEditor.d:hev-lightEditor.o hev-lightEditor.d : hev-lightEditor.cpp /usr/include/stdlib.h \
+hev-lightEditor.d: /usr/include/gnu/stubs-64.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/include/stddef.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/include/stdarg.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/string \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/x86_64-redhat-linux/bits/c++config.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/x86_64-redhat-linux/bits/os_defines.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/x86_64-redhat-linux/bits/cpu_defines.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/stringfwd.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/char_traits.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/stl_algobase.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/cstddef \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/functexcept.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/exception_defines.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/cpp_type_traits.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/ext/type_traits.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/ext/numeric_traits.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/stl_pair.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/move.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/concept_check.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/stl_iterator_base_types.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/stl_iterator_base_funcs.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/stl_iterator.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/debug/debug.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/postypes.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/cwchar \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/allocator.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/x86_64-redhat-linux/bits/c++allocator.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/ext/new_allocator.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/new \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/exception \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/localefwd.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/x86_64-redhat-linux/bits/c++locale.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/clocale \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/iosfwd \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/cctype \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/ostream_insert.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/cxxabi-forced.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/stl_function.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/backward/binders.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/basic_string.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/ext/atomicity.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/x86_64-redhat-linux/bits/gthr.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/x86_64-redhat-linux/bits/gthr-default.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/x86_64-redhat-linux/bits/atomic_word.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/initializer_list \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/basic_string.tcc \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/vector \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/stl_construct.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/stl_uninitialized.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/stl_vector.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/stl_bvector.h \
+hev-lightEditor.d: /usr/lib/gcc/x86_64-redhat-linux/4.4.6/../../../../include/c++/4.4.6/bits/vector.tcc \
+Binary file hev-lightEditor.o matches
+InitLights.cpp:	// These are the defaults from savgfly (dosg-fly?)
+InitLights.cpp:	ls->infDirection[0] =  0;
+InitLights.cpp:	ls->infDirection[1] = -1;
+InitLights.cpp:	ls->infDirection[2] =  0;
+InitLights.cpp:	ls->localLocation[0] =  0;
+InitLights.cpp:	ls->localLocation[1] = -1;
+InitLights.cpp:	ls->localLocation[2] =  0;
+InitLights.cpp:	ls->spotDirection[0] =  0;
+InitLights.cpp:	ls->spotDirection[1] =  1;
+InitLights.cpp:	ls->spotDirection[2] =  0;
+InitLights.cpp:	ls->spotLookAtPt[0] = 0;
+InitLights.cpp:	ls->spotLookAtPt[1] = 0;
+InitLights.cpp:	ls->spotLookAtPt[2] = 0;
+InitLights.cpp:	ls->spotDirectionType = SPOT_DIR_HP;
+InitLights.cpp:	ls->atten[0] = 1;
+InitLights.cpp:	ls->atten[1] = 0;
+InitLights.cpp:	ls->atten[2] = 0;
+InitLights.cpp:	ls->spotExponent = 0;
+InitLights.cpp:	ls->spotCutoff = 20.0;
+InitLights.cpp:	// ls->color[3][4];  // first index: 0 ambient, 1 diffuse, 2 spec
+InitLights.cpp:	ls->color[0][0] = 0.0;
+InitLights.cpp:	ls->color[0][1] = 0.0;
+InitLights.cpp:	ls->color[0][2] = 0.0;
+InitLights.cpp:	ls->color[0][3] = 1.0;
+InitLights.cpp:	ls->color[1][0] = 1.0;
+InitLights.cpp:	ls->color[1][1] = 1.0;
+InitLights.cpp:	ls->color[1][2] = 1.0;
+InitLights.cpp:	ls->color[1][3] = 1.0;
+InitLights.cpp:	ls->color[2][0] = 1.0;
+InitLights.cpp:	ls->color[2][1] = 1.0;
+InitLights.cpp:	ls->color[2][2] = 1.0;
+InitLights.cpp:	ls->color[2][3] = 1.0;
+InitLights.cpp:	sprintf (ls->name, "_HEV_LE_%1d_", lightNum);
+InitLights.cpp:	ls->glLightNum = lightNum;
+InitLights.cpp:	ls->type = INFINITE;
+InitLights.cpp:	ls->referenceFrameIsRelative = 1; // 1 relative, 0 absolute
+InitLights.cpp:	ls->on = 0;
+InitLights.cpp:	ls->showGlyph = 0;
+InitLights.cpp:	ls->inRgbMode= 0;
+InitLights.cpp:	ls->lightType = 0;  // 0 infinite, 1 local omni, 2 local spot
+InitLights.cpp:	ls->node = 0;  
+InitLights.cpp:	// ls->node = 7;  
+InitLights.cpp:	ls->currEditColor = 1;  // 0 ambient, 1 diffuse, 2 spec
+InitLights.cpp:	ls->linkAmbDiffSpec = 0;  
+InitLights.cpp:	ls->spotDirectionType = SPOT_DIR_HP;
+InitLights.cpp:	ls->spotLookAtPt[0] = 0;
+InitLights.cpp:	ls->spotLookAtPt[1] = 0;
+InitLights.cpp:	ls->spotLookAtPt[2] = 0;
+InitLights.cpp:// light model data within hev-lightEditor.
+InitLights.cpp:Implementation of query inside of hev-lightEditor
+InitLights.cpp:// verify that we have two-way communication between this program
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:	fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:	return -2;
+InitLights.cpp:		"hev-lightEditor : Ignoring message \"%s\".\n", msg);
+InitLights.cpp:		"B hev-lightEditor : Ignoring parts of message \"%s\".\n", msg);
+InitLights.cpp:	fprintf (stderr, "hev-lightEditor : Ignoring message \"");
+InitLights.cpp:	fprintf (stderr, "A hev-lightEditor : Ignoring parts of message \"");
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor : "
+InitLights.cpp:			fprintf (stderr, "hev-lightEditor : "
+InitLights.cpp:			if (in[0] == in[len-1])
+InitLights.cpp:				in[len-1] = 0;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:	strcpy (ls->name, vec[3].c_str());
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:	strcpy (ls->name, lsName);
+InitLights.cpp:					sgeRecvShmName, ls->name);
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:	    		( ! iris::IsSubstring(ls->name, vec[2]) ) ||
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		ls->node = 1;
+InitLights.cpp:		ls->node = 2;
+InitLights.cpp:		ls->node = 3;
+InitLights.cpp:		ls->node = 4;
+InitLights.cpp:		ls->node = 5;
+InitLights.cpp:		ls->node = 6;
+InitLights.cpp:		ls->node = 7;
+InitLights.cpp:		ls->node = 0;
+InitLights.cpp:		ls->node = 0;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:	sprintf (msgSend, "QUERY %s LIGHT %s ALL", sgeRecvShmName, ls->name);
+InitLights.cpp:			fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:			return -1;
+InitLights.cpp:		    		( ! iris::IsSubstring(ls->name, vec[1]) ) )
+InitLights.cpp:			return -1;
+InitLights.cpp:				fprintf (stderr, "hev-lightEditor : "
+InitLights.cpp:				fprintf (stderr, "hev-lightEditor : "
+InitLights.cpp:			fprintf (stderr, "hev-lightEditor : ",
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor : ",
+InitLights.cpp:			"Did not receive all data for light %s.\n", ls->name);
+InitLights.cpp:	ls->on = on;
+InitLights.cpp:			ls->color[i][j] = color[i][j];
+InitLights.cpp:		ls->atten[i] = attenuation[i];
+InitLights.cpp:		ls->spotDirection[i] = direction[i];
+InitLights.cpp:	ls->referenceFrameIsRelative = ref_frame;
+InitLights.cpp:	ls->spotExponent = spotExpAng[0];
+InitLights.cpp:                ls->type = INFINITE;
+InitLights.cpp:                ls->infDirection[0] = position[0];
+InitLights.cpp:                ls->infDirection[1] = position[1];
+InitLights.cpp:                ls->infDirection[2] = position[2];
+InitLights.cpp:ls->infDirection[0],
+InitLights.cpp:ls->infDirection[1],
+InitLights.cpp:ls->infDirection[2]);
+InitLights.cpp:                ls->localLocation[0] = position[0];
+InitLights.cpp:                ls->localLocation[1] = position[1];
+InitLights.cpp:                ls->localLocation[2] = position[2];
+InitLights.cpp:                ls->spotCutoff = 
+InitLights.cpp:                ls->localLocation[0] = position[0] / position[3];
+InitLights.cpp:                ls->localLocation[1] = position[1] / position[3];
+InitLights.cpp:                ls->localLocation[2] = position[2] / position[3];
+InitLights.cpp:                        ls->type = OMNI;
+InitLights.cpp:                        ls->spotCutoff = 20.0;
+InitLights.cpp:                        ls->infDirection[0] = ls->localLocation[0];
+InitLights.cpp:                        ls->infDirection[1] = ls->localLocation[1];
+InitLights.cpp:                        ls->infDirection[2] = ls->localLocation[2];
+InitLights.cpp:                        ls->type = SPOT;
+InitLights.cpp:                        ls->spotCutoff = spotExpAng[1];
+InitLights.cpp:                        ls->infDirection[0] = - ls->spotDirection[0];
+InitLights.cpp:                        ls->infDirection[1] = - ls->spotDirection[1];
+InitLights.cpp:                        ls->infDirection[2] = - ls->spotDirection[2];
+InitLights.cpp:	if (ls->spotCutoff > 90.0)
+InitLights.cpp:		ls->spotCutoff = 90.0;
+InitLights.cpp:	ls->spotLookAtPt[0] = ls->spotDirection[0]+ls->localLocation[0];
+InitLights.cpp:	ls->spotLookAtPt[1] = ls->spotDirection[1]+ls->localLocation[1];
+InitLights.cpp:	ls->spotLookAtPt[2] = ls->spotDirection[2]+ls->localLocation[2];
+InitLights.cpp:ls->infDirection[0],
+InitLights.cpp:ls->infDirection[1],
+InitLights.cpp:ls->infDirection[2]);
+InitLights.cpp:// then set ls->node
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:			fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:			return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:	   		   	"Did not receive light model two-sided "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:   		   "Expected light model two-sided message from sge, "
+InitLights.cpp:		return -1;
+InitLights.cpp:		fprintf (stderr, "hev-lightEditor: "
+InitLights.cpp:   		   "Error in light model two-sided message "
+InitLights.h://  Verify that we have two-way communication with sge dso.
+InitLights.h://  Returns 0 for success, non-zero for failure.
+Binary file InitLights.o matches
+Light_7.osg:    position 0.92321 -0.384295 0 0
+LightModel_GUI_S.cpp:#define ALL_COLOR_COMPONENTS (-1)
+LightModel_GUI_S.cpp:                LightModelWidgets.rgbInput[0]->value(clampedVal);
+LightModel_GUI_S.cpp:                LightModelWidgets.rgbInput[1]->value(clampedVal);
+LightModel_GUI_S.cpp:                LightModelWidgets.rgbInput[2]->value(clampedVal);
+LightModel_GUI_S.cpp:                LightModelWidgets.grayInput->value(clampedVal);
+LightModel_GUI_S.cpp:                LightModelWidgets.rgbInput[whichComponent]->value(clampedVal);
+LightModel_GUI_S.cpp:	LightModel.localViewer = LightModelWidgets.localViewer->value (); 
+LightModel_GUI_S.cpp:	LightModel.twoSided = LightModelWidgets.twoSided->value (); 
+LightModel_GUI_S.cpp:		LightModelWidgets.colorControl->value (); 
+LightModel_GUI_S.cpp:	int inRgbMode = ((Fl_Light_Button *)w)->value();
+LightModel_GUI_S.cpp:		    // if factor is non-neg then use it as a factor
+LightModel_GUI_S.cpp:		    LightModelWidgets.rgbInput[j]->
+LightModel_GUI_S.cpp:		LightModelWidgets.grayInput->value(CLAMP01(sum/3.0));
+LightModel_GUI_S.cpp:	val = fltIn->value();
+LightModel_GUI_S.cpp:		// printf ("sb value = %ld\n", sb->value());
+LightModel_GUI_S.cpp:		if ( (sb->value() / 1000.0) != val)
+LightModel_GUI_S.cpp:			((Fl_Valuator *)sb)->value (1000*val);
+LightModel_GUI_S.cpp:	double val = (((Fl_Scrollbar *)w)->value ())/1000.0;
+LightModel_GUI_S.cpp:	//printf ("scrollbarCB : %d   %d\n", id, ((Fl_Scrollbar *)w)->value ());
+LightModel_GUI_S.cpp:	// printf ("scaleLMRGBCB: value = %f\n", ((Fl_Roller *)w)->value());
+LightModel_GUI_S.cpp:		((Fl_Roller *)w)->value(1.0);
+LightModel_GUI_S.cpp:	val = ((Fl_Roller *)w)->value();
+LightModel_GUI_S.cpp:	factor = 1.0 - (10*(1.0 - ratio));
+LightModel_GUI_S.cpp:	((Fl_Valuator *)LightModelWidgets.grayScrollbar)->value (1000*sum);
+LightModel_GUI_S.cpp:	((Fl_Valuator *)LightModelWidgets.rgbScrollbar[0])->
+LightModel_GUI_S.cpp:	((Fl_Valuator *)LightModelWidgets.rgbScrollbar[1])->
+LightModel_GUI_S.cpp:	((Fl_Valuator *)LightModelWidgets.rgbScrollbar[2])->
+LightModel_GUI_S.cpp:	rtnGroup->end();
+LightModel_GUI_S.cpp:	resetButton->callback (lightModelResetCB);
+LightModel_GUI_S.cpp:	rtnGroup->add (resetButton);
+LightModel_GUI_S.cpp:	colorEditModeButton->callback (lscolorModeCB);
+LightModel_GUI_S.cpp:	Fl_Roller *scaleRGB = new Fl_Roller (currX, currY, 390-(x+10), 20, 
+LightModel_GUI_S.cpp:	scaleRGB->type (FL_HORIZONTAL);
+LightModel_GUI_S.cpp:	scaleRGB->range (0.0, 2.0);
+LightModel_GUI_S.cpp:	scaleRGB->callback (scaleLMRGBCB);
+LightModel_GUI_S.cpp:	scaleRGB->step (0.0001);
+LightModel_GUI_S.cpp:	// scaleRGB->range (2.0, 0.0);
+LightModel_GUI_S.cpp:	scaleRGB->value (1.0);
+LightModel_GUI_S.cpp:	scaleRGB->when (FL_WHEN_RELEASE_ALWAYS | FL_WHEN_CHANGED);
+LightModel_GUI_S.cpp:	rtnGroup->add (LightModelWidgets.rgbEditMode);
+LightModel_GUI_S.cpp:	rtnGroup->add (scaleRGB);
+LightModel_GUI_S.cpp:	// rtnGroup->hide ();
+LightModel_GUI_S.cpp:	rtnGroup->end();
+LightModel_GUI_S.cpp:	rtnGroup->hide ();
+LightModel_GUI_S.cpp:	// rtnGroup->add (label);
+LightModel_GUI_S.cpp:        rtnGroup->add (label);
+LightModel_GUI_S.cpp:	rtnGroup->add (ambBox);
+LightModel_GUI_S.cpp:        Fl_Group *ambGroup = new Fl_Group (subGrpX+2, subGrpY-3, 182, height+6);
+LightModel_GUI_S.cpp:        ambGroup->end();
+LightModel_GUI_S.cpp:	ambInput->range (0.0, 1.0);
+LightModel_GUI_S.cpp:	ambInput->step (0.001);
+LightModel_GUI_S.cpp:	ambInput->value (0.0);
+LightModel_GUI_S.cpp:	ambGroup->add (ambInput);
+LightModel_GUI_S.cpp:	rtnGroup->add (ambGroup);
+LightModel_GUI_S.cpp:	// ambButton->callback (colorButtonCB, 0);
+LightModel_GUI_S.cpp:	LightModelWidgets.grayInput->callback (floatInputCB, 003);
+LightModel_GUI_S.cpp:	// height = 390-subGrpY;
+LightModel_GUI_S.cpp:	height = (y+h-10)-subGrpY;
+LightModel_GUI_S.cpp:	grayScrollbar->callback (scrollbarCB, 3);
+LightModel_GUI_S.cpp:        grayScrollbar->bounds (1000.0, 0.0);
+LightModel_GUI_S.cpp:        grayScrollbar->step(10.0);
+LightModel_GUI_S.cpp:        grayScrollbar->linesize (1);
+LightModel_GUI_S.cpp:	rtnGroup->add (grayScrollbar);
+LightModel_GUI_S.cpp:                new Fl_Box (subGrpX+95, subGrpY+height-43, 30, 40, "0.0");
+LightModel_GUI_S.cpp:        rtnGroup->add (zeroLabel);
+LightModel_GUI_S.cpp:        rtnGroup->add (oneLabel);
+LightModel_GUI_S.cpp:	rtnGroup->end();
+LightModel_GUI_S.cpp:	int buttonWidth = (w-3*spacing)/3;
+LightModel_GUI_S.cpp:	LightModelWidgets.twoSided->callback (twoSidedCB);
+LightModel_GUI_S.cpp:	LightModelWidgets.twoSided->
+LightModel_GUI_S.cpp:	LightModelWidgets.localViewer->callback (localViewerCB);
+LightModel_GUI_S.cpp:	LightModelWidgets.localViewer->
+LightModel_GUI_S.cpp:	LightModelWidgets.colorControl->callback (colorControlCB);
+LightModel_GUI_S.cpp:	LightModelWidgets.colorControl->
+LightModel_GUI_S.cpp:	rtnGroup->add (LightModelWidgets.localViewer);
+LightModel_GUI_S.cpp:	rtnGroup->add (LightModelWidgets.twoSided);
+LightModel_GUI_S.cpp:	rtnGroup->add (LightModelWidgets.colorControl);
+LightModel_GUI_S.cpp:	rtnGroup->end();
+LightModel_GUI_S.cpp:	rtnGroup->add (rLabel);
+LightModel_GUI_S.cpp:	rtnGroup->add (gLabel);
+LightModel_GUI_S.cpp:	rtnGroup->add (bLabel);
+LightModel_GUI_S.cpp:		new Fl_Group (subGrpX+2, subGrpY-3, 230-2, height+6);
+LightModel_GUI_S.cpp:	ambGroup->end();
+LightModel_GUI_S.cpp:	rtnGroup->add (ambBox);
+LightModel_GUI_S.cpp:	// ambButton->callback (colorButtonCB, 0);
+LightModel_GUI_S.cpp:	ambR->range (0.0, 1.0);
+LightModel_GUI_S.cpp:	ambR->step (0.001);
+LightModel_GUI_S.cpp:	ambR->value (0.0);
+LightModel_GUI_S.cpp:	ambGroup->add (ambR);
+LightModel_GUI_S.cpp:	ambG->range (0.0, 1.0);
+LightModel_GUI_S.cpp:	ambG->step (0.001);
+LightModel_GUI_S.cpp:	ambG->value (0.1);
+LightModel_GUI_S.cpp:	ambGroup->add (ambG);
+LightModel_GUI_S.cpp:	ambB->range (0.0, 1.0);
+LightModel_GUI_S.cpp:	ambB->step (0.001);
+LightModel_GUI_S.cpp:	ambB->value (0.2);
+LightModel_GUI_S.cpp:	ambGroup->add (ambB);
+LightModel_GUI_S.cpp:	rtnGroup->add (ambGroup);
+LightModel_GUI_S.cpp:		LightModelWidgets.rgbInput[j]->
+LightModel_GUI_S.cpp:	// height = 390-subGrpY;
+LightModel_GUI_S.cpp:	height = (y+h-10)-subGrpY;
+LightModel_GUI_S.cpp:	sliderGroup->end();
+LightModel_GUI_S.cpp:	rtnGroup->add (sliderGroup);
+LightModel_GUI_S.cpp:	rScrollbar->bounds (1000.0, 0.0);
+LightModel_GUI_S.cpp:	rScrollbar->step(10.0);
+LightModel_GUI_S.cpp:	rScrollbar->linesize (1);
+LightModel_GUI_S.cpp:	gScrollbar->bounds (1000.0, 0.0);
+LightModel_GUI_S.cpp:	gScrollbar->step(10.0);
+LightModel_GUI_S.cpp:	gScrollbar->linesize (1);
+LightModel_GUI_S.cpp:	bScrollbar->bounds (1000.0, 0.0);
+LightModel_GUI_S.cpp:	bScrollbar->step(10.0);
+LightModel_GUI_S.cpp:	bScrollbar->linesize (1);
+LightModel_GUI_S.cpp:	rScrollbar->callback (scrollbarCB, 0);
+LightModel_GUI_S.cpp:	gScrollbar->callback (scrollbarCB, 1);
+LightModel_GUI_S.cpp:	bScrollbar->callback (scrollbarCB, 2);
+LightModel_GUI_S.cpp:	rScrollbar->when (FL_WHEN_CHANGED);
+LightModel_GUI_S.cpp:	gScrollbar->when (FL_WHEN_CHANGED);
+LightModel_GUI_S.cpp:	bScrollbar->when (FL_WHEN_CHANGED);
+LightModel_GUI_S.cpp:	sliderGroup->add (rScrollbar);
+LightModel_GUI_S.cpp:	sliderGroup->add (gScrollbar);
+LightModel_GUI_S.cpp:	sliderGroup->add (bScrollbar);
+LightModel_GUI_S.cpp:		new Fl_Box (subGrpX+60, subGrpY+height-43, 30, 40, "0.0");
+LightModel_GUI_S.cpp:	sliderGroup->add (zeroLabel);
+LightModel_GUI_S.cpp:	sliderGroup->add (oneLabel);
+LightModel_GUI_S.cpp:	rtnGroup->end();
+LightModel_GUI_S.cpp:	// rtnGroup->box (FL_SHADOW_BOX);
+LightModel_GUI_S.cpp:	label->labelfont (FL_HELVETICA_ITALIC);
+LightModel_GUI_S.cpp:	label->labelsize (18);
+LightModel_GUI_S.cpp:	label->align (FL_ALIGN_INSIDE | FL_ALIGN_LEFT);
+LightModel_GUI_S.cpp:	rtnGroup->add (label);
+LightModel_GUI_S.cpp:		buildOtherLMColorEditGroup (231, currY, 170, h-145);
+LightModel_GUI_S.cpp:	rtnGroup->add (otherBox);
+LightModel_GUI_S.cpp:	Fl_Group *rgbBox = buildRgbEditGroup (x, currY, 230, h-145);
+LightModel_GUI_S.cpp:	rtnGroup->add (rgbBox);
+LightModel_GUI_S.cpp:	Fl_Group *grayBox = buildGrayEditGroup (x, currY, 230, h-145);
+LightModel_GUI_S.cpp:	rtnGroup->add (grayBox);
+LightModel_GUI_S.cpp:	grayBox->hide ();
+LightModel_GUI_S.cpp:	currY += h - 145;
+LightModel_GUI_S.cpp:	Fl_Group *paramsGrp = buildLMParamsGroup (x, currY, w, y+h-currY);
+LightModel_GUI_S.cpp:	rtnGroup->add (paramsGrp);
+LightModel_GUI_S.cpp:	modelGroup->end();
+LightModel_GUI_S.cpp:	modelGroup->add (label);
+LightModel_GUI_S.cpp:	modelGroup->add (colorGroup);
+Binary file LightModel_GUI_S.o matches
+LightSource_GUI_S.cpp:	// printf ("lsOnOffCB %d\n", ((Fl_Light_Button *)w)->value());
+LightSource_GUI_S.cpp:	LightSource[CurrentLightNum].on = ((Fl_Light_Button *)w)->value();
+LightSource_GUI_S.cpp:			PositionEditGroup->hide();
+LightSource_GUI_S.cpp:			ColorEditGroup->show();
+LightSource_GUI_S.cpp:			LightSourceWidgets.positionMode->box(FL_NO_BOX);
+LightSource_GUI_S.cpp:			LightSourceWidgets.colorMode->box(FL_SHADOW_BOX);
+LightSource_GUI_S.cpp:			PositionEditGroup->show();
+LightSource_GUI_S.cpp:			ColorEditGroup->hide();
+LightSource_GUI_S.cpp:			LightSourceWidgets.positionMode->box(FL_SHADOW_BOX);
+LightSource_GUI_S.cpp:			LightSourceWidgets.colorMode->box(FL_NO_BOX);
+LightSource_GUI_S.cpp:	// lLabel->labelfont (FL_HELVETICA_BOLD_ITALIC);
+LightSource_GUI_S.cpp:	lLabel->labelfont (FL_HELVETICA_ITALIC);
+LightSource_GUI_S.cpp:	sources->add (lLabel);
+LightSource_GUI_S.cpp:	lnumMenu->menu (lightList);
+LightSource_GUI_S.cpp:	lnumMenu->textsize (36);
+LightSource_GUI_S.cpp:	lnumMenu->tooltip ("Light ID");
+LightSource_GUI_S.cpp:	sources->add (lnumMenu);
+LightSource_GUI_S.cpp:	sources->add (onOff);
+LightSource_GUI_S.cpp:	onOff->callback (lsOnOffCB);
+LightSource_GUI_S.cpp:	nodeMenu->menu (nodeList);
+LightSource_GUI_S.cpp:	nodeMenu->tooltip ("Load the light under this node.");
+LightSource_GUI_S.cpp:	sources->add (nodeMenu);
+LightSource_GUI_S.cpp:	showGlyph->deactivate();
+LightSource_GUI_S.cpp:	sources->add (showGlyph);
+LightSource_GUI_S.cpp:	sources->add (sep1);
+LightSource_GUI_S.cpp:	sources->add (sep2);
+LightSource_GUI_S.cpp:	modeLabel->align (FL_ALIGN_INSIDE | FL_ALIGN_LEFT);
+LightSource_GUI_S.cpp:	modeLabel->labelfont (FL_HELVETICA_ITALIC);
+LightSource_GUI_S.cpp:	colorMode->type (FL_RADIO_BUTTON);
+LightSource_GUI_S.cpp:	colorMode->set ();
+LightSource_GUI_S.cpp:	colorMode->callback (editModeCB, 1);
+LightSource_GUI_S.cpp:	positionMode->type (FL_RADIO_BUTTON);
+LightSource_GUI_S.cpp:	positionMode->callback (editModeCB, 2);
+LightSource_GUI_S.cpp:	modeGroup->end();
+LightSource_GUI_S.cpp:	sources->add (modeGroup);
+LightSource_GUI_S.cpp:	LightSourceWidgets.colorMode->box(FL_SHADOW_BOX);
+LightSource_GUI_S.cpp:	LightSourceWidgets.positionMode->box(FL_NO_BOX);
+LightSource_GUI_S.cpp:	PositionEditGroup->hide();
+LightSource_GUI_S.cpp:	sources->add (ColorEditGroup);
+LightSource_GUI_S.cpp:	sources->add (PositionEditGroup);
+Binary file LightSource_GUI_S.o matches
+old.GNUmakefile:all: hev-lightEditor
+old.GNUmakefile:			hev-lightEditor.o  \
+old.GNUmakefile:       # -include does not generate an error message if
+old.GNUmakefile:       -include $(localDependencyFiles)
+old.GNUmakefile:CLEAN_FILES = hev-lightEditor $(localObjs) $(localDependencyFiles)
+old.GNUmakefile:CPPFLAGS = -g
+old.GNUmakefile:LDFLAGS = -g
+old.GNUmakefile:LIBS := $(LIBS) `fltk-config --ldflags`
+old.GNUmakefile:hev-lightEditor : $(localObjs) 
+old.GNUmakefile:	@dtk-msgNotice -p Makefile linking to create executable $@
+old.GNUmakefile:	$(CXX) $(localObjs) $(library) $(LIBS) $(LDFLAGS) $(LOADLIBS) $(LDLIBS) -o $@
+old.GNUmakefile:	@echo "     make check  - check permissions and group"
+old.GNUmakefile:	@echo "     make perms  - set correct permissions and group"
+old.GNUmakefile:# We do it this way rather than just re-defining the install rule
+old.GNUmakefile:localInstall : hev-lightEditor 
+old.GNUmakefile:	cp --remove-destination -p hev-lightEditor $(HEV_SAVG_DGL_DIR)/bin
+old.GNUmakefile:	cp --remove-destination -p man/hev-lightEditor.1 $(HEV_SAVG_DGL_DIR)/man/man1
+old.GNUmakefile:	cp --recursive --remove-destination -p doc $(HEV_SAVG_DGL_DIR)/doc/hev-lightEditor
+old.GNUmakefile:	chgrp -R diverse *
+old.GNUmakefile:	chmod -R ug+w,a+r,o-w *
+old.GNUmakefile:	hev-checkPerm
+old.GNUmakefile:	hev-checkGroup
+old.GNUmakefile:# the .d files are always updated one make-cycle late.
+old.GNUmakefile:# All include and -include commands are done before any rule is 
+old.GNUmakefile:# from my directories to HEV-beta.
+old.GNUmakefile:#   cd /usr/local/HEV-beta/savg/dgl/src/hev-lightEditor
+old.GNUmakefile:#   HEV-beta
+old.GNUmakefile:#   \cp -r -f --preserve=timestamps ~/HEV/savg/dgl/src/hev-lightEditor/* .
+old.GNUmakefile:#         note: you might have to use --remove-destination in the cp command
+old.GNUmakefile:#               rather than -f
+old.GNUmakefile:#   chgrp -R diverse * ; chmod -R ug+w,a+r,o-w *
+Position_GUI_S.cpp:	light type (infinite, omni-directional, spotlight), the
+Position_GUI_S.cpp:	LightSourceWidgets.inf.group->hide();
+Position_GUI_S.cpp:	LightSourceWidgets.local.group->hide();
+Position_GUI_S.cpp:	LightSourceWidgets.spot.group->hide();
+Position_GUI_S.cpp:			LightSourceWidgets.inf.group->show ();
+Position_GUI_S.cpp:			LightSourceWidgets.local.group->show ();
+Position_GUI_S.cpp:			LightSourceWidgets.spot.group->show ();
+Position_GUI_S.cpp:	if (ls->type == INFINITE)
+Position_GUI_S.cpp:		    ls->spotDirection[i] = -ls->infDirection [i];
+Position_GUI_S.cpp:					ls->infDirection, ls->localLocation) )
+Position_GUI_S.cpp:		        ls->localLocation[i] = ls->infDirection [i]  ;
+Position_GUI_S.cpp:		if (ls->type == SPOT)
+Position_GUI_S.cpp:				ls->infDirection[i] = -ls->spotDirection [i];
+Position_GUI_S.cpp:		else if (ls->type == OMNI)
+Position_GUI_S.cpp:				ls->infDirection [i]  = ls->localLocation[i];
+Position_GUI_S.cpp:			normalize3 (ls->infDirection);
+Position_GUI_S.cpp:			LightSourceWidgets.inf.hpDirGrp->hide ();
+Position_GUI_S.cpp:			LightSourceWidgets.inf.xyzDirGrp->show ();
+Position_GUI_S.cpp:			LightSourceWidgets.inf.xyzDirGrp->hide();
+Position_GUI_S.cpp:			LightSourceWidgets.inf.hpDirGrp->show ();
+Position_GUI_S.cpp:	LightSourceWidgets.spot.xyzDirGrp->hide();
+Position_GUI_S.cpp:	LightSourceWidgets.spot.hpDirGrp->hide();
+Position_GUI_S.cpp:	LightSourceWidgets.spot.lookAtDirGrp->hide();
+Position_GUI_S.cpp:			LightSourceWidgets.spot.xyzDirGrp->show ();
+Position_GUI_S.cpp:			LightSourceWidgets.spot.hpDirGrp->show ();
+Position_GUI_S.cpp:			LightSourceWidgets.spot.lookAtDirGrp->show ();
+Position_GUI_S.cpp:	win->getRelPos (relPos);
+Position_GUI_S.cpp:	win->position (MainWindow->x()+relPos[0], MainWindow->y()+relPos[1]);
+Position_GUI_S.cpp:	// win->set_non_modal();
+Position_GUI_S.cpp:	win->set_modal();
+Position_GUI_S.cpp:	win->show();
+Position_GUI_S.cpp:	Fl_Adjuster *adj = LightSourceWidgets.spot.xyzPosWin->adjuster(id);
+Position_GUI_S.cpp:	double val = LightSourceWidgets.spot.xyzPosAdj[id]->value() ;
+Position_GUI_S.cpp:	LightSourceWidgets.spot.xyzPosFI[id]->value (val);
+Position_GUI_S.cpp:		ls->spotDirection[0] = ls->spotLookAtPt[0]-ls->localLocation[0];
+Position_GUI_S.cpp:		ls->spotDirection[1] = ls->spotLookAtPt[1]-ls->localLocation[1];
+Position_GUI_S.cpp:		ls->spotDirection[2] = ls->spotLookAtPt[2]-ls->localLocation[2];
+Position_GUI_S.cpp:	val = LightSourceWidgets.spot.xyzPosFI[id]->value();
+Position_GUI_S.cpp:	LightSourceWidgets.spot.xyzPosAdj[id]->value(val);
+Position_GUI_S.cpp:		ls->spotDirection[0] = ls->spotLookAtPt[0]-ls->localLocation[0];
+Position_GUI_S.cpp:		ls->spotDirection[1] = ls->spotLookAtPt[1]-ls->localLocation[1];
+Position_GUI_S.cpp:		ls->spotDirection[2] = ls->spotLookAtPt[2]-ls->localLocation[2];
+Position_GUI_S.cpp:	Fl_Adjuster *adj = LightSourceWidgets.local.xyzPosWin->adjuster(id);
+Position_GUI_S.cpp:	double val = LightSourceWidgets.local.xyzPosAdj[id]->value() ;
+Position_GUI_S.cpp:	LightSourceWidgets.local.xyzPosFI[id]->value (val);
+Position_GUI_S.cpp:	val = LightSourceWidgets.local.xyzPosFI[id]->value();
+Position_GUI_S.cpp:	LightSourceWidgets.local.xyzPosAdj[id]->value(val);
+Position_GUI_S.cpp:	Fl_Adjuster *adj = LightSourceWidgets.spot.lookAtDirWin->adjuster(id);
+Position_GUI_S.cpp:	double val = LightSourceWidgets.spot.lookAtDirAdj[id]->value() ;
+Position_GUI_S.cpp:	LightSourceWidgets.spot.lookAtDirFI[id]->value (val);;
+Position_GUI_S.cpp:		LightSource[CurrentLightNum].spotLookAtPt[id] - 
+Position_GUI_S.cpp:			LightSourceWidgets.spot.lookAtDirFI[0]->value (),
+Position_GUI_S.cpp:			LightSourceWidgets.spot.lookAtDirFI[1]->value (),
+Position_GUI_S.cpp:			LightSourceWidgets.spot.lookAtDirFI[2]->value ());
+Position_GUI_S.cpp:	val = LightSourceWidgets.spot.lookAtDirFI[id]->value();
+Position_GUI_S.cpp:	LightSourceWidgets.spot.lookAtDirAdj[id]->value(val);
+Position_GUI_S.cpp:		LightSource[CurrentLightNum].spotLookAtPt[id] - 
+Position_GUI_S.cpp:			LightSourceWidgets.spot.lookAtDirFI[0]->value (),
+Position_GUI_S.cpp:			LightSourceWidgets.spot.lookAtDirFI[1]->value (),
+Position_GUI_S.cpp:			LightSourceWidgets.spot.lookAtDirFI[2]->value ());
+Position_GUI_S.cpp:	Fl_Adjuster *adj = LightSourceWidgets.spot.xyzDirWin->adjuster(id);
+Position_GUI_S.cpp:	double val = LightSourceWidgets.spot.xyzDirAdj[id]->value() ;
+Position_GUI_S.cpp:	LightSourceWidgets.spot.xyzDirFI[id]->value (val);;
+Position_GUI_S.cpp:	val = LightSourceWidgets.spot.xyzDirFI[id]->value();
+Position_GUI_S.cpp:	LightSourceWidgets.spot.xyzDirAdj[id]->value(val);
+Position_GUI_S.cpp:	Fl_Adjuster *adj = LightSourceWidgets.inf.xyzDirWin->adjuster(id);
+Position_GUI_S.cpp:	double val = LightSourceWidgets.inf.xyzDirAdj[id]->value() ;
+Position_GUI_S.cpp:	LightSourceWidgets.inf.xyzDirFI[id]->value (val);;
+Position_GUI_S.cpp:	val = LightSourceWidgets.inf.xyzDirFI[id]->value();
+Position_GUI_S.cpp:	LightSourceWidgets.inf.xyzDirAdj[id]->value(val);
+Position_GUI_S.cpp:	hp[0] = LightSourceWidgets.spot.hpDirFI[0]->value();
+Position_GUI_S.cpp:	hp[1] = LightSourceWidgets.spot.hpDirFI[1]->value();
+Position_GUI_S.cpp:		LightSourceWidgets.spot.hpDirPos->xvalue(hp[id]);
+Position_GUI_S.cpp:		LightSourceWidgets.spot.hpDirPos->yvalue(hp[id]);
+Position_GUI_S.cpp:	hp[0] = 90 - hp[0];
+Position_GUI_S.cpp:	hp[0] = LightSourceWidgets.spot.hpDirPos->xvalue ();
+Position_GUI_S.cpp:	hp[1] = LightSourceWidgets.spot.hpDirPos->yvalue ();
+Position_GUI_S.cpp:	LightSourceWidgets.spot.hpDirFI[0]->value (hp[0]);
+Position_GUI_S.cpp:	LightSourceWidgets.spot.hpDirFI[1]->value (hp[1]);
+Position_GUI_S.cpp:	hp[0] = 90 - hp[0];
+Position_GUI_S.cpp:	hp[0] = LightSourceWidgets.inf.hpDirFI[0]->value();
+Position_GUI_S.cpp:	hp[1] = LightSourceWidgets.inf.hpDirFI[1]->value();
+Position_GUI_S.cpp:		LightSourceWidgets.inf.hpDirPos->xvalue(hp[id]);
+Position_GUI_S.cpp:		LightSourceWidgets.inf.hpDirPos->yvalue(hp[id]);
+Position_GUI_S.cpp:	hp[0] -= 90;
+Position_GUI_S.cpp:	hp[0] = LightSourceWidgets.inf.hpDirPos->xvalue ();
+Position_GUI_S.cpp:	hp[1] = LightSourceWidgets.inf.hpDirPos->yvalue ();
+Position_GUI_S.cpp:	LightSourceWidgets.inf.hpDirFI[0]->value (hp[0]);;
+Position_GUI_S.cpp:	LightSourceWidgets.inf.hpDirFI[1]->value (hp[1]);;
+Position_GUI_S.cpp:	hp[0] -= 90;
+Position_GUI_S.cpp:	val = fi->value ();
+Position_GUI_S.cpp:	((Fl_Slider *)sb)->value (val);
+Position_GUI_S.cpp:	double val = sb->value();
+Position_GUI_S.cpp:	fi->value (s);
+Position_GUI_S.cpp:	fi->value (val);
+Position_GUI_S.cpp:	LightSource[CurrentLightNum].atten[id] = ((Fl_Value_Input *)w)->value();
+Position_GUI_S.cpp:	double val = ((Fl_Value_Input *)w)->value();
+Position_GUI_S.cpp:		((Fl_Value_Input *)w)->value(0.0);
+Position_GUI_S.cpp:	fltGrp->end();
+Position_GUI_S.cpp:	int widgetWidth = (w - (n-1)*spacing) / n;
+Position_GUI_S.cpp:		inp->step (step);
+Position_GUI_S.cpp:		inp->range (min, max);
+Position_GUI_S.cpp:		inp->soft (soft);
+Position_GUI_S.cpp:		fltGrp->add (inp);
+Position_GUI_S.cpp:	fltGrp->end();
+Position_GUI_S.cpp:	int widgetWidth = (w - (n-1)*spacing) / n;
+Position_GUI_S.cpp:		fltGrp->add (inp);
+Position_GUI_S.cpp:	grp->end ();
+Position_GUI_S.cpp:	lab->align (FL_ALIGN_RIGHT | FL_ALIGN_INSIDE);
+Position_GUI_S.cpp:	grp->add (lab);
+Position_GUI_S.cpp:	input->step (step);
+Position_GUI_S.cpp:	input->range (min, max);
+Position_GUI_S.cpp:	input->soft (soft);
+Position_GUI_S.cpp:	grp->add (input);
+Position_GUI_S.cpp:	Fl_Scrollbar *sb = new Fl_Scrollbar (x+180, y+5, x+w-200, 20);
+Position_GUI_S.cpp:	sb->range (min, max);
+Position_GUI_S.cpp:	sb->step (step);
+Position_GUI_S.cpp:	sb->type (FL_HORIZONTAL);
+Position_GUI_S.cpp:	grp->add (sb);
+Position_GUI_S.cpp:	Fl_Widget * const *children = grp->array ();
+Position_GUI_S.cpp:	int n = grp->children ();
+Position_GUI_S.cpp:	Fl_Widget * const *children = grp->array ();
+Position_GUI_S.cpp:	int n = grp->children ();
+Position_GUI_S.cpp:	infGroup->end ();
+Position_GUI_S.cpp:	dBut->callback (posButCB, 11);
+Position_GUI_S.cpp:	infGroup->add (dBut); 
+Position_GUI_S.cpp:	LightSourceWidgets.inf.dirMenu->menu (dirList);
+Position_GUI_S.cpp:	infGroup->add (LightSourceWidgets.inf.dirMenu);
+Position_GUI_S.cpp:	LightSourceWidgets.inf.dirMenu->value (DirectionInfType);
+Position_GUI_S.cpp:		buildFltInputGrp (3, currX+180, currY, w+x-(currX+185), 					30, 0.001, -10.0, 10.0, 1);
+Position_GUI_S.cpp:	infGroup->add (LightSourceWidgets.inf.xyzDirGrp);
+Position_GUI_S.cpp:	LightSourceWidgets.inf.xyzDirGrp->hide ();
+Position_GUI_S.cpp:		buildFltInputGrp (2, currX+180, currY, w+x-(currX+185),
+Position_GUI_S.cpp: 					30, 0.01, -180.0, 180.0, 0);
+Position_GUI_S.cpp:	infGroup->add (LightSourceWidgets.inf.hpDirGrp);
+Position_GUI_S.cpp:	LightSourceWidgets.inf.hpDirGrp->show ();
+Position_GUI_S.cpp:		"Light H-P Direction");
+Position_GUI_S.cpp:	localGroup->end ();
+Position_GUI_S.cpp:	pBut->callback (posButCB, 10);
+Position_GUI_S.cpp:	localGroup->add (pBut); 
+Position_GUI_S.cpp:	localGroup->add (pLab2); 
+Position_GUI_S.cpp:	    buildFltInputGrp (3, currX+180, currY, w+x-(currX+185), 
+Position_GUI_S.cpp:					30, 0.001, -10.0, 10.0, 1);
+Position_GUI_S.cpp:	localGroup->add (LightSourceWidgets.local.xyzPosGrp);
+Position_GUI_S.cpp:		local->xyzPosAdj[i] = local->xyzPosWin->adjuster (i);
+Position_GUI_S.cpp:		local->xyzPosFI[i] = getFloatInputChild (local->xyzPosGrp, i);
+Position_GUI_S.cpp:		local->xyzPosAdj[i]->callback (localXyzPosAdjCB, i);
+Position_GUI_S.cpp:		local->xyzPosFI[i]->callback (localXyzPosFICB, i);
+Position_GUI_S.cpp:		inf->xyzDirAdj[i] = inf->xyzDirWin->adjuster (i);
+Position_GUI_S.cpp:		inf->xyzDirFI[i] = getFloatInputChild (inf->xyzDirGrp, i);
+Position_GUI_S.cpp:		inf->xyzDirAdj[i]->callback (infXyzDirAdjCB, i);
+Position_GUI_S.cpp:		inf->xyzDirFI[i]->callback (infXyzDirFICB, i);
+Position_GUI_S.cpp:	inf->hpDirFI[0] = getFloatInputChild (inf->hpDirGrp, 0);
+Position_GUI_S.cpp:	inf->hpDirFI[1] = getFloatInputChild (inf->hpDirGrp, 1);
+Position_GUI_S.cpp:	inf->hpDirFI[1]->range (-90.0, 90.0);
+Position_GUI_S.cpp:	inf->hpDirPos = inf->hpDirWin->getPositioner ();
+Position_GUI_S.cpp:	inf->hpDirFI[0]->callback (infHpDirFICB, 0);
+Position_GUI_S.cpp:	inf->hpDirFI[1]->callback (infHpDirFICB, 1);
+Position_GUI_S.cpp:	inf->hpDirPos->callback (infHpDirPosCB, 0);
+Position_GUI_S.cpp:		spot->xyzPosAdj[i] = spot->xyzPosWin->adjuster (i);
+Position_GUI_S.cpp:		spot->xyzPosFI[i] = getFloatInputChild (spot->xyzPosGrp, i);
+Position_GUI_S.cpp:		spot->xyzPosAdj[i]->callback (spotXyzPosAdjCB, i);
+Position_GUI_S.cpp:		spot->xyzPosFI[i]->callback (spotXyzPosFICB, i);
+Position_GUI_S.cpp:		spot->xyzDirAdj[i] = spot->xyzDirWin->adjuster (i);
+Position_GUI_S.cpp:		spot->xyzDirFI[i] = getFloatInputChild (spot->xyzDirGrp, i);
+Position_GUI_S.cpp:		spot->xyzDirAdj[i]->callback (spotXyzDirAdjCB, i);
+Position_GUI_S.cpp:		spot->xyzDirFI[i]->callback (spotXyzDirFICB, i);
+Position_GUI_S.cpp:		spot->lookAtDirAdj[i] = spot->lookAtDirWin->adjuster (i);
+Position_GUI_S.cpp:		spot->lookAtDirFI[i]=getFloatInputChild (spot->lookAtDirGrp, i);
+Position_GUI_S.cpp:		spot->lookAtDirAdj[i]->callback (lookAtDirAdjCB, i);
+Position_GUI_S.cpp:		spot->lookAtDirFI[i]->callback (lookAtDirFICB, i);
+Position_GUI_S.cpp:	spot->hpDirFI[0] = getFloatInputChild (spot->hpDirGrp, 0);
+Position_GUI_S.cpp:	spot->hpDirFI[1] = getFloatInputChild (spot->hpDirGrp, 1);
+Position_GUI_S.cpp:	spot->hpDirFI[1]->range (-90.0, 90.0);
+Position_GUI_S.cpp:	spot->hpDirPos = spot->hpDirWin->getPositioner ();
+Position_GUI_S.cpp:	spot->hpDirFI[0]->callback (spotHpDirFICB, 0);
+Position_GUI_S.cpp:	spot->hpDirFI[1]->callback (spotHpDirFICB, 1);
+Position_GUI_S.cpp:	spot->hpDirPos->callback (spotHpDirPosCB, 0);
+Position_GUI_S.cpp:	spot->angleFI = getFloatInputChild (spot->angleGrp, 0);
+Position_GUI_S.cpp:	spot->angleSB = getScrollbarChild (spot->angleGrp, 0);
+Position_GUI_S.cpp:	spot->angleFI->callback (angleExpFICB, 0);
+Position_GUI_S.cpp:	spot->angleSB->callback (angleExpSBCB, 0);
+Position_GUI_S.cpp:	spot->expFI = getFloatInputChild (spot->expGrp, 0);
+Position_GUI_S.cpp:	spot->expSB = getScrollbarChild (spot->expGrp, 0);
+Position_GUI_S.cpp:	spot->expFI->callback (angleExpFICB, 1);
+Position_GUI_S.cpp:	spot->expSB->callback (angleExpSBCB, 1);
+Position_GUI_S.cpp:	spotGroup->end ();
+Position_GUI_S.cpp:	pLab->align (FL_ALIGN_RIGHT | FL_ALIGN_INSIDE);
+Position_GUI_S.cpp:	spotGroup->add (pLab); 
+Position_GUI_S.cpp:	pBut->callback (posButCB, 0);
+Position_GUI_S.cpp:	spotGroup->add (pBut); 
+Position_GUI_S.cpp:	spotGroup->add (pLab2); 
+Position_GUI_S.cpp:	    buildFltInputGrp (3, currX+180, currY, w+x-(currX+185), 
+Position_GUI_S.cpp:					30, 0.001, -10.0, 10.0, 1);
+Position_GUI_S.cpp:	spotGroup->add (LightSourceWidgets.spot.xyzPosGrp);
+Position_GUI_S.cpp:	dLab->align (FL_ALIGN_RIGHT | FL_ALIGN_INSIDE);
+Position_GUI_S.cpp:	spotGroup->add (dLab); 
+Position_GUI_S.cpp:	dBut->callback (posButCB, 1);
+Position_GUI_S.cpp:	spotGroup->add (dBut); 
+Position_GUI_S.cpp:	LightSourceWidgets.spot.dirMenu->menu (dirList);
+Position_GUI_S.cpp:	LightSourceWidgets.spot.dirMenu->
+Position_GUI_S.cpp:	spotGroup->add (LightSourceWidgets.spot.dirMenu);
+Position_GUI_S.cpp:		buildFltInputGrp (3, currX+180, currY, w+x-(currX+185), 
+Position_GUI_S.cpp:					30, 0.001, -10.0, 10.0, 1);
+Position_GUI_S.cpp:	spotGroup->add (LightSourceWidgets.spot.xyzDirGrp);
+Position_GUI_S.cpp:	LightSourceWidgets.spot.xyzDirGrp->hide ();
+Position_GUI_S.cpp:		buildFltInputGrp (2, currX+180, currY, w+x-(currX+185), 
+Position_GUI_S.cpp:					30, 0.01, -180.0, 180.0, 0);
+Position_GUI_S.cpp:	spotGroup->add (LightSourceWidgets.spot.hpDirGrp);
+Position_GUI_S.cpp:	LightSourceWidgets.spot.hpDirGrp->show ();
+Position_GUI_S.cpp:		buildFltInputGrp (3, currX+180, currY, w+x-(currX+185), 
+Position_GUI_S.cpp:					30, 0.001, -10.0, 10.0, 1);
+Position_GUI_S.cpp:	spotGroup->add (LightSourceWidgets.spot.lookAtDirGrp);
+Position_GUI_S.cpp:	LightSourceWidgets.spot.lookAtDirGrp->hide ();
+Position_GUI_S.cpp:		"Light H-P Direction");
+Position_GUI_S.cpp:		currX, currY, w+x-currX, 30, 
+Position_GUI_S.cpp:	spotGroup->add (LightSourceWidgets.spot.angleGrp);
+Position_GUI_S.cpp:		currX, currY, w+x-currX, 30, 
+Position_GUI_S.cpp:	spotGroup->add (LightSourceWidgets.spot.expGrp);
+Position_GUI_S.cpp:	attenGrp->end ();
+Position_GUI_S.cpp:	aLab->align (FL_ALIGN_RIGHT | FL_ALIGN_INSIDE);
+Position_GUI_S.cpp:	attenGrp->add (aLab); 
+Position_GUI_S.cpp:	    buildValInputGrp (3, currX+85, currY+30, w+x-(currX+90), 30);
+Position_GUI_S.cpp:	attenGrp->add (LightSourceWidgets.attenInputGrp);
+Position_GUI_S.cpp:		(Fl_Value_Input *) attenInputGrp->child(0);
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[0]->range (0.0, 1.0); 
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[0]->step (0.001); 
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[0]->soft (1); 
+Position_GUI_S.cpp:		(Fl_Value_Input *) attenInputGrp->child(1);
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[1]->range (0.0, 10.0); 
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[1]->step (0.001); 
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[1]->soft (1); 
+Position_GUI_S.cpp:		(Fl_Value_Input *) attenInputGrp->child(2);
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[2]->range (0.0, 10.0); 
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[2]->step (0.001); 
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[2]->soft (1); 
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[0]->callback (attenCB, 0); 
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[1]->callback (attenCB, 1); 
+Position_GUI_S.cpp:	LightSourceWidgets.attenVI[2]->callback (attenCB, 2); 
+Position_GUI_S.cpp:	int nChildren = attenInputGrp->children();
+Position_GUI_S.cpp:		Fl_Widget *w = attenInputGrp->child (i);
+Position_GUI_S.cpp:		  new Fl_Box (w->x(), currY+10, w->w(), w->h(), attenText[i]);
+Position_GUI_S.cpp:		attenGrp->add (lab);
+Position_GUI_S.cpp:	posGroup->end ();
+Position_GUI_S.cpp:	// posGroup->box (FL_BORDER_BOX);
+Position_GUI_S.cpp:        posGroup->box (FL_SHADOW_BOX);
+Position_GUI_S.cpp:			{"Omni-directional", 0,       ltypeCB, (void *)1},
+Position_GUI_S.cpp:	lLabel->labelfont (FL_HELVETICA_ITALIC);
+Position_GUI_S.cpp:	lLabel->align (FL_ALIGN_INSIDE | FL_ALIGN_LEFT);
+Position_GUI_S.cpp:	posGroup->add (lLabel);
+Position_GUI_S.cpp:	ltypeMenu->menu (lightTypeList);
+Position_GUI_S.cpp:	posGroup->add (ltypeMenu);
+Position_GUI_S.cpp:        // resetButton->deactivate();
+Position_GUI_S.cpp:	resetButton->callback (positionResetCB);
+Position_GUI_S.cpp:        posGroup->add (resetButton);
+Position_GUI_S.cpp:		buildInfiniteLightGroup (currX, currY, w+x-currX, 160);
+Position_GUI_S.cpp:	// LightSourceWidgets.inf.group->tooltip ("infGrp");
+Position_GUI_S.cpp:		buildLocalLightGroup (currX, currY, w+x-currX, 160);
+Position_GUI_S.cpp:	// LightSourceWidgets.local.group->tooltip ("localGrp");
+Position_GUI_S.cpp:		buildSpotLightGroup (currX, currY, w+x-currX, 160);
+Position_GUI_S.cpp:	// LightSourceWidgets.spot.group->tooltip ("spotGrp");
+Position_GUI_S.cpp:	posGroup->add (LightSourceWidgets.inf.group);
+Position_GUI_S.cpp:	// posGroup->tooltip ("posGroup");
+Position_GUI_S.cpp:	posGroup->add (LightSourceWidgets.local.group );
+Position_GUI_S.cpp:	posGroup->add (LightSourceWidgets.spot.group );
+Position_GUI_S.cpp:	LightSourceWidgets.inf.group->show ();
+Position_GUI_S.cpp:	LightSourceWidgets.local.group->hide ();
+Position_GUI_S.cpp:	LightSourceWidgets.spot.group->hide ();
+Position_GUI_S.cpp:		new Fl_Box (H_CENTER_LINE_BOX, currX+50, currY, w-100, 3, "");
+Position_GUI_S.cpp:	posGroup->add (sep1);
+Position_GUI_S.cpp:		buildAttenGroup (currX, currY, w+x-currX, h+y-currY);
+Position_GUI_S.cpp:	posGroup->add (attenGrp);
+Binary file Position_GUI_S.o matches
+sgeComm.cpp:    strncpy (msg, msgIn, sizeof (msg)-2);
+sgeComm.cpp:	if (msg[len-1] != '\n')
+sgeComm.cpp:		lmsg[len-1] = 0;
+sgeComm.cpp:			"hev-lightEditor: Sending sge msg <%s>\n", 
+sgeComm.cpp:			ls->name, 
+sgeComm.cpp:			CLAMP01(ls->color[iColor][0]),
+sgeComm.cpp:			CLAMP01(ls->color[iColor][1]),
+sgeComm.cpp:			CLAMP01(ls->color[iColor][2]),
+sgeComm.cpp:			CLAMP01(ls->color[iColor][3]) );
+sgeComm.cpp:			ls->name,
+sgeComm.cpp:			ls->localLocation[0],
+sgeComm.cpp:			ls->localLocation[1],
+sgeComm.cpp:			ls->localLocation[2] ) ;
+sgeComm.cpp:			ls->name,
+sgeComm.cpp:			ls->infDirection [0],
+sgeComm.cpp:			ls->infDirection [1],
+sgeComm.cpp:			ls->infDirection [2] ) ;
+sgeComm.cpp:			ls->name,
+sgeComm.cpp:			ls->spotDirection[0],
+sgeComm.cpp:			ls->spotDirection[1],
+sgeComm.cpp:			ls->spotDirection[2] ) ;
+sgeComm.cpp:			ls->name,
+sgeComm.cpp:			ls->atten[0],
+sgeComm.cpp:			ls->atten[1],
+sgeComm.cpp:			ls->atten[2]);
+sgeComm.cpp:			ls->name,
+sgeComm.cpp:			ls->spotExponent,
+sgeComm.cpp:			ls->spotCutoff );
+sgeComm.cpp:	// For omni-directional lights, the spot cutoff angle
+sgeComm.cpp:			ls->name,
+sgeComm.cpp:			ls->spotExponent);
+sgeComm.cpp:		    ls->name,
+sgeComm.cpp:		    ls->referenceFrameIsRelative ? "RELATIVE" : "ABSOLUTE" );
+sgeComm.cpp:		    ls->name,
+sgeComm.cpp:		    ls->on ? "TRUE" : "FALSE" );
+sgeComm.cpp:	if (ls->node == 0) 
+sgeComm.cpp:		sprintf (msg, "OFF %s\n", ls->name);
+sgeComm.cpp:	else if ( ls->node != 7 )
+sgeComm.cpp:		sprintf (msg, "OFF %s\n", ls->name);
+sgeComm.cpp:		sprintf (msg, "ON %s %s\n", ls->name, 
+sgeComm.cpp:			nodeName[ls->node]);
+sgeComm.cpp:	switch (ls->type)
+sgeComm.cpp:			 "hev-lightEditor : "
+sgeComm.cpp:            return -1;
+sgeComm.cpp:    if ( ! RecvFifo->open() )
+sgeComm.cpp:        fprintf (stderr, "hev-lightEditor: Unable to open receive fifo %s.\n",
+sgeComm.cpp:        return -1;
+sgeComm.cpp:        if ( RecvFifo->readLine ( & lineStr) )
+sgeComm.cpp:				   "hev-lightEditor: Received sge msg <%s>\n", 
+sgeComm.cpp:    if ( RecvFifo->readLine ( & lineStr) )
+sgeComm.cpp:			    "hev-lightEditor: Received sge msg <%s>\n", 
+Binary file sgeComm.o matches
+tmpModel.cpp:                LightSourceWidgets.rgbInput[0]->value(clampedVal);
+tmpModel.cpp:                LightSourceWidgets.rgbInput[1]->value(clampedVal);
+tmpModel.cpp:                LightSourceWidgets.rgbInput[2]->value(clampedVal);
+tmpModel.cpp:                LightSourceWidgets.grayInput->value(clampedVal);
+tmpModel.cpp:                LightSourceWidgets.rgbInput[whichComponent]->value(clampedVal);
+tmpModel.cpp:	int inRgbMode = ((Fl_Light_Button *)w)->value();
+tmpModel.cpp:#define ALL_COLOR_COMPONENTS (-1)
+tmpModel.cpp:		    // if factor is non-neg then use it as a factor
+tmpModel.cpp:		    LightModelWidgets.rgbInput[j]->
+tmpModel.cpp:		LightModelWidgets.grayInput->value(CLAMP01(sum/3.0));
+tmpModel.cpp:	val = fltIn->value();
+tmpModel.cpp:		// printf ("sb value = %ld\n", sb->value());
+tmpModel.cpp:		if ( (sb->value() / 1000.0) != val)
+tmpModel.cpp:			((Fl_Valuator *)sb)->value (1000*val);
+tmpModel.cpp:	double val = (((Fl_Scrollbar *)w)->value ())/1000.0;
+tmpModel.cpp:	//printf ("scrollbarCB : %d   %d\n", id, ((Fl_Scrollbar *)w)->value ());
+tmpModel.cpp:	// printf ("scaleRGBCB: value = %f\n", ((Fl_Roller *)w)->value());
+tmpModel.cpp:		((Fl_Roller *)w)->value(1.0);
+tmpModel.cpp:	val = ((Fl_Roller *)w)->value();
+tmpModel.cpp:	factor = 1.0 - (10*(1.0 - ratio));
+tmpModel.cpp:	((Fl_Valuator *)LightModelWidgets.grayScrollbar)->value (1000*sum);
+tmpModel.cpp:	((Fl_Valuator *)LightModelWidgets.rgbScrollbar[0])->
+tmpModel.cpp:	((Fl_Valuator *)LightModelWidgets.rgbScrollbar[1])->
+tmpModel.cpp:	((Fl_Valuator *)LightModelWidgets.rgbScrollbar[2])->
+tmpModel.cpp:	rtnGroup->end();
+tmpModel.cpp:	resetButton->callback (lightModelResetCB);
+tmpModel.cpp:	rtnGroup->add (resetButton);
+tmpModel.cpp:	colorEditModeButton->callback (lscolorMode2CB);
+tmpModel.cpp:	Fl_Roller *scaleRGB = new Fl_Roller (currX, currY, 390-(x+10), 20, 
+tmpModel.cpp:	scaleRGB->type (FL_HORIZONTAL);
+tmpModel.cpp:	scaleRGB->range (0.0, 2.0);
+tmpModel.cpp:	scaleRGB->callback (scaleRGBCB);
+tmpModel.cpp:	scaleRGB->step (0.0001);
+tmpModel.cpp:	// scaleRGB->range (2.0, 0.0);
+tmpModel.cpp:	scaleRGB->value (1.0);
+tmpModel.cpp:	scaleRGB->when (FL_WHEN_RELEASE_ALWAYS | FL_WHEN_CHANGED);
+tmpModel.cpp:	rtnGroup->add (LightModelWidgets.rgbEditMode);
+tmpModel.cpp:	rtnGroup->add (scaleRGB);
+tmpModel.cpp:	// rtnGroup->hide ();
+tmpModel.cpp:	rtnGroup->end();
+tmpModel.cpp:	rtnGroup->hide ();
+tmpModel.cpp:	// rtnGroup->add (label);
+tmpModel.cpp:        rtnGroup->add (label);
+tmpModel.cpp:	rtnGroup->add (ambButton);
+tmpModel.cpp:        Fl_Group *ambGroup = new Fl_Group (subGrpX+2, subGrpY-3, 182, height+6);
+tmpModel.cpp:        ambGroup->end();
+tmpModel.cpp:	ambInput->range (0.0, 1.0);
+tmpModel.cpp:	ambInput->step (0.001);
+tmpModel.cpp:	ambInput->value (0.0);
+tmpModel.cpp:	ambGroup->add (ambInput);
+tmpModel.cpp:	rtnGroup->add (ambGroup);
+tmpModel.cpp:	ambButton->callback (colorButtonCB, 0);
+tmpModel.cpp:	LightModelWidgets.grayInput->callback (floatInputCB, 003);
+tmpModel.cpp:	height = 390-subGrpY;
+tmpModel.cpp:	grayScrollbar->callback (scrollbarCB, 3);
+tmpModel.cpp:        grayScrollbar->bounds (1000.0, 0.0);
+tmpModel.cpp:        grayScrollbar->step(10.0);
+tmpModel.cpp:        grayScrollbar->linesize (1);
+tmpModel.cpp:	rtnGroup->add (grayScrollbar);
+tmpModel.cpp:                new Fl_Box (subGrpX+95, subGrpY+height-43, 30, 40, "0.0");
+tmpModel.cpp:        rtnGroup->add (zeroLabel);
+tmpModel.cpp:        rtnGroup->add (oneLabel);
+tmpModel.cpp:	rtnGroup->end();
+tmpModel.cpp:	rtnGroup->add (rLabel);
+tmpModel.cpp:	rtnGroup->add (gLabel);
+tmpModel.cpp:	rtnGroup->add (bLabel);
+tmpModel.cpp:		new Fl_Group (subGrpX+2, subGrpY-3, 230-2, height+6);
+tmpModel.cpp:	ambGroup->end();
+tmpModel.cpp:	rtnGroup->add (ambButton);
+tmpModel.cpp:	ambButton->callback (colorButtonCB, 0);
+tmpModel.cpp:	ambR->range (0.0, 1.0);
+tmpModel.cpp:	ambR->step (0.001);
+tmpModel.cpp:	ambR->value (0.0);
+tmpModel.cpp:	ambGroup->add (ambR);
+tmpModel.cpp:	ambG->range (0.0, 1.0);
+tmpModel.cpp:	ambG->step (0.001);
+tmpModel.cpp:	ambG->value (0.1);
+tmpModel.cpp:	ambGroup->add (ambG);
+tmpModel.cpp:	ambB->range (0.0, 1.0);
+tmpModel.cpp:	ambB->step (0.001);
+tmpModel.cpp:	ambB->value (0.2);
+tmpModel.cpp:	ambGroup->add (ambB);
+tmpModel.cpp:	rtnGroup->add (ambGroup);
+tmpModel.cpp:		LightModelWidgets.rgbInput[j]->
+tmpModel.cpp:	height = 390-subGrpY;
+tmpModel.cpp:	sliderGroup->end();
+tmpModel.cpp:	rtnGroup->add (sliderGroup);
+tmpModel.cpp:	rScrollbar->bounds (1000.0, 0.0);
+tmpModel.cpp:	rScrollbar->step(10.0);
+tmpModel.cpp:	rScrollbar->linesize (1);
+tmpModel.cpp:	gScrollbar->bounds (1000.0, 0.0);
+tmpModel.cpp:	gScrollbar->step(10.0);
+tmpModel.cpp:	gScrollbar->linesize (1);
+tmpModel.cpp:	bScrollbar->bounds (1000.0, 0.0);
+tmpModel.cpp:	bScrollbar->step(10.0);
+tmpModel.cpp:	bScrollbar->linesize (1);
+tmpModel.cpp:	rScrollbar->callback (scrollbarCB, 0);
+tmpModel.cpp:	gScrollbar->callback (scrollbarCB, 1);
+tmpModel.cpp:	bScrollbar->callback (scrollbarCB, 2);
+tmpModel.cpp:	rScrollbar->when (FL_WHEN_CHANGED);
+tmpModel.cpp:	gScrollbar->when (FL_WHEN_CHANGED);
+tmpModel.cpp:	bScrollbar->when (FL_WHEN_CHANGED);
+tmpModel.cpp:	sliderGroup->add (rScrollbar);
+tmpModel.cpp:	sliderGroup->add (gScrollbar);
+tmpModel.cpp:	sliderGroup->add (bScrollbar);
+tmpModel.cpp:		new Fl_Box (subGrpX+60, subGrpY+height-43, 30, 40, "0.0");
+tmpModel.cpp:	sliderGroup->add (zeroLabel);
+tmpModel.cpp:	sliderGroup->add (oneLabel);
+tmpModel.cpp:	rtnGroup->end();
+tmpModel.cpp:	// rtnGroup->box (FL_SHADOW_BOX);
+tmpModel.cpp:	rtnGroup->add (rgbBox);
+tmpModel.cpp:	rtnGroup->add (grayBox);
+tmpModel.cpp:	grayBox->hide ();
+tmpModel.cpp:	rtnGroup->add (otherBox);

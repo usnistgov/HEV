@@ -1,0 +1,66 @@
+.TH hev-vtkVectorGlyph
+.SH NAME
+hev-vtkVectorGlyph - produce geometric glyphs that represent vector data
+
+vtkHedgeHog
+
+.SH SYNOPSIS
+.B hev-vtkVectorGlyph [ options ] inFName outFName
+
+.SH DESCRIPTION
+.B hev-vtkVectorGlyph
+generates a line glyph for vectors in a given input VTK data set.
+
+.PP
+
+.SH OPTIONS
+.TP
+.B --scalefactor or --sf VALUE
+Scale the generated glyph by the indicated factor.
+Default is 1.0.
+
+.TP
+.B --useNormals or -n 
+Generate vector glyphs from the normal vector data.  
+This is typically used when the input file contains polygonal data.
+
+
+.SH PARAMETERS
+.TP
+.B inFName
+Location/filename of input file.
+This file has to be in VTK format.
+
+.TP
+.B outFName
+Location/filename of output file. 
+This file is written in VTK format.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+  hev-vtkContour 0.3 structPoints.2.vtk sp2.iso.vtk
+  hev-vtkVectorGlyph -n sp2.iso.vtk sp2.iso.normGlyph.vtk
+
+or
+
+  hev-vtkGradient structPoints.2.vtk sp2.grad.vtk
+  hev-vtkVectorGlyph --sc 20 sp2.grad.vtk sp2.gradGlyph.vtk
+
+
+.SH SEE ALSO
+
+vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+August 6th 2012

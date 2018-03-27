@@ -1,0 +1,43 @@
+From marc.olano@nist.gov Mon Mar 28 13:41:47 2011
+Date: Mon, 28 Mar 2011 13:41:34 -0400
+From: Marc Olano <marc.olano@nist.gov>
+Reply-To: HPCVG <HPCVG@nist.gov>
+To: HPCVG <HPCVG@nist.gov>
+X-To: hpcvg@nist.gov
+Subject: [HPCVG] Volume rendering update
+
+I've just updated the volume renderer and hev-preintegrate and 
+hev-LUT2mhd utilities to allow transfer functions with colors bigger 
+than 1. By setting opacities less than 1 (even .9), but some transfer 
+values bigger than 1 (2-10ish is probably good) for important stuff to 
+see in the volume, that important stuff will show through the 
+intervening darker volume. It won't punch through anything that's 
+completely opaque, so an opacity of 1 still stops everything behind it.
+
+Three examples attached to the brightest we used to be able to make a 
+part of the volume, and the kinds of effects you can now get by raising 
+the brightness above 1.
+
+This update includes some changes in the way transfer functions work in 
+the guts of the volume renderer. If you happen to have a custom transfer 
+function (and I think the ones I did for the fire are the only one we 
+have so far), you'll need to update the function signature and call 
+voldata from inside the transfer function. Anyone playing with fire 
+should use the updated apps/fire/volfire script to get the updated 
+custom fire transfer functions. This only matters when you generate the 
+application. After that, the shaders are embedded in the osg files, so 
+unaffected by my changes.
+
+Marc
+
+
+    [ Part 2, "db-05-05.png"  Image/PNG (Name: "db-05-05.png") 52 KB. ]
+    [ Unable to print this part. ]
+
+
+    [ Part 3, "db-10-05.png"  Image/PNG (Name: "db-10-05.png") 54 KB. ]
+    [ Unable to print this part. ]
+
+
+    [ Part 4, "db-10-10.png"  Image/PNG (Name: "db-10-10.png") 56 KB. ]
+    [ Unable to print this part. ]

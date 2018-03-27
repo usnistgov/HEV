@@ -1,0 +1,143 @@
+#! /bin/bash
+
+# hev-pullHEV  - script to manually pull HEV (production) tree from the
+#                appropriate server
+#
+#     Typically, this is only used on non-SAVG hosts
+#
+# Based on a combination of hev-pullBeta by Steve Satterfield
+# and pull-HEV.sh by Don Koss
+#
+# steve@nist.gov
+# March 18, 2009 - original implementation
+# January 25, 2011 - remove hev32
+# February 23, 2011 - update for HEV-IRIS exclude conventions 
+# May 25, 2011 - scrap the idea of not pushing src in the demos
+#June 11, 2015 - add dest paramater
+ 
+# see rsync(1) INCLUDE/EXCLUDE PATTERN RULES
+#EXCLUDE="--exclude /admin/"
+
+# Don't pull:
+#    admin
+#    any directory named 'noPush'
+#    any directory named src in the demos 
+
+EXCLUDE_DELETED="--delete-excluded"
+EXCLUDE="\
+--exclude /admin/ \
+--exclude  noPush/ \
+--exclude .git/ \
+--exclude .gitignore \
+"
+
+# add the following to EXCLUDE to not push src in demos
+#--exclude /demos/**/src/
+
+
+function usage {
+    echo "Usage: hev-pullHEV [--excludeDemos] --dry-run | --copy   [dest]"
+    exit
+}
+
+
+if [ "${HEVROOT}" == "" ]
+then
+    echo "HEVROOT not definded, you need to source /usr/local/HEV/profile"
+    exit
+fi
+
+
+case $1 in
+--excludeDemos)
+           EXCLUDE="--exclude /savg/dgl/demos/ --exclude /demos/ ${EXCLUDE}"
+           EXCLUDE_DELETED=""
+	   shift
+esac
+
+
+case $# in
+0)
+      usage
+      ;;
+esac
+
+
+case $1 in
+--dry-run)
+    DRYRUN="--dry-run"
+    ;;
+--copy)
+    DRYRUN=""
+    ;;
+*)
+    usage
+    ;;
+esac
+shift
+
+
+SERVER="hev64.cam.nist.gov"
+
+
+# Only execute if the user user owns the HEV tree
+
+H="/usr/local/HEV"
+
+case $# in
+0)
+	:
+	;;
+1)
+	H=$1
+	;;
+*)
+	usage
+	;;
+esac
+
+if [ ! -d $H ]
+then
+    echo Alternate destination $H does not exist.
+    usage
+fi
+
+
+if [ ! `stat -Lc%u $H` -eq `stat -Lc%u $HOME` ]
+then
+   echo "You don't own $H"
+   echo "This command is intended only for users that manually manage their HEV tree."
+   exit
+fi
+
+# Don't execute this command on the hev servers
+
+HOSTOK=0
+me=`hostname -i 2>/dev/null`
+
+if [ $? -eq 0 ] ; then
+    serv=$(nslookup ${SERVER} | grep "Address:" | sed -e "1d" -e "s/Address: //")
+    #echo me= ${me} serv=  ${serv}
+    if [ "${me}" == "${serv}" ]
+	then
+	HOSTOK=1
+    fi
+    
+    
+    HOST=`hostname -s`
+    
+    
+    if [ $HOSTOK == 1 ]
+	then
+	echo "This command can not be executed on ${HOST} becuase its an HEV server."
+	echo "Run this command only on an HEV client."
+	exit
+    fi
+else
+    HOST=`hostname`
+fi
+
+echo "Pull HEV from ${SERVER} to ${HOST}" `date`
+
+rsync ${DRYRUN} -avH --delete --stats --bwlimit=9999 ${EXCLUDE} ${EXCLUDE_DELETED} ${SERVER}::HEV $H
+

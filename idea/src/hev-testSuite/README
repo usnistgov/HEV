@@ -1,0 +1,54 @@
+
+Wiki: test suite
+
+In software development, a test suite, less commonly known as a
+validation suite, is a collection of test cases that are intended to
+be used to test a software program to show that it has some specified
+set of behaviours.
+
+
+-----------------------------------------------------------------------------
+
+Date: Fri, 20 Mar 2015 14:27:15 -0400
+From: Judith E Terrill <judith.terrill@nist.gov>
+To: Steve Satterfield <steve@nist.gov>
+Cc: "Judith (Devaney) Terrill" <judith.terrill@nist.gov>
+Subject: Infrastructure for CAVE Software Tests
+
+Steve,
+
+    Ultimately, I would like at least one test for the possible CAVE 
+demo components.
+I want to start off as simple as possible:
+
+1. different set of white points in 3D that we look at from different 
+directions with the timeline
+file and grab an image at specific points.
+
+2. different set of white lines in 3D (eg tetratehdra) that we look at 
+from different directions with the timeline
+file and grab an image at specific points.
+
+4. different set of images in 3D  that we look at from different 
+directions with the timeline
+file and grab an image at specific points.
+
+5. scenegraph where things can be turned off and on via the FIFO, that 
+we look at from different directions with the timeline file and grab an 
+image at specific points.
+
+6. different shader objects  that can be turned off and on via the FIFO, 
+that we look at from different directions with the timeline file and 
+grab an image at specific points.
+
+7. ... (pull up a specific frame in the VCR...
+
+ideas to things to test?
+
+Judy
+
+-- 
+Dr. Judith Terrill
+Leader, High Performance Computing and Visualization Group
+National Institute of Standards and Technology
+

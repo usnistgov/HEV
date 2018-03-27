@@ -1,0 +1,109 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+Function {make_main_window()} {open
+} {
+  Fl_Window {} {
+    label hev-shapeSelection open selected
+    xywh {2107 96 245 210} type Double box UP_BOX align 80
+    code0 {//o->label(transformationShmName.c_str()) ;} visible
+  } {
+    Fl_Group {} {
+      label {object:} open
+      xywh {5 5 235 97} box BORDER_BOX align 21
+    } {
+      Fl_Round_Button {} {
+        label cube
+        callback {object = CUBE ;
+//update() ;}
+        xywh {24 30 70 15} type Radio down_box ROUND_DOWN_BOX value 1
+        code0 {cubeButton = o ;}
+        code1 {if (object == CUBE) o->value(1) ;}
+        code2 {else o->value(0) ;}
+      }
+      Fl_Round_Button {} {
+        label sphere
+        callback {object = SPHERE ;
+//update() ;}
+        xywh {24 50 70 15} type Radio down_box ROUND_DOWN_BOX
+        code0 {sphereButton = o ;}
+        code1 {if (object == SPHERE) o->value(1) ;}
+        code2 {else o->value(0) ;}
+      }
+      Fl_Round_Button {} {
+        label tetrahedron
+        callback {object = TETRAHEDRON ;
+//update() ;}
+        xywh {109 30 106 15} type Radio down_box ROUND_DOWN_BOX
+        code0 {tetrahedronButton = o ;}
+        code1 {if (object == TETRAHEDRON) o->value(1) ;}
+        code2 {else o->value(0) ;}
+      }
+      Fl_Round_Button {} {
+        label pyramid
+        callback {object = PYRAMID ;
+//update() ;}
+        xywh {109 50 106 15} type Radio down_box ROUND_DOWN_BOX
+        code0 {pyramidButton = o ;}
+        code1 {if (object == PYRAMID) o->value(1) ;}
+        code2 {else o->value(0) ;}
+      }
+      Fl_Check_Button {} {
+        label wireframe
+        callback {wireframe = o->value() ;
+//update() ;}
+        xywh {11 80 20 15} down_box DOWN_BOX align 8
+        code0 {o->value(wireframe) ;}
+      }
+      Fl_Check_Button {} {
+        label translucent
+        callback {translucent = o->value() ;
+//update() ;}
+        xywh {119 80 20 15} down_box DOWN_BOX align 8
+        code0 {o->value(translucent) ;}
+      }
+    }
+    Fl_Group {} {
+      label {show data:} open
+      xywh {5 108 235 95} box BORDER_BOX align 21
+    } {
+      Fl_Check_Button {} {
+        label inside
+        callback {inside = o->value() ;
+//update() ;}
+        xywh {8 135 70 15} down_box DOWN_BOX value 1
+        code0 {insideButton = o ;}
+        code1 {o->value(inside) ;}
+      }
+      Fl_Check_Button {} {
+        label outside
+        callback {outside = o->value() ;
+//update() ;}
+        xywh {88 135 80 15} down_box DOWN_BOX value 1
+        code0 {outsideButton = o ;}
+        code1 {o->value(outside) ;}
+      }
+      Fl_Check_Button {} {
+        label shell
+        callback {setShell(o->value()) ;
+//update() ;}
+        xywh {170 135 68 15} down_box DOWN_BOX
+      }
+      Fl_Roller {} {
+        label {% thickness}
+        callback {shellThickness(o->value()) ;
+shellOutput->value(o->value()) ;
+//update() ;}
+        xywh {18 157 142 20} type Horizontal align 6 maximum 100 step 0.25 deactivate
+        code0 {shellRoller = o ;}
+        code1 {o->value(thickness*100.f) ;}
+      }
+      Fl_Value_Output {} {
+        xywh {169 157 37 20} deactivate
+        code0 {shellOutput = o ;}
+        code1 {o->value(thickness*100.f) ;}
+      }
+    }
+  }
+} 

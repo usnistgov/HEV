@@ -1,0 +1,42 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include "hev-wiggleNavFunctions.h"} {} 
+
+Function {make_main_window()} {open
+} {
+  Fl_Window {} {open selected
+    xywh {2538 62 120 125} type Double visible
+  } {
+    Fl_Light_Button {} {
+      label {wiggle!}
+      callback {wiggle = (bool)o->value() ;}
+      xywh {10 10 74 20}
+    }
+    Fl_Group {} {open
+      xywh {5 30 100 50}
+    } {
+      Fl_Round_Button {} {
+        label {left/right}
+        callback {hpr = H ;}
+        xywh {10 35 90 15} type Radio down_box ROUND_DOWN_BOX value 1
+      }
+      Fl_Round_Button {} {
+        label {up/down}
+        callback {hpr = P ;}
+        xywh {10 50 90 15} type Radio down_box ROUND_DOWN_BOX
+      }
+      Fl_Round_Button {} {
+        label spin
+        callback {hpr = R ;}
+        xywh {10 65 90 15} type Radio down_box ROUND_DOWN_BOX
+      }
+    }
+    Fl_Value_Slider {} {
+      callback {swing = (float)o->value() ;}
+      xywh {10 95 100 20} type Horizontal align 4 maximum 15 step 0.1 value 5 textsize 14
+      code0 {o->value(swing) ;}
+    }
+  }
+} 

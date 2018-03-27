@@ -1,0 +1,42 @@
+.TH SAVG\-OCTREE 1 "23 March 2005"
+.SH NAME
+savg-octree \- SAVG ToolBox: basic option octree
+.SH SYNOPSIS
+.B savg-octree
+[size] [children]
+.SH DESCRIPTION
+.I The savg loader creates a recursive spatial octree whose leaves are geodes. The savg-octree parameters specify how to shape the tree.
+Octree recursion stops when either the size or children condition is met. 
+Size can be set to zero, but then children must be greater than one.  If 
+size is greater than or equal to one, children can be set to one.
+Making size larger will reduce culling and increase drawing time.  
+Making children larger will increase culling time and decrease drawing time.  To get the best valuse for a particular mode, try loading it with 
+different octree values with perfly, and using the "z" key to see how 
+much geometry is getting clipped and how much is getting draw that is 
+outside of the viewing volume, and press the "show tree" button to see 
+the structure of the octree.  Also, use the DIVERSE dpf-bounds command 
+to help set a realistic value for size. Note: size is a floating point 
+number, and children is an integer.
+.I stdin
+and outputs to 
+.I stdout.
+At least one command line argument must be present or 
+a usage message will appear and the program will 
+terminate. 
+
+.SH EXAMPLES
+.TP
+.B cat sample.savg | savg-octree 0.0 4 > sample_4.savg
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Spring 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

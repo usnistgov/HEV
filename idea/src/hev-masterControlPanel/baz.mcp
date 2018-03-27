@@ -1,0 +1,3 @@
+BUTTON baz 
+  CLEANUP echo cleaning up baz
+  ON on baz!

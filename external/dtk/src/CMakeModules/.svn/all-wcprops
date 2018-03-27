@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svnroot/diverse/!svn/ver/965/trunk/dtk/CMakeModules
+END
+UseRPMTools.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/diverse/!svn/ver/965/trunk/dtk/CMakeModules/UseRPMTools.cmake
+END
+cmake_uninstall.cmake.in
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/diverse/!svn/ver/965/trunk/dtk/CMakeModules/cmake_uninstall.cmake.in
+END

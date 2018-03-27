@@ -1,0 +1,75 @@
+0) put objects under world node
+
+     - scene -> 
+         matrix node ->
+	     objects
+
+   start up hev-relativeMove process- input is wand and left button. changes
+   when wand moves & button is pressed
+
+   start up sceneToWorld process- input is output of hev-relativeMove
+   process. changes when wand moves & button is pressed or when you navigate
+
+   start up worldToScene processes- input is output of sceneToWorld process,
+   but why is output different
+
+1) button pressed
+
+   - matrix node is set to to have the objects's world position changed to scene coords
+
+   - set delta to zero
+
+   - delta changes to the wand are applied to the clipping planes by
+     changing the matrix node. relative move active
+
+     - need to keep initial positoin and delta and multiply the two to set
+       matrix node
+
+     - can hev-relativeMove do this now?
+
+2) button released
+
+   - position of objects in world coords are put into matrix node and objects moved
+     under the world node. relative move inactive
+
+   - user navigates around a bit so the objects move with navigation
+
+     - world -> 
+           matrix node -> 
+	     plane objects
+
+3) button pressed, go back to 1)
+
+
+relative mode needs:
+
+ - shm to read to turn on/off: button press & button release
+
+ - name of matrix node node to go above objects
+
+ - what if instead of scene & world you specify two nodes, but one can not have
+   nav as a parent (default is scene), and one must have world as a parent
+   (default is world)
+
+ - can you invoke a new hev-relativeMove every button press to reset
+   initCoord to the scene coord of the navigated clipping plane?
+
+current hev-relativeMove:
+
+ - inShm: name of shared memory for input. default is wandMatrix
+
+ - inXXXButtonShm: name of button state shared memory. default is either
+   idea/button/left or idea/button/right
+
+ - initCoord: initial output transformation. default is identity
+
+ - boxConstrain: constrain output translation to the box dimensions if given
+
+ - outShm: name of shared memory for output, in same coord system as inShm.
+
+ - selectorShm: name of selector to activate/deactivate hev-relativeMove
+
+mods?
+
+ - can you give it the name of a fifo to read commands? Such as:
+   RESET [ X Y Z [ H P R [ Xs Ys Zs ] ] ]

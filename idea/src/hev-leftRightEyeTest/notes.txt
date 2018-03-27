@@ -1,0 +1,23 @@
+
+Flop    Flip
+0        0     left front
+0	 1     right front
+
+1	 0     left back
+1	 1     right back
+
+
+
+0 0 1
+
+0 1 0
+
+0 1 1
+
+1 0 0
+
+1 0 1
+
+1 1 0
+
+1 1 1

@@ -1,0 +1,31 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-leftRightEyeTest 1 "January 2015" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+hev-leftRightEyeTest - simple stereo test for eye swap error
+
+.SH SYNOPSIS
+
+\fBhev-leftRightEyeTest [-mono]\fR 
+
+.SH DESCRIPTION
+
+\fBhev-leftRightEyeTest\fR can be run on the CAVE, PowerWalll or any 3D stereo
+display to test that stereo is working and for eye swap error. The
+left eye image should be seen by the user's left eye and right image
+by right eye.
+
+
+.SH OPTIONS
+.TP
+.B
+-mono
+Used for development and debugging on a non-stereo display. Normally, this
+option is not used.
+
+.SH AUTHOR
+Steve Satterfield copied and modified a C source file originally named plane.c.
+Refer to the source code for more information.
+

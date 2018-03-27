@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Web Control of Clip Planes</title>
+    <link href="bootstrap-3.3.4.min.css" rel="stylesheet">
+    <link href="bootstrap-slider-4.10.4.min.css" rel="stylesheet">
+    <link href="hev.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">HEV</a>
+        </div> <!-- /.navbar-header -->
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul> <!-- /.nav navbar-nav -->
+        </div> <!-- /#navbar /.collapse /.navbar-collapse -->
+      </div>
+    </nav> <!-- /.navbar /.navbar-default /.navbar-fixed-top -->
+
+    <div id="content" class="container-fluid">
+      <form class="form-inline">
+
+        <div class="row">
+          <div class="col-xs-9">
+            <p class="text-muted text-center"><b>Data Extents</b></p>
+          </div>
+        </div> <!-- /.row -->
+
+        <div id="XdataExtentsRow" class="row">
+          <div class="col-xs-1">
+            <label class="control-label">X</label>
+          </div>
+          <div class="col-xs-4 form-group">
+            <label for="Xmin">Min: </label>
+            <input type="number" name="Xmin" id="Xmin" class="form-control">
+          </div>
+          <div class="col-xs-4 form-group">
+            <label for="Xmax">Max: </label>
+            <input type="number" name="Xmax" id="Xmax" class="form-control">
+          </div>
+        </div> <!-- /#XdataExtentsRow /.row -->
+
+        <div id="YdataExtentsRow" class="row">
+          <div class="col-xs-1">
+            <label class="control-label">Y</label>
+          </div>
+          <div class="col-xs-4 form-group">
+            <label for="Ymin">Min: </label>
+            <input type="number" name="Ymin" id="Ymin" class="form-control">
+          </div>
+          <div class="col-xs-4 form-group">
+            <label for="Ymax">Max: </label>
+            <input type="number" name="Ymax" id="Ymax" class="form-control">
+          </div>
+        </div> <!-- /#YdataExtentsRow /.row -->
+
+        <div id="ZdataExtentsRow" class="row">
+          <div class="col-xs-1">
+            <label class="control-label">Z</label>
+          </div>
+          <div class="col-xs-4 form-group">
+            <label for="Zmin">Min: </label>
+            <input type="number" name="Zmin" id="Zmin" class="form-control">
+          </div>
+          <div class="col-xs-4 form-group">
+            <label for="Zmax">Max: </label>
+            <input type="number" name="Zmax" id="Zmax" class="form-control">
+          </div>
+        </div> <!-- /#ZdataExtentsRow /.row -->
+
+        <div class="row">
+          <div class="col-xs-9">
+            <p class="text-muted text-center"><b>Clip Plane</b></p>
+          </div>
+        </div> <!-- /.row -->
+
+        <div id="clipPlanesRow" class="row">
+          <div class="col-xs-1">
+          </div>
+          <div class="col-xs-2 form-group">
+            <input type="radio" name="clipPlanes" class="clipPlanes form-control" value="xy" id="xy">
+            <label class="radio-inline" for="xy">XY</label>
+          </div>
+          <div class="col-xs-2 form-group">
+            <input type="radio" name="clipPlanes" class="clipPlanes form-control" value="yz" id="yz">
+            <label class="radio-inline" for="yz">YZ</label>
+          </div>
+          <div class="col-xs-2 form-group">
+            <input type="radio" name="clipPlanes" class="clipPlanes form-control" value="zx" id="zx">
+            <label class="radio-inline" for="zx">ZX</label>
+          </div>
+          <div class="col-xs-2 form-group">
+            <input type="radio" name="clipPlanes" class="clipPlanes form-control" value="none" id="none" checked>
+            <label class="radio-inline" for="none">None</label>
+          </div>
+        </div> <!-- /#clipPlanesRow /.row -->
+
+        <div class="row">
+          <div class="col-xs-9">
+            <p class="text-muted text-center"><b>Translation</b></p>
+          </div>
+        </div> <!-- /.row -->
+
+        <div id="translationXRow" class="row">
+          <div class="col-xs-1">
+            <label class="control-label">X</label>
+          </div>
+          <div class="col-xs-8" id="xSpinner">
+            <input id="x" type="text" class="form-control slider" data-slider-orientation="horizontal">
+          </div>
+        </div> <!-- /#translationXRow /.row -->
+
+        <div id="translationYRow" class="row">
+          <div class="col-xs-1">
+            <label class="control-label">Y</label>
+          </div>
+          <div class="col-xs-8">
+            <input id="y" type="text" class="form-control slider" data-slider-orientation="horizontal">
+          </div>
+        </div> <!-- /#translationYRow /.row -->
+
+        <div id="translationZRow" class="row">
+          <div class="col-xs-1">
+            <label class="control-label">Z</label>
+          </div>
+          <div class="col-xs-8">
+            <input id="z" type="text" class="form-control slider" data-slider-orientation="horizontal">
+          </div>
+        </div> <!-- /#translationZRow /.row -->
+
+      </form>
+    </div> <!-- /#content /.container-fluid -->
+
+    <footer class="footer">
+      <div id="footer" class="container-fluid">
+        <p id="status" class="text-muted"></p>
+      </div>
+    </footer>
+
+    <script src="jquery-2.1.3.min.js"></script>
+    <script src="bootstrap-3.3.4.min.js"></script>
+    <script src="bootstrap-slider-4.10.4.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="hev.js"></script>
+  </body>
+</html>
+

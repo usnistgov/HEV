@@ -1,0 +1,8 @@
+ObjectType = Image
+NDims = 2
+DimSize = 128 128
+ElementNumberOfChannels = 3
+HeaderSize = -1
+ElementType = MET_FLOAT
+ElementByteOrderMSB = true
+ElementDataFile = beach_probe.pfm

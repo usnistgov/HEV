@@ -1,0 +1,39 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-framelock 1 "May 26, 2011" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+hev-framelock
+
+.SH SYNOPSIS
+
+The \fBhev-framelock [-h] [-v] [status] | [on] | [off]\fR 
+
+.SH DESCRIPTION
+
+\fIhev-framelock\fR is used to set frame lock on the CAVE, which is required
+for stereo display and keep all the screens in sync.  This command must be
+executed once per login.
+.PP
+This command currently only applies to immersive hosts with multiple
+graphics cards.  It doesn't do anything when executed on other
+systems.
+
+.SH PARAMETERS
+.IP
+-h     Print help message
+.IP
+-v     Verbose
+.IP
+status Prints current frame lock state.
+.IP
+on     Turn frame lock on. This is default.
+.IP
+off    Turn frame lock off.
+
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov

@@ -1,0 +1,8 @@
+# build output
+build/
+**configure.done
+**build.done
+
+# installed parts
+installed/
+**install.done

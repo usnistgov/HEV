@@ -1,0 +1,111 @@
+.TH NETX-FORDFULKERSONFLOW 1 "23 July 2012"
+
+.SH NAME
+
+netx-fordFulkersonFlow
+
+
+.SH SYNOPSIS
+
+.B netx-fordFulkersonFlow
+.I  inputFile
+.I graphType
+.I sourceNode
+.I sinkNode
+
+.SH GRAPH LIMITATIONS
+\fBDirected:\fR Yes
+.br
+\fBUndirected:\fR Yes
+.br
+\fBSelf-Loops:\fR Yes
+.br
+\fBParallel Edges:\fR Yes
+.br
+\fBOther:\fR Each edge needs a capacity attribute for this function to work. If no capacity is given, an error will be raised. In this function, if only one attribute is given to an edge, it will be read as the capacity. However, if two attributes are given, the first will be considered the weight and the second will be considered the capacity. Also, if the graph is not connected, \fBsourceNode\fR and \fBsinkNode\fR must be in the same connected component.
+.br .br
+.PP
+.SH DESCRIPTION
+
+\fBnetx-fordFulkersonFlow\fR lists the flow for each edge in the path from \fBsourceNode\fR to \fBsinkNode\fR in the graph. This function uses a software package called NetworkX that must be installed for the function to work.
+.br .P
+.br .P
+.PP
+Example Output:					
+.br .P										Edge		Flow		
+.br .P
+node1 node2	4.0 							
+.br .P
+node2 node3	0.0
+.br .P
+node2 node4	5.0
+.br .P
+.br .P
+.PP
+\fBinputFile\fR is a file in edge-list format that contains only text. It does not have any header information. The nodes can have any name, as long as each node has a unique name (i.e. you can't have two nodes both named "sam" in the same graph). Optionally, after listing the two nodes, various other edge attributes can be assigned. Below are two example input files. The first has no attributes, the second does.
+.br .P
+.PP
+Example One:
+.br .P
+node1 node2 
+.br .P
+node3 node1
+.br .P
+node4 node5
+.br .P
+.br .P
+.PP
+Where there is an edge between the two nodes on the same line.
+.br .P
+.br .P
+.PP
+Example Two:
+.br .P
+node1 node2 4 5
+.br .P
+node3 node1 3.14 3
+.br .P
+node4 node5 2 2
+.br .P
+.br .P
+.PP
+Where there is an edge between the first two entries (nodes) on the same line, the third number is the weight of the edge, and the fourth number is the capacity of the edge.
+.br .P
+.br .P
+.PP
+.br .P
+.br .P
+.PP
+\fBgraphType\fR dictates what type of graph should be read in. There are two possibilities. Directed ('d') or undirected ('u'). These are the only two options.
+.br .P
+.br .P
+.PP
+\fBsourceNode\fR is the source of the flow. It must be the name of a node in the graph.
+.br .P
+.br .P
+.PP
+\fBsinkNode\fR is the sink of the flow. It must be the name of a node in the graph.
+.br .P
+.br .P
+.PP
+.SH EXAMPLE CALL OF FUNCTION
+.br
+\fBDirected Graph:\fR fordFulkersonFlow input.txt d node1 node4
+.br .P
+\fBUndirected Graph:\fR fordFulkersonFlow input.txt u node3 node1
+.br .P
+.br .P
+.PP
+.SH AUTHOR
+
+Zachary Keller
+
+.PP
+July 2012
+
+.PP 
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/hpcvg/

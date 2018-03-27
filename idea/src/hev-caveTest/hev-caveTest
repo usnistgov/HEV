@@ -1,0 +1,27 @@
+#! /bin/bash
+
+export testDIR=$HEVROOT/idea/etc/hev-caveTest/data
+
+
+if [ "$HEVROOT"x == ""x ]
+then
+    echo "HEV environment not defined"
+    exit
+fi
+
+
+cd $testDIR
+
+#echo 543210 | hev-speakDigits &
+
+if [ "$1" == "-q" ]
+then
+    shift
+else
+    echo "You should hear an audio count down from 5 to 0 during start up."
+
+     ./countDown.sh &
+fi
+
+irisfly $* models.iris test.mcp fade.iris holodeck.iris holodeck.mcp
+

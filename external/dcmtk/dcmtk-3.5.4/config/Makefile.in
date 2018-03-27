@@ -1,0 +1,46 @@
+#
+#	Makefile for config
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+
+include @common_makefile@
+
+
+all:
+
+install:
+
+install-bin:
+
+install-doc:
+
+install-etc:
+
+install-include: include-install
+
+install-lib: include-install
+
+install-support:
+
+libsrc-all:
+
+
+include-install:
+	./mkinstalldirs $(includedir)
+	./mkinstalldirs $(includedir)/dcmtk
+	./mkinstalldirs $(includedir)/dcmtk/config
+	$(INSTALL_DATA) include/dcmtk/config/osconfig.h $(includedir)/dcmtk/config
+	$(INSTALL_DATA) include/dcmtk/config/cfunix.h $(includedir)/dcmtk/config
+
+clean:
+	(cd include/dcmtk/config; rm -f $(TRASH))
+	rm -rf $(TRASH)
+
+distclean:
+	(cd include/dcmtk/config; rm -f $(DISTTRASH) cfunix.h)
+	rm -rf $(DISTTRASH) Makefile.def
+
+dependencies:

@@ -1,0 +1,1 @@
+<BOOK NAME="Inv_Mentor" ALIAS="The Inventor Mentor (Addison-Wesley Publishing Company)" SGITYPE="sgi_html" SGIVERSION="860-0106-002, 2/94" SGIBKADDR="techpubs@sgi.com" SGIGROUP="HTML">

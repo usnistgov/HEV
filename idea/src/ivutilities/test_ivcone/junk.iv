@@ -1,0 +1,4 @@
+#Inventor V2.0 ascii
+Separator {
+Cylinder { radius 1 height 2 }
+}

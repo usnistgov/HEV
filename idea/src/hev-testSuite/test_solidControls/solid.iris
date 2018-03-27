@@ -1,0 +1,15 @@
+# modular sphere test SOLID
+
+# load point data set with culling off
+LOAD points0 points0.savg
+CULLING points0 OFF
+ADDCHILD points0 world
+
+# add textured sphere shader
+SHADERPROG points0 V gpuSphere.vert G P TS 4 gpuSphere.geom F sphere0.frag
+
+UNIFORM points0 fatpointSize 0.5
+
+# add texture maps - not needed for SOLID
+#LOAD textures textures.osg
+#MERGESTATE textures points0

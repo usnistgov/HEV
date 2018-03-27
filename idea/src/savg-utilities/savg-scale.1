@@ -1,0 +1,61 @@
+.TH SAVG\-SCALE 1 "17 June 2004"
+.SH NAME
+savg-scale \- SAVG ToolBox: scaling
+.SH SYNOPSIS
+.B savg-scale
+[val] [val] [val]
+.SH DESCRIPTION
+.I Savg-scale
+is used to scale objects represented by savg files.
+It accepts the object from
+.I stdin
+and outputs to 
+.I stdout.
+Eith one or three command line arguments must be present or 
+a usage message will appear and the program will 
+terminate, either a single scale value for all directions,
+or 3 individual scale values for the x, y, and z directions. This value can be any real number.  
+Negative numbers will cause the object to be mirrored 
+over the axis.  As scaling is done in relation to 
+the origin the object may move unexpectedly if it is not 
+on the origin itself.
+.SH OPTIONS
+.TP
+.B val
+This sets the value that scaling will take place in the 
+x, y, and z directions.  It can be any real number.
+.TP
+.B val val val
+This sets the value that scaling will take place in each
+of the x, y, and z directions. It can be any real number.
+By default, savg-scale scales--by approximation--the normal vectors associated with each point.  This option keeps the normals from being scaled.  
+.SH EXAMPLES
+.TP
+.B cat box.savg | savg-scale 5.6 1 1
+This scales 
+.I box.savg
+5.6 units along the x axis and outputs to stdout. 
+.TP
+.B cat box.savg | savg-scale 10 .2 -4
+This scales 
+.I box.savg
+10 units along the \fIx-axis\fP, 0.2 units along the \fIy-axis\fP 
+and scales 4 units along the z axis and flips about the 
+\fIxy-plane\fP.  Then it outputs to stdout.
+.SH BUGS
+savg-scale may do unexpected things if the object to be scaled is not at the origin.
+.SH SEE ALSO
+savg-translate, savg-rotate
+.SH AUTHOR
+Brandon M. Smith
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Summer 2004, modified June 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

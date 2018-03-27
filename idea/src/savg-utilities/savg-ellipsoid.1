@@ -1,0 +1,57 @@
+.TH SAVG\-ELLIPSOID 1 "April 2004"
+.UC 4
+.SH NAME
+savg-ellipsoid
+.SH SYNOPSIS
+.B savg-ellipsoid 
+[val a b c]
+
+.SH DESCRIPTION 
+.I Savg-ellipsoid 
+creates a ellipsoid centered on the origin and writes its data to 
+.I stdout.
+Usage messages are produced when options are incorrectly specified.
+.SH OPTIONS
+.TP
+.B \  val
+Specify the number of polygons requested.  Default is 128. The program
+will return the number of polygons actually used, which will be as
+close to the user request as possible without going over that number.
+The algorithm is based on subdividing an octehedron. The possible number
+of polygons always contains a factor of 8, 8*1^2=8, 8*2^2=32, 8*3^2=72,
+etc.
+.SH OPTIONS
+.TP
+.B \  a
+x dimension
+.SH OPTIONS
+.TP
+.B \  b
+y dimension
+.SH OPTIONS
+.TP
+.B \  c
+z dimension
+.SH EXAMPLES
+.TP
+.B "savg-ellipsoid 4 5 6 7 > ellipsoid.savg"
+This creates a complete white (default) ellipsoid at the origin with 128 3-sided polygons (128 = 8 * 4^2), and dimensions 5,6,7 to 
+.I ellipsoid.savg.
+.PP
+.SH AUTHORS
+.PP
+Adele Peskin
+.TP
+Version 2.0
+.br
+Summer 2004, modified June 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+

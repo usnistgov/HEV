@@ -1,0 +1,24 @@
+.TH savg-octa  1 "January 2009" "NIST/MCSD/SAVG" 
+.SH NAME
+savg-octa
+.SH SYNOPSIS
+.B savg-octa
+[-unit]
+
+.SH DESCRIPTION
+.I savg-octa
+generates a regular octahedron centered at the origin.  
+It writes the data to stdout in .savg format.
+
+By default (i.e. without the -unit option), the octahedron 
+is centered at the origin with all vertices at a distance of 0.5
+units from the origin.
+
+.SH OPTIONS
+.TP
+.B -unit
+Generates the octahedron centered at the origin with all of the
+vertices on the unit sphere.  
+
+.SH SEE ALSO
+savg-tetra, savg-cube, savg-cone, savg-cylinder, savg-sphere

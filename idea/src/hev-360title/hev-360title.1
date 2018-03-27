@@ -1,0 +1,40 @@
+.TH hev-360title 1 "September, 2016" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+hev-360title
+- generate a title "card" for a 360 video
+
+.SH SYNOPSIS
+.B hev-360title
+.I [ -W width ]
+.I [ -H height ]
+.I [ -s 'sub' ] 'main' output
+
+.SH PARAMETERS
+
+.TP
+.B 'main'
+the main title (can contain escaped newlines).
+
+.TP
+.B output
+the prefix of all generated files. The final, stitched image is written to
+output.png and the intermediate cube map images are written to outputFACE.png.
+
+.SH OPTIONS
+
+.TP
+.B -W \fIwidth\fR
+specify the final image width (default is 3840)
+
+.TP
+.B -H \fIheight\fR
+specify the final image height (default is 2160)
+
+.TP
+.B -s \fI'sub'\fR
+specify a subtitle (can contain escaped newlines)
+
+.SH AUTHOR
+Wesley Griffin, <wesley.griffin@nist.gov>
+

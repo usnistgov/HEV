@@ -1,0 +1,54 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-animatorMCP 1 "Jaunary 2013" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-animatorMCP - Create an \fBMCP\fR file for use with
+\fBhev-animator\fR and \fBhev-animatorIRIS\fR
+
+
+.SH SYNOPSIS
+.B "hev-animatorMCP"
+[-h] file.iris ...  > Animator.mcp
+
+.SH DESCRIPTION
+.PP
+.I hev-animatorMCP
+is a convenience command to create a \fB.mcp\fR file on stdout suitable
+for adding an \fIAnimation\fR button to the \fBirisfly\fR master
+control panel.
+
+
+.SH EXAMPLES
+
+.PP 
+Here is an example of manually using \fBhev-animatorIRIS\fR manually.
+Additional examples of how to build an animation sequence and add it
+to the \fBirisfly\fR menu are available at
+$HEVROOT/idea/src/hev-animattorIRIS/example. See the \fIREADME\fR
+found there.
+
+.IP
+hev-animatorIRIS sampleID *.savg > sample.iris
+.IP
+hev-animatorIRIS -nogeometry sampleID *.savg > sample_animator.iris
+.IP
+hev-animatorMCP sample_animator.iris > animator.mcp
+.IP
+irisfly --examine sample.iris animator.mcp
+
+.BUSG
+.PP
+THe output mcp file has a hard coded button label "Animate" and
+"SIZE 85 20".
+
+
+.SH SEE ALSO
+.I
+hev-animator(1), hev-animatorIRIS(1), irisfly(1),
+hev-masterControlPanel(1), iris(1)
+
+
+
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov, NIST/ITL/ACMD/HPCVG

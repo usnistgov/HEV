@@ -1,0 +1,38 @@
+#! /bin/sh
+
+# ivtext - output an iv file of 3D text
+
+usage()
+{
+  echo "Usage: ivtext string"
+  exit
+}
+
+case $# in
+1)
+   string="$1"
+   ;;
+
+*)
+   usage
+   ;;
+esac
+
+
+#echo $r $g $b
+#echo $string
+#exit
+
+
+/bin/cat <<!end
+#Inventor V2.0 ascii
+Separator {
+ Font {
+  name  "Times-Roman"
+  size 2
+ }
+ Text3 {
+   string ["$string"]
+ }
+}
+!end

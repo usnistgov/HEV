@@ -1,0 +1,14 @@
+# This is a bit of a long way around to be able to override the
+# default pointer glyph with an environment variable. And unfortunately,
+# these lines can not be placed in probe.mcp.  The trick here is by
+# using shell echo commands, the full power of bash environment
+# variables can be used. I tried doing the second two line more
+# directly but probably due to timing issues, they need to be routed
+# through the control fifo.
+# -Steve 6/14/2014
+
+
+WAIT echo "LOAD irisflyPointerGlyph ${POINTERGLYPH:-pointerGlyph.osg}" > $IRIS_CONTROL_FIFO  
+WAIT echo "NOCLIP irisflyPointerGlyph" > $IRIS_CONTROL_FIFO  
+WAIT echo "ADDCHILD irisflyPointerGlyph offsetWand" > $IRIS_CONTROL_FIFO  
+

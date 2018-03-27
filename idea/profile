@@ -1,0 +1,72 @@
+# setup script for HEV idea
+hev_idea=$1
+
+if [ -z "$HEV_PROFILE" ] ; then
+    echo "idea This file can not be sourced directly; \$HEVROOT/profile sources this file."
+    return
+fi
+
+if [ "${hev_idea}" == "" ] ; then
+   hev_def_idea_dir="$HEVROOT/idea"
+   hev_spew "warning: no directrory passed, using $hev_def_idea_dir"
+   hev_idea=$hev_def_idea_dir
+   unset hev_def_idea_dir
+fi
+
+if [ ! -d ${hev_idea} ] ; then
+   hev_spew "HEV profile: Error- $hev_idea is not a directory, exiting"
+   return 1
+fi
+
+export HEV_IDEA_DIR="${hev_idea}"
+
+hev_spew_prefix="${hev_idea}/profile: "
+
+# usual path and library stuff
+#sgs if [ -d "${hev_idea}/bin" ] ; then
+   export PATH=`hev_prepend_path "$PATH" ${hev_idea}/bin ":"`
+#sgs fi
+
+#sgs if [ -d "${hev_idea}/lib" ] ; then
+   export LD_LIBRARY_PATH=`hev_prepend_path "$LD_LIBRARY_PATH" ${hev_idea}/lib ":"`
+   # I don't think the below is needed, but I didn't want to remove it -JK
+   # right before leaving NIST
+   export DGL_DSO_PATH=`hev_prepend_path "$DGL_DSO_PATH" ${hev_idea}/lib ":"`
+#sgs fi
+
+#sgs if [ -d "${hev_idea}/data" ] ; then
+   export OSG_FILE_PATH=`hev_prepend_path "$OSG_FILE_PATH" ${hev_idea}/data ":"`
+   export MCP_FILE_PATH=`hev_prepend_path "$MCP_FILE_PATH" ${hev_idea}/data ":"`
+#sgs fi
+
+#sgs if [ -d "${hev_idea}/shader" ] ; then
+   export OSG_FILE_PATH=`hev_prepend_path "$OSG_FILE_PATH" ${hev_idea}/shader ":"`
+#sgs fi
+
+# set DTK_SHAREDMEM_DIR if it's not set
+if [ "$DTK_SHAREDMEM_DIR" == "" ] ; then
+   if [ -x "${hev_idea}/src/hev-testImmersive/hev-testImmersive" ] ; then
+      if [ -d /dev/shm ] ; then
+          hev_dtk_dirname="/dev/shm"
+      else
+          hev_dtk_dirname="/tmp"
+      fi
+      ${hev_idea}/src/hev-testImmersive/hev-testImmersive
+      if [ $? -eq 0 ] ; then
+         export DTK_SHAREDMEM_DIR="${hev_dtk_dirname}/dtkSharedMem"
+      else
+         export DTK_SHAREDMEM_DIR="${hev_dtk_dirname}/dtkSharedMem_${USER}"
+      fi
+      unset hev_dtk_dirname
+   else
+      hev_spew "$hev_spew_prefix executable ${hev_idea}/src/hev-testImmersive/hev-testImmersive not found, not setting DTK_SHAREDMEM_DIR"
+   fi
+fi
+
+# where to find additional config files for dtk service dsos- add in the one for the rave and powerwall wand and flock
+export DTK_SERVICE_CONFIG_PATH=`hev_prepend_path "$DTK_SERVICE_CONFIG_PATH" ${hev_idea}/etc/hev-tracker/data ":"`
+
+# where to find error calibration data for flock
+export DTK_CALIBRATION_CONFIG_PATH=`hev_prepend_path "$DTK_SERVICE_CONFIG_PATH" ${hev_idea}/etc/hev-tracker/data ":"`
+
+unset hev_idea

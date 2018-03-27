@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+
+import sys
+import vtk
+from optparse import OptionParser
+
+def showHelp():
+    sys.stderr.write('\nUsage:\nhev-vtkSmoothMesh [options] inFName outFName\n')
+    sys.exit(1)
+
+use = "Usage: %prog [options] inFName outFName"
+
+# PARSE COMMAND LINE
+parser = OptionParser(usage = use)
+
+# ASSIGN VALUES
+parser.add_option("--smooth", "--s", dest="method", default="sinc")
+parser.add_option("--iter", "--i", dest="iter", type="int", default="20")
+parser.add_option("--fes", "--fe", dest="fes", default="off")
+parser.add_option("--fang", "--fa", dest="fang", type="float", default="45")
+parser.add_option("--eang", "--ea", dest="eang", type="float", default="15")
+parser.add_option("--bs", "--b", dest="bs", default="on")
+parser.add_option("--relax", "--r", dest="relax", type="float", default="0.01")
+parser.add_option("--nms", "--n", dest="nms", default="on")
+
+options, args = parser.parse_args()
+
+if len(args) != 2:
+    showHelp()
+
+inputdatafile = args[0]
+outputdatafile = args[1]
+
+
+# DATA READER
+reader = vtk.vtkGenericDataObjectReader()
+reader.SetFileName(inputdatafile)
+
+# SINC
+if options.method.startswith("s"):
+    smooth = vtk.vtkWindowedSincPolyDataFilter()
+    # NMS
+    if options.nms == "on":
+        smooth.NonManifoldSmoothingOn()
+    else:
+        smooth.NonManifoldSmoothingOff()
+
+# LAPLACIAN
+elif options.method.startswith("l"):
+    smooth = vtk.vtkSmoothPolyDataFilter()
+    # RELAX
+    smooth.SetRelaxationFactor(options.relax)
+
+else:
+    print "--smooth METHOD. METHOD can either be 'sinc' (s) or 'laplacian' (l)"
+    showHelp()
+
+# SETINPUTCONNECTION
+smooth.SetInputConnection(reader.GetOutputPort())
+
+# # OF ITERATIONS
+smooth.SetNumberOfIterations(options.iter)
+
+# FEATURE EDGE SMOOTHING
+if options.fes == "on":
+    smooth.FeatureEdgeSmoothingOn()
+    smooth.SetFeatureAngle(options.fang)
+    smooth.SetEdgeAngle(options.eang)
+
+# BOUNDARY SMOOTHING
+if options.bs == "on":
+    smooth.BoundarySmoothingOn()
+
+# FILEWRITER
+writef = vtk.vtkGenericDataObjectWriter()
+writef.SetFileTypeToASCII()
+writef.SetInput(smooth.GetOutput())
+writef.SetFileName(outputdatafile)
+writef.Write()
+writef.Update()

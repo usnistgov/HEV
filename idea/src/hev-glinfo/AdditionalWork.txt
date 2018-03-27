@@ -1,0 +1,57 @@
+From marc.olano@nist.gov Mon Jul 27 12:55:26 2009
+Date: Mon, 27 Jul 2009 12:54:51 -0400
+From: Marc Olano <marc.olano@nist.gov>
+To: "Satterfield, Steven G." <steven.satterfield@nist.gov>
+Subject: Re: [SAVG] hev-glinfo
+
+    [ The following text is in the "iso-8859-1" character set. ]
+    [ Your display is set for the "US-ASCII" character set.  ]
+    [ Some characters may be displayed incorrectly. ]
+
+Steve Satterfield wrote:
+> For those interested in determining the OpneGL version installed on the 
+> you are running on, I have created a new command: hev-glinfo
+
+Here's a little program I wrote to report some other useful info that 
+doesn't show up in glxinfo. As we write more shaders, it might be useful 
+to extend hev-glinfo with some of this.
+
+
+#define GL_GLEXT_PROTOTYPES
+#include <GL/glut.h>
+#include <stdio.h>
+
+int main(int argc, char **argv)
+{
+     int v1, v2, v3;
+
+     glutInit(&argc, argv);
+     glutCreateWindow("glstats");
+
+     glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS,&v1);
+     glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS,&v2);
+     printf("uniforms\n");
+     printf("  vertex:   %d floats\n", v1);
+     printf("  fragment: %d floats\n", v2);
+
+     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS_ARB, &v1);
+     printf("per-vertex\n");
+     printf("  attrib: %d 4-element vectors\n", v1);
+
+     glGetIntegerv(GL_MAX_VARYING_FLOATS_ARB, &v1);
+     printf("vertex-to-fragment communication\n");
+     printf("  varying: %d floats\n", v1);
+
+     glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB, &v1);
+     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &v2);
+     printf("texture units\n");
+     printf("  vertex:   %d textures\n", v1);
+     printf("  fragment: %d textures\n", v2);
+
+     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &v1);
+     glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &v2);
+     printf("max texture sizes\n");
+     printf("  2D: %d x %d\n", v1,v1);
+     printf("  3D: %d x %d x %d\n", v2,v2,v2);
+     return 0;
+}

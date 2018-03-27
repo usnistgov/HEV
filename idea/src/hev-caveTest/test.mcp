@@ -1,0 +1,152 @@
+# test.mcp
+
+#
+# Preface
+#
+
+COLUMNS 1
+SIZE 140 20
+
+#
+# Models
+#
+RADIOMENU "Model:Off" COLOR .2 1 .2
+    BUTTON Model:SmartGel
+    ON  NODEMASK smartgel  ON
+    OFF NODEMASK  smartgel OFF
+
+    BUTTON Model:GPUspheres
+    ON  NODEMASK gpuSpheres0 ON
+    OFF NODEMASK gpuSpheres0 OFF
+
+
+    BUTTON Model:Wirecube
+    ON  NODEMASK wirecube0 ON
+    OFF NODEMASK wirecube0 OFF
+
+
+    BUTTON Model:TapeMeasure
+    ON  NODEMASK tape0 ON
+    OFF NODEMASK tape0 OFF
+
+    BUTTON Model:Caffeine
+    ON  NODEMASK caffeine0 ON
+    OFF NODEMASK caffeine0 OFF
+
+    BUTTON Model:3Cubes
+    ON  NODEMASK 3cubes0 ON
+    OFF NODEMASK 3cubes0 OFF
+
+    BUTTON "Model:Off"
+    ON  NOOP
+    OFF NOOP
+END
+
+
+
+#
+# GL info
+#
+BUTTON GLinfo
+ON  EXEC ./glinfo.sh on
+OFF EXEC ./glinfo.sh off
+
+
+
+#
+# Audio tests
+#
+
+MENU "Speaker Test" COLOR 1 .2 .2
+
+BUTTON "Audio Left  Test"
+ON EXEC aplay -q left.wav
+
+BUTTON "Audio Right Test"
+ON EXEC aplay -q right.wav
+
+BUTTON "Fade Right to Left"
+ON EXEC "./countDownDisplay.sh"
+
+END
+
+MENU "Speak Digits" COLOR .2 1 1
+
+  BUTTON 0
+  ON EXEC echo 0 | hev-speakDigits
+
+  BUTTON 1
+  ON EXEC echo 1 | hev-speakDigits
+
+  BUTTON -2
+  ON EXEC echo -2 | hev-speakDigits
+
+  BUTTON +3
+  ON EXEC echo +3 | hev-speakDigits
+
+  BUTTON 100
+  ON EXEC echo 1.0e+2 | hev-speakDigits
+
+  BUTTON Pi
+  ON EXEC echo 3.14159265 | hev-speakDigits
+
+
+END
+
+
+#
+# Eye test
+#
+
+BUTTON EyeTest COLOR 1 1 .2
+ON EXEC ./eyeTest.sh 2> /dev/null > /dev/null
+
+OFF EXEC ./killOff.sh eyeTest
+
+#
+# Framelock
+#
+BUTTON Framelock
+ON  EXEC hev-framelock -v on
+OFF EXEC hev-framelock -v off
+
+#
+# Screen Alignment
+#
+
+MENU ScreenAlign COLOR .8 .8 0
+  BUTTON edgeColorTicks
+  ON  EXEC ./alignment.sh edgeColorTicksLabeled.png 
+  ON AFTER TIME 2 EXEC ./kill.sh alignment
+
+  BUTTON tatersall
+  ON EXEC ./alignment.sh tattersallRedBorder.png
+  ON AFTER TIME 2 EXEC ./kill.sh alignment
+END
+
+
+#
+# Label displays
+#
+
+BUTTON "Display ID" COLOR .96 .87 .5
+ON  EXEC ./labelDisplays.sh 2> /dev/null > /dev/null
+OFF EXEC killall labelDisplays.sh
+
+#
+# Wand test
+#
+
+BUTTON "Wand Test" COLOR .91 .45 .32
+FIRST  EXEC ./wandTest.sh  2> /dev/null > /dev/null
+ON     EXEC ./wandTest.sh  2> /dev/null > /dev/null
+OFF    EXEC killall wandTest.sh
+
+FIRST WAIT echo LOAD        pGlyph gnomon.osg  > $IRIS_CONTROL_FIFO
+#FIRST EXEC echo ADDCHILD    pGlyph offsetWand        > $IRIS_CONTROL_FIFO
+FIRST EXEC echo ADDCHILD    pGlyph wand        > $IRIS_CONTROL_FIFO
+ON    EXEC echo NODEMASK    pGlyph ON                > $IRIS_CONTROL_FIFO
+OFF   EXEC echo NODEMASK    pGlyph OFF               > $IRIS_CONTROL_FIFO
+
+
+# End

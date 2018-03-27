@@ -1,0 +1,70 @@
+.TH hev-vtkGridSubset
+.SH NAME
+hev-vtkGridSubset - extract a subset of a grid
+
+.SH SYNOPSIS
+.B hev-vtkGridSubset xmin xmax ymin ymax zmin zmax inFName outFName
+
+.SH DESCRIPTION
+.B hev-vtkGridSubset
+Creates a spatial subset of a VTK grid based on given min/max indices.
+
+.SH PARAMETERS
+.TP
+.B xmin
+Min x index of subset.
+
+.TP
+.B xmax
+Max x index of subset.
+
+.TP
+.B ymin
+Min y index of subset.
+
+.TP
+.B ymax
+Max y index of subset.
+
+.TP
+.B zmin
+Min z index of subset.
+
+.TP
+.B zmax
+Max z index of subset.
+
+.TP
+.B inFName
+Location/filename of input file structured points, structured grid
+or rectilinear grid format.
+
+.TP
+.B outFName
+Location/filename of output file with same format as input.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+  ./hev-vtkGridSubset 5 10 5 10 5 10 structGrid.1.vtk structGrid.1.5_10.vtk
+
+Creates a subset of structGrid.1.vtk at structGrid.1.5_10.vtk of the index
+positions 5 10 along each axis.
+
+
+.SH SEE ALSO
+
+hev-vtkGridResample, vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+June 6th 2012

@@ -1,0 +1,890 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 5. Shapes, Properties, and Binding</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch04.html" title="Chapter 4. Cameras and Lights"><link rel="next" href="ch06.html" title="Chapter 6. Text"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 5. Shapes, Properties, and Binding</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch06.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5452946"></a>Chapter 5. <a name="id16293"></a>Shapes, Properties, and Binding</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Use a variety of shapes in the scene, including complex shapes that use information from coordinate and normal nodes</p>
+</li>
+<li><p>Explain how indexed shapes specify their own order for using coordinate, material, normal, and texture values</p>
+</li>
+<li><p>Experiment with different effects for color values, shininess, and transparency</p>
+</li>
+<li><p>Render a scene using different drawing styles for different parts of the scene</p>
+</li>
+<li><p>Render a scene using different light models</p>
+</li>
+<li><p>Create a scene with fog in it</p>
+</li>
+<li><p>Use the shape hints, complexity, and level-of-detail nodes to speed up performance</p>
+</li>
+<li><p>Experiment with different types of material and normal binding</p>
+</li>
+</ul></div><p>For convenience, shapes are divided into two categories: <i>simple shapes</i> and <i>complex shapes</i>. Simple shapes are self-contained nodes that hold their own geometrical parameters. Complex shapes, in contrast, may refer to other nodes for their coordinates and normals. This chapter also discusses important property nodes, including material, draw-style, and lighting-<br>
+style nodes. Other chapter examples illustrate key concepts pertaining to <a name="idch051"></a><a name="idch052"></a><a name="idch053"></a><i>geometric transformations</i> and to <i>binding nodes</i> for materials and normals.</p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5453093"></a>Simple Shapes<a name="idch054"></a></h2></div></div>
+<p>All shape nodes are derived from the abstract base class <a name="idch055"></a><span class="bold"><b>SoShape</b></span>. Inventor provides the following simple shapes:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Cube (you specify the width, height, and depth)</p>
+</li>
+<li><p>Cone (you specify the height and bottom radius)</p>
+</li>
+<li><p>Sphere (you specify the radius)</p>
+</li>
+<li><p>Cylinder (you specify the height and the radius)</p>
+</li>
+</ul></div><p><a href="ch05.html#id20071">Figure 5-1</a> shows the portion of the class tree that contains shape classes.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5453162"></a>Complex Shapes</h2></div></div>
+<p>Complex shapes, such as triangle strip sets and face sets, require at least a set of coordinates. If the lighting is set to PHONG, complex shapes also require a set of surface normals, as shown in <a name="idch056"></a><a name="idch057"></a><a href="ch05.html#id36621">Figure 5-2</a>.  Coordinates and normals are defined by separate nodes in the scene graph so that this information can be shared by other nodes.</p>
+<p>Examples of complex shapes include the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Face set, indexed face set</p>
+</li>
+<li><p>Line set, indexed line set</p>
+</li>
+<li><p>Triangle strip set, indexed triangle strip set</p>
+</li>
+<li><p>Point set</p>
+</li>
+<li><p>Quad mesh</p>
+</li>
+<li><p>NURBS curve and surface</p>
+<p><div class="figure"><p><a name="id5453327"></a><b>Figure 5-1. <a name="id20071"></a><a name="idch058"></a>Shape-Node Classes</b></p>
+<div class="mediaobject"><img src="figures/3.2ShapeNodes.gif"></div></div><br>
+</p>
+</li>
+</ul></div><p>An <a name="idch059"></a><span class="bold"><b>SoCoordinate3</b></span> node sets the current coordinates in the rendering state to the specified points. This node contains one field (<span class="bold"><b>point</b></span>), which is of type <span class="bold"><b>SoMFVec3f</b></span>. For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SbVec3f 				verts[6];
+SoCoordinate3			 *coord = new SoCoordinate3;
+// ...Initialize vertices array ...
+coord-&gt;point.setValues(0, 6, verts);
+</pre></td></tr></table><p>An <a name="idch0510"></a><span class="bold"><b>SoNormal</b></span> node sets the current surface normals in the rendering state<br>
+to the specified vectors. This node contains one field, vector, of type <span class="bold"><b>SoMFVec3f</b></span>.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Normals can also be generated automatically by Inventor, in which case you do not need an <a name="idch0511"></a><span class="bold"><b>SoNormal</b></span> node. See <a href="ch05.html#id26917">&#8220;Generating Normals Automatically&#8221;</a> for further information.
+</td></tr></table><hr noshade="noshade"></div><p><div class="figure"><p><a name="id5453472"></a><b>Figure 5-2. <a name="id36621"></a>Nodes Used to Create a Simple Indexed Face Set</b></p>
+<div class="mediaobject"><img src="figures/fig5.2.gif"></div></div><br>
+</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5453493"></a>Face Set<a name="idch0512"></a></h3></div></div>
+<p>An <a name="idch0513"></a><span class="bold"><b>SoFaceSet</b></span> is a shape node that represents a polygonal object formed by constructing faces out of the current coordinates, current normals, current materials, and current textures. It uses the values within each node in the order they are given. (To use coordinates, normals, and materials in a different order, use the <a name="idch0514"></a><span class="bold"><b>SoIndexedFaceSet</b></span> node, described in the next section.)</p>
+<p><a href="ch05.html#id28290">Example 5-1</a> creates an obelisk using a face set composed of eight faces. The scene graph for this example is shown in <a name="idch0515"></a><a href="ch05.html#id10229">Figure 5-3</a>. Ignore the normal binding node for now. This node is explained in <a href="ch05.html#id33796">&#8220;Binding Nodes&#8221;.</a>  <a href="ch05.html#id12275">&#8220;Face-Set Example&#8221;</a>shows the image created by this example.</p>
+<p><div class="figure"><p><a name="id5453768"></a><b>Figure 5-3. <a name="id10229"></a>Scene Graph for Face Set Example</b></p>
+<div class="mediaobject"><img src="figures/5-3.gif"></div></div><br>
+<a name="id12275"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/05.4.FaceSet.iv"><div class="caption"><p>Face-Set Example</p>
+</div></a></blockquote></div>
+</p>
+<div class="example"><p><a name="id5453808"></a><b>Example 5-1. <a name="id28290"></a>Creating a Face Set</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+//  Eight polygons. The first four are triangles 
+//  The second four are quadrilaterals for the sides.
+static float vertices[28][3] =
+{
+   { 0, 30, 0}, {-2,27, 2}, { 2,27, 2},            //front tri
+   { 0, 30, 0}, {-2,27,-2}, {-2,27, 2},            //left  tri
+   { 0, 30, 0}, { 2,27,-2}, {-2,27,-2},            //rear  tri
+   { 0, 30, 0}, { 2,27, 2}, { 2,27,-2},            //right tri
+   {-2, 27, 2}, {-4,0, 4}, { 4,0, 4}, { 2,27, 2},  //front quad
+   {-2, 27,-2}, {-4,0,-4}, {-4,0, 4}, {-2,27, 2},  //left  quad
+   { 2, 27,-2}, { 4,0,-4}, {-4,0,-4}, {-2,27,-2},  //rear  quad
+   { 2, 27, 2}, { 4,0, 4}, { 4,0,-4}, { 2,27,-2}   //right quad
+};
+
+// Number of vertices in each polygon:
+static long numvertices[8] = {3, 3, 3, 3, 4, 4, 4, 4};
+
+// Normals for each polygon:
+static float norms[8][3] =
+{ 
+   {0, .555,  .832}, {-.832, .555, 0}, //front, left tris
+   {0, .555, -.832}, { .832, .555, 0}, //rear, right tris
+   {0, .0739,  .9973}, {-.9972, .0739, 0},//front, left quads
+   {0, .0739, -.9973}, { .9972, .0739, 0},//rear, right quads
+};
+
+SoSeparator *
+makeObeliskFaceSet()
+{
+   SoSeparator *obelisk = new SoSeparator();
+   obelisk-&gt;ref();
+
+   // Define the normals used:
+   SoNormal *myNormals = new SoNormal;
+   myNormals-&gt;vector.setValues(0, 8, norms);
+   obelisk-&gt;addChild(myNormals);
+   SoNormalBinding *myNormalBinding = new SoNormalBinding;
+   myNormalBinding-&gt;value = SoNormalBinding::PER_FACE;
+   obelisk-&gt;addChild(myNormalBinding);
+
+   // Define material for obelisk
+   SoMaterial *myMaterial = new SoMaterial;
+   myMaterial-&gt;diffuseColor.setValue(.4, .4, .4);
+   obelisk-&gt;addChild(myMaterial);
+
+   // Define coordinates for vertices
+   SoCoordinate3 *myCoords = new SoCoordinate3;
+   myCoords-&gt;point.setValues(0, 28, vertices);
+   obelisk-&gt;addChild(myCoords);
+
+   // Define the FaceSet
+   SoFaceSet *myFaceSet = new SoFaceSet;
+   myFaceSet-&gt;numVertices.setValues(0, 8, numvertices);
+   obelisk-&gt;addChild(myFaceSet);
+
+   obelisk-&gt;unrefNoDelete();
+   return obelisk;
+}
+</pre></td></tr></table><br><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	When you construct a scene graph, be sure that you have used as few nodes as possible to accomplish your goals. For example, to create a multifaceted polygonal shape, it's best to put all the coordinates for the shape into one <span class="bold"><b>SoCoordinate</b></span> node and put the description of all the face sets into a single <span class="bold"><b>SoFaceSet</b></span> (or <span class="bold"><b>SoIndexedFaceSet</b></span>) node rather than using multiple nodes for each face.<a name="idch0516"></a>
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5453910"></a>Indexed Face Set<a name="idch0517"></a></h3></div></div>
+<p>An <a name="idch0518"></a><span class="bold"><b>SoIndexedFaceSet</b></span> node is a shape node that represents a polygonal object formed by constructing faces out of the current coordinates, using the current surface normals, current materials, and current texture. In contrast to the <span class="bold"><b>SoFaceSet</b></span> node, this node can use those values in any order. This node class contains four fields with indices that specify the ordering:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>coordIndex </b></span>(SoMFLong)</span></td><td width="10"> </td><td><p><br>
+contains indices into the coordinates list. These indices connect coordinates to form a set of faces. A value of SO_END_FACE_INDEX (-1) indicates the end of one  face and the start of the next face. This field is always used.<a name="idch0519"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>materialIndex </b></span>(SoMFLong)</span></td><td width="10"> </td><td><p><br>
+contains indices into the current material(s) for the materials of the face set. This field is used only when some type of indexed material binding is specified in the <a name="idch0520"></a><span class="bold"><b>SoMaterialBinding</b></span> node. See <a href="ch05.html#id33796">&#8220;Binding Nodes&#8221;</a>. </p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>normalIndex </b></span>(SoMFLong)</span></td><td width="10"> </td><td><p><br>
+contains indices into the current normals for the vertices of the face set. This field is used only when indexed normal binding (either per vertex or per face) is specified in the <a name="idch0521"></a><span class="bold"><b>SoNormalBinding</b></span> node. See <a href="ch05.html#id33796">&#8220;Binding Nodes&#8221;</a>.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>textureCoordIndex </b></span>(SoMFLong)</span></td><td width="10"> </td><td><p><br>
+contains indices of the texture coordinates that are applied to the shape (see <a name="idch0522"></a><a href="ch07.html#id39277">Chapter 7</a>).</p>
+
+</td></tr></table></div><p>Be sure that the indices contained in the indexed face set can actually be found in the coordinates and normals lists, or errors will occur.</p>
+<div class="note"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/note.png"></td><td align="left" valign="top"><b>Note: </b>	If you use the <a name="idch0523"></a><span class="bold"><b>SoShapeHints</b></span> node to specify that the vertices are  counterclockwise, you must specify the vertex indices according to the <i></i><a name="idch0524"></a><i>right-hand rule</i>. The right-hand rule states that if you place the fingers of your right hand around the face following the direction in which the vertices are specified, your thumb points in the general direction of the geometric normal. Alternatively, you can specify the vertices in clockwise order. In this case, the direction of the geometric normal is determined by the left-hand rule.<a name="idch0525"></a>
+</td></tr></table><hr noshade="noshade"></div><p><a href="ch05.html#id19917">Example 5-2</a> creates the first stellation of the dodecahedron from an indexed face set. Each of the twelve intersecting faces is a pentagon. The scene graph diagram for this example is shown in <a name="idch0526"></a><a name="idch0527"></a><a href="ch05.html#id30625">Figure 5-4</a>.  <a href="ch05.html#id40495">&#8220;Indexed Face-Set Example&#8221;</a> shows the image created by this example.</p>
+<p><div class="figure"><p><a name="id5454285"></a><b>Figure 5-4. <a name="id30625"></a>Scene Graph for Indexed Face-Set Example</b></p>
+<div class="mediaobject"><img src="figures/5-5.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5454326"></a><b>Example 5-2. <a name="id19917"></a>Creating an Indexed Face Set</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Positions of all of the vertices:
+//
+static float vertexPositions[12][3] =
+{
+   { 0.0000,  1.2142,  0.7453},  // top
+
+   { 0.0000,  1.2142, -0.7453},  // points surrounding top
+   {-1.2142,  0.7453,  0.0000},
+   {-0.7453,  0.0000,  1.2142}, 
+   { 0.7453,  0.0000,  1.2142}, 
+   { 1.2142,  0.7453,  0.0000},
+
+   { 0.0000, -1.2142,  0.7453},  // points surrounding bottom
+   {-1.2142, -0.7453,  0.0000}, 
+   {-0.7453,  0.0000, -1.2142},
+   { 0.7453,  0.0000, -1.2142}, 
+   { 1.2142, -0.7453,  0.0000}, 
+
+   { 0.0000, -1.2142, -0.7453}, // bottom
+};
+</pre></td></tr></table><p><a name="id40495"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/05.6.IndexedFaceSet.iv"><div class="caption"><p>Indexed Face-Set Example</p>
+</div></a></blockquote></div>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+
+// Connectivity, information; 12 faces with 5 vertices each },
+// (plus the end-of-face indicator for each face):
+
+static long indices[72] =
+{
+   1,  2,  3,  4, 5, SO_END_FACE_INDEX, // top face
+
+   0,  1,  8,  7, 3, SO_END_FACE_INDEX, // 5 faces about top
+   0,  2,  7,  6, 4, SO_END_FACE_INDEX,
+   0,  3,  6, 10, 5, SO_END_FACE_INDEX,
+   0,  4, 10,  9, 1, SO_END_FACE_INDEX,
+   0,  5,  9,  8, 2, SO_END_FACE_INDEX, 
+
+    9,  5, 4, 6, 11, SO_END_FACE_INDEX, // 5 faces about bottom
+   10,  4, 3, 7, 11, SO_END_FACE_INDEX,
+    6,  3, 2, 8, 11, SO_END_FACE_INDEX,
+    7,  2, 1, 9, 11, SO_END_FACE_INDEX,
+    8,  1, 5,10, 11, SO_END_FACE_INDEX,
+
+    6,  7, 8, 9, 10, SO_END_FACE_INDEX, // bottom face
+};
+ 
+// Colors for the 12 faces
+static float colors[12][3] =
+{
+   {1.0, .0, 0}, { .0,  .0, 1.0}, {0, .7,  .7}, { .0, 1.0,  0},
+   { .7, .7, 0}, { .7,  .0,  .7}, {0, .0, 1.0}, { .7,  .0, .7},
+   { .7, .7, 0}, { .0, 1.0,  .0}, {0, .7,  .7}, {1.0,  .0,  0}
+};
+
+// Routine to create a scene graph representing a dodecahedron
+SoSeparator *
+makeStellatedDodecahedron()
+{
+   SoSeparator *result = new SoSeparator;
+   result-&gt;ref();
+
+   // Define colors for the faces
+   SoMaterial *myMaterials = new SoMaterial;
+   myMaterials-&gt;diffuseColor.setValues(0, 12, colors);
+   result-&gt;addChild(myMaterials);
+   SoMaterialBinding *myMaterialBinding = new SoMaterialBinding;
+   myMaterialBinding-&gt;value = SoMaterialBinding::PER_FACE;
+   result-&gt;addChild(myMaterialBinding);
+
+   // Define coordinates for vertices
+
+   // Define coordinates for vertices
+   SoCoordinate3 *myCoords = new SoCoordinate3;
+   myCoords-&gt;point.setValues(0, 12, vertexPositions);
+   result-&gt;addChild(myCoords);
+
+   // Define the IndexedFaceSet, with indices into
+   // the vertices:
+   SoIndexedFaceSet *myFaceSet = new SoIndexedFaceSet;
+   myFaceSet-&gt;coordIndex.setValues(0, 72, indices);
+   result-&gt;addChild(myFaceSet);
+
+   result-&gt;unrefNoDelete();
+   return result;
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5454432"></a>Triangle Strip Set</h3></div></div>
+<p>The <a name="idch0528"></a><span class="bold"><b>SoTriangleStripSet</b></span> node constructs triangle strips out of the vertices located at the current coordinates.  It is one of the fastest ways to draw polygonal objects in Inventor. The triangle strip set uses the current coordinates, in order, starting at the index specified by the <a name="idch0529"></a><a name="idch0530"></a><span class="bold"><b>startIndex</b></span> field. (If no index is specified, it starts at the first index.)</p>
+<p>The <span class="bold"><b>numVertices</b></span> field indicates the number of vertices to use for each triangle strip in the set. The triangle strip set is described as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+static long numVertices[2] =
+{
+   32, // flag
+   8   // pole
+};
+SoTriangleStripSet *myStrips = new SoTriangleStripSet;
+myStrips-&gt;numVertices.setValues(0, 2, numVertices);
+</pre></td></tr></table><p>Because the <span class="bold"><b>numVertices</b></span> field contains an array with two values, two triangle strips are created.  The first strip (the flag) is made from the first 32 coordinate values. The second strip (the flagpole) is made from the next 8 coordinates. Face 0 determines the vertex ordering&#8212;in this case, counterclockwise.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Triangle strip sets and quad meshes are generally faster to render than face sets.<a name="idch0531"></a>
+</td></tr></table><hr noshade="noshade"></div><p><a href="ch05.html#id77118">Example 5-3</a> shows the code for creating a pennant-shaped flag. <a href="ch05.html#id21318">Figure 5-5</a> shows the scene graph for this example.   <a name="idch0532"></a><a href="ch05.html#id87769">&#8220;Triangle Strip Set Example&#8221;</a> shows the resulting image.</p>
+<p><div class="figure"><p><a name="id5454658"></a><b>Figure 5-5. <a name="id21318"></a>Scene Graph for Triangle Strip Set Example</b></p>
+<div class="mediaobject"><img src="figures/5-7.gif"></div></div><br>
+<a name="id87769"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/fig5_8.iv"><div class="caption"><p>Triangle Strip Set Example</p>
+</div></a></blockquote></div>
+</p>
+<p>
+</p>
+<p>
+<div class="example"><p><a name="id5454705"></a><b>Example 5-3. <a name="id77118"></a>Creating a Triangle Strip Set</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Positions of all of the vertices:
+
+static float vertexPositions[40][3] =
+{
+   {  0,   12,    0 }, {   0,   15,    0},
+   {2.1, 12.1,  -.2 }, { 2.1, 14.6,  -.2},
+   {  4, 12.5,  -.7 }, {   4, 14.5,  -.7},
+   {4.5, 12.6,  -.8 }, { 4.5, 14.4,  -.8},
+   {  5, 12.7,   -1 }, {   5, 14.4,   -1},
+   {4.5, 12.8, -1.4 }, { 4.5, 14.6, -1.4},
+   {  4, 12.9, -1.6 }, {   4, 14.8, -1.6},
+   {3.3, 12.9, -1.8 }, { 3.3, 14.9, -1.8},
+   {  3,   13, -2.0 }, {   3, 14.9, -2.0}, 
+   {3.3, 13.1, -2.2 }, { 3.3, 15.0, -2.2},
+   {  4, 13.2, -2.5 }, {   4, 15.0, -2.5},
+   {  6, 13.5, -2.2 }, {   6, 14.8, -2.2},
+   {  8, 13.4,   -2 }, {   8, 14.6,   -2},
+   { 10, 13.7, -1.8 }, {  10, 14.4, -1.8},
+   { 12,   14, -1.3 }, {  12, 14.5, -1.3},
+   { 15, 14.9, -1.2 }, {  15,   15, -1.2},
+
+   {-.5, 15,   0 }, { -.5, 0,   0},   // the flagpole
+   {  0, 15,  .5 }, {   0, 0,  .5},
+   {  0, 15, -.5 }, {   0, 0, -.5},
+   {-.5, 15,   0 }, { -.5, 0,   0}
+};
+
+
+// Number of vertices in each strip.
+static long numVertices[2] =
+{
+   32, // flag
+   8   // pole
+};
+ 
+// Colors for the 12 faces
+static float colors[2][3] =
+{
+   { .5, .5,  1 }, // purple flag
+   { .4, .4, .4 }, // grey flagpole
+};
+
+// Routine to create a scene graph representing a pennant.
+SoSeparator *
+makePennant()
+{
+   SoSeparator *result = new SoSeparator;
+   result-&gt;ref();
+
+   // A shape hints tells the ordering of polygons. 
+   // This ensures double-sided lighting.
+   SoShapeHints *myHints = new SoShapeHints;
+   myHints-&gt;vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
+   result-&gt;addChild(myHints);
+
+   // Define colors for the strips
+   SoMaterial *myMaterials = new SoMaterial;
+   myMaterials-&gt;diffuseColor.setValues(0, 2, colors);
+   result-&gt;addChild(myMaterials);
+   SoMaterialBinding *myMaterialBinding = new SoMaterialBinding;
+   myMaterialBinding-&gt;value = SoMaterialBinding::PER_PART;
+   result-&gt;addChild(myMaterialBinding);
+
+   // Define coordinates for vertices
+   SoCoordinate3 *myCoords = new SoCoordinate3;
+   myCoords-&gt;point.setValues(0, 40, vertexPositions);
+   result-&gt;addChild(myCoords);
+
+   // Define the TriangleStripSet, made of two strips.
+   SoTriangleStripSet *myStrips = new SoTriangleStripSet;
+   myStrips-&gt;numVertices.setValues(0, 2, numVertices);
+   result-&gt;addChild(myStrips);
+
+   result-&gt;unrefNoDelete();
+   return result;
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5454796"></a>Quad Mesh</h3></div></div>
+<p>The <a name="idch0533"></a><span class="bold"><b>SoQuadMesh</b></span> node constructs quadrilaterals from the vertices located at the current coordinates. It uses the coordinates in order, starting at the index specified by the <span class="bold"><b>startIndex</b></span> field. (If no index is specified, it starts at the first index.)</p>
+<p>The <span class="bold"><b>verticesPerColumn</b></span> and <span class="bold"><b>verticesPerRow</b></span> fields indicate the number of vertices in the columns and rows of the mesh. <a href="ch05.html#id61821">Example 5-4</a> creates a quad mesh as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoQuadMesh *myQuadMesh = new SoQuadMesh;
+myQuadMesh-&gt;verticesPerRow = 12;
+myQuadMesh-&gt;verticesPerColumn = 5;
+</pre></td></tr></table><p>Each row in this quad mesh contains 12 vertices. Each column contains 5 vertices. <a href="ch05.html#id40109">Figure 5-6</a> shows the scene graph for this example.  <a href="ch05.html#id58425">&#8220;Quad Mesh Example&#8221;</a> shows the resulting image.</p>
+<p><div class="figure"><p><a name="id5454895"></a><b>Figure 5-6. <a name="id40109"></a>Scene Graph for Quad Mesh Example</b></p>
+<div class="mediaobject"><img src="figures/5-9.gif"></div></div><br>
+<a name="id58425"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/fig5_10.iv"><div class="caption"><p>Quad Mesh Example</p>
+</div></a></blockquote></div>
+</p>
+<p>
+</p>
+<p>
+<div class="example"><p><a name="id5454960"></a><b>Example 5-4. <a name="id61821"></a><a name="idch0534"></a>Creating a Quad Mesh</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Positions of all of the vertices:
+
+static float vertexPositions[160][3] =
+{  // 1st row
+   {-13.0,  0.0, 1.5}, {-10.3, 13.7, 1.2}, { -7.6, 21.7, 1.0}, 
+   { -5.0, 26.1, 0.8}, { -2.3, 28.2, 0.6}, { -0.3, 28.8, 0.5},
+   {  0.3, 28.8, 0.5}, {  2.3, 28.2, 0.6}, {  5.0, 26.1, 0.8}, 
+   {  7.6, 21.7, 1.0}, { 10.3, 13.7, 1.2}, { 13.0,  0.0, 1.5},
+   // 2nd row
+   {-10.0,  0.0, 1.5}, { -7.9, 13.2, 1.2}, { -5.8, 20.8, 1.0}, 
+   { -3.8, 25.0, 0.8}, { -1.7, 27.1, 0.6}, { -0.2, 27.6, 0.5},
+   {  0.2, 27.6, 0.5}, {  1.7, 27.1, 0.6}, {  3.8, 25.0, 0.8}, 
+   {  5.8, 20.8, 1.0}, {  7.9, 13.2, 1.2}, { 10.0,  0.0, 1.5},
+   // 3rd row
+   {-10.0,  0.0,-1.5}, { -7.9, 13.2,-1.2}, { -5.8, 20.8,-1.0}, 
+   { -3.8, 25.0,-0.8}, { -1.7, 27.1,-0.6}, { -0.2, 27.6,-0.5},
+   {  0.2, 27.6,-0.5}, {  1.7, 27.1,-0.6}, {  3.8, 25.0,-0.8}, 
+   {  5.8, 20.8,-1.0}, {  7.9, 13.2,-1.2}, { 10.0,  0.0,-1.5},
+   // 4th row 
+   {-13.0,  0.0,-1.5}, {-10.3, 13.7,-1.2}, { -7.6, 21.7,-1.0}, 
+   { -5.0, 26.1,-0.8}, { -2.3, 28.2,-0.6}, { -0.3, 28.8,-0.5},
+   {  0.3, 28.8,-0.5}, {  2.3, 28.2,-0.6}, {  5.0, 26.1,-0.8}, 
+   {  7.6, 21.7,-1.0}, { 10.3, 13.7,-1.2}, { 13.0,  0.0,-1.5},
+   // 5th row
+   {-13.0,  0.0, 1.5}, {-10.3, 13.7, 1.2}, { -7.6, 21.7, 1.0}, 
+   { -5.0, 26.1, 0.8}, { -2.3, 28.2, 0.6}, { -0.3, 28.8, 0.5},
+   {  0.3, 28.8, 0.5}, {  2.3, 28.2, 0.6}, {  5.0, 26.1, 0.8}, 
+   {  7.6, 21.7, 1.0}, { 10.3, 13.7, 1.2}, { 13.0,  0.0, 1.5}
+};
+
+// Routine to create a scene graph representing an arch.
+SoSeparator *
+makeArch()
+{
+   SoSeparator *result = new SoSeparator;
+   result-&gt;ref();
+
+   // Define the material
+   SoMaterial *myMaterial = new SoMaterial;
+   myMaterial-&gt;diffuseColor.setValue(.78, .57, .11);
+   result-&gt;addChild(myMaterial);
+
+   // Define coordinates for vertices
+   SoCoordinate3 *myCoords = new SoCoordinate3;
+   myCoords-&gt;point.setValues(0, 60, vertexPositions);
+   result-&gt;addChild(myCoords);
+
+   // Define the QuadMesh.
+   SoQuadMesh *myQuadMesh = new SoQuadMesh;
+   myQuadMesh-&gt;verticesPerRow = 12;
+
+   myQuadMesh-&gt;verticesPerColumn = 5;
+   result-&gt;addChild(myQuadMesh);
+
+   result-&gt;unrefNoDelete();
+   return result;
+}
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5455075"></a>Property Nodes<a name="idch0535"></a><a name="idch0536"></a></h2></div></div>
+<p>This section describes a number of important property classes, all of which are derived from <span class="bold"><b>SoNode</b></span>:</p>
+<div class="itemizedlist"><ul type="disc"><li><p><a name="idch0537"></a><span class="bold"><b>SoMaterial</b></span>, which sets the ambient color, diffuse color, specular color, emissive color, shininess, and transparency of the current material</p>
+</li>
+<li><p><a name="idch0538"></a><span class="bold"><b>SoDrawStyle</b></span>, which tells shape nodes which drawing technique to use during rendering</p>
+</li>
+<li><p><a name="idch0539"></a><span class="bold"><b>SoLightModel</b></span>, which tells shape nodes how to compute lighting calculations during rendering</p>
+</li>
+<li><p><span class="bold"><b>SoEnvironment<a name="idch0540"></a></b></span>, which allows you to simulate various atmospheric effects, such as fog, haze, pollution, and smoke, and to describe other global environmental attributes such as ambient lighting and light attenuation</p>
+</li>
+<li><p><a name="idch0541"></a><span class="bold"><b>SoShapeHints</b></span>, which provides additional information regarding vertex shapes to allow Inventor to optimize certain rendering features</p>
+</li>
+<li><p><a name="idch0542"></a><span class="bold"><b>SoComplexity</b></span>, which allows you to specify the extent to which shape objects are subdivided into polygons, as well as the general degree of texture complexity and level of detail<a name="idch0543"></a></p>
+</li>
+<li><p><a name="idch0544"></a><span class="bold"><b>SoUnits</b></span>, which allows you to define a standard unit of measurement for all subsequent shapes in the scene graph</p>
+</li>
+</ul></div><p>Each of these classes affects different elements of the rendering state, as described later in this section. <a href="ch05.html#id42030">Figure 5-7</a> shows the portion of the class tree for property nodes.</p>
+<p><div class="figure"><p><a name="id5455300"></a><b>Figure 5-7. <a name="id42030"></a><a name="idch0545"></a>Property-Node Classes</b></p>
+<div class="mediaobject"><img src="figures/5.11PropertyNode.gif"></div></div><br>
+</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5455324"></a><a name="id35315"></a>Material Node<a name="idch0546"></a></h3></div></div>
+<p>An <span class="bold"><b>SoMaterial </b></span>node includes the following fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><a name="idch0547"></a><span class="bold"><b>ambientColor </b></span>(SoMFColor)</span></td><td width="10"> </td><td><p><br>
+reflected color of an object in response to the ambient lighting in the scene. The default value for this field is [0.2, 0.2, 0.2]. </p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0548"></a><span class="bold"><b>diffuseColor </b></span>(SoMFColor)</span></td><td width="10"> </td><td><p><br>
+an object's base color. The default value for this field is <br>
+[0.8, 0.8, 0.8].</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0549"></a><span class="bold"><b>specularColor </b></span>(SoMFColor)</span></td><td width="10"> </td><td><p><br>
+reflective quality of an object's highlights. The default value for this field is [0.0, 0.0, 0.0].</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0550"></a><span class="bold"><b>emissiveColor </b></span>(SoMFColor)</span></td><td width="10"> </td><td><p><br>
+light produced by an object. The default value for this field is [0.0, 0.0, 0.0].</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0551"></a><span class="bold"><b>shininess </b></span>(SoMFFloat)</span></td><td width="10"> </td><td><p><br>
+degree of shininess of an object's surface, ranging from 0.0 for a diffuse surface with no shininess to a maximum of 1.0 for a highly polished surface. The default value for this field is 0.2.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0552"></a><span class="bold"><b>transparency </b></span>(SoMFFloat)</span></td><td width="10"> </td><td><p><br>
+degree of transparency of an object's surface, ranging from 0.0 for an opaque surface to 1.0 for a completely transparent surface. The default value for this field is 0.0.</p>
+
+</td></tr></table></div><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	The transparency type is specified in the render action (see <a name="idch0553"></a><a href="ch09.html#id14375">Chapter 9</a>).
+</td></tr></table><hr noshade="noshade"></div><p>An example of setting values in an <span class="bold"><b>SoMaterial</b></span> node is the following:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoMaterial *gold	  = new SoMaterial;
+//Set material values
+gold-&gt;ambientColor.setValue(.3, .1, .1);
+gold-&gt;diffuseColor.setValue(.8, .7, .2);
+gold-&gt;specularColor.setValue(.4, .3, .1);
+gold-&gt;shininess = .4;
+</pre></td></tr></table><p>Since gold is opaque, you can use the default value of 0.0 for the transparency field.</p>
+<p><a name="idch0554"></a><span class="bold"><b>SoBaseColor</b></span>, another class derived from <a name="idch0555"></a><span class="bold"><b>SoNode</b></span>, replaces only the diffuse color field of the current material and has no effect on other material fields.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>If you are changing only the diffuse color of an object, use an <a name="idch0556"></a><span class="bold"><b>SoBaseColor<a name="idch0557"></a></b></span> node in place of an <span class="bold"><b>SoMaterial</b></span> node. For example, to represent a complex terrain that uses many different diffuse colors, use one <span class="bold"><b>SoMaterial</b></span> node for the ambient, specular, and emissive color values, and then use one <span class="bold"><b>SoBaseColor</b></span> node with multiple values for the changing diffuse colors. The <span class="bold"><b>SoBaseColor</b></span> class is also useful when the light model is BASE_COLOR (see <a href="ch05.html#id20912">&#8220;Light-Model Node&#8221;</a>).
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5455718"></a>Draw-Style Node<a name="idch0558"></a></h3></div></div>
+<p>An <span class="bold"><b>SoDrawStyle</b></span> node includes the following fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>style <a name="idch0559"></a></b></span>(SoSFEnum)</span></td><td width="10"> </td><td><p>current drawing style. Values for this field are</p>
+
+</td></tr><tr valign="top"><td><span class="term"></span></td><td width="10"> </td><td><p>SoDrawStyle::FILLED<br>
+filled regions (default)<br>
+<br>
+	SoDrawStyle::LINES<br>
+nonfilled outlines<br>
+<br>
+	SoDrawStyle::POINTS<br>
+points<br>
+<br>
+	SoDrawStyle::INVISIBLE<br>
+not drawn at all</p>
+
+</td></tr><tr valign="top"><td><span class="term">pointSize (SoSFFloat)<a name="idch0560"></a></span></td><td width="10"> </td><td><p><br>
+(for POINTS style) radius of points, in printer's points. The default value is 0.0.  A value of 0.0 indicates to use the fastest value for rendering, which is typically 1.0. If this value is not 0.0, the point size is scaled by the amount required to keep it a constant size, which depends on the pixels per inch of the viewport region.</p>
+
+</td></tr></table></div><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>Draw-style LINES and POINTS look best with a BASE_COLOR lighting model.
+</td></tr></table><hr noshade="noshade"></div><br><div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>lineWidth <a name="idch0561"></a></b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+(for LINES style)  line width, in printer's points (1 inch = 72.27 printer's points). Values can range from 0.0 to 256.0. The default value is 0.0, which indicates to use the fastest value for rendering.<a name="idch0562"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>linePattern </b></span>(SoSFUShort)</span></td><td width="10"> </td><td><p><br>
+(for LINES style) current line-stipple pattern. Values can range from 0 (invisible) to 0xffff (solid). The default value is 0xffff.<a name="idch0563"></a></p>
+
+</td></tr></table></div><p> <a href="ch05.html#id67268">&#8220;Drawing Styles (FILLED, LINES, POINTS)&#8221;</a> shows the same object rendered in different drawing styles.</p>
+<p><a name="id67268"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/05.12.DrawStyle.iv"><div class="caption"><p>Drawing Styles (FILLED, LINES, POINTS)</p>
+</div></a></blockquote></div>
+</p>
+<p>
+</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5456072"></a><a name="id20912"></a>Light-Model Node</h3></div></div>
+<p>An <a name="idch0564"></a><span class="bold"><b>SoLightModel</b></span> node includes the following field:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>model </b></span>(SoSFEnum)<span class="bold"><b></b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+ <br>
+</b></span>current lighting model applied to all subsequent shape nodes in the scene graph. The lighting model tells the shape node how to compute lighting calculations during rendering. Values for this field are as follows:<a name="idch0565"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"></span></td><td width="10"> </td><td><p>SoLightModel::BASE_COLOR<br>
+ignores light sources and uses only the diffuse color and transparency of the current material.<a name="idch0566"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"></span></td><td width="10"> </td><td><p>SoLightModel::PHONG<br>
+uses the OpenGL Phong lighting model, which takes into account all light sources in the scene and the object's surface orientation with respect to the lights. This lighting model (the default) usually requires at least one light in the scene. (There may be emissive color and ambient lighting also.)<a name="idch0567"></a></p>
+
+</td></tr></table></div><div class="note"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/note.png"></td><td align="left" valign="top"><b>Note: </b>	In Inventor, shading (such as Gouraud or flat) is dictated by the combination of the material specification of the object, the lighting model, and the normal bindings. A shading model is not explicitly specified.<a name="idch0568"></a><a name="idch0569"></a><a name="idch0570"></a>
+</td></tr></table><hr noshade="noshade"></div><p><a href="pr02.html#id74152">Figure In-5</a>  and <a href="pr02.html#id87625">Figure In-6</a> show the same scene with the different lighting models. (<a href="pr02.html#id74152">Figure In-5</a> uses BASE_COLOR, and <a href="pr02.html#id87625">Figure In-6</a> uses PHONG.)</p>
+<p><a name="idch0571"></a><span class="bold"><b>SoMaterial</b></span> and <a name="idch0572"></a><span class="bold"><b>SoBaseColor</b></span> can be used along with any drawing style and any lighting model. In some cases, however, some of the material attributes might be ignored. For example, if you specify BASE_COLOR for the <span class="bold"><b>SoLightModel model<a name="idch0573"></a></b></span> field, only the diffuse color and transparency of the current material are used. But what happens if you specify only a base color (with <span class="bold"><b>SoBaseColor</b></span>) and subsequently select the Phong lighting model for <span class="bold"><b>SoLightModel</b></span>? In this case, Inventor uses the base color for the diffuse color and the default or current material element values for the other <span class="bold"><b>SoMaterial</b></span> fields.</p>
+<div class="note"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/note.png"></td><td align="left" valign="top"><b>Note: </b>	By default, the light model is PHONG.  For images to render correctly, you need to specify normals and light sources. If you  want to see only colored objects, change the light model to BASE_COLOR and use <span class="bold"><b>SoBaseColor</b></span> to specify only the base (diffuse) color.
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5456396"></a>Environment Node<a name="idch0574"></a></h3></div></div>
+<p>You can use the <a name="idch0575"></a><span class="bold"><b>SoEnvironment</b></span> node to simulate various atmospheric effects such as fog, haze, pollution, and smoke. For general purposes, these atmospheric effects are grouped under the term <a name="idch0576"></a><a name="idch0577"></a><i>fog</i>. The difference between fog and haze, for example, is simply the color and density.</p>
+<p>Specifically, the <span class="bold"><b>SoEnvironment</b></span> node allows you to specify the color and intensity of the ambient lighting, the light attenuation for point lights and spotlights, and the type, color, and visibility factor for fog. <a name="idch0578"></a><a href="pr02.html#id21778">Figure In-7</a> shows the effects of an <span class="bold"><b>SoEnvironment</b></span> node. This image uses a value of FOG for the fog type. The <span class="bold"><b>fogColor</b></span> is (0.2, 0.2, 0.46).</p>
+<p>An <span class="bold"><b>SoEnvironment </b></span>node includes the following fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>ambientIntensity </b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+intensity of ambient light in the scene. This field is used with Phong lighting.<a name="idch0579"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>ambientColor</b></span> (SoSFColor)</span></td><td width="10"> </td><td><p><br>
+color of ambient light in the scene. This field is used with Phong lighting.<a name="idch0580"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>attenuation </b></span>(SoSFVec3f)</span></td><td width="10"> </td><td><p><br>
+defines how light drops off with distance from a light source. You can specify squared, linear, and constant attenuation coefficients with respect to the distance of the light from the object's surface. (The three components of the vector are the squared, linear, and constant coefficients, in that order.) This field is used with Phong lighting.<a name="idch0581"></a><a name="idch0582"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>fogType </b></span>(SoSFEnum)</span></td><td width="10"> </td><td><p><br>
+type of fog. Values for this field are <a name="idch0583"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"></span></td><td width="10"> </td><td><p>SoEnvironment::NONE<br>
+no fog (default)<br>
+<br>
+	SoEnvironment::HAZE<br>
+opacity of the fog increases linearly with the distance from the camera<br>
+<br>
+	SoEnvironment::FOG<br>
+opacity of the fog increases exponentially with the distance from the camera<a name="idch0584"></a><a name="idch0585"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"></span></td><td width="10"> </td><td><p>SoEnvironment::SMOKE<br>
+increase in fog opacity is an exponential-squared increase with the distance from the camera<a name="idch0586"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>fogColor</b></span> (SoSFColor)</span></td><td width="10"> </td><td><p><br>
+color of the fog.<a name="idch0587"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>fogVisibility </b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+the distance at which fog totally obscures the objects in the scene. For the default value (0.0), this distance is adjusted to equal the far plane of the camera. Otherwise, it is used as is.<a name="idch0588"></a></p>
+
+</td></tr></table></div><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	For realistic scenes, clear the window to the fog color before drawing the fogged objects (see the <span class="bold"><b>SoXtRenderArea</b></span>::<span class="bold"><b>setBackgroundColor()</b></span> method.)
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5456833"></a>Shape-Hints Node</h3></div></div>
+<p>By default, Inventor does not assume anything about how the vertices in a vertex shape are ordered, whether its surface is closed or open, or whether the faces of the shape are convex or concave. If you know that the vertices are in a consistent order, that the shape is closed, or that the shape faces are convex, you can use the <span class="bold"><b>SoShapeHints</b></span> node to notify Inventor so that it can optimize certain rendering features. </p>
+<p>The <a name="idch0589"></a><span class="bold"><b>SoShapeHints</b></span> node has four fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>vertexOrdering </b></span>(SoSFEnum)<span class="bold"><b></b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+<br>
+</b></span>provides hints about the ordering of the faces of a vertex-based shape derived from <a name="idch0590"></a><span class="bold"><b>SoVertexShape</b></span>. This field describes the ordering of all the vertices of all the faces of the shape when it is viewed from the outside.</p>
+
+</td></tr><tr valign="top"><td><span class="term"></span></td><td width="10"> </td><td><p>Values for this field are</p>
+
+</td></tr><tr valign="top"><td><span class="term"></span></td><td width="10"> </td><td><p>SoShapeHints::UNKNOWN_ORDERING	<br>
+the ordering of the vertices is not known (the default)<br>
+<br>
+		SoShapeHints::CLOCKWISE	<br>
+the vertices for each face are specified in clockwise order<br>
+<br>
+SoShapeHints::COUNTERCLOCKWISE<br>
+the vertices for each face are specified in counterclockwise order<a name="idch0591"></a><a name="idch0592"></a><a name="idch0593"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>shapeType </b></span>(SoSFEnum)</span></td><td width="10"> </td><td><p><br>
+SoShapeHints::UNKNOWN_SHAPE_TYPE<br>
+the shape type is not known (the default)<br>
+<br>
+SoShapeHints::SOLID<br>
+the shape is a solid object (not an open surface)<a name="idch0594"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>faceType </b></span>(SoSFEnum)</span></td><td width="10"> </td><td><p><br>
+SoShapeHints::UNKNOWN_FACE_TYPE<br>
+the face type is not known<br>
+<br>
+SoShapeHints::CONVEX<br>
+all faces of the shape are convex<br>
+(the default)<a name="idch0595"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>creaseAngle</b></span> (SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+used for automatic normal generation. See <a name="idch0596"></a><a href="ch05.html#id26917">&#8220;Generating Normals Automatically&#8221;.</a></p>
+
+</td></tr></table></div><p>If the <span class="bold"><b>shapeType</b></span> is SOLID and the <span class="bold"><b>vertexOrdering</b></span> is either CLOCKWISE or COUNTERCLOCKWISE, Inventor turns on backface culling and turns off two-sided lighting. If the <a name="idch0597"></a><a name="idch0598"></a><span class="bold"><b>shapeType</b></span> is not SOLID and the <span class="bold"><b>vertexOrdering</b></span> is either CLOCKWISE or COUNTERCLOCKWISE, Inventor turns off backface culling and turns on two-sided lighting. In all other cases, backface culling and two-sided lighting are both off. If you use the <span class="bold"><b>SoShapeHints</b></span> node, be sure to describe the object accurately; otherwise, objects may be rendered incorrectly.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	In general, the more information you specify with the shape-hints node, the faster the rendering speed. The exception to this rule is when <a name="idch0599"></a><span class="bold"><b>shapeType</b></span> is not SOLID and the <span class="bold"><b>vertexOrdering</b></span> is either CLOCKWISE or COUNTERCLOCKWISE. In this case, rendering may be slower because two-sided lighting is automatically turned on and backface culling is turned off.
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5457283"></a>Complexity Node<a name="idch05100"></a></h3></div></div>
+<p>Use the <a name="idch05101"></a><span class="bold"><b>SoComplexity</b></span> node to indicate the amount of subdivision into polygons for subsequent shape nodes in the scene graph. This node has three fields:<a name="idch05102"></a></p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>type </b></span>(SoSFEnum)</span></td><td width="10"> </td><td><p><br>
+general type of complexity. Values for this field are </p>
+
+</td></tr><tr valign="top"><td><span class="term"></span></td><td width="10"> </td><td><p>SoComplexity::OBJECT_SPACE<br>
+(the default) bases the subdivision on the object itself, regardless of where it is on the screen or which parts are closer to the viewer.<br>
+<br>
+	SoComplexity::SCREEN_SPACE<br>
+bases the complexity on the amount of screen space occupied by the object. Objects requiring the full screen require more detail; small objects require less detail. The result is that objects that are closer to the viewer usually receive more detail than objects that are farther away. This type of complexity is more expensive to compute than the others.  In addition, it invalidates the render cache when the camera moves (see the discussion of render caching in <a name="idch05103"></a><a name="idch05104"></a><a href="ch09.html#id14375">Chapter 9</a>).<br>
+<br>
+	SoComplexity::BOUNDING_BOX<br>
+renders a bounding box in place of the shape. This type is used for speed, when exact shapes are not required. It uses the current drawing style to render the box.<a name="idch05105"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>value</b></span> (SoSFFloat)</span></td><td width="10"> </td><td><p> <br>
+a value that provides a hint about the amount of subdivision desired, where 0.0 is minimum complexity and 1.0 is maximum complexity. The default is 0.5.<a name="idch05106"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>textureQuality </b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+a value that provides a hint about the quality of texture mapping used on the object.  The trade-off is between speed of rendering and quality of texturing.  A value of 0.0 indicates maximum speed (possibly turning off texturing completely), and 1.0 indicates finest texture quality. The default is 0.5.<a name="idch05107"></a></p>
+
+</td></tr></table></div><p> <a href="ch05.html#id15308">&#8220;Specifying Different Levels of Complexity (left: OBJECT_SPACE; right: SCREEN_SPACE)&#8221;</a> shows the same object with different levels of complexity. The spheres at the left use object-space complexity and a complexity value of .5. The spheres at the right use screen-space complexity and a complexity value of .06. The NURBS examples in <a name="idch05108"></a><a href="ch08.html#id16021">Chapter 8</a> use the <span class="bold"><b>SoComplexity</b></span> node.</p>
+<p><a name="id15308"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/05.13.Complexity.iv"><div class="caption"><p>Specifying Different Levels of Complexity (left: OBJECT_SPACE; right: SCREEN_SPACE)</p>
+</div></a></blockquote></div>
+</p>
+<p>
+</p>
+<p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Simpler scenes render more quickly than complex scenes. For example, to increase rendering speed, use fewer lights, turn off textures or specify a lower texture-quality value, and choose a simpler drawing style, such as wireframe, and a lower complexity value. The viewer pop-up menu allows you to disable certain of these features for faster rendering.<a name="idch05109"></a>
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5457619"></a>Units Node</h3></div></div>
+<p>Inventor lets you define your data in a variety of different units. It uses meters as its default units, but you can use the <a name="idch05110"></a><a name="idch05111"></a><a name="idch05112"></a><span class="bold"><b>SoUnits</b></span> node to specify a different unit of measurement. The units node acts like a scale node by scaling subsequent shapes into the specified units. <span class="bold"><b>SoUnits</b></span> can adjust the amount it scales an object by checking to see if any other units have been defined. The units node adjusts the scale so that the previously defined units are no longer in effect.</p>
+<p>The <span class="bold"><b>SoUnits</b></span> node has one field:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>units </b></span>(SoSFEnum)</span></td><td width="10"> </td><td><p>defines the current unit of measurement to be applied to all subsequent shapes in the scene graph. Possible values are as follows:<br>
+<br>
+SoUnits::METERS<br>
+SoUnits::CENTIMETERS<br>
+SoUnits::MILLIMETERS<br>
+SoUnits::MICROMETERS<br>
+SoUnits::MICRONS<br>
+SoUnits::NANOMETERS<br>
+SoUnits::ANGSTROMS<br>
+SoUnits::KILOMETERS<br>
+SoUnits::FEET<br>
+SoUnits::INCHES<br>
+SoUnits::POINTS<br>
+SoUnits::YARDS<br>
+SoUnits::MILES<br>
+SoUnits::NAUTICAL_MILES</p>
+
+</td></tr></table></div><p>To render your data in units other than these, use an <span class="bold"><b>SoUnits</b></span> node to set the current units back to meters, followed by a scale node that scales from meters into the desired units.</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5457797"></a><a name="id33796"></a>Binding Nodes</h2></div></div>
+<p>Materials and normals are bound to shape nodes in different ways. The first part of this discussion focuses on <a name="idch05113"></a><i>material binding</i>, which is how the current materials specified in an <span class="bold"><b>SoMaterial</b></span> node are mapped onto the geometry of the shape nodes that use that particular material. Since normal binding is analogous to material binding, this initial discussion focuses on material binding. (See <a href="ch05.html#id28290">Example 5-1</a> earlier in this chapter for an example of using a normal binding node.)</p>
+<p>An <span class="bold"><b>SoMaterialBinding</b></span> node contains a value that describes how to bind materials to shapes. These values include the following:<a name="idch05114"></a></p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term">SoMaterialBinding::DEFAULT</span></td><td width="10"> </td><td><p><br>
+uses the &#8220;best&#8221; binding for each shape. Most shapes interpret this binding as OVERALL.<a name="idch05115"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term">SoMaterialBinding::NONE</span></td><td width="10"> </td><td><p><br>
+		uses no material.</p>
+
+</td></tr><tr valign="top"><td><span class="term">SoMaterialBinding::OVERALL</span></td><td width="10"> </td><td><p><br>
+uses the first current material for the entire shape.</p>
+
+</td></tr><tr valign="top"><td><span class="term">SoMaterialBinding::PER_PART</span></td><td width="10"> </td><td><p><br>
+binds one material to each part in the shape. The definition of <a name="idch05116"></a><i>part</i> depends on the shape. For face sets and cubes, a part is a face. For line sets, a part is a line segment. For cylinders, a part is the sides, top, or bottom.</p>
+
+</td></tr><tr valign="top"><td><span class="term">SoMaterialBinding::PER_PART_INDEXED</span></td><td width="10"> </td><td><p><br>
+binds one material to each part by index.</p>
+
+</td></tr><tr valign="top"><td><span class="term">SoMaterialBinding::PER_FACE</span></td><td width="10"> </td><td><p><br>
+binds one material to each face in the shape.<a name="idch05117"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term">SoMaterialBinding::PER_FACE_INDEXED</span></td><td width="10"> </td><td><p><br>
+binds one material to each face by index (for indexed vertex shapes).</p>
+
+</td></tr><tr valign="top"><td><span class="term">SoMaterialBinding::PER_VERTEX</span></td><td width="10"> </td><td><p><br>
+binds one material to each vertex in the shape.</p>
+
+</td></tr><tr valign="top"><td><span class="term">SoMaterialBinding::PER_VERTEX_INDEXED</span></td><td width="10"> </td><td><p><br>
+binds one material to each vertex by index (for indexed vertex shapes).</p>
+
+</td></tr></table></div><p>Each shape node interprets the binding type somewhat differently. For example, an <span class="bold"><b>SoSphere</b></span> node does not have parts, faces, or indices, so those binding types (PER_PART, PER_FACE, PER_VERTEX) are meaningless for spheres. You can regard the value specified in the material-binding node as a <i>hint</i> to the shape about binding. If you specify a value that makes no sense for a particular shape, such as PER_FACE for a cylinder, the shape  interprets the information the best it can (in this case, it uses OVERALL, since a cylinder has no faces). See the <i>Open Inventor C++ Reference Manual</i> for information on how each shape interprets the different binding types.</p>
+<p>Suppose you specify PER_PART for a cylinder. The cylinder has three parts (sides, top, bottom). If the current material contains three values&#8212;for example, orange, purple, yellow&#8212;those values are used for the three parts of the cylinder, producing orange sides, a purple top, and a yellow bottom. But what happens if the number of current materials is greater than the number of parts? As you might guess, Inventor simply ignores the extra materials if they're not required. (If the current material list contains five values, your cylinder ignores the last two values.) </p>
+<p>If the current material contains <i>fewer</i> values than the binding requires, Inventor cycles through the current values as often as needed. For example, if you specify PER_FACE for a cube and the current materials list contains three values (violet, periwinkle, teal), the results are as follows:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term">Face 1</span></td><td width="10"> </td><td><p>violet</p>
+
+</td></tr><tr valign="top"><td><span class="term">Face 2</span></td><td width="10"> </td><td><p>periwinkle</p>
+
+</td></tr><tr valign="top"><td><span class="term">Face 3</span></td><td width="10"> </td><td><p>teal</p>
+
+</td></tr><tr valign="top"><td><span class="term">Face 4</span></td><td width="10"> </td><td><p>violet</p>
+
+</td></tr><tr valign="top"><td><span class="term">Face 5</span></td><td width="10"> </td><td><p>periwinkle</p>
+
+</td></tr><tr valign="top"><td><span class="term">Face 6</span></td><td width="10"> </td><td><p>teal</p>
+
+</td></tr></table></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5458285"></a>Indexed Binding<a name="idch05118"></a></h3></div></div>
+<p>So far, you've been using the values in the current material <i>in order</i>. You can, however, also use the current material values in a new order if you specify either PER_FACE_INDEXED or PER_VERTEX_INDEXED for an indexed vertex shape or PER_PART_INDEXED for a shape that has parts. When you use these types of binding, Inventor refers to the materials-index field of the shape node (for example, <a name="idch05119"></a><span class="bold"><b>SoIndexedFaceSet</b></span>, <span class="bold"><b>SoIndexedLineSet</b></span>). Instead of starting with the first material and working through the list, Inventor indexes into the materials list in whatever order you specify. </p>
+<p>As an example, consider a tetrahedron, represented as an <a name="idch05120"></a><span class="bold"><b>SoIndexedFaceSet</b></span>. The current materials list (in an <span class="bold"><b>SoMaterial</b></span> node) contains the following values:</p>
+<p><span class="bold"><b>Material List </b></span> </p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term">0</span></td><td width="10"> </td><td><p>peach</p>
+
+</td></tr><tr valign="top"><td><span class="term">1</span></td><td width="10"> </td><td><p>khaki</p>
+
+</td></tr><tr valign="top"><td><span class="term">2</span></td><td width="10"> </td><td><p>white</p>
+
+</td></tr></table></div><p>and the <span class="bold"><b>materialIndex</b></span> field (in an <span class="bold"><b>SoIndexedFaceSet</b></span> node) contains these values:</p>
+<p><span class="bold"><b>Material Index</b></span> </p>
+<p>1</p>
+<p>1</p>
+<p>0</p>
+<p>2</p>
+<p>If you specify PER_FACE (not indexed), Inventor ignores the <span class="bold"><b>materialIndex</b></span> field and cycles through the materials list in order:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term">Face 1</span></td><td width="10"> </td><td><p>peach</p>
+
+</td></tr><tr valign="top"><td><span class="term">Face 2</span></td><td width="10"> </td><td><p>khaki</p>
+
+</td></tr><tr valign="top"><td><span class="term">Face 3</span></td><td width="10"> </td><td><p>white</p>
+
+</td></tr><tr valign="top"><td><span class="term">Face 4</span></td><td width="10"> </td><td><p>peach</p>
+
+</td></tr></table></div><p>On the other hand, if you specify PER_FACE_INDEXED, Inventor uses the <span class="bold"><b>materialIndex</b></span> field to pull values out of the materials list as follows:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term">Face 1</span></td><td width="10"> </td><td><p>khaki</p>
+
+</td></tr><tr valign="top"><td><span class="term">Face 2</span></td><td width="10"> </td><td><p>khaki</p>
+
+</td></tr><tr valign="top"><td><span class="term">Face 3</span></td><td width="10"> </td><td><p>peach</p>
+
+</td></tr><tr valign="top"><td><span class="term">Face 4</span></td><td width="10"> </td><td><p>white</p>
+
+</td></tr></table></div><p>This indexing is economical, since you can use a single, small set of materials for a wide variety of objects and purposes.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5458649"></a>Binding per Vertex<a name="idch05121"></a></h3></div></div>
+<p>Inventor offers two types of per-vertex binding: PER_VERTEX and PER_VERTEX_INDEXED. With nonindexed material binding per vertex, Inventor simply selects materials in order from the materials list and assigns a material to each vertex of the shape node. It then interpolates the materials between the vertices and across the faces of the shape.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5458689"></a>Nuances <i>(Advanced)</i></h3></div></div>
+<p>An <span class="bold"><b>SoMaterial</b></span> node contains six fields, each of which holds multiple values. However, the number of values in these six fields may not be equal. You might have five different values in the ambient, diffuse, specular, and emissive fields, but only two values in the shininess field and one in the transparency field. In such cases, Inventor chooses a cycle equal to the field with the greatest number of values (in this case, five). In a field with fewer values, its last value is repeated until the end of the cycle.</p>
+<p>When PER_VERTEX binding is specified, a value of  -1 (the default) for the <span class="bold"><b>materialIndex</b></span> field or the <span class="bold"><b>normalIndex</b></span> field in an <span class="bold"><b>SoIndexedFaceSet</b></span> (or any other indexed shape node) indicates to use the coordinate indices for materials or normals. The defined constants SO_END_LINE_INDEX, SO_END_FACE_INDEX, and SO_END_STRIP_INDEX can be used for this specification. This saves time and space and ensures that the indices match up. When you use a &#8220;special&#8221; coordinate index (such as SO_END_FACE_INDEX), the corresponding material index is skipped over so that the arrays of indices match.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>For better performance, use PER_FACE or PER_FACE_INDEXED binding with one material node and one face-set node that defines multiple polygons, instead of OVERALL binding with multiple material nodes and multiple face set nodes.<a name="idch05122"></a>
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5458769"></a>Using a Material-Binding Node<a name="idch05123"></a></h3></div></div>
+<p><a href="ch05.html#id23248">Example 5-5</a> illustrates different types of material binding using the dodecahedron created in <a href="ch05.html#id19917">Example 5-2</a> (the common code has been omitted here). The scene graph for the example is shown in <a href="ch05.html#id23154">Figure 5-8</a>. When you run the program, you can type a number to select the type of material binding, as follows:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>0 for PER_FACE (see <a href="pr02.html#id38509">Figure In-8</a>)</p>
+</li>
+<li><p>1 for PER_VERTEX_INDEXED (see <a href="pr02.html#id94292">Figure In-9</a>)</p>
+</li>
+<li><p>2 for PER_FACE_INDEXED (see <a href="pr02.html#id68875">Figure In-10</a>)</p>
+<p><div class="figure"><p><a name="id5458946"></a><b>Figure 5-8. <a name="id23154"></a>Scene Graph for Material Binding Example</b></p>
+<div class="mediaobject"><img src="figures/5-14.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5458967"></a><b>Example 5-5. <a name="id23248"></a>Using Different Material Bindings</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   // Which material to use to color the faces 
+   // half red &amp; half blue
+   static long materialIndices[12] = {
+      0, 0, 0, 0, 0, 0,
+      1, 1, 1, 1, 1, 1,
+   };
+
+   switch(whichBinding) {
+     case 0:
+       // Set up binding to use a different color for each face 
+       myBinding-&gt;value = SoMaterialBinding::PER_FACE;
+       break;
+     case 1:
+       // Set up binding to use a different color at each 
+       // vertex, BUT, vertices shared between faces will 
+       // have the same color.
+       myBinding-&gt;value = SoMaterialBinding::PER_VERTEX_INDEXED;
+       break;
+     case 2:
+       myBinding-&gt;value = SoMaterialBinding::PER_FACE_INDEXED;
+       myIndexedFaceSet-&gt;materialIndex.setValues(
+                0, 12, materialIndices);
+       break;
+   }
+</pre></td></tr></table><br></li>
+</ul></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5459021"></a><a name="id27275"></a>Normal Binding<a name="idch05124"></a></h3></div></div>
+<p>Normals are bound to shapes in almost the same manner as materials. The type of normal binding specified in an <a name="idch05125"></a><span class="bold"><b>SoNormalBinding</b></span> node is a <i>hint</i> to the shape node about how to apply the current normals to that shape. Indexed shape nodes such as<a name="idch05126"></a><span class="bold"><b> SoIndexedFaceSet </b></span>and <span class="bold"><b>SoIndexedTriangle-<br>
+StripSet</b></span> contain a <span class="bold"><b>normalIndex</b></span> field used to store indices into the normals list (in an <span class="bold"><b>SoNormal</b></span> node). If the type of binding specified does not require indices (for example, PER_VERTEX), the <span class="bold"><b>normalIndex</b></span> field is not used.</p>
+<p>The main difference between indexed normals and indexed materials is that indexed normals do not cycle. If used, normals must match up exactly with the faces, vertices, or parts of the object. If the normals do not match exactly, then default normals are generated (see the following section). You <i>must</i> specify enough normals to bind to faces, parts, or vertices.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5459136"></a><a name="id26917"></a>Generating Normals Automatically</h3></div></div>
+<p>Normals can be generated automatically for any shape derived from <a name="idch05127"></a><a name="idch05128"></a><a name="idch05129"></a><span class="bold"><b>SoVertexShape</b></span>. Because this process involves a great deal of computation, we recommend that you use automatic caching or explicitly turn on render caching so that the results are saved and can be reused (see <a name="idch05130"></a><a href="ch09.html#id14375">Chapter 9</a> for more information on caching). Inventor generates normals automatically if needed for rendering and</p>
+<div class="itemizedlist"><ul type="disc"><li><p>DEFAULT normal binding is used and </p>
+</li>
+<li><p>You do not specify any normals <i>or</i> the number of normals is different from the number of vertices</p>
+</li>
+</ul></div><p>When Inventor generates normals automatically, it looks at the <span class="bold"><b>creaseAngle</b></span> field of the <a name="idch05131"></a><span class="bold"><b>SoShapeHints</b></span> node. The<i> crease angle<a name="idch05132"></a></i> is defined as the angle between the normals for two adjoining faces. This angle indicates the maximum angle size at which separate normals are drawn for adjoining faces. For example, if the crease angle is one radian and the normals for two adjoining faces form an angle less than or equal to one radian, the faces share the same normal, which causes the edge to be shaded smoothly. If the normals for the faces form an angle greater than one radian,  Inventor calculates separate normals for each face, which creates a crease.  If you want an object to appear sharply faceted, specify 0 as the<a name="idch05133"></a><span class="bold"><b> creaseAngle</b></span>. If you want an object to appear completely smooth, specify PI as the <span class="bold"><b>creaseAngle</b></span>.</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5459311"></a>Transformations<a name="idch05134"></a></h2></div></div>
+<p>Unlike other property nodes, transformation nodes do not <i>replace</i> the current geometric transformation element in the action state. Instead, they have a <a name="idch05135"></a><i>cumulative</i> effect on the current geometric transformation. In <a href="ch05.html#id25628">Figure 5-9</a>, for example, the transformations in node <i>xfm1</i> are applied first, followed by the transformations in node <i>xfm2.</i> </p>
+<p><div class="figure"><p><a name="id5459379"></a><b>Figure 5-9. <a name="id25628"></a>Cumulative Effect of Transformation Nodes</b></p>
+<div class="mediaobject"><img src="figures/fig5.15.gif"></div></div><br>
+</p>
+<p>The cube is affected by only the transformation in <i>xfm1</i>. The sphere, however, is affected by both <i>xfm1</i> and <i>xfm2</i>.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5459417"></a>SoTransform Node</h3></div></div>
+<p>An <a name="idch05136"></a><span class="bold"><b>SoTransform</b></span> node includes the following fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>translation </b></span>(SoSFVec3f)</span></td><td width="10"> </td><td><p><br>
+the translation in <a name="idch05137"></a><i>x</i>, <i>y</i>, and <i>z</i>. The default value is <br>
+[0.0  0.0  0.0].</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>rotation</b></span> (SoSFRotation)</span></td><td width="10"> </td><td><p><br>
+the rotation in terms of an axis and an angle. The default value is [0.0  0.0  1.0], 0.0.<a name="idch05138"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>scaleFactor</b></span> (SoSFVec3f)</span></td><td width="10"> </td><td><p><br>
+the scaling factor in <a name="idch05139"></a><i>x</i>, <i>y</i>, and <i>z</i>. The default value for this field is [1.0  1.0  1.0].</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>scaleOrientation</b></span> (SoSFRotation)</span></td><td width="10"> </td><td><p><br>
+the rotation to apply <a name="idch05140"></a><i>before</i> the scale is applied. The default value is [0.0  0.0  1.0], 0.0.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>center </b></span>(SoSFVec3f)</span></td><td width="10"> </td><td><p><br>
+the center point for rotation and scaling. The default value for this field is [0.0  0.0  0.0].<a name="idch05141"></a></p>
+
+</td></tr></table></div><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	If you are using only one of the fields in an <span class="bold"><b>SoTransform</b></span> node, you can substitute the corresponding &#8220;lightweight&#8221; version.  For rotations, use<span class="bold"><b> SoRotation<a name="idch05142"></a></b></span> or<span class="bold"><b> SoRotationXYZ<a name="idch05143"></a></b></span>; for translations, use <span class="bold"><b>SoTranslation<a name="idch05144"></a></b></span>; and for scaling, use <a name="idch05145"></a><span class="bold"><b>SoScale</b></span>.
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5459751"></a>Order of Transformations<a name="idch05146"></a></h3></div></div>
+<p>Within each <span class="bold"><b>SoTransform</b></span> node, the fields are applied so that the last field in the node (the <span class="bold"><b>center</b></span>) affects the shape object <i>first</i>. The order is first the center, followed by the scale orientation, the scaling factor, the rotation, and the translation.</p>
+<p><a href="ch05.html#id15763">Figure 5-10</a> and  <a href="ch05.html#id94961">&#8220;Effects of Ordering Transformation Fields&#8221;</a> show how different ordering of transformations produces different results. At the left of , <a href="ch05.html#id94961">&#8220;Effects of Ordering Transformation Fields&#8221;</a> the temple is scaled, rotated, and then translated. The transform node <i>closest</i> to the shape object affects the object <i>first</i>. You thus need to read backward through the code to see how the effects of the transformations are felt. At the right of , <a href="ch05.html#id94961">&#8220;Effects of Ordering Transformation Fields&#8221;</a> the temple is rotated, then scaled and translated. <a href="ch05.html#id22973">Example 5-6</a> shows the code for the two sets of transformations.</p>
+<p><div class="figure"><p><a name="id5459854"></a><b>Figure 5-10. <a name="id15763"></a>Two Groups with Transformations in Different Order</b></p>
+<div class="mediaobject"><img src="figures/5-16.gif"></div></div><br>
+<a name="id94961"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/05.17.TransformOrdering.iv"><div class="caption"><p>Effects of Ordering Transformation Fields</p>
+</div></a></blockquote></div>
+</p>
+<div class="example"><p><a name="id5459916"></a><b>Example 5-6. <a name="id22973"></a>Changing the Order of Transformations</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoRotationXYZ.h&gt;
+#include &lt;Inventor/nodes/SoScale.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoTranslation.h&gt;
+
+main(int, char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) exit(1);
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+
+   // Create two separators, for left and right objects.
+   SoSeparator *leftSep = new SoSeparator;
+   SoSeparator *rightSep = new SoSeparator;
+   root-&gt;addChild(leftSep);
+   root-&gt;addChild(rightSep);
+   // Create the transformation nodes.
+   SoTranslation *leftTranslation  = new SoTranslation;
+   SoTranslation *rightTranslation = new SoTranslation;
+   SoRotationXYZ *myRotation = new SoRotationXYZ;
+   SoScale *myScale = new SoScale;
+
+   // Fill in the values.
+   leftTranslation-&gt;translation.setValue(-1.0, 0.0, 0.0);
+   rightTranslation-&gt;translation.setValue(1.0, 0.0, 0.0);
+   myRotation-&gt;angle = M_PI/2;   // 90 degrees
+   myRotation-&gt;axis = SoRotationXYZ::X;
+   myScale-&gt;scaleFactor.setValue(2., 1., 3.);
+
+   // Add transforms to the scene.
+   leftSep-&gt;addChild(leftTranslation);   // left graph
+   leftSep-&gt;addChild(myRotation);        // then rotated
+   leftSep-&gt;addChild(myScale);           // first scaled
+
+   rightSep-&gt;addChild(rightTranslation); // right graph
+   rightSep-&gt;addChild(myScale);          // then scaled
+   rightSep-&gt;addChild(myRotation);       // first rotated
+
+   // Read an object from file. (as in example 4.2.Lights)
+   SoInput myInput;
+   if (!myInput.openFile(&quot;temple.iv&quot;)) 
+      return (1);
+   SoSeparator *fileContents = SoDB::readAll(&amp;myInput);
+   if (fileContents == NULL) return (1);
+
+   // Add an instance of the object under each separator.
+   leftSep-&gt;addChild(fileContents);
+   rightSep-&gt;addChild(fileContents);
+
+   // Construct a renderArea and display the scene.
+   SoXtExaminerViewer *myViewer = 
+            new SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;Transform Ordering&quot;);
+   myViewer-&gt;viewAll();
+   myViewer-&gt;show();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+
+</pre></td></tr></table><br></div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch06.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 4. Cameras and Lights </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 6. Text </td></tr></table></div></body></html>

@@ -1,0 +1,49 @@
+# Example of off screen rendering and frame grabbing.
+# This example runs, grabs and automatically treminates.
+
+# To run, use this command:
+#
+#                   irisfly cube.iris
+#
+
+
+ECHO ON
+
+DSO frameGrabber PREFIX "/tmp/frameGrabber/frameGrabber"
+
+DSO raveFrontCubeOffscreenWindow
+DSO raveBackCubeOffscreenWindow
+DSO raveLeftCubeOffscreenWindow
+DSO raveRightCubeOffscreenWindow
+DSO raveFloorCubeOffscreenWindow
+DSO raveCeilingCubeOffscreenWindow
+
+BEFORE REALIZE WINDOW raveFront   TRAIT X 0 Y 0 WIDTH 1024 HEIGHT 1024
+BEFORE REALIZE WINDOW raveBack    TRAIT X 0 Y 0 WIDTH 1024 HEIGHT 1024
+BEFORE REALIZE WINDOW raveLeft    TRAIT X 0 Y 0 WIDTH 1024 HEIGHT 1024
+BEFORE REALIZE WINDOW raveRight   TRAIT X 0 Y 0 WIDTH 1024 HEIGHT 1024
+BEFORE REALIZE WINDOW raveFloor   TRAIT X 0 Y 0 WIDTH 1024 HEIGHT 1024
+BEFORE REALIZE WINDOW raveCeiling TRAIT X 0 Y 0 WIDTH 1024 HEIGHT 1024
+
+AFTER REALIZE PANE raveFront   VIEWPORT 0 0 1024 1024
+AFTER REALIZE PANE raveBack    VIEWPORT 0 0 1024 1024
+AFTER REALIZE PANE raveLeft    VIEWPORT 0 0 1024 1024
+AFTER REALIZE PANE raveRight   VIEWPORT 0 0 1024 1024
+AFTER REALIZE PANE raveFloor   VIEWPORT 0 0 1024 1024
+AFTER REALIZE PANE raveCeiling VIEWPORT 0 0 1024 1024
+
+BACKGROUND 0 0 0
+
+LOAD cow cow.osg
+ADDCHILD cow world
+EXAMINE world
+
+AFTER FRAME 10 DSO frameGrabber SNAP raveFront
+AFTER FRAME 10 DSO frameGrabber SNAP raveBack
+AFTER FRAME 10 DSO frameGrabber SNAP raveLeft
+AFTER FRAME 10 DSO frameGrabber SNAP raveRight
+AFTER FRAME 10 DSO frameGrabber SNAP raveFloor
+AFTER FRAME 10 DSO frameGrabber SNAP raveCeiling
+
+#AFTER FRAME 20 TERMINATE
+

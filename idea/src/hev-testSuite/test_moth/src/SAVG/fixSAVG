@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+for File in *.savg
+do
+  read x r g b a < ${File}
+  savg-color -r ${r} -g ${g} -b ${b} -a ${a} < ${File} > ${File}.fix
+done

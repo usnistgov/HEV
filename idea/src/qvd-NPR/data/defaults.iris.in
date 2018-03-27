@@ -1,0 +1,8 @@
+AFTER REALIZE UNIFORM world keyframe float 1 @keyframe@
+AFTER REALIZE UNIFORM world spotCutoff float 1 @spotCutoff@
+AFTER REALIZE UNIFORM world stressCutoff float 1 @stressCutoff@
+AFTER REALIZE UNIFORM world stressScale float 1 @maxstress@
+AFTER REALIZE UNIFORM world spotSize float 1 1
+AFTER REALIZE UNIFORM world showspots float 1 1
+AFTER REALIZE UNIFORM world showcolor float 1 1
+AFTER REALIZE UNIFORM world showtext float 1 0

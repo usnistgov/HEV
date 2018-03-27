@@ -1,0 +1,48 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-floatSlider 1 "April 19, 2009" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hev-floatSlider
+- Fltk float slider
+
+.SH SYNOPSIS
+.B hev-floatSlider
+[--mi[nimum] i] [--ma[ximum] j] [--in[itial] k] [--st[ep] s]
+
+.SH DESCRIPTION
+.PP
+.I hev-floatSlider
+is an fltk float slider. When the value changes, the new value is printed to
+stdout.
+
+You can specify the \fBmin, max\fR and \fBinit\fR values.  You get an error if
+min==max, or init is outside the range of min to max.  max can be less
+than min, if you want a slider that goes the other way.  If init isn't
+specified, its the average of min and max
+
+.SH  OPTIONS
+.PP
+.TP
+.B "--minimum i"
+specify the minimum value in the range
+
+.TP
+.B "--maximum j"
+specify the maximum value in the range
+
+.TP
+.B "--initial k"
+specify the initial value in the range
+
+.TP
+.B "--step s"
+specify the step amount for the increment / decrement buttons
+
+
+.SH AUTHOR
+John Kelso, kelso@nist.gov,
+.br
+Man page by Steven G. Satterfield, steve@nist.gov
+.br
+NIST/ITL/MCSD/SAVG
+

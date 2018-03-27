@@ -1,0 +1,39 @@
+Geode {
+  DataVariance STATIC
+  cullingActive FALSE
+  StateSet {
+    DataVariance STATIC
+    Program {
+      DataVariance STATIC
+      num_shaders 2
+      Shader {
+        DataVariance STATIC
+        type VERTEX
+        code {
+	  "void main() {gl_Position = gl_Vertex;}"
+	}
+      }
+      Shader {
+        DataVariance STATIC
+        type FRAGMENT
+        code {
+	  "#version 120"
+          "#extension GL_ARB_texture_rectangle : enable"
+          "uniform bool fxcam;"
+          "uniform sampler2DRect fxcamColor;"
+          "uniform sampler2DRect fxcamDepth;"
+          "void main() {"
+          "    if (! fxcam) discard;"
+          "    gl_FragColor = texture2DRect(fxcamColor,gl_FragCoord.xy);"
+          "    gl_FragDepth = texture2DRect(fxcamDepth,gl_FragCoord.xy).r;"
+          "}"
+	}
+      }
+    }
+  }
+  Geometry {
+    DataVariance STATIC
+    Primitives 1 {DrawElementsUByte QUADS 4 { 0 1 2 3 } }
+    VertexArray Vec3Array 4 {-1 -1 0   -1 1 0   1 1 0   1 -1 0}
+  }
+}

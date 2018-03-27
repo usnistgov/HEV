@@ -1,0 +1,7 @@
+#! /bin/bash
+
+irisfly $* moo.iris clip.mcp axisAlignedClip.mcp \
+           holodeck.iris  holodeck.mcp
+
+
+

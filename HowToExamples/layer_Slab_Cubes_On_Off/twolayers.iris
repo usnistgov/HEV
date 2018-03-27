@@ -1,0 +1,9 @@
+# Two layer example
+GROUP layers
+LOAD layer0 layer0.osgb
+NODEMASK layer0 ON
+ADDCHILD layer0 layers
+LOAD layer3 layer3.osgb
+NODEMASK layer3 OFF
+ADDCHILD layer3 layers
+RETURN layers

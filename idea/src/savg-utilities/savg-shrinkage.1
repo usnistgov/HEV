@@ -1,0 +1,39 @@
+.TH SAVG\-SHRINKAGE 1 "9 February 2005"
+.SH NAME
+savg-shrinkage \- SAVG ToolBox: basic option shrinkage
+.SH SYNOPSIS
+.B savg-shrinkage
+val (0.0-1.0)
+.SH DESCRIPTION
+.I Savg-shrinkage
+is used to indicate that each filled polygon or tristrip should be shrunk towards its center by scale.  The smaller the value of scale, the smaller the objects.  The specified shrinkage will affect all subsequent geometry until another shrinkage keyword is given.  If no shrinkage keyword is given, 1.0 is used. Val is a floating point number, usually between zero and one and cannot be set to zero. But you can do interesting things with unusual values of scale.
+It accepts the object from
+.I stdin
+and outputs to 
+.I stdout.
+At least one command line argument must be present or 
+a usage message will appear and the program will 
+terminate.  The \fI-style\fP option must be followed by "wire" or "filled."
+The \fI-pixelsize\fP  and the \fI-shrinkage\fP option must
+have real numbers associated with them. 
+
+.SH OPTIONS
+.TP
+.B \savg-shrinkage val
+Val is a floating point number, usually between zero and one and cannot be set to zero.
+.SH EXAMPLES
+.TP
+.B cat sample.savg | savg-shrinkage 0.7 > sample_0.7.savg
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Spring 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

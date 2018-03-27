@@ -1,0 +1,51 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-raveProjectorStatus 1 "August 29, 2012" "NIST/ACMD/HOCVG" "HEV"
+.SH NAME
+hev-raveProjectorStatus
+- revels power status of the RAVE projectors.
+
+.SH SYNOPSIS
+.B hev-raveProjectorStatus
+[
+.B -q
+|
+.B -h
+]
+
+.SH DESCRIPTION
+The
+.B hev-raveProjectorStatus
+command will show whether the RAVE projectors are powered on or
+off. Two modes are available, normal and quiet.
+
+Normal mode prints either,
+   Projectors OFF
+   Projectors ON
+
+In quiet mode, nothing is display.
+
+.SH OPTIONS
+.B -q
+quiet mode.
+
+.B -h
+usage message.
+
+.SH RETURN CODES
+.IP 0
+projectors OFF
+.IP 1
+projectors ON
+.IP 2
+Error
+
+
+.SH AUTHOR
+
+Donald Koss, koss@nist.gov
+
+
+
+
+

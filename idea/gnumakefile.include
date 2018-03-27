@@ -1,0 +1,439 @@
+########################################################################
+# start of idea's makefile.include
+########################################################################
+
+# is this a demo?
+ifdef DEMO_BASE
+ # see if a full path and if so, if it exists
+ full_demo_base = $(shell if (echo $(DEMO_BASE) | grep -q '^/'  && test -d $(DEMO_BASE) ) ; then echo $(DEMO_BASE) ; fi)
+ # if full_demo_base wasn't found, try parent directory
+ ifeq ($(full_demo_base),)
+   full_demo_base = $(shell cd .. ; if [ $(DEMO_BASE) == `basename $$PWD` ] ; then echo $$PWD ; fi )
+ endif
+ ifeq ($(full_demo_base),)
+  $(error DEMO_BASE can\'t be found )
+ endif
+ full_demo_base_src = $(shell if [ -d $(full_demo_base)/src ] ; then echo $(full_demo_base)/src ; fi )
+ ifeq ($(full_demo_base_src),)
+  $(error $(full_demo_base)/src can\'t be found )
+ endif
+ ifndef PROJECT
+  PROJECT := $(shell basename $(DEMO_BASE))
+ endif
+endif
+
+# otherwise just use the basename of this directory
+ifndef PROJECT
+ PROJECT := $(shell basename $(PWD))
+endif
+MAKE := $(MAKE) PROJECT=$(PROJECT)
+
+# default name of private library, not advertised
+ifndef PRIVATE_LIBRARY
+ PRIVATE_LIBRARY = privatelibrary.so
+endif
+
+################ shader stuff ################
+
+# $(PUBLIC_SHADER_PROGRAMS) are shader programs that are built from
+# corresponding "shader".i files.  "shader".i is a geometry, vertex or
+# fragment shader file with optional #include directives each "shader".i get
+# preprocessed into "shader", and has a dependency file "shader".d
+
+# Any GLSL specific directive needs to be at the very top of the file, and
+# preceeded by $(GLSLDIRECTIVE).  Be sure to excape the slashes!
+GLSLDIRECTIVE = \/\/GLSL
+# For example, to include the line :
+#   #extension GL_EXT_gpu_shader4 : enable
+# use the line
+#   //GLSL#extension GL_EXT_gpu_shader4 : enable
+
+# Once built, the shader is copied to the $(publicshaderprograms) directory,
+# which is in the OSG file search path
+
+# $(PUBLIC_SHADER_DATA) are data files used by shaders.  They are just
+# copied to $(publicshaderdata), which is in the OSG file search path
+
+# $(PRIVATE_SHADER_PROGRAMS) and $(PRIVATE_SHADER_DATA) work the same as
+# their public counterparts, but are installed in a directory that isn't
+# part of the global OSG file search path- you need to add it yourself
+
+################# hev idea directories #####################################
+pubbindir="$(HEV_IDEA_DIR)/bin"
+pubdsodir="$(HEV_IDEA_DIR)/lib"
+pubheaderdir="$(HEV_IDEA_DIR)/include"
+publibdir="$(HEV_IDEA_DIR)/lib"
+pubdatadir="$(HEV_IDEA_DIR)/data"
+pubshaderdir="$(HEV_IDEA_DIR)/shader"
+publicbins=$(PUBLIC_BINS)
+publicdsos=$(PUBLIC_DSOS)
+publicheaders=$(PUBLIC_HEADERS)
+publiclibs=$(PUBLIC_LIBS)
+publicshaderprograms=$(PUBLIC_SHADER_PROGRAMS)
+publicshaderdata=$(PUBLIC_SHADER_DATA)
+publicdso_objs=$(patsubst %.so,%.o,$(PUBLIC_DSOS))
+publiclib_objs=$(patsubst %.a,%.o,$(PUBLIC_LIBS))
+publicbin_objs=$(patsubst %,%.o,$(PUBLIC_BINS))
+
+# PRIVATE and DEMO are basically the same, just installed in different places
+ifdef DEMO_BASE
+  PRIVATE_BINS = $(DEMO_BINS)
+  PRIVATE_DSOS = $(DEMO_DSOS)
+  PRIVATE_LIBS = $(DEMO_LIBS)
+  PRIVATE_DATA = $(DEMO_DATA)
+  PRIVATE_SHADER_PROGRAMS=$(DEMO_SHADER_PROGRAMS)
+  demodir="$(full_demo_base)/runtime"
+  privbindir="$(demodir)"
+  privdsodir="$(demodir)"
+  privdatadir="$(demodir)"
+  privshaderdir="$(demodir)"
+  privatelibrarydir="$(demodir)"
+  # don't mess with a library if there aren't files
+  ifeq ($(DEMO_LIBRARY_FILES),)
+  else
+    privatelibrary=$(PRIVATE_LIBRARY)
+    privatelibrary_objs ?= $(DEMO_LIBRARY_FILES)
+  endif
+else
+  privbindir="$(HEV_IDEA_DIR)/etc/$(PROJECT)/bin"
+  privdsodir="$(HEV_IDEA_DIR)/etc/$(PROJECT)/lib"
+  privdatadir="$(HEV_IDEA_DIR)/etc/$(PROJECT)/data"
+  privshaderdir="$(HEV_IDEA_DIR)/etc/$(PROJECT)/shader"
+  privatelibrarydir="$(HEV_IDEA_DIR)/etc/$(PROJECT)/lib"
+  privateshaderdata=$(PRIVATE_SHADER_DATA)
+  # don't mess with a library if there aren't files
+  ifeq ($(PRIVATE_LIBRARY_FILES),)
+  else
+    privatelibrary=$(PRIVATE_LIBRARY)
+    privatelibrary_objs ?= $(PRIVATE_LIBRARY_FILES)
+  endif
+endif
+
+privatebins=$(PRIVATE_BINS)
+privatedsos=$(PRIVATE_DSOS)
+privateshaderprograms=$(PRIVATE_SHADER_PROGRAMS)
+privatedso_objs=$(patsubst %.so,%.o,$(PRIVATE_DSOS))
+privatebin_objs=$(patsubst %,%.o,$(PRIVATE_BINS))
+
+
+#$(warning publicshaderprograms = $(publicshaderprograms))
+#$(warning privateshaderprograms = $(privateshaderprograms))
+
+publicshaderprogramswithincludes = $(if $(publicshaderprograms), $(shell for f in $(publicshaderprograms); do if [ -r $$f.i ] ; then echo $$f ; fi ; done))
+privateshaderprogramswithincludes = $(if $(privateshaderprograms), $(shell for f in $(privateshaderprograms); do if [ -r $$f.i ] ; then echo $$f ; fi ; done))
+
+publicshaderprogramswithoutincludes = $(if $(publicshaderprograms), $(shell for f in $(publicshaderprograms); do if [ ! -r $$f.i ] ; then echo $$f ; fi ; done))
+privateshaderprogramswithoutincludes = $(if $(privateshaderprograms), $(shell for f in $(privateshaderprograms); do if [ ! -r $$f.i ] ; then echo $$f ; fi ; done))
+
+publicshaderprogramsbuilt=$(patsubst %.i, %, $(publicshaderprogramswithincludes))
+privateshaderprogramsbuilt=$(patsubst %.i, %, $(privateshaderprogramswithincludes))
+
+#$(warning publicshaderprogramsbuilt = $(publicshaderprogramsbuilt))
+#$(warning privateshaderprogramsbuilt = $(privateshaderprogramsbuilt))
+#$(warning publicshaderprogramswithincludes = $(publicshaderprogramswithincludes))
+#$(warning privateshaderprogramswithincludes = $(privateshaderprogramswithincludes))
+#$(warning publicshaderprogramswithoutincludes = $(publicshaderprogramswithoutincludes))
+#$(warning privateshaderprogramswithoutincludes = $(privateshaderprogramswithoutincludes))
+
+dependencyfiles=$(patsubst %.so,%.d,$(publicdsos) $(privatedsos))\
+  $(patsubst %.a,%.d,$(publiclibs))\
+  $(patsubst %,%.d, $(publicbins) $(privatebins) $(publicshaderprogramswithincludes) $(privateshaderprogramswithincludes))\
+  $(patsubst %.o,%.d, $(privatelibrary_objs))  $(patsubst %.o,%.d, $(OBJECT_FILES)) 
+
+#$(warning dependencyfiles = $(dependencyfiles))
+
+CXX = $(shell dtk-config --compiler)
+
+CXXFLAGS = \
+	 -I$(HEVROOT)/external/include \
+	 -I$(HEV_IDEA_DIR)/include \
+	 $(shell pkg-config --cflags cuda-8.0) \
+	 -I $(IRIS_HOME)/include \
+	 -fPIC -DIRIS_PREFIX=\"$(IRIS_PREFIX)\" \
+	 $(shell pkg-config --cflags iris) \
+	 -DIDEA_PRIV_BIN_DIR=\"$(privbindir)/\" \
+	 -DIDEA_PRIV_DSO_DIR=\"$(privdsodir)/\" \
+	 -DIDEA_PRIV_DATA_DIR=\"$(privdatadir)/\" \
+	 -DIDEA_PRIV_SHADER_DIR=\"$(privshaderdir)/\" 
+
+CFLAGS = $(CXXFLAGS)
+
+LIBS =  \
+	$(HEV_IDEA_DIR)/lib/libIdea.so \
+	$(shell dtk-config --libsX) -lXtst \
+        $(shell pkg-config --libs openscenegraph) \
+        -Wl,-rpath -Wl,$(shell pkg-config --libs openscenegraph)\
+        -L $(IRIS_PREFIX)/lib -l iris \
+        -Wl,-rpath -Wl,$(IRIS_PREFIX)/lib \
+	-Wl,--as-needed \
+	$(shell fltk-config --ldflags) -lfltk_images \
+	-Wl,--no-as-needed \
+	-lpng -ljpeg -lGL \
+	-Wl,-rpath -Wl,$(privdsodir) \
+
+
+################# phoney targets #####################################
+
+.PHONY : build install clean distclean tarball
+
+build:	$(privatelibrary) $(publicdsos) $(privatedsos) $(publiclibs) \
+	$(publicbins) $(privatebins) $(demobins) \
+	$(publicshaderprogramsbuilt) $(privateshaderprogramsbuilt) \
+	$(PUBLIC_DATA) $(PRIVATE_DATA) $(OBJECT_FILES)
+
+################### create dependency makefiles ####################
+ifneq ($(MAKECMDGOALS),clean)
+ ifneq ($(MAKECMDGOALS),distclean)
+  ifneq ($(MAKECMDGOALS),tarball)
+   %.d: %.C
+	@dtk-msgNotice -p Makefile creating dependency file $@
+	@set -e; rm -f $@; \
+	$(CXX) -M $(CPPFLAGS) $(CXXFLAGS) $(INC) $< > $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+    %.d: %.cpp
+	@dtk-msgNotice -p Makefile creating dependency file $@
+	@set -e; rm -f $@; \
+	$(CXX) -M $(CPPFLAGS) $(CXXFLAGS) $(INC) $< > $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+    %.d: %.cxx
+	@dtk-msgNotice -p Makefile creating dependency file $@
+	@set -e; rm -f $@; \
+	$(CXX) -M $(CPPFLAGS) $(CXXFLAGS) $(INC) $< > $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+    %.d: %.c
+	@dtk-msgNotice -p Makefile creating dependency file $@
+	@set -e; rm -f $@; \
+	$(CC) -M $(CPPFLAGS) $(CFLAGS) $< > $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+    %.d: %.f
+	@dtk-msgNotice -p Makefile creating dependency file $@
+	@set -e; rm -f $@; \
+	$(FC) -M $(FFLAGS) $< > $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+    %.d: %.i
+	@dtk-msgNotice -p Makefile creating shader dependency file $@
+	cpp -M $(CPPFLAGS) $(CXXFLAGS) -I. -I$(pubshaderdir) -nostdinc $(@:.d=.i) | \
+	sed -e 's,$(@:.d=.o)[ :]*,$@ : ,' > $@
+
+    %.cxx: %.fl
+	@dtk-msgNotice -p Makefile running fluid on $< to create C++ file $@
+	fluid -c $<
+
+    sinclude $(dependencyfiles)
+  endif	
+ endif
+endif
+
+#####compile source to objects, put objects in library, link binaries and DSOS  ####
+# compile for defined types- add more as needed!
+%.o : %.C %.d
+	@dtk-msgNotice -p Makefile compiling $<
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $(INC) -o $@ $<
+
+%.o %.d: %.cpp %.d
+	@dtk-msgNotice -p Makefile compiling $<
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $(INC) -o $@ $<
+
+%.o %.d: %.cxx %.d
+	@dtk-msgNotice -p Makefile compiling $<
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $(INC) -o $@ $<
+
+%.o %.d: %.c %.d
+	@dtk-msgNotice -p Makefile compiling $<
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) -o $@ $<
+
+%.o %.d: %.f %.d
+	@dtk-msgNotice -p Makefile compiling $<
+	$(FC) -c $(FFLAGS) -o $@ $<
+
+# make/update library
+$(privatelibrary): $(privatelibrary_objs)
+	@dtk-msgNotice -p Makefile creating/updating private library
+	$(CXX) -o $@ $^ -shared
+
+# link a executable
+$(publicbins) : $(privatelibrary) $(publicbin_objs) $(OBJECT_FILES) 
+	@dtk-msgNotice -p Makefile linking to create executable $@
+	$(CXX) $@.o $(privatelibrary) $(OBJECT_FILES) $(LDLIBS) $(LIBS) $(LDFLAGS) $(LOADLIBS) -o $@
+
+$(privatebins) : $(privatelibrary) $(privatebin_objs) $(OBJECT_FILES) 
+	@dtk-msgNotice -p Makefile linking to create executable $@
+	$(CXX) $@.o $(privatelibrary) $(OBJECT_FILES) $(LDLIBS) $(LIBS) $(LDFLAGS) $(LOADLIBS) -o $@
+
+# build shader files
+$(publicshaderprogramsbuilt): $(publicshaderprogramsbuilt:=.d) $(publicshaderprogramswithincludes:=.i)
+	@dtk-msgNotice -p Makefile public creating shader file $@
+	@# create a file with the shader directive uncommented out and all other lines removed
+	@sed -e "/^$(GLSLDIRECTIVE)/!d" -e "s/^$(GLSLDIRECTIVE)#/#/"  < $@.i > $@.glsldirectives
+	@# create a shader file with cpp, then add directives
+	@cpp $(CPPFLAGS) $(CXXFLAGS) -I. -I$(pubshaderdir) -nostdinc $@.i  | cat $@.glsldirectives - | sed -e 's/^\(# [0-9]* ".*"\).*/\1/'> $@ ; rm $@.glsldirectives
+
+$(privateshaderprogramsbuilt): $(privateshaderprogramswithincludes:=.d) $(privateshaderprogramswithincludes:=.i)
+	@dtk-msgNotice -p Makefile private creating shader file $@
+	@# create a file with the shader directive uncommented out and all other lines removed
+	@sed -e "/^$(GLSLDIRECTIVE)/!d" -e "s/^$(GLSLDIRECTIVE)#/#/"  < $@.i > $@.glsldirectives
+	@# create a shader file with cpp, then add directives
+	@cpp $(CPPFLAGS) $(CXXFLAGS)  -I. -I$(pubshaderdir) -nostdinc $@.i  | cat $@.glsldirectives - | sed -e 's/^\(# [0-9]* ".*"\).*/\1/'> $@ ; rm $@.glsldirectives
+
+# link a DSO
+$(publicdsos) : $(privatelibrary) $(publicdso_objs) $(OBJECT_FILES) 
+	@dtk-msgNotice -p Makefile linking to create DSO $@
+	$(CXX) $(subst .so,.o,$@) $(privatelibrary) $(OBJECT_FILES) $(LDLIBS) $(LIBS) $(LDFLAGS) \
+        $(LOADLIBS) -o $@ $(version) -shared -Wl,-soname,$(@)
+
+$(privatedsos) : $(privatelibrary) $(privatedso_objs) $(OBJECT_FILES) 
+	@dtk-msgNotice -p Makefile linking to create DSO $@
+	$(CXX) $(subst .so,.o,$@) $(privatelibrary) $(OBJECT_FILES) $(LDLIBS) $(LIBS) $(LDFLAGS) \
+        $(LOADLIBS) -o $@ $(version) -shared -Wl,-soname,$(@)
+
+# link a static library
+$(publiclibs) : $(publiclib_objs) $(OBJECT_FILES)
+	@dtk-msgNotice -p Makefile linking to create LIB $@
+	ar -rv $@ $(publiclib_objs) $(OBJECT_FILES)
+	ranlib $@
+
+########################################################################
+
+# this is the list of directories from $HEV_IDEA_DIR/src to $PWD
+pathlist = $(shell echo $(PWD) | sed -e s\|$(HEV_IDEA_DIR)/src/\|\| )
+#$(warning pathlist = $(pathlist))
+
+install: build
+	@dtk-msgNotice -p Makefile installing files
+	@if ( pwd | grep -qE "^$(HEV_IDEA_DIR)/src/$(PROJECT)" || pwd | grep -qE "$(pathlist)" || pwd | grep -qE "^$(full_demo_base)/src" ) ; then \
+	   if [ "$(PUBLIC_DATA)" != "" ] ; then \
+	      mkdir -p "$(pubdatadir)" ; \
+	      sh -xc "cp $(PUBLIC_DATA) $(pubdatadir)" ; \
+	      fi ; \
+	   if [ "$(PRIVATE_DATA)" != "" ] ; then \
+	      mkdir -p "$(privdatadir)" ; \
+	      sh -xc "cp $(PRIVATE_DATA) $(privdatadir)" ; \
+	      fi ; \
+	   if [ "$(PUBLIC_BINS)" != "" -o "$(PUBLIC_SCRIPTS)" != "" ] ; then \
+	      mkdir -p "$(pubbindir)" ; \
+	      fi ; \
+	   if [ "$(PUBLIC_SCRIPTS)" != "" ] ; then \
+	      sh -xc "cp $(PUBLIC_SCRIPTS) $(pubbindir)" ; \
+	      fi ; \
+	   if [ "$(PRIVATE_BINS)" != "" -o "$(PRIVATE_SCRIPTS)" != "" ] ; then \
+	      mkdir -p "$(privbindir)" ; \
+	      fi ; \
+	   if [ "$(PRIVATE_SCRIPTS)" != "" ] ; then \
+	      sh -xc "cp $(PRIVATE_SCRIPTS) $(privbindir)" ; \
+	      fi ; \
+	   if [ "$(PUBLIC_SHADER_PROGRAMS)" != "" -o "$(PUBLIC_SHADER_DATA)" != "" ] ; then \
+	      mkdir -p "$(pubshaderdir)" ; \
+	      fi ; \
+	   if [ "$(PRIVATE_SHADER_PROGRAMS)" != "" -o "$(PRIVATE_SHADER_DATA)" != "" ] ; then \
+	      mkdir -p "$(privshaderdir)" ; \
+	      fi ; \
+	   if [ "$(PUBLIC_DSOS)" != "" ] ; then \
+	      mkdir -p "$(pubdsodir)" ; \
+	      fi ; \
+	   if [ "$(PUBLIC_HEADERS)" != "" ] ; then \
+	      mkdir -p "$(pubheaderdir)" ; \
+	      fi ; \
+	   if [ "$(PUBLIC_LIBS)" != "" ] ; then \
+	      mkdir -p "$(publibdir)" ; \
+	      fi ; \
+	   if [ "$(PRIVATE_LIBRARY_FILES)" != "" ] ; then \
+	      mkdir -p "$(privatelibrarydir)" ; \
+	      fi ; \
+	   if [ "$(PRIVATE_DSOS)" != "" ] ; then \
+	      mkdir -p "$(privdsodir)" ; \
+	      fi ; \
+	   if [ "$(MAN_PAGES)" != "" ] ; then \
+	      for f in $(MAN_PAGES) ;\
+	         do suffix=`echo $$f | sed -e 's/^.*\.//'` ;\
+		 if [ "`echo $$suffix | wc -c`" == "2" ] ; then \
+		    mkdir -p "$(HEV_IDEA_DIR)/man/man$$suffix/" ;\
+	            sh -xc "cp $$f $(HEV_IDEA_DIR)/man/man$$suffix/" ;\
+		 else dtk-msgError -p $$HEVROOT/idea/gnumakefile.include man file $$f has invalid suffix ;\
+	            fi ;\
+	         done ; \
+	      fi ; \
+	   if [ "$(publicbins)" != "" ] ; then \
+	      for f in $(publicbins) ; \
+	         do sh -xc "cp $$f $(pubbindir)/$${f%}" ; \
+	         done ; \
+	      fi ; \
+	   if [ "$(privatebins)" != "" ] ; then \
+	      for f in $(privatebins) ; \
+	         do sh -xc "cp $$f $(privbindir)/$${f%}" ; \
+	         done ; \
+	      fi ; \
+	   if [ "$(publicshaderprogramsbuilt)" != "" -o "$(publicshaderprogramswithoutincludes)" != "" -o "$(publicshaderdata)" != "" ] ; then \
+	      for f in $(publicshaderprogramsbuilt) $(publicshaderprogramswithoutincludes) $(publicshaderdata) ; \
+	         do sh -xc "cp $$f $(pubshaderdir)/$${f%}" ; \
+	         done ; \
+	      fi ; \
+	   if [ "$(privateshaderprogramsbuilt)" != "" -o "$(privateshaderprogramswithoutincludes)" != "" -o "$(privateshaderdata)" != "" ] ; then \
+	      for f in $(privateshaderprogramsbuilt) $(privateshaderprogramswithoutincludes) $(privateshaderdata) ; \
+	         do sh -xc "cp $$f $(privshaderdir)/$${f%}" ; \
+	         done ; \
+	      fi ; \
+	   if [ "$(publicdsos)" != "" ] ; then \
+	      for f in $(publicdsos) ; \
+	         do sh -xc "cp $$f $(pubdsodir)/$${f%.so}.so" ; \
+	         done ; \
+	      fi ; \
+	   if [ "$(privatedsos)" != "" ] ; then \
+	      for f in $(privatedsos) ; \
+	         do sh -xc "cp $$f $(privdsodir)/$${f%.so}.so" ; \
+	         done ; \
+	      fi ; \
+	   if [ "$(publicheaders)" != "" ] ; then \
+	      for f in $(publicheaders) ; \
+	         do sh -xc "cp $$f $(pubheaderdir)/$$f" ; \
+	         done ; \
+	      fi ; \
+	   if [ "$(publiclibs)" != "" ] ; then \
+	      for f in $(publiclibs) ; \
+	         do sh -xc "cp $$f $(publibdir)/$${f%.a}.a" ; \
+	         done ; \
+	      fi ; \
+	   if [ -n "$(privatelibrary)" ] ; then \
+	      mkdir -p "$(privatelibrarydir)" ; \
+	      sh -xc "cp $(privatelibrary) $(privatelibrarydir)" ; \
+	   fi ; \
+	elif [ -z "$(DEMO_BASE)" ] ; then \
+	   echo sorry, but you can\'t do a \"make install\" outside of $(HEV_IDEA_DIR)/src/$(PROJECT) ; \
+       exit -1 ; \
+	else \
+	   echo sorry, but you can\'t do a \"make install\" outside of $(full_demo_base)/src ; \
+       exit -1 ; \
+	fi ;
+
+################# clean, etc. ##############################################
+
+clean:
+	-rm -rf $(OBJECT_FILES) $(privatelibrary) $(privatelibrary_objs) \
+		$(publicbin_objs) $(publicdso_objs) $(publicbins) $(publicdsos) \
+		$(publiclib_objs) $(publiclibs) \
+		$(privatebin_objs) $(privatedso_objs) $(privatebins) $(privatedsos) \
+		$(dependencyfiles) $(CLEAN_FILES) $(publicshaderprogramsbuilt) $(privateshaderprogramsbuilt) 
+
+distclean: clean
+	-rm -rf *.o *.d.* *.d *~ core $(DISTCLEAN_FILES) $(patsubst %.fl,%.cxx,$(wildcard *.fl)) $(patsubst %.fl,%.h,$(wildcard *.fl)) $(demodir) ; \
+	if [ -n "$(full_demo_base)" ] ; \
+	then cd $(full_demo_base) ; \
+	   rm -f *~ ; \
+	fi 
+
+tarball: distclean
+	here=`basename $$PWD` ; \
+	if [ "$$here" == "src" ] ; \
+	then cd .. ; \
+	fi ; \
+	cd .. ; \
+	tar -zvchf /tmp/$(PROJECT).tar.gz $(PROJECT)

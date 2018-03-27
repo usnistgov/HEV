@@ -1,0 +1,10 @@
+
+dtk-server sideWinderJoystick
+
+dtk-floatScope sideWinder/joystick sideWinder/throttle -geometry 623x380+300+20
+#comments -- hay cool --comments
+xterm -T joystick -n joystick -geometry 45x7+0+0 -e dtk-readFloats -qc sideWinder/joystick
+xterm -T throttle -n throttle -geometry 45x7+0+123 -e dtk-readFloats -qc sideWinder/throttle
+xterm -T buttons -n buttons -geometry 45x6+0+246 -e dtk-readButtons -qc sideWinder/buttons
+xterm -T hat -n hat -geometry 45x6+0+356 -e dtk-readChars -qc sideWinder/hat
+xlogo -bg blue -fg yellow

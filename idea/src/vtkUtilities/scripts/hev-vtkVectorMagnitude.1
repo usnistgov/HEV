@@ -1,0 +1,52 @@
+.TH hev-vtkVectorMagnitude
+.SH NAME
+hev-vtkVectorMagnitude - calculate magnitude of a vector field
+
+.SH SYNOPSIS
+.B hev-vtkVectorMagnitude inFName outFName
+
+.SH DESCRIPTION
+.B hev-vtkVectorMagnitude
+calculates the magnitude of a vector field.
+
+.PP
+
+.SH OPTIONS
+None.
+
+.SH PARAMETERS
+.TP
+.B inFName
+Location/filename of input file.
+This file has to be in vtk format.
+
+.TP
+.B outFName
+Location/filename of output file. 
+This file is written in VTK format.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+  hev-gridToVtkImage --ncomp 3 --vector --dim 10 12 11 
+      raw.vectors2.10_12_11.ascii vec2.vtk
+
+  hev-vtkVectorMagnitude vec2.vtk vec2.mag.vtk
+
+
+.SH SEE ALSO
+
+vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+August 3rd 2012

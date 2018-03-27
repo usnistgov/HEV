@@ -1,0 +1,703 @@
+# defaults |
+0|The Inventor Mentor: Programming Object-Oriented 3D Graphics with Open Inventor&#8482;, Release 2|sgi_html/index.html
+1|Front Matter|sgi_html/front.html
+1|About This Book|sgi_html/pr01.html
+2|What This Book Contains|sgi_html/pr01.html#id5364571
+2|How to Use This Book|sgi_html/pr01.html#id5362615
+2|What You Should Know Before Reading This Book|sgi_html/pr01.html#id5362702
+2|Conventions Used in This Book|sgi_html/pr01.html#id5362734
+3|Tips|sgi_html/pr01.html#id5362786
+3|Advanced Information|sgi_html/pr01.html#id5362803
+2|Key to Scene Graph Diagrams|sgi_html/pr01.html#id5362841
+2|Suggestions for Further Reading|sgi_html/pr01.html#id5362856
+2|Acknowledgments|sgi_html/pr01.html#id5363022
+1|Color Plates|sgi_html/pr02.html
+1|Chapter 1. Overview|sgi_html/ch01.html
+2|What Is Open Inventor?|sgi_html/ch01.html#id5436297
+2|Objects, not Drawings|sgi_html/ch01.html#id5436528
+3|Using Database Objects in a Variety of Ways|sgi_html/ch01.html#id5436605
+3|Animation|sgi_html/ch01.html#id5436644
+2|How Does Open Inventor Relate to OpenGL?|sgi_html/ch01.html#id5436757
+2|The Inventor Toolkit|sgi_html/ch01.html#id5437095
+3|The Scene Database|sgi_html/ch01.html#id5437250
+3|Node Kits|sgi_html/ch01.html#id5437528
+3|Manipulators|sgi_html/ch01.html#id5437647
+2|Inventor Component Library|sgi_html/ch01.html#id5437728
+2|Inventor Class Tree|sgi_html/ch01.html#id5437926
+2|Extending the Toolkit|sgi_html/ch01.html#id5438049
+1|Chapter 2. An Inventor Sampler|sgi_html/ch02.html
+2|&#8220;Hello, Cone&#8221;|sgi_html/ch02.html#id5438456
+3|A Red Cone|sgi_html/ch02.html#id5362412
+3|Using Engines to Make the Cone Spin|sgi_html/ch02.html#id5438872
+3|Adding a Trackball Manipulator|sgi_html/ch02.html#id5438985
+3|Adding the Examiner Viewer|sgi_html/ch02.html#id5439161
+2|Naming Conventions|sgi_html/ch02.html#id5439298
+2|Scene Basic Types|sgi_html/ch02.html#id5439484
+3|Methods|sgi_html/ch02.html#id5440076
+3|Types versus Fields|sgi_html/ch02.html#id5441479
+2|Coordinate Systems in Inventor|sgi_html/ch02.html#id5441565
+2|Include Files|sgi_html/ch02.html#id5441658
+1|Chapter 3. Nodes and Groups|sgi_html/ch03.html
+2|The Scene Database|sgi_html/ch03.html#id5441881
+2|Scene Graphs|sgi_html/ch03.html#id5442247
+2|Types of Nodes|sgi_html/ch03.html#id5442313
+3|Creating Nodes|sgi_html/ch03.html#id5442437
+3|What's in a Node?|sgi_html/ch03.html#id5442531
+3|What Happens When You Apply an Action to a Node? (Advanced)|sgi_html/ch03.html#id5442826
+3|Shape Nodes|sgi_html/ch03.html#id5443055
+3|Property Nodes|sgi_html/ch03.html#id5443145
+3|Groups|sgi_html/ch03.html#id5443599
+2|Creating Groups|sgi_html/ch03.html#id5443694
+3|Ordering of Children|sgi_html/ch03.html#id5443808
+3|Why Is Order Important?|sgi_html/ch03.html#id5443943
+3|Separators|sgi_html/ch03.html#id5444460
+3|Other Subclasses of SoGroup|sgi_html/ch03.html#id5444763
+4|SoSwitch|sgi_html/ch03.html#id5444877
+4|SoLevelOfDetail|sgi_html/ch03.html#id5445033
+2|Shared Instancing of Nodes|sgi_html/ch03.html#id5445330
+2|Paths|sgi_html/ch03.html#id5445604
+3|Where Do Paths Come From?|sgi_html/ch03.html#id5445752
+3|What Are Paths Used For?|sgi_html/ch03.html#id5445802
+2|Fields within a Node|sgi_html/ch03.html#id5445852
+3|Why Fields? (Advanced)|sgi_html/ch03.html#id5446089
+3|Single- versus Multiple-Value Fields|sgi_html/ch03.html#id5446143
+3|Single-Value Fields: Setting and Getting Values|sgi_html/ch03.html#id5446412
+4|Floats, Longs, and Shorts|sgi_html/ch03.html#id5446475
+4|Vectors|sgi_html/ch03.html#id5446599
+4|Rotations|sgi_html/ch03.html#id5446782
+3|Multiple-Value Fields: Setting and Getting Values|sgi_html/ch03.html#id5446966
+3|Ignore Flag (Advanced)|sgi_html/ch03.html#id5447525
+2|Override Flag (Advanced)|sgi_html/ch03.html#id5447662
+2|References and Deletion|sgi_html/ch03.html#id5447829
+3|Reference Counting|sgi_html/ch03.html#id5447847
+3|How Nodes Are Deleted|sgi_html/ch03.html#id5448089
+3|Nodes with Zero References|sgi_html/ch03.html#id5448476
+3|Summary of References and Deletion|sgi_html/ch03.html#id5448606
+2|Node Types|sgi_html/ch03.html#id5448838
+2|Naming Nodes|sgi_html/ch03.html#id5449189
+1|Chapter 4. Cameras and Lights|sgi_html/ch04.html
+2|Using Lights and Cameras|sgi_html/ch04.html#id5449589
+2|Cameras|sgi_html/ch04.html#id5449662
+3|SoCamera|sgi_html/ch04.html#id5449767
+3|Subclasses of SoCamera|sgi_html/ch04.html#id5450618
+3|SoPerspectiveCamera|sgi_html/ch04.html#id5450659
+3|SoOrthographicCamera|sgi_html/ch04.html#id5450786
+3|Mapping the Camera Aspect Ratio to the Viewport|sgi_html/ch04.html#id5451024
+3|Viewing a Scene with Different Cameras|sgi_html/ch04.html#id5451333
+2|Lights|sgi_html/ch04.html#id5451665
+3|SoLight|sgi_html/ch04.html#id5451891
+3|Subclasses of SoLight|sgi_html/ch04.html#id5452079
+3|SoPointLight|sgi_html/ch04.html#id5452226
+3|SoDirectionalLight|sgi_html/ch04.html#id5452336
+3|SoSpotLight|sgi_html/ch04.html#id5452467
+3|Using Multiple Lights|sgi_html/ch04.html#id5452665
+1|Chapter 5. Shapes, Properties, and Binding|sgi_html/ch05.html
+2|Simple Shapes|sgi_html/ch05.html#id5453093
+2|Complex Shapes|sgi_html/ch05.html#id5453162
+3|Face Set|sgi_html/ch05.html#id5453493
+3|Indexed Face Set|sgi_html/ch05.html#id5453910
+3|Triangle Strip Set|sgi_html/ch05.html#id5454432
+3|Quad Mesh|sgi_html/ch05.html#id5454796
+2|Property Nodes|sgi_html/ch05.html#id5455075
+3|Material Node|sgi_html/ch05.html#id5455324
+3|Draw-Style Node|sgi_html/ch05.html#id5455718
+3|Light-Model Node|sgi_html/ch05.html#id5456072
+3|Environment Node|sgi_html/ch05.html#id5456396
+3|Shape-Hints Node|sgi_html/ch05.html#id5456833
+3|Complexity Node|sgi_html/ch05.html#id5457283
+3|Units Node|sgi_html/ch05.html#id5457619
+2|Binding Nodes|sgi_html/ch05.html#id5457797
+3|Indexed Binding|sgi_html/ch05.html#id5458285
+3|Binding per Vertex|sgi_html/ch05.html#id5458649
+3|Nuances (Advanced)|sgi_html/ch05.html#id5458689
+3|Using a Material-Binding Node|sgi_html/ch05.html#id5458769
+3|Normal Binding|sgi_html/ch05.html#id5459021
+3|Generating Normals Automatically|sgi_html/ch05.html#id5459136
+2|Transformations|sgi_html/ch05.html#id5459311
+3|SoTransform Node|sgi_html/ch05.html#id5459417
+3|Order of Transformations|sgi_html/ch05.html#id5459751
+1|Chapter 6. Text|sgi_html/ch06.html
+2|Two-Dimensional Text|sgi_html/ch06.html#id5460174
+3|Font Type and Size|sgi_html/ch06.html#id5460367
+3|Using 2D Text|sgi_html/ch06.html#id5460538
+2|Three-Dimensional Text|sgi_html/ch06.html#id5460752
+3|Parts of 3D Text|sgi_html/ch06.html#id5461001
+3|Profile|sgi_html/ch06.html#id5461052
+4|Linear Profiles|sgi_html/ch06.html#id5461141
+4|Curved Profiles|sgi_html/ch06.html#id5461219
+4|Linking Profiles (Advanced)|sgi_html/ch06.html#id5461288
+3|Simple Use of 3D Text|sgi_html/ch06.html#id5461414
+3|Advanced Use of 3D Text (Advanced)|sgi_html/ch06.html#id5461647
+1|Chapter 7. Textures|sgi_html/ch07.html
+2|Creating Textured Objects|sgi_html/ch07.html#id5462059
+3|What Is a Texture Map?|sgi_html/ch07.html#id5462124
+3|Nodes Used for Texture Mapping|sgi_html/ch07.html#id5462191
+3|Using the Defaults|sgi_html/ch07.html#id5462491
+2|Key Concepts|sgi_html/ch07.html#id5462648
+3|Wrapping a Texture around an Object|sgi_html/ch07.html#id5462680
+3|How a Texture Affects the Underlying Colors (Advanced)|sgi_html/ch07.html#id5453644
+3|Storing an Image (Advanced)|sgi_html/ch07.html#id5464276
+4|Components of a Texture|sgi_html/ch07.html#id5464360
+4|Storing an Image in Memory|sgi_html/ch07.html#id5464504
+2|SoTexture2 Node|sgi_html/ch07.html#id5464748
+3|Fields of an SoTexture2 Node|sgi_html/ch07.html#id5464773
+3|Transforming a Texture Map|sgi_html/ch07.html#id5465113
+2|Mapping the Texture onto the Object|sgi_html/ch07.html#id5465544
+3|Using the Default Texture Mapping|sgi_html/ch07.html#id5465642
+4|SoSphere|sgi_html/ch07.html#id5465806
+4|SoCube|sgi_html/ch07.html#id5465900
+4|SoCylinder|sgi_html/ch07.html#id5465956
+4|SoCone|sgi_html/ch07.html#id5466042
+4|SoNurbsSurface|sgi_html/ch07.html#id5466141
+4|SoText3|sgi_html/ch07.html#id5466211
+3|Specifying Texture Coordinates Explicitly (Advanced)|sgi_html/ch07.html#id5466300
+3|Using a Texture-Coordinate Function|sgi_html/ch07.html#id5466515
+4|SoTextureCoordinatePlane|sgi_html/ch07.html#id5466713
+4|SoTextureCoordinateEnvironment|sgi_html/ch07.html#id5467077
+1|Chapter 8. Curves and Surfaces|sgi_html/ch08.html
+2|Overview|sgi_html/ch08.html#id5467340
+3|Classes Used with NURBS Shapes|sgi_html/ch08.html#id5467364
+3|Parametric Curves|sgi_html/ch08.html#id5467646
+2|Key Concepts|sgi_html/ch08.html#id5467779
+3|Control Points and Order|sgi_html/ch08.html#id5468274
+3|Continuity of a Curve|sgi_html/ch08.html#id5468359
+3|Basis Function|sgi_html/ch08.html#id5468622
+4|Knot Sequence|sgi_html/ch08.html#id5468809
+4|Knot Multiplicity|sgi_html/ch08.html#id5468925
+4|Common Knot Sequences|sgi_html/ch08.html#id5469288
+3|Summary of NURBS Relationships|sgi_html/ch08.html#id5469514
+3|Rational Curves|sgi_html/ch08.html#id5469661
+3|N-U-R-B-S Spells NURBS|sgi_html/ch08.html#id5469828
+2|Examples of NURBS Curves|sgi_html/ch08.html#id5469903
+3|B-Spline Curve|sgi_html/ch08.html#id5469918
+3|Uniform B-Spline Curve Passing through Endpoints|sgi_html/ch08.html#id5470112
+2|NURBS Surfaces|sgi_html/ch08.html#id5470277
+3|Bezier Surface|sgi_html/ch08.html#id5470430
+3|Trimming NURBS Surfaces|sgi_html/ch08.html#id5470707
+2|Suggestions for Further Reading|sgi_html/ch08.html#id5471272
+1|Chapter 9. Applying Actions|sgi_html/ch09.html
+2|Inventor Actions|sgi_html/ch09.html#id5471447
+2|General Model|sgi_html/ch09.html#id5471894
+2|Applying an Action|sgi_html/ch09.html#id5472126
+2|Rendering|sgi_html/ch09.html#id5472297
+3|Setting the Transparency Quality|sgi_html/ch09.html#id5472577
+4|Transparency Levels|sgi_html/ch09.html#id5472670
+4|Trade-offs|sgi_html/ch09.html#id5472930
+3|Antialiasing|sgi_html/ch09.html#id5473136
+4|Method 1: Smoothing|sgi_html/ch09.html#id5473200
+4|Method 2: Using the Accumulation Buffer|sgi_html/ch09.html#id5473268
+3|Printing and Off-screen Rendering|sgi_html/ch09.html#id5473380
+4|How to Generate a File for Printing|sgi_html/ch09.html#id5473606
+4|Generating a Texture Map|sgi_html/ch09.html#id5474119
+3|Caching|sgi_html/ch09.html#id5474326
+4|How Caching Works|sgi_html/ch09.html#id5474581
+4|Trade-offs|sgi_html/ch09.html#id5474840
+3|Culling Part of the Scene|sgi_html/ch09.html#id5474872
+2|Calculating a Bounding Box|sgi_html/ch09.html#id5475166
+3|Create an Instance of the Action|sgi_html/ch09.html#id5475246
+3|Apply the Action|sgi_html/ch09.html#id5475291
+3|Obtain Results|sgi_html/ch09.html#id5475346
+2|Accumulating a Transformation Matrix|sgi_html/ch09.html#id5475641
+3|Create an Instance of the Action|sgi_html/ch09.html#id5475758
+3|Apply the Action|sgi_html/ch09.html#id5475783
+3|Obtain Results|sgi_html/ch09.html#id5475797
+2|Writing to a File|sgi_html/ch09.html#id5476131
+2|Searching for a Node|sgi_html/ch09.html#id5476516
+3|Specify the Search Criteria|sgi_html/ch09.html#id5476570
+4|Searching for a Node|sgi_html/ch09.html#id5476580
+4|Searching for a Node Type|sgi_html/ch09.html#id5476643
+4|Searching for a Name|sgi_html/ch09.html#id5476725
+4|Specify Whether to Find All Matches|sgi_html/ch09.html#id5476755
+4|Specify the Type of Traversal|sgi_html/ch09.html#id5476836
+3|Apply the Action|sgi_html/ch09.html#id5476862
+3|Obtain the Results|sgi_html/ch09.html#id5476877
+2|Picking|sgi_html/ch09.html#id5477068
+3|Picking Style|sgi_html/ch09.html#id5477204
+3|Create an Instance of the Action|sgi_html/ch09.html#id5477294
+3|Set Parameters|sgi_html/ch09.html#id5477349
+4|Specifying the Picking Ray with a Window Point|sgi_html/ch09.html#id5477388
+4|Specifying the Picking Ray with a World-Space Ray|sgi_html/ch09.html#id5477580
+4|Picking the Closest Object|sgi_html/ch09.html#id5477615
+3|Apply the Action|sgi_html/ch09.html#id5477661
+3|Obtain Results|sgi_html/ch09.html#id5477683
+4|SoPickedPoint|sgi_html/ch09.html#id5477726
+4|Using an SoDetail|sgi_html/ch09.html#id5478192
+3|Using the Pick Action|sgi_html/ch09.html#id5478831
+2|Calling Back to the Application|sgi_html/ch09.html#id5478905
+3|Create an Instance of the Action|sgi_html/ch09.html#id5479035
+3|Register Callback Functions|sgi_html/ch09.html#id5479060
+4|General-Purpose Callback Functions|sgi_html/ch09.html#id5479074
+4|Primitive Generation|sgi_html/ch09.html#id5479350
+3|Apply the Action|sgi_html/ch09.html#id5479762
+3|Using a Callback for Generated Primitives|sgi_html/ch09.html#id5479777
+1|Chapter 10. Handling Events and Selection|sgi_html/ch10.html
+2|Overview|sgi_html/ch10.html#id5480022
+2|General Programming Model for Event Handling|sgi_html/ch10.html#id5480051
+3|Using the X Window System|sgi_html/ch10.html#id5480142
+3|Render Area|sgi_html/ch10.html#id5480375
+3|Inventor Events (SoEvent)|sgi_html/ch10.html#id5480466
+3|Scene Manager|sgi_html/ch10.html#id5480903
+2|Inventor Event Handling|sgi_html/ch10.html#id5480945
+2|How Nodes Handle Events: SoHandleEventAction|sgi_html/ch10.html#id5481209
+3|SoNode|sgi_html/ch10.html#id5481363
+3|SoGroup|sgi_html/ch10.html#id5481381
+3|SoManipulator|sgi_html/ch10.html#id5481484
+4|Grabbing|sgi_html/ch10.html#id5481600
+3|SoSelection|sgi_html/ch10.html#id5481763
+4|Picking|sgi_html/ch10.html#id5481901
+4|Selection Policy|sgi_html/ch10.html#id5481985
+3|Finding the Event Handler|sgi_html/ch10.html#id5482350
+2|Using Event Callback Nodes (Advanced)|sgi_html/ch10.html#id5482641
+2|Sending Events Directly to the Application (Advanced)|sgi_html/ch10.html#id5483270
+2|Selection|sgi_html/ch10.html#id5483449
+3|Managing the Selection List|sgi_html/ch10.html#id5483483
+3|Highlighting Selected Objects|sgi_html/ch10.html#id5484140
+4|How Highlighting Occurs|sgi_html/ch10.html#id5484337
+4|Custom Highlighting|sgi_html/ch10.html#id5484505
+3|Callback Functions for Selection Changes|sgi_html/ch10.html#id5484681
+4|Pick Filter Callback (Advanced)|sgi_html/ch10.html#id5485235
+1|Chapter 11. File Format|sgi_html/ch11.html
+2|Writing a Scene Graph|sgi_html/ch11.html#id5485770
+2|Reading a File into the Database|sgi_html/ch11.html#id5485835
+2|File Format Syntax|sgi_html/ch11.html#id5486121
+3|File Header|sgi_html/ch11.html#id5486181
+3|Writing a Node|sgi_html/ch11.html#id5486308
+3|Writing Values within a Field|sgi_html/ch11.html#id5486377
+3|Ignore Flag|sgi_html/ch11.html#id5487003
+3|Field Connections|sgi_html/ch11.html#id5487082
+3|Global Fields|sgi_html/ch11.html#id5487158
+3|Writing an Engine|sgi_html/ch11.html#id5487290
+3|Writing a Path|sgi_html/ch11.html#id5487380
+3|Defining and Using Shared Instances of Nodes|sgi_html/ch11.html#id5487810
+3|Writing a Node Kit|sgi_html/ch11.html#id5487980
+3|Including Other Files|sgi_html/ch11.html#id5488358
+3|ASCII and Binary Versions|sgi_html/ch11.html#id5488592
+2|Reading in Extender Nodes and Engines|sgi_html/ch11.html#id5488729
+3|File Format for Unknown Nodes and Engines|sgi_html/ch11.html#id5488786
+3|Alternate Representation|sgi_html/ch11.html#id5488941
+2|Reading from a String|sgi_html/ch11.html#id5489020
+1|Chapter 12. Sensors|sgi_html/ch12.html
+2|Introduction to Sensors|sgi_html/ch12.html#id5489220
+3|Sensor Queues|sgi_html/ch12.html#id5489368
+3|Key Terms|sgi_html/ch12.html#id5489490
+2|Data Sensors|sgi_html/ch12.html#id5489558
+3|General Sequence for Data Sensors|sgi_html/ch12.html#id5489828
+3|Callback Function|sgi_html/ch12.html#id5489894
+3|Priorities|sgi_html/ch12.html#id5490001
+3|Triggering a Data Sensor|sgi_html/ch12.html#id5490156
+3|Using a Field Sensor|sgi_html/ch12.html#id5490249
+3|Using the Trigger Node and Field (Advanced)|sgi_html/ch12.html#id5490364
+2|Other Delay-Queue Sensors|sgi_html/ch12.html#id5490582
+3|General Sequence for One-Shot and Idle Sensors|sgi_html/ch12.html#id5490632
+3|SoOneShotSensor|sgi_html/ch12.html#id5490760
+3|SoIdleSensor|sgi_html/ch12.html#id5490962
+2|Timer-Queue Sensors|sgi_html/ch12.html#id5491039
+3|General Sequence for Timer-Queue Sensors|sgi_html/ch12.html#id5491080
+3|SoAlarmSensor|sgi_html/ch12.html#id5491194
+3|SoTimerSensor|sgi_html/ch12.html#id5491444
+3|Processing the Sensor Queues (Advanced)|sgi_html/ch12.html#id5491736
+1|Chapter 13. Engines|sgi_html/ch13.html
+2|Introduction to Engines|sgi_html/ch13.html#id5492151
+2|General Uses of Engines|sgi_html/ch13.html#id5492397
+2|Types of Engines|sgi_html/ch13.html#id5492871
+2|Making Field Connections|sgi_html/ch13.html#id5493141
+3|Multiple Connections|sgi_html/ch13.html#id5493493
+3|Field Conversion|sgi_html/ch13.html#id5493588
+2|Reference Counting|sgi_html/ch13.html#id5493940
+2|Disabling a Connection|sgi_html/ch13.html#id5493966
+2|Updating Values|sgi_html/ch13.html#id5494055
+2|Global Fields|sgi_html/ch13.html#id5494130
+2|Animation Engines|sgi_html/ch13.html#id5494550
+3|Elapsed-Time Engine|sgi_html/ch13.html#id5494646
+3|One-Shot Engine|sgi_html/ch13.html#id5494901
+3|Time-Counter Engine|sgi_html/ch13.html#id5495092
+2|Gate Engine|sgi_html/ch13.html#id5495480
+2|Arithmetic Engines|sgi_html/ch13.html#id5495859
+3|Boolean Engine|sgi_html/ch13.html#id5495930
+3|Calculator Engine|sgi_html/ch13.html#id5496678
+3|Using the Calculator to Constrain Object Behavior|sgi_html/ch13.html#id5497448
+2|Nodes Used for Animation|sgi_html/ch13.html#id5497637
+3|Rotor Node|sgi_html/ch13.html#id5497764
+3|Blinker Node|sgi_html/ch13.html#id5498078
+1|Chapter 14. Node Kits|sgi_html/ch14.html
+2|Why Node Kits?|sgi_html/ch14.html#id5498363
+2|Hidden Children and SoNodeKitPath|sgi_html/ch14.html#id5498510
+2|Node-Kit Classes|sgi_html/ch14.html#id5498741
+2|Node-Kit Catalog|sgi_html/ch14.html#id5498839
+2|Parts Created by Default|sgi_html/ch14.html#id5499659
+2|Selecting Parts and Setting Values|sgi_html/ch14.html#id5499847
+2|Other Methods: getPart() and setPart()|sgi_html/ch14.html#id5500183
+3|The getPart() Method|sgi_html/ch14.html#id5500261
+3|The setPart() Method|sgi_html/ch14.html#id5500396
+2|Macros for Getting Parts|sgi_html/ch14.html#id5500536
+3|The SO_GET_PART() Macro|sgi_html/ch14.html#id5500598
+3|The SO_CHECK_PART() Macro|sgi_html/ch14.html#id5500692
+2|Specifying Part Names|sgi_html/ch14.html#id5500774
+2|Creating Paths to Parts|sgi_html/ch14.html#id5501247
+2|Using List Parts|sgi_html/ch14.html#id5501642
+2|Using Separator Kits to Create Motion Hierarchies|sgi_html/ch14.html#id5501757
+2|Examples|sgi_html/ch14.html#id5502013
+3|Simple Use of Node Kits|sgi_html/ch14.html#id5502072
+3|Using Node Kits with Editors|sgi_html/ch14.html#id5502322
+3|Creating a Motion Hierarchy|sgi_html/ch14.html#id5502573
+1|Chapter 15. Draggers and Manipulators|sgi_html/ch15.html
+2|What Is a Dragger?|sgi_html/ch15.html#id5502993
+2|Types of Draggers|sgi_html/ch15.html#id5503021
+2|Manipulators versus Draggers|sgi_html/ch15.html#id5503772
+2|Simple Draggers|sgi_html/ch15.html#id5504136
+3|Field Connections|sgi_html/ch15.html#id5504173
+3|Callback Functions|sgi_html/ch15.html#id5504487
+3|Using Multiple Draggers|sgi_html/ch15.html#id5504874
+2|Manipulators|sgi_html/ch15.html#id5505098
+3|Replacing a Node with a Manipulator|sgi_html/ch15.html#id5505258
+4|Replacing a Node|sgi_html/ch15.html#id5505369
+4|Removing the Manipulator|sgi_html/ch15.html#id5505503
+3|Using the replaceNode() Method|sgi_html/ch15.html#id5505662
+2|Customizing a Dragger (Advanced)|sgi_html/ch15.html#id5506278
+3|Parts of a Dragger|sgi_html/ch15.html#id5506366
+3|Changing a Part after Building the Dragger|sgi_html/ch15.html#id5506734
+3|Changing the Default Geometry for a Part|sgi_html/ch15.html#id5507094
+4|Where a Dragger Looks for Defaults|sgi_html/ch15.html#id5507113
+4|How to Edit Your File|sgi_html/ch15.html#id5507180
+1|Chapter 16. Inventor Component Library|sgi_html/ch16.html
+2|Introduction to Components|sgi_html/ch16.html#id5507679
+2|Xt Utility Functions|sgi_html/ch16.html#id5507768
+2|Render Area|sgi_html/ch16.html#id5508001
+3|Methods|sgi_html/ch16.html#id5508034
+3|Xt Devices|sgi_html/ch16.html#id5508353
+3|Using the Overlay Planes (Advanced)|sgi_html/ch16.html#id5508575
+2|Xt Components|sgi_html/ch16.html#id5509063
+2|General Model|sgi_html/ch16.html#id5509280
+3|Construct the Component|sgi_html/ch16.html#id5509325
+3|Show and Hide the Component|sgi_html/ch16.html#id5509425
+3|Passing Data to the Application|sgi_html/ch16.html#id5509843
+4|Using Callbacks|sgi_html/ch16.html#id5509921
+4|Attaching a Component to a Scene Graph|sgi_html/ch16.html#id5510253
+2|Viewers|sgi_html/ch16.html#id5510851
+3|Constructing a Viewer|sgi_html/ch16.html#id5510954
+3|Specifying the Scene Graph for the Viewer|sgi_html/ch16.html#id5511146
+4|Cameras|sgi_html/ch16.html#id5511218
+4|Lights|sgi_html/ch16.html#id5511367
+4|Viewer Draw-Style|sgi_html/ch16.html#id5511406
+4|Viewer Draw-Type|sgi_html/ch16.html#id5511644
+3|Methods for SoXtViewer|sgi_html/ch16.html#id5511787
+3|Methods for SoXtFullViewer|sgi_html/ch16.html#id5512218
+2|Using the 3D Clipboard|sgi_html/ch16.html#id5512495
+3|Creating an Instance of SoXtClipboard|sgi_html/ch16.html#id5512581
+3|Copying Data onto the Clipboard|sgi_html/ch16.html#id5512680
+3|Pasting Data from the Clipboard|sgi_html/ch16.html#id5512820
+1|Chapter 17. Using Inventor with OpenGL|sgi_html/ch17.html
+2|Introduction|sgi_html/ch17.html#id5513131
+2|OpenGL State Variables and Inventor|sgi_html/ch17.html#id5513336
+2|Color-Index Mode|sgi_html/ch17.html#id5515677
+2|Using an SoCallback Node|sgi_html/ch17.html#id5515916
+3|Caching|sgi_html/ch17.html#id5515954
+3|Using a Callback Node|sgi_html/ch17.html#id5516084
+2|Applying a Render Action Inside a GLX Window|sgi_html/ch17.html#id5516317
+1|Appendix A. An Introduction to Object-Oriented Programming for C Programmers|sgi_html/apa.html
+2|What Is Object-Oriented Programming?|sgi_html/apa.html#id5516670
+3|Data Abstraction|sgi_html/apa.html#id5516697
+3|Inheritance|sgi_html/apa.html#id5516859
+3|Implementing Data Abstraction and Inheritance: Classes|sgi_html/apa.html#id5516901
+3|Class Hierarchies|sgi_html/apa.html#id5516997
+2|An Example of a Class: Sphere|sgi_html/apa.html#id5517196
+3|An Example of Inheritance: HollowSphere|sgi_html/apa.html#id5517460
+2|Suggested Reading|sgi_html/apa.html#id5517781
+1|Appendix B. An Introduction to the C API|sgi_html/apb.html
+2|Naming C Functions|sgi_html/apb.html#id5518165
+2|Abbreviating C Function Names|sgi_html/apb.html#id5518480
+2|Creating and Deleting Objects from C|sgi_html/apb.html#id5520137
+2|Overloaded C++ Methods|sgi_html/apb.html#id5520278
+2|Calling Functions|sgi_html/apb.html#id5520329
+2|C Classes and Manual Pages|sgi_html/apb.html#id5520400
+2|A Sample Open Inventor Program in C|sgi_html/apb.html#id5520483
+1|Appendix C. Error Handling|sgi_html/apc.html
+2|Runtime Type-Checking|sgi_html/apc.html#id5520741
+2|Posting an Error|sgi_html/apc.html#id5520754
+2|Handling an Error|sgi_html/apc.html#id5520799
+2|Debugging|sgi_html/apc.html#id5520847
+1|Index|sgi_html/ix01.html
+# figures |
+3|Figure 1. Scene Graph Symbols|sgi_html/pr01.html#id5362978
+2|Figure 2. Plate 1|sgi_html/pr02.html#id5363380
+2|Figure 3. Plate 2|sgi_html/pr02.html#id5363429
+2|Figure 4. Plate 3|sgi_html/pr02.html#id5363454
+2|Figure 5. Plate 4|sgi_html/pr02.html#id5363488
+2|Figure 6. Plate 5|sgi_html/pr02.html#id5363535
+2|Figure 7. Plate 6|sgi_html/pr02.html#id5363598
+2|Figure 8. Plate 7|sgi_html/pr02.html#id5363632
+2|Figure 9. Plate 8|sgi_html/pr02.html#id5363678
+2|Figure 10. Plate 9|sgi_html/pr02.html#id5363705
+2|Figure 11. Plate 10|sgi_html/pr02.html#id5363738
+2|Figure 12. Plate 11|sgi_html/pr02.html#id5363786
+2|Figure 13. Plate 12|sgi_html/pr02.html#id5363813
+2|Figure 14. Plate 13|sgi_html/pr02.html#id5363838
+2|Figure 15. Plate 14|sgi_html/pr02.html#id5363892
+2|Figure 16. Plate 15|sgi_html/pr02.html#id5363920
+2|Figure 17. Plate 16|sgi_html/pr02.html#id5363945
+2|Figure 18. Plate 17|sgi_html/pr02.html#id5363971
+2|Figure 19. Plate 18|sgi_html/pr02.html#id5364054
+2|Figure 20. Plate 19|sgi_html/pr02.html#id5364082
+2|Figure 21. Plate 20|sgi_html/pr02.html#id5435506
+2|Figure 22. Plate 21|sgi_html/pr02.html#id5435562
+2|Figure 23. Plate 22|sgi_html/pr02.html#id5435592
+2|Figure 24. Plate 23|sgi_html/pr02.html#id5435623
+2|Figure 25. Plate 24|sgi_html/pr02.html#id5435648
+2|Figure 26. Plate 25|sgi_html/pr02.html#id5435693
+2|Figure 27. Plate 26|sgi_html/pr02.html#id5435720
+2|Figure 28. Plate 27|sgi_html/pr02.html#id5435748
+2|Figure 29. Plate 28|sgi_html/pr02.html#id5435774
+2|Figure 30. Plate 29|sgi_html/pr02.html#id5435821
+2|Figure 31. Plate 30|sgi_html/pr02.html#id5435854
+2|Figure 32. Plate 31|sgi_html/pr02.html#id5435881
+2|Figure 33. Plate 32|sgi_html/pr02.html#id5435939
+2|Figure 34. Plate 33|sgi_html/pr02.html#id5435966
+2|Figure 35. Plate 34|sgi_html/pr02.html#id5436011
+2|Figure 36. Plate 35|sgi_html/pr02.html#id5436036
+2|Figure 37. Plate 36|sgi_html/pr02.html#id5436059
+2|Figure 38. Plate 37|sgi_html/pr02.html#id5436086
+2|Figure 39. Plate 38|sgi_html/pr02.html#id5436121
+2|Figure 40. Plate 39|sgi_html/pr02.html#id5436166
+2|Figure 41. Plate 40|sgi_html/pr02.html#id5436190
+3|Figure 1-1. Inventor Architecture|sgi_html/ch01.html#id5436479
+4|Figure 1-2. Example of a Scene Graph|sgi_html/ch01.html#id5437508
+4|Figure 1-3. Handle-Box Manipulator|sgi_html/ch01.html#id5437707
+3|Figure 1-4. Example of a Component: Directional Light Editor (lower right)|sgi_html/ch01.html#id5437904
+3|Figure 1-5. Inventor Class Tree Summary (Part 1 of 3)|sgi_html/ch01.html#id5438340
+3|Figure 1-6. Inventor Class Tree Summary (Part 2 of 3)|sgi_html/ch01.html#id5438358
+3|Figure 1-7. Inventor Class Tree Summary (Part 3 of 3)|sgi_html/ch01.html#id5438370
+3|Figure 3-1. An Inventor Database|sgi_html/ch03.html#id5441932
+4|Figure 3-2. Shape-Node Classes|sgi_html/ch03.html#id5443125
+4|Figure 3-3. Property-Node Classes|sgi_html/ch03.html#id5443578
+4|Figure 3-4. Group-Node Classes|sgi_html/ch03.html#id5443653
+3|Figure 3-5. Simple Group|sgi_html/ch03.html#id5443788
+4|Figure 3-6. Combining Groups|sgi_html/ch03.html#id5444355
+4|Figure 3-7. Separator Groups|sgi_html/ch03.html#id5444674
+5|Figure 3-8. Scene Graph with Level-of-Detail Node|sgi_html/ch03.html#id5445287
+5|Figure 3-9. Different Levels of Detail for an Object|sgi_html/ch03.html#id5445305
+3|Figure 3-10. Scene Graph Showing Shared Instancing of the Leg Group|sgi_html/ch03.html#id5445422
+3|Figure 3-11. Rendered Image of the Robot|sgi_html/ch03.html#id5445583
+3|Figure 3-12. Path Representing the Left Foot|sgi_html/ch03.html#id5445728
+4|Figure 3-13. Reference Counts|sgi_html/ch03.html#id5447980
+4|Figure 3-14. Incrementing the Reference Count|sgi_html/ch03.html#id5448018
+4|Figure 3-15. Decrementing the Reference Count|sgi_html/ch03.html#id5448357
+4|Figure 4-1. Camera-Node Classes|sgi_html/ch04.html#id5449799
+4|Figure 4-2. View Volume and Viewing Projection for an SoPerspectiveCamera Node|sgi_html/ch04.html#id5450974
+4|Figure 4-3. View Volume and Viewing Projection for an SoOrthographicCamera Node|sgi_html/ch04.html#id5450998
+4|Figure 4-4. Mapping the Camera Aspect Ratio to the Viewport|sgi_html/ch04.html#id5451401
+4|Figure 4-5. Scene Graph for Camera Example|sgi_html/ch04.html#id5451473
+4|Figure 4-6. Camera Example|sgi_html/ch04.html#id5451539
+4|Figure 4-7. Light-Node Classes|sgi_html/ch04.html#id5452123
+4|Figure 4-8. Light Types|sgi_html/ch04.html#id5452394
+4|Figure 4-9. Fields for SoSpotLight Node|sgi_html/ch04.html#id5452741
+4|Figure 4-10. Scene Graph for Light Example|sgi_html/ch04.html#id5452877
+3|Figure 5-1. Shape-Node Classes|sgi_html/ch05.html#id5453327
+3|Figure 5-2. Nodes Used to Create a Simple Indexed Face Set|sgi_html/ch05.html#id5453472
+4|Figure 5-3. Scene Graph for Face Set Example|sgi_html/ch05.html#id5453768
+4|Figure 5-4. Scene Graph for Indexed Face-Set Example|sgi_html/ch05.html#id5454285
+4|Figure 5-5. Scene Graph for Triangle Strip Set Example|sgi_html/ch05.html#id5454658
+4|Figure 5-6. Scene Graph for Quad Mesh Example|sgi_html/ch05.html#id5454895
+3|Figure 5-7. Property-Node Classes|sgi_html/ch05.html#id5455300
+4|Figure 5-8. Scene Graph for Material Binding Example|sgi_html/ch05.html#id5458946
+3|Figure 5-9. Cumulative Effect of Transformation Nodes|sgi_html/ch05.html#id5459379
+4|Figure 5-10. Two Groups with Transformations in Different Order|sgi_html/ch05.html#id5459854
+4|Figure 6-1. 2D Text Example|sgi_html/ch06.html#id5460589
+3|Figure 6-2. Defining a Customized Profile for 3D Text|sgi_html/ch06.html#id5460831
+4|Figure 6-3. 2D Plane for Drawing a Text Profile|sgi_html/ch06.html#id5461121
+4|Figure 6-4. Scene Graph for Simple 3D Text Example|sgi_html/ch06.html#id5461487
+4|Figure 6-5. Scene Graph for Advanced 3D Text Example|sgi_html/ch06.html#id5461768
+3|Figure 7-1. Texture Mapping|sgi_html/ch07.html#id5462084
+4|Figure 7-2. Texture Coordinates|sgi_html/ch07.html#id5462439
+4|Figure 7-3. Wrapping the Texture around the Object|sgi_html/ch07.html#id5464070
+5|Figure 7-4. Format for Storing a One-Component Texture in Memory|sgi_html/ch07.html#id5464615
+5|Figure 7-5. Format for Storing a Two-Component Texture in Memory|sgi_html/ch07.html#id5464677
+5|Figure 7-6. Format for Storing a Three-Component Texture in Memory|sgi_html/ch07.html#id5464724
+4|Figure 7-7. How the SoTexture2Transform Node Relates to the Texture Coordinates|sgi_html/ch07.html#id5465248
+4|Figure 7-8. Effects of Different Scale Factors on a Texture Map|sgi_html/ch07.html#id5465517
+5|Figure 7-9. Default Texture Mapping for SoSphere|sgi_html/ch07.html#id5465848
+5|Figure 7-10. Default Texture Mapping for SoCube|sgi_html/ch07.html#id5465935
+5|Figure 7-11. Default Texture Mapping for SoCylinder|sgi_html/ch07.html#id5466001
+5|Figure 7-12. Default Texture Mapping for SoCone|sgi_html/ch07.html#id5466120
+5|Figure 7-13. Default Texture Mapping for SoNurbsSurface|sgi_html/ch07.html#id5466169
+5|Figure 7-14. Default Texture Mapping for SoText3|sgi_html/ch07.html#id5466277
+4|Figure 8-1. Mapping a Parametric Curve to Object Space|sgi_html/ch08.html#id5467752
+3|Figure 8-2. Using Control Points to Shape the Curve|sgi_html/ch08.html#id5467972
+4|Figure 8-3. Piecewise Cubic Curve|sgi_html/ch08.html#id5468315
+4|Figure 8-4. Continuity of a Curve|sgi_html/ch08.html#id5468582
+4|Figure 8-5. Control Points Influence the Curve|sgi_html/ch08.html#id5468669
+4|Figure 8-6. B-Spline Basis Function|sgi_html/ch08.html#id5468765
+5|Figure 8-7. Uniform Knot Sequence|sgi_html/ch08.html#id5468904
+5|Figure 8-8. Knot Multiplicity|sgi_html/ch08.html#id5469073
+5|Figure 8-9. Cubic Bezier Curve|sgi_html/ch08.html#id5469488
+4|Figure 8-10. Rational Curves|sgi_html/ch08.html#id5469787
+4|Figure 8-11. Scene Graph for B-Spline Curve Example|sgi_html/ch08.html#id5470024
+3|Figure 8-12. Curved Surfaces|sgi_html/ch08.html#id5470313
+4|Figure 8-13. Scene Graph for a Bezier Surface|sgi_html/ch08.html#id5470529
+4|Figure 8-14. Scene Graph for Trimmed Bezier Surface|sgi_html/ch08.html#id5470949
+4|Figure 8-15. Trim Curves Used in Example 8-4|sgi_html/ch08.html#id5471097
+3|Figure 9-1. Action Classes|sgi_html/ch09.html#id5471869
+3|Figure 9-2. Shared Instances of a Shape Node|sgi_html/ch09.html#id5472554
+5|Figure 9-3. Caching a Shape|sgi_html/ch09.html#id5474731
+5|Figure 9-4. Caching a Shape along with a Changing Property Node|sgi_html/ch09.html#id5474817
+4|Figure 9-5. Applying SoGetMatrixAction to a Path|sgi_html/ch09.html#id5475982
+5|Figure 9-6. Cone Representing the Picking Ray for a Perspective Camera|sgi_html/ch09.html#id5477555
+5|Figure 9-7. Path to Picked Point and Detail List|sgi_html/ch09.html#id5478167
+5|Figure 9-8. Detail Classes|sgi_html/ch09.html#id5478274
+3|Figure 10-1. Event Processing in Inventor|sgi_html/ch10.html#id5480115
+4|Figure 10-2. Event Classes|sgi_html/ch10.html#id5480510
+4|Figure 10-3. Inserting an SoSelection Node|sgi_html/ch10.html#id5481842
+4|Figure 10-4. Scene Graph with Manipulators|sgi_html/ch10.html#id5482499
+4|Figure 10-5. Picking a Shape Node|sgi_html/ch10.html#id5482598
+4|Figure 10-6. Highlight Classes|sgi_html/ch10.html#id5484228
+5|Figure 10-7. Top-Level Selection Policy (left) and Default Selection Policy (right)|sgi_html/ch10.html#id5485418
+4|Figure 11-1. Adjusting Path Indices to Account for Separator Groups|sgi_html/ch11.html#id5487544
+4|Figure 11-2. Scene Graph for a Scene with Three Spheres|sgi_html/ch11.html#id5487688
+4|Figure 11-3. Pick Path for Violet Sphere|sgi_html/ch11.html#id5487789
+4|Figure 11-4. Shared Instances of Nodes|sgi_html/ch11.html#id5487939
+3|Figure 12-1. Sensor Classes|sgi_html/ch12.html#id5489306
+4|Figure 12-2. Triggering and Rescheduling Timers|sgi_html/ch12.html#id5491958
+3|Figure 13-1. Mechanisms Made from a Set of Link Classes|sgi_html/ch13.html#id5492530
+3|Figure 13-2. Objects That Use Engines for Animation and Placement|sgi_html/ch13.html#id5492612
+3|Figure 13-3. Anatomy of an Engine|sgi_html/ch13.html#id5492748
+3|Figure 13-4. Engine Class Tree|sgi_html/ch13.html#id5493094
+3|Figure 13-5. Field-to-Field Connections|sgi_html/ch13.html#id5493403
+4|Figure 13-6. Multiple Outputs Are Allowed|sgi_html/ch13.html#id5493554
+3|Figure 13-7. Scene Graph for the Digital Clock Example|sgi_html/ch13.html#id5494430
+3|Figure 13-8. Digital Clock That Uses the Real-Time Global Field|sgi_html/ch13.html#id5494480
+4|Figure 13-9. Scene Graph for Elapsed-Time Engine Example|sgi_html/ch13.html#id5494835
+4|Figure 13-10. Scene Graph for the Time-Counter Example|sgi_html/ch13.html#id5495318
+4|Figure 13-11. Controlling an Object's Movement Using Time-Counter Engines|sgi_html/ch13.html#id5495401
+3|Figure 13-12. Scene Graph for Gate Engine Example|sgi_html/ch13.html#id5495716
+4|Figure 13-13. SoBoolOperation Engine|sgi_html/ch13.html#id5496006
+4|Figure 13-14. Swimming Ducks Controlled by a Boolean Engine|sgi_html/ch13.html#id5496555
+4|Figure 13-15. SoCalculator Engine|sgi_html/ch13.html#id5497234
+4|Figure 13-16. Scene Graph for Calculator Engine Example|sgi_html/ch13.html#id5497495
+4|Figure 13-17. Using a Calculator Engine to Constrain an Object's Movement|sgi_html/ch13.html#id5497577
+4|Figure 13-18. Scene Graph for Rotor Node Example|sgi_html/ch13.html#id5497982
+4|Figure 13-19. Flashing Sign Controlled by a Blinker Node|sgi_html/ch13.html#id5498219
+3|Figure 14-1. Different Types of Paths|sgi_html/ch14.html#id5498696
+3|Figure 14-2. Node-Kit Classes|sgi_html/ch14.html#id5498785
+3|Figure 14-3. Catalog for SoShapeKit|sgi_html/ch14.html#id5498987
+3|Figure 14-4. Basic Version of an SoShapeKit|sgi_html/ch14.html#id5499006
+3|Figure 14-5. Catalog for SoAppearanceKit|sgi_html/ch14.html#id5499638
+3|Figure 14-6. Creating an Instance of SoShapeKit|sgi_html/ch14.html#id5499806
+3|Figure 14-7. Adding the Material Node|sgi_html/ch14.html#id5500027
+3|Figure 14-8. Adding Draw-Style and Transform Nodes|sgi_html/ch14.html#id5500080
+3|Figure 14-9. Three Node-Kit Classes for Making &#8220;Goons&#8221;|sgi_html/ch14.html#id5501145
+3|Figure 14-10. Obtaining the Path to a Given Part|sgi_html/ch14.html#id5501497
+3|Figure 14-11. Extending a Given Path to the Desired Part|sgi_html/ch14.html#id5501620
+3|Figure 14-12. Hierarchical Motion Relationships|sgi_html/ch14.html#id5501992
+4|Figure 14-13. Using an SoShapeKit with Engines|sgi_html/ch14.html#id5502254
+4|Figure 14-14. Using an SoSceneKit with Directional Light and Material Editors|sgi_html/ch14.html#id5502432
+4|Figure 14-15. A Balance Scale Created with Node Kits|sgi_html/ch14.html#id5502634
+3|Figure 15-1. Dragger Classes|sgi_html/ch15.html#id5503173
+3|Figure 15-2. Manipulator Classes|sgi_html/ch15.html#id5503940
+3|Figure 15-3. Handle-Box Manipulator|sgi_html/ch15.html#id5504089
+3|Figure 15-4. Trackball Manipulator|sgi_html/ch15.html#id5504111
+4|Figure 15-5. Connecting a Dragger's Field to Another Field in the Scene Graph|sgi_html/ch15.html#id5504317
+4|Figure 15-6. Using a Dragger and Engine to Edit the Radius of a Cone|sgi_html/ch15.html#id5504420
+4|Figure 15-7. A Slider Box That Uses Draggers and Engines to Move Text|sgi_html/ch15.html#id5504925
+5|Figure 15-8. Specifying the Path to the Target Node|sgi_html/ch15.html#id5505482
+4|Figure 15-9. Adding Manipulators to a Scene|sgi_html/ch15.html#id5505899
+4|Figure 15-10. Changing the Dragger Parts to Cubes|sgi_html/ch15.html#id5506999
+3|Figure 16-1. Component Classes|sgi_html/ch16.html#id5509206
+5|Figure 16-2. Material Editor and Render Area Created in Separate Windows|sgi_html/ch16.html#id5510609
+5|Figure 16-3. Using the Material Editor Component to Edit a Scene|sgi_html/ch16.html#id5510796
+4|Figure 16-4. Examiner Viewer|sgi_html/ch16.html#id5511195
+5|Figure 16-5. Inserting a Camera for an Editor Viewer|sgi_html/ch16.html#id5511290
+5|Figure 16-6. Inserting a Camera for a Browser Viewer|sgi_html/ch16.html#id5511342
+5|Figure 16-7. Inserting Drawing Style and Lighting Model Nodes|sgi_html/ch16.html#id5511598
+5|Figure 16-8. Viewer Pop-up Menu|sgi_html/ch16.html#id5511725
+4|Figure 17-1. Combining Use of Inventor and OpenGL|sgi_html/ch17.html#id5516148
+4|Figure A-1. Sample Class Hierarchy Diagram|sgi_html/apa.html#id5517087
+2|Figure C-1. SoError Class Tree|sgi_html/apc.html#id5520632
+# tables |
+4|Table 3-1. References and Deletion|sgi_html/ch03.html#id5448654
+5|Table 8-1. Continuity and Knot Multiplicity for Cubic Curves|sgi_html/ch08.html#id5469093
+3|Table 9-1. Using Inventor Actions|sgi_html/ch09.html#id5471507
+5|Table 9-2. Classes That Store an SoDetail|sgi_html/ch09.html#id5478307
+3|Table 13-1. Comparison of Sensors and Engines|sgi_html/ch13.html#id5492242
+3|Table 15-1. Uses of Draggers|sgi_html/ch15.html#id5503253
+4|Table 15-2. Selected Parts of the SoTrackballDragger|sgi_html/ch15.html#id5506529
+3|Table 17-1. OpenGL State Variables: Current Values and Associated Data|sgi_html/ch17.html#id5513512
+3|Table 17-2. OpenGL State Variables: Transformation State|sgi_html/ch17.html#id5513734
+3|Table 17-3. OpenGL State Variables: Coloring|sgi_html/ch17.html#id5513948
+3|Table 17-4. OpenGL State Variables: Lighting|sgi_html/ch17.html#id5514162
+3|Table 17-5. OpenGL State Variables: Rasterization|sgi_html/ch17.html#id5514765
+3|Table 17-6. OpenGL State Variables: Texturing|sgi_html/ch17.html#id5515016
+3|Table 17-7. OpenGL State Variables: Pixel Operations|sgi_html/ch17.html#id5515394
+3|Table 17-8. OpenGL State Variables: Pixels|sgi_html/ch17.html#id5515460
+3|Table 17-9. OpenGL State Variables: Miscellaneous|sgi_html/ch17.html#id5515568
+3|Table B-1. C Function Name Abbreviations|sgi_html/apb.html#id5518586
+# examples |
+4|Example 1-1. File Describing a Spinning Windmill|sgi_html/ch01.html#id5436703
+4|Example 2-1. Basic &#8220;Hello, Cone&#8221; Program|sgi_html/ch02.html#id5362491
+4|Example 2-2. &#8220;Hello, Cone&#8221; Using Engines|sgi_html/ch02.html#id5438912
+4|Example 2-3. &#8220;Hello, Cone&#8221; with a Trackball Manipulator|sgi_html/ch02.html#id5439118
+4|Example 2-4. &#8220;Hello, Cone&#8221; Using the Examiner Viewer|sgi_html/ch02.html#id5439255
+4|Example 3-1. Molecule.c++|sgi_html/ch03.html#id5444393
+3|Example 3-2. Robot.c++|sgi_html/ch03.html#id5445486
+3|Example 3-3. Naming Nodes|sgi_html/ch03.html#id5449445
+4|Example 4-1. Switching among Multiple Cameras|sgi_html/ch04.html#id5451493
+4|Example 4-2. Using Different Types of Lights|sgi_html/ch04.html#id5452790
+4|Example 5-1. Creating a Face Set|sgi_html/ch05.html#id5453808
+4|Example 5-2. Creating an Indexed Face Set|sgi_html/ch05.html#id5454326
+4|Example 5-3. Creating a Triangle Strip Set|sgi_html/ch05.html#id5454705
+4|Example 5-4. Creating a Quad Mesh|sgi_html/ch05.html#id5454960
+4|Example 5-5. Using Different Material Bindings|sgi_html/ch05.html#id5458967
+4|Example 5-6. Changing the Order of Transformations|sgi_html/ch05.html#id5459916
+4|Example 6-1. Using 2D Text|sgi_html/ch06.html#id5460628
+4|Example 6-2. Using 3D Text|sgi_html/ch06.html#id5461507
+4|Example 6-3. Creating Beveled 3D Text|sgi_html/ch06.html#id5461789
+4|Example 7-1. Using the Default Texture Values|sgi_html/ch07.html#id5462576
+4|Example 7-2. Specifying Texture Coordinates Explicitly|sgi_html/ch07.html#id5466422
+5|Example 7-3. Using SoTextureCoordinatePlane|sgi_html/ch07.html#id5466946
+4|Example 8-1. Creating a B-Spline Curve|sgi_html/ch08.html#id5470044
+4|Example 8-2. Creating a Uniform B-Spline Curve|sgi_html/ch08.html#id5470184
+4|Example 8-3. Bezier Surface|sgi_html/ch08.html#id5470569
+4|Example 8-4. Trimming a Bezier Surface|sgi_html/ch08.html#id5471117
+5|Example 9-1. Printing|sgi_html/ch09.html#id5474005
+5|Example 9-2. Generating a Texture Map|sgi_html/ch09.html#id5474215
+4|Example 9-3. Setting the Center Field of a Transform Node|sgi_html/ch09.html#id5475613
+4|Example 9-4. Writing the Path to the Picked Object|sgi_html/ch09.html#id5478858
+4|Example 9-5. Using a Triangle Callback Function|sgi_html/ch09.html#id5479820
+3|Example 10-1. Using an Event Callback|sgi_html/ch10.html#id5483231
+3|Example 10-2. Sending Events Directly to the Application|sgi_html/ch10.html#id5483392
+4|Example 10-3. Using a Motif-Style List to Select Objects|sgi_html/ch10.html#id5483973
+4|Example 10-4. Using the Selection List|sgi_html/ch10.html#id5484097
+4|Example 10-5. Using Selection Callback Functions|sgi_html/ch10.html#id5485132
+5|Example 10-6. Creating a Top-Level Selection Policy|sgi_html/ch10.html#id5485439
+5|Example 10-7. Picking through Manipulators|sgi_html/ch10.html#id5485538
+5|Example 10-8. Selecting Node Kits|sgi_html/ch10.html#id5485624
+4|Example 11-1. Writing a Path|sgi_html/ch11.html#id5487736
+3|Example 11-2. Reading from a String|sgi_html/ch11.html#id5489074
+4|Example 12-1. Attaching a Field Sensor|sgi_html/ch12.html#id5490280
+4|Example 12-2. Using the Trigger Node and Field|sgi_html/ch12.html#id5490524
+4|Example 12-3. Using an Alarm Sensor|sgi_html/ch12.html#id5491396
+4|Example 12-4. Using a Timer Sensor|sgi_html/ch12.html#id5491658
+3|Example 13-1. Using the Real-Time Global Field|sgi_html/ch13.html#id5494401
+4|Example 13-2. Using an Elapsed-Time Engine|sgi_html/ch13.html#id5494856
+4|Example 13-3. Using Time-Counter Engines|sgi_html/ch13.html#id5495358
+3|Example 13-4. Using a Gate Engine|sgi_html/ch13.html#id5495786
+4|Example 13-5. Using a Boolean Engine|sgi_html/ch13.html#id5496576
+4|Example 13-6. Using a Calculator Engine|sgi_html/ch13.html#id5497516
+4|Example 13-7. A Spinning Windmill Using an SoRotor Node|sgi_html/ch13.html#id5497919
+4|Example 13-8. Using a Blinker Node to Make a Sign Flash|sgi_html/ch13.html#id5498236
+4|Example 14-1. Simple Use of Node Kits|sgi_html/ch14.html#id5502208
+4|Example 14-2. Using Node Kits and Editors|sgi_html/ch14.html#id5502372
+4|Example 14-3. Using Node Kits to Create a Motion Hierarchy|sgi_html/ch14.html#id5502654
+4|Example 15-1. Using a Simple Dragger|sgi_html/ch15.html#id5504361
+4|Example 15-2. Using Multiple Draggers|sgi_html/ch15.html#id5504946
+4|Example 15-3. Using Manipulators to Transform Objects|sgi_html/ch15.html#id5505853
+4|Example 15-4. Changing Parts after Building a Dragger|sgi_html/ch15.html#id5507038
+4|Example 16-1. Using the Overlay Planes|sgi_html/ch16.html#id5508988
+5|Example 16-2. Using a Callback Function|sgi_html/ch16.html#id5510175
+5|Example 16-3. Attaching a Material Editor|sgi_html/ch16.html#id5510560
+5|Example 16-4. Placing Two Components in the Same Window|sgi_html/ch16.html#id5510714
+4|Example 16-5. Using a Browser Examiner Viewer|sgi_html/ch16.html#id5512422
+3|Example 17-1. Using Color Index Mode|sgi_html/ch17.html#id5515814
+4|Example 17-2. Using a Callback Node|sgi_html/ch17.html#id5516217
+3|Example 17-3. Using a GLX Window|sgi_html/ch17.html#id5516343
+# procedures |
+# helpids |
+

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>IRIS ECHO/PING TEST</title>
+    </head>
+    <body>
+        <form id="echo" class="singlecheck">
+            <p>
+                <input id="singlecheck-checkbox" type="checkbox" value="echo">
+                <input type="submit" value="Echo">
+            </p>
+        </form>
+        <form id="pingpong">
+            <p>
+                <input id="ping" type="text" width=100>
+                <input type="submit" value="Ping">
+            </p>
+            <p>
+                <input type="submit" value="Pong" disabled="true">
+                <input id="pong" type="text" width=100 readonly="true">
+            </p>
+        </form>
+
+        <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script>
+            $(function() {
+                var socket = io.connect("http://localhost");
+
+                $(".singlecheck").submit(function (event) {
+                    var chk = $("#" + this.id + " [type=checkbox]")
+                    var cmd = chk.val() + " " + (chk.prop("checked") ? "on" : "off");
+                    console.log("sending command: '" + cmd + "'");
+                    socket.emit("control", cmd);
+                    event.preventDefault();
+                });
+
+                $("#pingpong").submit(function (event) {
+                    var cmd = "QUERY PING " + $("#ping").val();
+                    console.log("sending command: '" + cmd + "'");
+                    socket.emit("control", cmd);
+                    event.preventDefault();
+                });
+
+                socket.on("response", function (resp) {
+                    console.log("received response: '" + resp + "'");
+                    $("#pong").val(resp.split(" ").slice(1).join(" "));
+                });
+            });
+        </script>
+    </body>
+</html>
+

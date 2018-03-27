@@ -1,0 +1,27 @@
+.TH hev-listAnts 1 "01 Apr 2015"
+.SH NAME
+hev-listAnts - Make a single column, sorted list of official HEV commands
+
+.SH SYNOPSIS
+.B hev-listAnts [OutFile]
+
+.SH DESCRIPTION
+.PP
+.I
+hev-listAnts 
+Generates a single column list of official HEV commands in all groups. It
+does this by using exec -c to create a "clean" environment, that has not
+been modified by users bash rc file or profile. If no argument is given,
+the output goes to stdout. Otherwise, if a string is given on the command 
+line, it is used to create a name for a log file where the output is 
+stored. The filename is a time/date stamp (YYYYMMDDhhmmss), followed by 
+an period and the string provided on the command line. The string can 
+contain any characters that are allowed to be used in a filename.
+
+.SH OPTIONS
+hev-listAnts take one optional argument: a string that 
+is used to create the log filename.
+
+.SH AUTHOR
+.PP
+Terence Griffin, NIST/ITL/ACMD/HPCVG

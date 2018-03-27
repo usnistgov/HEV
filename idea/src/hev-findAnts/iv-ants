@@ -1,0 +1,16 @@
+#!/bin/sh
+
+###############################
+# iv-ants - a script to generate a list
+# of commands in the IV family of
+# the "Army of Ants"  in $PATH. This
+# calls one or more helper script(s) so
+# the calling environment must be correctly
+# set to find them, usually by modifying
+# the PATH env var.
+
+echo
+echo "IV Tools: " $@
+echo --------
+${PRIVATE_BINS}/compc iv $@
+echo

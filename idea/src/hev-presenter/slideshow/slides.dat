@@ -1,0 +1,30 @@
+# source for these slides is /home/judy/public_html/Presenter/nsf-Jahanian
+
+# uncomment this for debugging messages to stderr
+#DEBUG ON
+
+# comment out PLAY to cause slides to manaully advance and movies to automatically start
+PLAY
+
+# movies won't automatically start in manual play- uncomment MOVIE command below if
+# you want autostart
+#MOVIE AUTOSTART ON
+
+SLIDE REPLAY ON Time 4
+Slide[1-7].PNG
+
+BEGINMOVIE FPS .5
+ frames/UniversalScalingTitle.png
+MOVIE FPS 1
+ frames/log10fluid-all00.png
+MOVIE FPS 2
+ frames/log10fluid-scaled0-borange*.png
+ frames/log10fluid-scaled0-green*.png
+ frames/log10fluid-scaled0-magenta*.png
+ frames/log10fluid-scaled0-xblue*.png
+MOVIE FPS .125
+ frames/log10fluid-scaled0-zfinal00.png
+ENDMOVIE
+
+SLIDE TIME 10
+Slide8.PNG

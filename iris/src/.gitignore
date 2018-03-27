@@ -1,0 +1,25 @@
+# generated bits
+doc/000refsheet.doxy
+doc/100manpages.doxy
+doc/Doxyfile
+doc/Doxyfile.bak
+doc/html
+doc/iris.tag
+program/iris-DCS
+program/iris-DCStoMatrix
+program/iris-DISPLAYfromWindow
+program/iris-bounds
+program/iris-convert
+program/iris-getName
+program/iris-getUsleep
+program/iris-immersivePaneBorders
+program/iris-immersiveWindowBelow
+program/iris-readFifo
+program/iris-readState
+program/iris-readStdinUpdateShmWriteStdout
+program/iris-saveRestorePointer
+program/iris-viewer
+program/iris-wandMouse
+program/iris-xyzhprToMatrix
+iris.pc
+include/iris.pc

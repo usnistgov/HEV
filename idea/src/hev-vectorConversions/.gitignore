@@ -1,0 +1,4 @@
+hev-eulerToVector
+hev-quatToVector
+hev-vectorToEuler
+hev-vectorToQuat

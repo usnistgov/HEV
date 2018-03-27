@@ -1,0 +1,6 @@
+This test compares four image of the moth demo, two are 
+made up of just points and two are points and lines.
+
+To build, first run 'mkMoth' to generate the data.
+Then use  'make install' to put put the files in the
+correct locations.

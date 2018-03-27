@@ -1,0 +1,23 @@
+FUNC RgbaLut1D myName  xinArr[1] XoutArr[4]
+        VAL_TRANSFORM LOG10
+        COLOR_INTERP HSV
+  LOOKUP_INTERP NEAREST
+  TABLE_TYPE UCHAR
+  ALPHA_TABLE_LEN 256
+  COMBINE_RGBA false
+  ALPHALUT
+    3000   1.5
+    100   4
+    200   8
+    2000   18
+  END_ALPHALUT
+
+  RGBLUT
+    10   1 2 3
+    20   5 6 7
+    200   15 16 17
+  END_RGBLUT
+
+  RGB_TABLE_LEN 356
+
+END_FUNC myName

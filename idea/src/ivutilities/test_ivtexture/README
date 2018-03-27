@@ -1,0 +1,16 @@
+This directory contians test and development for the 
+updated ivtexture command
+
+June 19, 2008
+steve@nist.gov
+
+
+# make the brick testure for testing
+./labelBrick.sh
+
+
+
+../ivtexture brickTexture.png > brickwall.iv
+
+../ivtexture -n 4 brickTexture.png > brickwall.iv
+

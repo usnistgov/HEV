@@ -1,0 +1,23 @@
+#Inventor V2.0 ascii
+
+# created with NIST SAVG ivtools:
+# ivtext diverse.sourceforge.net | \
+#   ivscale .028 .028 .5 | \
+#   ivtranslate -.805 -.05 .1 | \
+#   sed -e 's/Times-Roman/Arial'/ > diverse.iv
+
+Separator {
+  Translation { translation -.805 -.05 .1 }
+  Separator {
+    Scale { scaleFactor .028 .028 .5 }
+    Separator {
+      Font {
+       name  "Arial"
+       size 2
+      }
+      Text3 {
+        string ["diverse.sourceforge.net"]
+      }
+    }
+  }
+}

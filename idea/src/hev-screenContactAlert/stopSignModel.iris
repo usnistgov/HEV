@@ -1,0 +1,45 @@
+# NIST CAVE Stop Signs Model
+
+# Red Octagon
+STARTMODELDATA stopsignbody savg
+polygons   .8 0 0 1
+ -.25 0 -.75
+ -.25 0  .75
+ -.75 0  .25
+ -.75 0 -.25
+polygons   .8 0 0 1
+  .25 0 -.75
+  .75 0 -.25
+  .75 0  .25
+  .25 0  .75
+polygons   .8 0 0 1
+ -.25 0 -.75
+  .25 0 -.75
+  .25 0  .75
+ -.25 0  .75
+ENDMODELDATA
+
+# Text
+TEXT stopsigntext STRING "STOP" COLOR .8 .8 .8 1 SIZE .55
+
+DCS stopsigndcs -.65 -.005 -.2
+ADDCHILD stopsigntext stopsigndcs
+
+GROUP StopSignSingle
+ADDCHILD stopsigndcs  StopSignSingle
+ADDCHILD stopsignbody StopSignSingle
+
+
+GROUP StopSignModel
+
+DCS frontstopsign 0 1 0
+ADDCHILD StopSignSingle frontstopsign
+ADDCHILD frontstopsign StopSignModel
+
+DCS leftstopsign -1 0 0 90 0 0
+ADDCHILD StopSignSingle leftstopsign
+ADDCHILD leftstopsign StopSignModel
+
+RETURN StopSignModel
+
+#End

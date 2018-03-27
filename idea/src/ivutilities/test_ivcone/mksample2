@@ -1,0 +1,14 @@
+#! /bin/sh
+
+ivwirecube | ivscale 2 2 2 > cube2.ivu
+
+( 
+ivarrow | ivrgba 1 0 0 1 | ivposition 0 0 0   1 0 0
+ivarrow | ivrgba 0 1 0 1 | ivposition 1 0 0   1 0 1
+ivarrow | ivrgba 0 0 1 1 | ivposition 1 0 1   0 0 1
+ivarrow | ivrgba 1 0 1 1 | ivposition 0 0 1   0 0 0
+) > sample2.ivu
+
+echo "savgfly --examine cube2.ivu sample2.ivu"
+
+

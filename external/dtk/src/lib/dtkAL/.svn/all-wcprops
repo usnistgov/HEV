@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svnroot/diverse/!svn/ver/915/trunk/dtk/lib/dtkAL
+END
+soundBuffer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/diverse/!svn/ver/882/trunk/dtk/lib/dtkAL/soundBuffer.cpp
+END
+soundSyncedSources.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/diverse/!svn/ver/892/trunk/dtk/lib/dtkAL/soundSyncedSources.cpp
+END
+soundManager.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/diverse/!svn/ver/892/trunk/dtk/lib/dtkAL/soundManager.cpp
+END
+soundSource.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/diverse/!svn/ver/892/trunk/dtk/lib/dtkAL/soundSource.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/diverse/!svn/ver/915/trunk/dtk/lib/dtkAL/CMakeLists.txt
+END

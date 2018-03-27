@@ -1,0 +1,25 @@
+
+ivsphere 0.07 | ivrgba 0.7 0.7 0.7 1 > sphere.o.iv
+ivsphere 0.07 | ivrgba 0.7 0.0 0.0 1 | ivtranslate 1 0 0 > sphere.x.iv
+ivsphere 0.07 | ivrgba 0.0 0.7 0.0 1 | ivtranslate 0 1 0 > sphere.y.iv
+ivsphere 0.07 | ivrgba 0.0 0.0 0.7 1 | ivtranslate 0 0 1 > sphere.z.iv
+
+ivsphere 0.07 | ivrgba 0.7 0.7 0.7 1 | ivpfivfix > sphere.o.fix.iv
+ivsphere 0.07 | ivrgba 0.7 0.0 0.0 1 | ivtranslate 1 0 0 | ivpfivfix > sphere.x.fix.iv
+ivsphere 0.07 | ivrgba 0.0 0.7 0.0 1 | ivtranslate 0 1 0 | ivpfivfix > sphere.y.fix.iv
+ivsphere 0.07 | ivrgba 0.0 0.0 0.7 1 | ivtranslate 0 0 1 | ivpfivfix > sphere.z.fix.iv
+
+
+gtb-cube | gtb-color -r 0.7 -g 0.7 -b 0.7 -a 1.0 | gtb-scale -x 0.1 -y 0.1 -z 0.1 | gtb-translate -x 0 -y 0 -z 0 > cube.o.gtb
+gtb-cube | gtb-color -r 0.7 -g 0.0 -b 0.0 -a 1.0 | gtb-scale -x 0.1 -y 0.1 -z 0.1 | gtb-translate -x 1 -y 0 -z 0 > cube.x.gtb
+gtb-cube | gtb-color -r 0.0 -g 0.7 -b 0.0 -a 1.0 | gtb-scale -x 0.1 -y 0.1 -z 0.1 | gtb-translate -x 0 -y 1 -z 0 > cube.y.gtb
+gtb-cube | gtb-color -r 0.0 -g 0.0 -b 0.7 -a 1.0 | gtb-scale -x 0.1 -y 0.1 -z 0.1 | gtb-translate -x 0 -y 0 -z 1 > cube.z.gtb
+
+
+diversifly --examine sphere.o.iv sphere.x.iv sphere.y.iv sphere.z.iv cube.o.gtb cube.x.gtb cube.y.gtb cube.z.gtb
+diversifly --examine sphere.o.fix.iv sphere.x.fix.iv sphere.y.fix.iv sphere.z.fix.iv cube.o.gtb cube.x.gtb cube.y.gtb cube.z.gtb
+
+
+
+
+

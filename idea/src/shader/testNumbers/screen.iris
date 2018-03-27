@@ -1,0 +1,17 @@
+# test and sample for printing screen-aligned numbers
+
+# load a model
+# for this example, it should be centered on 0,0,0 in model space
+LOAD model sphere.osg
+ADDCHILD model world
+
+# load number texture on an unused texture unit
+TXTR world 3 numbers.tif
+UNIFORM world numbers int 1 3
+
+# set fragment shader
+SHADERPROG model F screen.frag
+
+# choose a background and center model
+BACKGROUND .5 .7 .9
+EXAMINE

@@ -1,0 +1,49 @@
+.TH hev-fileChooser 1 "August 14, 2012"
+.SH NAME
+
+hev-fileChooser
+
+.SH SYNOPSIS
+
+\fBhev-fileChooser [ --directory string ] [ --pattern string ] [ --title string ]
+
+
+.SH DESCRIPTION
+
+\fBhev-fileChooser\fR is a GUI which displays a file chooser dialog box,
+allowing a single existing file to be selected.  
+
+If a file is selected, the file name is sent to standard output, and the
+program returns 0.  If no file is selected, the program returns 1.  On
+error, the program returns -1.
+
+.SH OPTIONS
+
+.IP \fIdirectory\fR
+specifies the initial directory to display.  The default is "$HOME".
+
+.IP \fIpattern\fR
+specifies the initial file pattern to use for matching file names.  The
+default is "*".
+
+.IP \fItitle\fR
+specifies the window's title.  The default is "hev-fileChooser".
+
+.P
+Options can be abbreviated to a unique substring.
+
+.SH EXAMPLE
+
+This line could be put in a shell script to get the name of an OSG file:
+
+file=`hev-fileChooser --dir $HEVROOT/idea/data --pat '*.osg'`
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/acmd/hpcvg/\fR
+

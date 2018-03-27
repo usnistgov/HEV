@@ -1,0 +1,992 @@
+#!/usr/bin/perl
+# convert qvisdat file to sge, textures, and supporting files for shader-based
+# visualization
+#
+# logical data layout:
+#   Vec4 visdat[FRAMES][ROCKS][POINTS]
+#   where 4 elements are x,y,z,stress of closest point in local coords
+#
+# texture mapping:
+#   u = rock
+#   v = frame*POINTS + point
+
+use strict;
+
+use Getopt::Long;
+use File::Copy;
+use File::Basename;
+use List::Util qw(reduce);
+
+# command info
+my ($prog,$dir,$ext) = fileparse($0);  # program name, directory & extension
+
+# Find data directory -- if running installed version, use installed
+# data. If not, find data directory relative to hev-volume script location
+my $datadir = $dir."data";
+if ($ENV{HEVROOT} && $dir =~ m:^$ENV{HEVROOT}:) {
+  $datadir = $ENV{"HEV_IDEA_DIR"}."/etc/$prog/data";
+}
+
+my $seqmode="ON";		# set to off after first step
+
+# max and min utility functions
+sub max {
+    my $max = shift;
+    foreach(@_) { $max = $_ if $_>$max; }
+    return $max;
+}
+sub min {
+    my $min = shift;
+    foreach(@_) { $min = $_ if $_<$min; }
+    return $min
+}
+
+# next power of two greater than argument
+sub nextPow2 {
+    my $y = 1;
+    for (my $x=(shift)-1; $x>0; $x>>=1) { $y<<=1; }
+    return $y;
+}
+
+############################################################
+# get arguments & check usage
+
+# maximum texture dimension supported by the GPU
+# all current GPUs have a 4096x4096 maximum size
+# store textures in 4x4 blocks up to this size
+my $maxTextureSize = 4096;
+
+# option defaults
+my $POINTS=1;			# 1 closest point per rock
+my $STRESSFN='abs(xy)';         # function to convert stress tensor to scalar
+my $LOCALSUM='a+b';		# function to combine point stresses
+my $FRAMESUM='a+b';		# function to combine rock stresses
+my $SCALE=1;			# rock scale factor
+my $OFFSET=0;			# translation for second copy of rocks
+my $REFRESH=0;			# recreate object files
+my @SABFILES;
+
+sub usage {
+    print STDERR <<EOF
+$prog [options] file.qvisdat geomfiles id
+
+        file.qvisdat  qvisdat file from the QDPD computation
+
+	geomfiles     printf-style template for polygonal rock shape files
+		      (e.g. rocks/rock.poly.%02d.savg)
+
+        id            short unique identifier (no spaces)
+                      will create a directory with this name
+                      will also create a run script run<id>
+    options:
+	--points <num>
+                      number of closest points to use per rock (0-4).
+	              (currently: $POINTS)
+
+        --scale <scaleFactor>
+                      uniform scale factor to apply to each rock shape
+
+        --copy <offset>
+                      show two offset copies of the rocks to show
+                      toroidal wrapping.
+
+	--stress '<expr>'
+                      expression to convert stress tensor into a scalar
+	              can use xx,xy,xz, yx,yy,yz, zx,zy,zz
+		      and closest point locations x1,y1,z1, x2,y2,z2
+		      for normal stress, use 'abs(xx-yy)'
+		      for shear stress, use 'abs(xy)'
+		      (currently: '$STRESSFN')
+
+	--localsum '<expr>'
+	--framesum '<expr>'
+                      expression combine two stress scalars a & b into a new
+		      combined stress scalar. --localsum combines point 
+		      stresses in a single rock, --framesum combines rock
+		      stresses in a single frame.
+		      Some useful options: 'a+b', 'max(a,b)'
+		      (--localsum currently: '$LOCALSUM')
+		      (--framesum currently: '$FRAMESUM')
+
+	--refresh     recreate cached partially processed rock object files
+
+        --sab <file>
+                      Additional graphics file (.sge, .ive, .osg, ...)
+                      to add to the SelectionAppBuilder On/Off control
+                      panel. The file is added to the control panel,
+                      but not copied into place. The --sab file (and
+                      any files it needs to load) will need to be
+                      copied into the <id> directory after $prog is
+                      run. --sab can be repeated multiple times to add
+                      additional files.
+EOF
+    ;
+    exit(1);
+}
+
+GetOptions("points=i"=>\$POINTS,
+	   "scale=f" =>\$SCALE,
+	   "copy=f" =>\$OFFSET,
+	   "stress=s"=>\$STRESSFN,
+	   "localsum=s"=>\$LOCALSUM,
+	   "framesum=s"=>\$FRAMESUM,
+	   "refresh"=>\$REFRESH,
+	   "sab=s"=>\@SABFILES);
+
+usage() if ($#ARGV != 2);
+
+# get mandantory arguments
+my $QVISDAT = shift;
+my $ROCKFILES = shift;
+my $ROCKDIR = dirname($ROCKFILES);
+my $ID = shift;
+
+# check that we can open the data file before doing a ton of processing
+open(QVISDAT,"<$QVISDAT") || die("error opening $QVISDAT");
+
+
+############################################################
+# count CPUs
+my $cpus = do {
+    my $f=do {local(@ARGV,$/)="/proc/cpuinfo"; <>}; # perl.com "file slurp"
+    $f =~ s/^processor//gm;	# count processor lines
+};
+
+############################################################
+# start sequence file
+#
+# osg node hierarchy
+# world: base node for entire OSG world
+#  +- defaults: default parameters (state merged into world)
+#  \- <ID>: overall group node for rocks
+#    +- shader: shader programs (state merged into group node)
+#    +- texture: data textures (state merged into group node)
+#    +- <ID>_copy0: first (or only) copy of the sequence
+#    | \- <ID>_seq: sequence node for system animation
+#    |   \- <id>_frame_<frame>: group for frame
+#    |     \- <ID>_rocks: shared object containing all rocks
+#    \- <ID>_copy1: second offset copy of the sequence
+#      \- <ID>_seq: reference to same shared sequence node
+
+# create directory for generated data
+my $app = "run$ID";
+mkdir "$ID";
+mkdir "$ID/rocks";
+
+# one master sequence file, one dummy sequence file for vcr
+# one counter file, one rock file
+# one frame file for each frame
+open(MAIN,">$ID/$ID.iris");
+open(COUNTER,">$ID/${ID}_counter.sge");
+open(SEQ,">$ID/${ID}_seq.iris");
+open(ROCKFILE,">$ID/${ID}_rocks.iris");
+
+print MAIN <<EOF
+# overall group
+GROUP ${ID}_root
+
+GROUP ${ID}_seq      # main sequence node
+
+LOAD ${ID}_rocks ${ID}_rocks.iris # shared node containing all rocks
+
+######## Shader for visualization: attach to root ${ID}
+GROUP shader
+SHADERPROG shader V qvdNPR.vert
+SHADERPROG shader F qvdNPR.frag
+MERGESTATE shader ${ID}_root
+UNLOAD shader
+
+LOAD texture textureState.osg
+MERGESTATE texture ${ID}_root
+UNLOAD texture
+
+########
+# rotate orientation by 90 degrees and attach to root ${ID}
+QSCS ${ID}_copy0 0 0 0 .707107 0 0 .707107
+ADDCHILD ${ID}_seq ${ID}_copy0
+ADDCHILD ${ID}_copy0 ${ID}_root
+EOF
+;
+
+if ($OFFSET != 0) {
+    print MAIN <<EOF
+# second copy shifted by $OFFSET
+QSCS ${ID}_copy1 $OFFSET 0 0 .707107 0 0 .707107
+ADDCHILD ${ID}_seq ${ID}_copy1
+ADDCHILD ${ID}_copy1 ${ID}_root
+EOF
+;
+}
+
+######## frame counter node: attach to scene node
+print COUNTER <<EOF
+# create and position main counter node
+GROUP ${ID}_counter
+
+EOF
+;
+
+
+######## dummy sequence node for vcr
+print SEQ <<EOF
+GROUP ${ID}_seq
+
+EOF
+;
+
+######## rock file, create node to attach rocks to
+print ROCKFILE "GROUP ${ID}_rocks_root\n\n";
+
+
+############################################################
+# parse qvisdat file, adding to sequence file
+print "Parsing qvisdat file\n";
+
+#####
+# variables created during file parse
+my $maxpt = 0;			# maximum actual closest points for any rock
+
+# bounds of rock centers
+my($minX,$minY,$minZ) = ('inf','inf','inf');
+my($maxX,$maxY,$maxZ) = (-'inf',-'inf',-'inf');
+
+my($rocks,$shape)= 0;		# number of rocks & rock shapes
+my($rockA,$rockB);		# two rocks sharing a closest point
+my $frame;			# current frame number
+my $frame1;
+my @FRAMES;			# frames list
+
+# data tables
+my @visdat;			# closest points
+my @center;			# per-frame rock centers
+my @orient;			# per-frame rock orientation quaternions
+
+
+# function to convert stress tensor to scalar
+# normal stress: $xx - $yy
+# shear stress:  $xy
+
+# add $'s for variable access to stress function
+my $stressfn;
+($stressfn = $STRESSFN) =~ s/\b([xyz][xyz12])\b/\$$1/g;
+
+sub stressScalar {
+    my ($x1,$y1,$z1,
+	$x2,$y2,$z2,
+	$xx,$xy,$xz,
+	$yx,$yy,$yz,
+	$zx,$zy,$zz) = @_;
+
+    my $sstmp=eval($stressfn);
+    if (!defined($sstmp)) {
+        print "Error evaluating function: $stressfn\n";
+	print "Function did not return a numeric scalar (returned $sstmp).\n";
+	die $@;
+    }
+    return ($sstmp);
+}
+
+# actual line-by-line file parse
+while(<QVISDAT>) {
+    # number of rocks for indexing
+    if (/^ninc\s+(\d+)/o) {
+	$rocks = $1;
+	next;
+    }
+
+    # map rock shape to inclusion number
+    if (/^shape\s+(\d+)/o) {
+	$shape++;
+	$|=1;print "rock $shape    \r";$|=0;
+
+	print ROCKFILE <<EOF
+LOAD ${ID}_object_${shape} rocks/rock${shape}.osg
+ADDCHILD ${ID}_object_${shape} ${ID}_rocks_root
+EOF
+;
+
+	# check for processed rock file
+	my $original = sprintf($ROCKFILES,$1);
+	my $processed = sprintf("%s/rock_%d_%d_%g.osg",
+				 $ROCKDIR,$shape,$1,$SCALE);
+	my $result = "$ID/rocks/rock$shape.osg";
+
+	if ( ! $REFRESH && -f $processed ) {
+	    # used pre-processed copy
+	    copy($processed, $result);
+	}
+	else {
+	    # optimize rock file
+	    open(OLDOUT, ">&STDOUT"); open(STDOUT, ">/dev/null");
+	    $ENV{"OSG_OPTIMIZER"}= 
+		"MERGE_GEODES ".
+		"MERGE_GEOMETRY ".
+		"TRISTRIP_GEOMETRY".
+		"REMOVE_REDUNDANT_NODES";
+	    system("osgconv -s $SCALE,$SCALE,$SCALE --prune-StateSet ".
+		   "$original $ID/tmp.osg");
+	    open(STDOUT, ">&OLDOUT");
+
+	    # insert rock number in alpha channel of color
+	    open(A,"<$ID/tmp.osg"); open(B,">$result");
+	    my $verts=0;
+	    while(<A>) {
+		if (/(\s*)VertexArray Vec3Array (\d+)/o) {
+		    print B $1,"VertexArray Vec4Array $2\n";
+		    my $line=<A>;
+		    print B $line; # line with opening brace
+
+		    # add object number as w component to each vertex
+		    for(chop($line=<A>); $line !~ /\}/o; chop($line=<A>)) {
+			print B $line," $shape\n";
+		    }
+		    print B "$line\n";	# print closing brace
+		}
+		elsif (/(\s*)useVertexBufferObjects FALSE/o) {
+		    print B "$1useVertexBufferObjects TRUE\n";
+		}
+		elsif (/(\s*)cullingActive TRUE/o) {
+		    print B $1,"cullingActive FALSE\n";
+		}
+		else {
+		    print B $_;
+		}
+	    }
+	    close(A); close(B);
+	    unlink("$ID/tmp.osg");
+
+	    # cached resulting rock file
+	    copy($result, $processed);
+	}
+
+	next;
+    }
+
+    # update frame counter
+    if (/^frame\s+(\d+)/o) {
+	$|=1;print "frame $1    \r";$|=0;
+
+	# get frame number and save sequence
+	$frame = $1;
+	push(@FRAMES,$frame);
+
+	# main sequence
+	$frame1 = $frame-1;
+	print MAIN <<EOF
+GROUP ${ID}_frame_${frame}
+#  UNIFORM ${ID}_frame_${frame} frame int 1 $frame
+  UNIFORM ${ID}_frame_${frame} frame int 1 $frame1
+  ADDCHILD ${ID}_rocks ${ID}_frame_${frame}
+  ADDCHILD ${ID}_frame_${frame} ${ID}_seq
+  NODEMASK ${ID}_frame_${frame} $seqmode
+EOF
+	  ;
+
+	# frame counter sequence
+	printf COUNTER <<EOF
+TEXT ${ID}_count_${frame} STRING \"${frame}\" FONT \"times.ttf\" SIZE .1 COLOR 0 0 0 1
+  ON ${ID}_count_${frame} ${ID}_counter
+  NODEMASK ${ID}_count_${frame} $seqmode
+EOF
+	  ;
+	$seqmode = "OFF";	# later timesteps start OFF
+
+	# vcr sequence
+	print SEQ <<EOF
+GROUP ${ID}_frame_${frame}
+ADDCHILD ${ID}_frame_${frame} ${ID}_seq
+EOF
+;
+
+	next;
+    }
+
+    # recognize an inclusion
+    if (/^inclusion		# identify line
+	\s+(\d+)		# $1 = inclusion ID
+	\s+(\d+)		# $2 = number of closest points
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($3,$4,$5) = center of mass
+	\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+) # ($6,$7,$8,$9) = xyzw quaternion
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($10,$11,$12) = velocity
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($13,$14,$15) = angular velocity
+	/xo)			# allow spaces & comments in regexp
+    {
+	$rockA=$1-1;		# rock A index, zero-based
+
+	# update system bounding box
+	$minX = min($minX,$3); $maxX=max($maxX,$3);
+	$minY = min($minY,$4); $maxY=max($maxY,$4);
+	$minZ = min($minZ,$5); $maxZ=max($maxZ,$5);
+
+	# record center of mass and orientation quaternion
+	$center[$#FRAMES][$rockA] = [$3, $4, $5];
+	$orient[$#FRAMES][$rockA] = [$6, $7, $8, $9];
+
+	next;
+    }
+
+    # find closest point data
+    if (/^\s+closest_points	# identify line
+	\s+(\d+)		# $1 = rock B
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($2,$3,$4) = global position on rock A
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($5,$6,$7) = global position on rock B
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($8,$9,$10) = local position on rock A
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($11,$12,$13) = local position on rock B
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($14,$15,$16) = 3x3 stress matrix row 1
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($17,$18,$19) = 3x3 stress matrix row 2
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($20,$21,$22) = 3x3 stress matrix row 3
+	/xo)			# allow spaces & comments in regexp
+    {
+	# save info we need from regexp match
+	$rockB=$1-1;		   # rock B index, zero-based
+	my $stress = stressScalar($2,$3,$4,
+				  $5,$6,$7,
+				  $14,$15,$16,
+				  $17,$18,$19,
+				  $20,$21,$22);
+	
+	# record for rock A
+	my $ptnum = $#{$visdat[$#FRAMES][$rockA]}+1;
+	$visdat[$#FRAMES][$rockA][$ptnum] = [$2,$3,$4,$stress];
+	$maxpt = $ptnum if ($ptnum > $maxpt);
+
+	# record again for rock B
+	$ptnum = $#{$visdat[$#FRAMES][$rockB]}+1;
+	$visdat[$#FRAMES][$rockB][$ptnum] = [$5,$6,$7,$stress];
+	$maxpt = $ptnum if ($ptnum > $maxpt);
+	
+	next;
+    }
+}
+
+# done, close files
+print ROCKFILE "\nRETURN ${ID}_rocks_root\n";
+close(ROCKFILE);
+
+print MAIN "\nRETURN ${ID}_root\n";
+close(MAIN);
+
+print COUNTER "\nRETURN ${ID}_counter\n";
+close(COUNTER);
+
+print SEQ "\nRETURN ${ID}_seq\n";
+close(SEQ);
+
+##############################
+# construct data texture
+print "Computing stress data\n";
+
+if (($#FRAMES+1)*$rocks > $maxTextureSize*$maxTextureSize) {
+    die("  data too large for GPU.\n".
+	"  With $rocks rocks, can handle no more than ".
+	int($maxTextureSize*$maxTextureSize/$rocks).
+	" frames\n");
+}
+
+if ($POINTS>4 || 
+    ($#FRAMES+1)*$rocks*$POINTS > $maxTextureSize*$maxTextureSize) {
+
+    print "  reducing closest points from $POINTS";
+    $POINTS = min(4,int($maxTextureSize*$maxTextureSize/($#FRAMES+1)/$rocks));
+    print " to $POINTS to fit GPU limits\n";
+}
+
+# add $'s for variable access to reduce functions
+my($localsum,$framesum);
+($localsum = $LOCALSUM) =~ s/\b([ab])\b/\$\$$1\[3\]/g;
+($framesum = $FRAMESUM) =~ s/\b([ab])\b/\$$1/g;
+
+
+open(PLOTDAT,">$ID/plot.dat");
+# sort closest points by stress and find global stress limit
+my($maxRockStress,$maxRockStressFrame) = (0,0);
+my($maxFrameStress,$maxFrameStressFrame) = (0,0);
+my(@maxstress,@rockStress,@maxframe);
+
+for (my $f=0; $f<=$#FRAMES; ++$f) {
+    $|=1;print "frame $FRAMES[$f]    \r";$|=0;
+    for (my $r=0; $r<$rocks; ++$r) {
+	# note that visdat may not be fully populated
+	# if not, fill with empty values here
+
+	# check closest point data, undef if rock has no interacting points
+	my $rockdat = $visdat[$f][$r];
+	if (defined($rockdat)) {
+	    # replace rock closest point array with sorted version
+	    $visdat[$f][$r] = [sort { $$b[3] <=> $$a[3] } @{$rockdat} ];
+	}
+	else {
+	    $visdat[$f][$r] = []; # empty interaction list
+	}
+
+	# find maximum stress levels to report
+	my $rockpoints = min($POINTS,$#{$visdat[$f][$r]}+1);
+	for (my $p=0; $p<$rockpoints; ++$p) {
+	    my $limit = $visdat[$f][$r][$p][3];
+	    if (!defined($maxstress[$p]) || $limit > $maxstress[$p]) {
+		$maxstress[$p] = $limit;
+		$maxframe[$p] = $f;
+	    }
+	}
+	
+	# fill in extra points to number needed
+	for (my $p=$rockpoints; $p<$POINTS; ++$p) {
+	    $visdat[$f][$r][$p] = [0,0,0,0];
+	}
+
+	# sum total stress for rock
+	# for reduce to work, have to sum in 3rd element of array for
+	# consistency with visdat input data; extract to final array after sum
+	my $s = reduce{[0,0,0,eval($localsum)]} @{$visdat[$f][$r]};
+	$rockStress[$f][$r] = $$s[3];
+	if ($$s[3] > $maxRockStress) {
+	    $maxRockStress = $$s[3];
+	    $maxRockStressFrame = $f;
+	}
+    }
+    # compute total stress for the frame/stress plot
+    my $s=reduce {eval($framesum)} @{$rockStress[$f]};
+    if ($s > $maxFrameStress) {
+	$maxFrameStress = $s;
+	$maxFrameStressFrame = $f;
+    }
+    printf(PLOTDAT "%d %g\n",$FRAMES[$f],$s);
+}
+close(PLOTDAT);
+
+
+# create stress/frame plot
+open(PLOT,"|R --slave");
+print PLOT <<EOF
+s=read.table("$ID/plot.dat")
+png("$ID/plot.png",width=400,height=400)
+par(bg="#eeeeee",cex=.8,mar=c(2.5,2.5,.5,.5),mgp=c(1.5,.3,0),tcl=.3)
+plot(s,type="l",ylab="stress",xlab="frame")
+quit()
+EOF
+;
+close(PLOT);
+system("convert $ID/plot.png $ID/plot.gif");
+
+##############################
+print "Creating data textures\n";
+
+# endianness: check native 's' order vs. little-endian (vax) 'v' order
+my $bigendian = (pack("s",1) eq pack("v",1)) ? "False" : "True";
+
+# write closest point data file
+print "  points\n";
+
+# texture size: power-of-two square of 4x4 blocks
+my $pointDataSize = nextPow2(sqrt(($#FRAMES+1)*$rocks*$POINTS)/4)*4;
+
+# write image file
+open(MHA,">$ID/pointData.mha");
+#   header
+print MHA <<EOF
+ObjectType = Image
+NDims = 2
+DimSize = $pointDataSize $pointDataSize
+ElementNumberOfChannels = 4
+BinaryDataByteOrderMSB = $bigendian
+ElementType = MET_FLOAT
+ElementDataFile = LOCAL
+EOF
+    ;
+
+binmode(MHA);
+for(my $y=0; $y<$pointDataSize; ++$y) {
+    if ($y%10==0) {$|=1;print("line $y/$pointDataSize    \r");$|=0;}
+
+    for(my $x=0; $x<$pointDataSize; ++$x) {
+	# rearrange from image order to 4x4 blocks
+	my $index = 
+	    (($y&~3)*$pointDataSize) | (($x&~3)*4) # which block
+	    | (($y&3)*4) | ($x&3);	           # where in block
+	
+	# turn index into frame, rock & point
+	my $frame = int($index/$rocks/max(1,$POINTS));
+	my $rock = int($index/max(1,$POINTS)) % $rocks;
+	my $point = $index % max(1,$POINTS);
+
+	# print binary data (or 0's if undefined)
+	print MHA pack("ffff",
+		       @{$visdat[$frame][$rock][$point]||[0,0,0,0]});
+    }
+}
+close(MHA);
+
+
+# write total stress and center of mass file
+print "  rock position & stress\n";
+
+# texture size: power-of-two square of 4x4 blocks
+my $rockDataSize = nextPow2(sqrt(($#FRAMES+1)*$rocks)/4)*4;
+
+open(MHA,">$ID/rockData.mha");
+#   header
+print MHA <<EOF
+ObjectType = Image
+NDims = 2
+DimSize = $rockDataSize $rockDataSize
+ElementNumberOfChannels = 4
+BinaryDataByteOrderMSB = $bigendian
+ElementType = MET_FLOAT
+ElementDataFile = LOCAL
+EOF
+    ;
+
+binmode(MHA);
+for(my $y=0; $y<$rockDataSize; ++$y) {
+    if ($y%10==0) {$|=1;print("line $y/$rockDataSize    \r");$|=0;}
+
+    for(my $x=0; $x<$rockDataSize; ++$x) {
+	# rearrange from image order to array of 4x4 blocks
+	my $index = 
+	    (($y&~3)*$rockDataSize) | (($x&~3)*4) # which block
+	    | (($y&3)*4) | ($x&3);	           # where in block
+	
+	# turn index into frame & rock
+	my $frame = int($index/$rocks);
+	my $rock = $index % $rocks;
+
+	# print binary data (or 0's if undefined)
+	print MHA pack("ffff",
+		       @{$center[$frame][$rock]||[0,0,0]},
+		       $rockStress[$frame][$rock]||0);
+    }
+}
+close(MHA);
+
+# write orientation quaternion file
+print "  rock orientation\n";
+
+# texture size: power-of-two square of 4x4 blocks
+my $orientationSize = nextPow2(sqrt(($#FRAMES+1)*$rocks)/4)*4;
+
+open(MHA,">$ID/orientation.mha");
+#   header
+print MHA <<EOF
+ObjectType = Image
+NDims = 2
+DimSize = $orientationSize $orientationSize
+ElementNumberOfChannels = 4
+BinaryDataByteOrderMSB = $bigendian
+ElementType = MET_FLOAT
+ElementDataFile = LOCAL
+EOF
+    ;
+
+binmode(MHA);
+for(my $y=0; $y<$orientationSize; ++$y) {
+    if ($y%10==0) {$|=1;print("line $y/$orientationSize    \r");$|=0;}
+
+    for(my $x=0; $x<$orientationSize; ++$x) {
+	# rearrange from image order to array of 4x4 blocks
+	my $index = 
+	    (($y&~3)*$orientationSize) | (($x&~3)*4) # which block
+	    | (($y&3)*4) | ($x&3);	             # where in block
+	
+	# turn index into frame & rock
+	my $frame = int($index/$rocks);
+	my $rock = $index % $rocks;
+
+	# print binary data (or 0's if undefined)
+	print MHA pack("ffff",
+		       @{$orient[$frame][$rock]||[0,0,0,0]});
+    }
+}
+close(MHA);
+
+# print and save some stats
+do {
+    open(STATS,">$ID/shaderData.txt");
+    print(STATS $#FRAMES+1," frame",
+	  ($#FRAMES==0?"":"s"), " $rocks rock",
+	  ($rocks==1?"":"s"),  " $POINTS closest point",
+	  ($POINTS==1?"":"s"), " from a maximum of $maxpt\n");
+
+    print STATS "Stress tensor converted to scalar with $STRESSFN\n";
+    print STATS "  maximum point stress for <n>th closest point:\n";
+    for(my $i=0; $i<$POINTS; ++$i) {
+	printf(STATS "    %d: %g (frame %d)\n",$i+1,$maxstress[$i],
+	       $FRAMES[$maxframe[$i]]);
+    }
+    print STATS "Closest point stresses combined with $LOCALSUM\n";
+    printf(STATS "  maximum per-rock stress: %g (frame %d)\n",
+	   $maxRockStress, $FRAMES[$maxRockStressFrame]);
+    print STATS "Rock stresses combined with $FRAMESUM\n";
+    printf(STATS "  maximum per-frame stress: %g (frame %d)\n",
+	   $maxFrameStress, $FRAMES[$maxFrameStressFrame]);
+    print STATS "Data texture sizes:\n";
+    print STATS "  pointData: $pointDataSize x $pointDataSize\n";
+    print STATS "  rockData: $rockDataSize x $rockDataSize\n";
+    print STATS "  orientation: $orientationSize x $orientationSize\n";
+    print (STATS "  total ", 
+	   ($pointDataSize*$pointDataSize+
+	    $rockDataSize*$rockDataSize+
+	    $orientationSize*$orientationSize)/65536,
+	   " MB\n");
+    close(STATS);
+};
+copy("$ID/shaderData.txt",\*STDOUT);
+
+
+############################################################
+# make frame files
+for (my $i=0; $i<=$#FRAMES; ++$i) {
+    open(F,">$ID/rocks/frame".$FRAMES[$i].".state");
+    print F "uniform frame 1 int $i\n";
+}
+close(F);
+
+
+############################################################
+# grab files from template data directory
+
+# template variables not already computed
+my $spotCutoff = .01*$maxstress[0];
+my $stressCutoff = .1*$maxstress[0];
+if ($maxRockStress<=0) { $maxRockStress=1; }
+if ($maxstress[0]<=0) { $maxstress[0]=1; }
+my $pointArray = max(1,$POINTS); # can't have 0-sized array
+
+foreach my $tpl (glob("$datadir/*")) {
+    # the file needs substitution, $out is the name without .in extension
+    my $out;
+    if (($out = $tpl) =~ s:^.*/([^/]*)\.in$:$ID/$1:o) {
+	open TPLIN, "<$tpl"; 
+	open TPLOUT, ">$out";
+	# substitute variables (@something@ in template files)
+	while(<TPLIN>) {
+	    s/\@seqnode\@/$ID/go;               # sequence node name
+	    s/\@spotCutoff\@/$spotCutoff/go;    #  init spotCutoff shader var
+	    s/\@maxstress\@/$maxRockStress/go;  # maximum total stress
+	    s/\@stressCutoff\@/$stressCutoff/go;#  init stressCutoff shader var
+	    s/\@frames\@/$#FRAMES/go;           # maximum number of frames
+	    s/\@framelist\@/@FRAMES/go;         # list of frames
+	    s/\@keyframe\@/$maxRockStressFrame/go;     #  init keyframe var
+	    print TPLOUT;
+	}
+	close TPLOUT; close TPLIN;
+    }
+    else {
+	copy($tpl,$ID);		# no substitutions, just copy
+    }
+}
+
+###########################################
+# construct shaders from boilerplate parts
+do {
+    my $shaderInc = " -nostdinc -I$ENV{HEV_IDEA_DIR}/shader";
+    my $shaderOptions = " -DROCKS=$rocks" . " -DPOINTS=$POINTS"
+      . " -DFRAMES=".$#FRAMES . " -DSPOTS=$POINTS"
+      . " -DPOINTARRAY=$pointArray" . " -DROCKDATASIZE=$rockDataSize"
+      . " -DORIENTATIONSIZE=$orientationSize"
+      . " -DPOINTDATASIZE=$pointDataSize";
+    my $shader;
+    my $shaderOut;
+
+    $shaderOut="$ID/qvdNPR.vert";
+    open(SHADER,">$shaderOut");
+    $shader="$datadir/qvdNPR.vert.i";
+    print SHADER `sed -e '/^\\/\\/GLSL/!d' -e 's/^\\/\\/GLSL//' $shader; \
+                cpp -C $shaderInc $shaderOptions $shader`;
+    close(SHADER);
+
+    system("sed -e 's/^\\(# [0-9]* \".*\"\\).*/\\1/' -i $shaderOut") == 0
+        or die("sed command failed");
+
+    $shaderOut="$ID/qvdNPR.frag";
+    open(SHADER,">$shaderOut");
+    $shader="$datadir/qvdNPR.frag.i";
+    print SHADER `sed -e '/^\\/\\/GLSL/!d' -e 's/^\\/\\/GLSL//' $shader; \
+                cpp -C $shaderInc $shaderOptions $shader`;
+    close(SHADER);
+
+    system("sed -e 's/^\\(# [0-9]* \".*\"\\).*/\\1/' -i $shaderOut") == 0
+        or die("sed failed");
+};
+
+##############################
+# create app
+print "Creating application $app\n";
+
+#do {
+#    print "cd $ID; selectionAppBuilder" .
+#	   " -dataRange $minX $minY $minZ $maxX $maxY $maxZ" .
+#	   " -clip -vcr vcr.dat -savgflyFlags \"-b 1 1 1\" ".
+#	   " -desktopImmersive -pointer -status -noive $ID.sge " .
+#	   join(" ",@SABFILES)."\n";
+#};
+
+
+open(F, ">$ID/dataRange.savg");
+print F <<EOF
+POINTS
+$minX $minY $minZ
+$maxX $maxY $maxZ
+EOF
+;
+close(F);
+
+system("cd $ID; hev-animatorMCP demo_seq.iris > animator.mcp");
+
+open(F, ">$ID/controls.mcp");
+print F "SIZE 85 20\n";
+print F "BUTTON Controls\n";
+print F "FIRST EXEC ./ShaderControls.tcl > \$IRIS_CONTROL_FIFO\n";
+print F "ON EXEC  hev-showWindow Controls\n";
+print F "OFF EXEC hev-hideWindow Controls\n";
+close(F);
+
+open(F, ">$ID/runapp");
+print F <<EOF
+#! /bin/bash
+
+irisfly \$*  --ex --back 1 1 1  demo.iris clip.mcp animator.mcp controls.mcp \\
+defaults.iris dataRange.savg backgroundRgbWhite.mcp 
+
+EOF
+;
+close(F);
+system("chmod +x,g+w $ID/runapp");
+
+system("chmod +x,g+w $ID/ShaderControls.tcl");
+
+
+# wrapper script
+do {
+    my $cmdline = "qvd-NPR --points $POINTS --scale $SCALE --copy $OFFSET".
+	" --stress '$STRESSFN' --localsum '$LOCALSUM' --framesum '$FRAMESUM'".
+	(@SABFILES?" --sab ":"") . join(" --sab ",@SABFILES) .
+	" '$QVISDAT' '$ROCKFILES' $ID";
+    open(APP,">$app");
+    print APP <<EOF
+#!/bin/sh
+# Create with:
+# $cmdline
+
+# change to data directory and run
+cd "\$(dirname \$0)/$ID"
+cat shaderData.txt
+.\/runapp "\$@"
+EOF
+;
+    close(APP);
+    system("chmod +x,g+w $app");
+};
+
+
+exit(1);
+####### Below is HEV/ left here for reference
+
+# create app
+do {
+    open(VCRFILE,">$ID/vcr.dat");
+    print VCRFILE "${ID}_seq.sge\n${ID}_counter.sge\n";
+    close(VCRFILE);
+
+    system("cd $ID; selectionAppBuilder" .
+	   " -dataRange $minX $minY $minZ $maxX $maxY $maxZ" .
+	   " -clip -vcr vcr.dat -savgflyFlags \"-b 1 1 1\" ".
+	   " -desktopImmersive -pointer -status -noive $ID.sge " .
+	   join(" ",@SABFILES));
+
+    # add to button array
+    open(F,">>$ID/SAB_buttons");
+    print F "Controls Controls ".
+	"\"wish ShaderControls.tcl | hev-sgeWriteFifo\"\n";
+    close F;
+};
+
+# start visible w/ specified shader defaults
+do {
+    open(F,">>$ID/SAB_Files.sge");
+    print F <<EOF
+
+# position counter and attach to screen space
+LOAD ${ID}_counter ${ID}_counter.sge
+SCS counter .4 1 .5
+ON counter scene
+
+######## Shader user-parameter defaults
+LOAD defaults defaults.state
+MERGESTATE defaults world
+UNLOAD defaults
+EOF
+;
+    close(F);
+};
+
+# add control to turn off frame counter and default both to on
+do {
+    my $f=do {local(@ARGV,$/)="$ID/SAB_hev-buttonArray.dat"; <>};
+    $f =~ s/^($ID .*)$/$1 1/m;
+    open(F,">$ID/SAB_hev-buttonArray.dat");
+    print F 'frame\# "echo ON ',$ID,'_counter counter 0 | hev-sgeWriteFifo" ',
+	  '"echo OFF ',$ID,'_counter | hev-sgeWriteFifo" 1',"\n";
+    print F $f;
+    close(F);
+
+    open(F,">>$ID/SAB_Files.sge");
+    print F <<EOF
+
+# default to on
+ON ${ID}_counter counter
+ON $ID world
+EOF
+;
+    close(F);
+};
+
+# wrapper script
+do {
+    my $cmdline = "qvd-NPR --points $POINTS --scale $SCALE --copy $OFFSET".
+	" --stress '$STRESSFN' --localsum '$LOCALSUM' --framesum '$FRAMESUM'".
+	(@SABFILES?" --sab ":"") . join(" --sab ",@SABFILES) .
+	" '$QVISDAT' '$ROCKFILES' $ID";
+    open(APP,">$app");
+    print APP <<EOF
+#!/bin/sh
+# Create with:
+# $cmdline
+
+# create cleanup command file and make sure it's deleted on exit
+export QVTONPR_CLEANUP=/tmp/cleanup.\$USER.\$\$
+export SAVGFLY_CLEANUP_COMMANDS=\$QVTONPR_CLEANUP
+echo "trap 'rm -f \$QVTONPR_CLEANUP' EXIT" > \$QVTONPR_CLEANUP
+chmod u+wx \$QVTONPR_CLEANUP
+
+# change to data directory and run
+cd "\$(dirname \$0)/$ID"
+cat shaderData.txt
+./runapp "\$@"
+EOF
+;
+    close(APP);
+    chmod(0755,$app);
+};
+
+# optimize frame files
+do {
+    print "Optimizing frame\n";
+    chdir("$ID");
+    $ENV{"OSG_OPTIMIZER"}=
+	"STATIC_OBJECT_DETECTION ".
+	"FLATTEN_STATIC_TRANSFORMS ".
+	"REMOVE_REDUNDANT_NODES ";
+    system("osgconv ${ID}_rocks.sge ${ID}_rocks.ive");
+    $ENV{"OSG_OPTIMIZER"}=
+	"MERGE_GEODES ".
+	"MERGE_GEOMETRY ";
+    system("osgconv ${ID}_rocks.ive ${ID}_rocks.ive");
+};
+
+# print warning about external files
+if (@SABFILES) {
+    print "You must now copy the following files into $ID:\n";
+    print "  ",join(", ",@SABFILES),"\n";
+}
+
+print "$app complete\n";

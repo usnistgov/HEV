@@ -1,0 +1,71 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH qvd-extractFrames 1 "April 1, 2008" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+qvd-extractFrames
+- extract a frames from a  .qvisdat file
+
+.SH SYNOPSIS
+.B "qvd-extractFrames"
+[--[no]renumber] frameList
+
+.SH DESCRIPTION
+.PP
+.I
+qvd-extractFrames
+is a filter to extract a specified list of frames from a
+.B .qvisdat
+file.  
+The
+.B frameList
+parameter is a comma separated sequence of frames.  The elements of the list
+must be increasing in order.  An element can also be a range indicated by a
+dash.
+
+.PP
+.I qvd-frameList
+is a conveninece command to generate a
+.I "for loop"
+style sequence of command separated integers suitable as the
+.B frameList
+parameter.
+
+.SH OPTIONS
+.IP \fB--renumber\fR
+indicates that the frame numbers will be renumbered sequentially from 1.
+
+.IP \fB--norenumber\fR
+indicates that the frame numbers will remain unchanged.
+This is the default.
+
+
+.SH EXAMPLES
+
+.PP
+From an input
+.B qvisdat
+file output a specified list of frames to
+an output file.
+
+.IP
+qvd-extractFrames  1,2,4,10-20,35 < in.qvisdat > out.qvisdat
+
+.PP
+Using the \fIqvd-frameList\fR command to specify every every 3rd frame.
+.IP
+qvd-extractFrames  \`qvd-frameList 1 100 3\`  < in.qvisdat > out.qvisdat
+
+
+
+
+.SH SEE ALSO
+.I
+qvd-toIRISrocks(1)
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,  NIST/ITL/MCSD/SAVG
+
+

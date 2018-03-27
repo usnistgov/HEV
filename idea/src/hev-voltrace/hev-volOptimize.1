@@ -1,0 +1,93 @@
+.TH HEV-VOLOPTIMIZE 1 "22 June 2009"
+
+
+.SH NAME
+
+hev-volOptimize
+
+
+.SH SYNOPSIS
+
+\fBhev-volOptimize \fR[\fI-r\fR]\fI transferFunction.dat volume1.mhd
+\fR[\fIvolume2.mhd \fR...]
+
+
+.SH DESCRIPTION
+
+\fBhev-volOptimize\fR optimizes a volume file for faster rendering
+with \fBhev-voltrace\fR when the transfer function is known and will
+not change.
+
+.TP
+.B -r
+Normally, \fBhev-volOptimize\fR adds an extra channel to each volume
+file containing the optimization information for the provided transfer
+function. If the \fB-r\fR option is given, \fBhev-volOptimize\fR
+instead \fIreplaces\fR a previous optimization channel with the
+optimization data for the given (presumably new) transfer function.
+
+.TP 
+.B transferFunction.dat
+Transfer function mapping scalar volume values to color and
+opacity. This file is in the form used by \fBhev-createLUT\fR,
+consisting of lines with five numbers: a volume scalar value as an
+integer scaled 0..255, followed by red, green, blue and alpha values
+as floating point numbers from 0..1.
+
+If \fB-\fR is given as the transfer function file name,
+\fBhev-volOptimize\fR will remove the optimization channel from a
+previously optimized volume.
+
+.TP 
+.B volume1.mhd, volume2.mhd, ...
+List of volume files to be optimized. Each will have an extra channel
+added (turning a single-channel volume file into a two-channel file,
+or a three-channel volume into a four-channel file). The new channel
+contains optimization data to enable faster rendering with the given
+volume and transfer function. Optimized rendering will likely produce
+incorrect results with a different transfer function.
+
+The optimization channel indicates, for each voxel, how far until the
+transfer function would give a different color or opacity. It is
+actually possible to make some changes to the transfer function
+without reoptimizing, as long as the new transfer function changes
+color and opacity in the same places as the old one
+
+.SH EXAMPLES
+Given a transfer function \fItransfer.dat\fR and volume \fIvol.mhd\fR,
+optimize with:
+
+.B hev-volOptimize transfer.dat vol.mhd
+
+To re-optimize with a different transfer function, use:
+
+.B hev-volOptimize -r transfer.dat vol.mhd
+
+To optimize an entire directory of volume files, with transfer function in \fIdemo/transfer.dat\fR and volume files \fIdemo/hrrpuv*.mhd\fR, optimize with:
+
+.B hev-volOptimize demo/transfer.dat demo/hrrpuv*.mhd
+
+To remove the optimization from these files, use
+
+.B hev-volOptimize - demo/hrrpuv*.mhd
+
+.SH BUGS
+
+Error handling is probably not as robust as it should be.
+
+.SH SEE ALSO
+
+\fBhev-voltrace\fR(1), \fBhev-createLUT\fR(1)
+.SH AUTHOR
+
+Marc Olano
+
+.PP
+June 2009
+
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

@@ -1,0 +1,158 @@
+#! /usr/bin/perl
+#
+# hev-runparallel - see usage message below
+#
+# steve@nist.gov
+#
+
+$version="20090409";   # initial implementation
+
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hev-runparallel [--help] [--parallel n] [--verbose]
+
+  Run embarrassingly parallel commands read from stdin on multiple CPUs
+
+  --help           print this help message
+
+  --parallel n     specifies how many concurrent processes to be run 
+                   in parallel. On a 2 CPU machine, n of 2 is a good number.
+		   If n is 0 or this option is not specifed, then the
+                   number of CPUs used is automatically determined, hopefully,
+		   to match the current number of on the machine
+
+  --verbose        print a bit of verbosity
+
+
+  Each line of input read from stdin should be a complete and valid command
+  line to /bin/sh
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+$helpFlag=0;
+$verbose=0;
+
+
+GetOptions("debug"       => \$debugFlag,
+	   "verbose"     => \$verboseFlag,
+	   "help"        => \$helpFlag,
+           "parallel:i"  => \$parallel);
+
+
+usage() if (@ARGV != 0);
+
+usage() if ($helpFlag == 1);
+
+
+
+
+
+if (!defined($parallel)) {
+    #print STDERR "parallel not provided\n";
+    chomp($parallel=`getconf _NPROCESSORS_ONLN`);
+}
+
+if ($parallel == 0) {
+    chomp($parallel=`getconf _NPROCESSORS_ONLN`);
+}
+
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "verboseFlag= $verboseFlag\n";
+    print STDERR "parallel= $parallel\n\n";
+}
+
+if ($verboseFlag) {
+    print STDERR "Using $parallel CPUs\n";
+}
+
+
+
+$pcount=$parallel;
+
+
+
+
+while (<>) {
+    chomp;          # strip record separator
+    $cmd = $_;
+    if ($debugFlag) {
+	print STDERR "Input cmd: $cmd\n";
+    }
+
+    if ($pid = fork) {
+	# Parent Here
+	if ($debugFlag) {
+	    print STDERR "Parent\n";
+	}
+	$pcount--;
+	if ($pcount == 0) {
+
+	   # This code waits tile all children are done
+	   # while (wait != -1) {
+	   #	# Waiting
+           #	if ($debugFlag) {
+	   #	    print STDERR "Parent waiting\n";
+	   #	}
+	   # }
+	   # $pcount=$parallel;
+
+	   # When one child is finished, start another command
+	    $p=wait;
+	    if ($debugFlag) {
+		print STDERR "----> Process $p finished, a cpu is free\n";
+	    }
+	    $pcount++;
+
+	}
+    } else {
+	# Child here
+	if ($debugFlag) {
+	    print STDERR "Child\n";
+	}
+        if ($verboseFlag) {
+	    print STDERR "pid $$: $cmd\n";
+	}
+	exec($cmd);
+	    exit 0;
+    }
+}
+
+while (wait != -1) {
+	#print STDERR "waiting\n";
+
+}
+
+if ($verboseFlag) {
+    print STDERR "\n\nAll input commands have completed\n\n";
+}
+
+# End
+

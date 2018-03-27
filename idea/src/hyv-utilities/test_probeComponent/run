@@ -1,0 +1,6 @@
+#! /bin/sh
+
+#  ./mkfakeComponent > test.component 
+
+
+../hyv-probeComponent $*  25 25 25 test.component

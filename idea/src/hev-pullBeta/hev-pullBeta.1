@@ -1,0 +1,54 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-pullBeta 1 "May 201" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+hev-pullBeta
+
+.SH SYNOPSIS
+
+The \fBhev-pullBeta --dry-run | --copy\fR 
+
+.SH DESCRIPTION
+
+\fIhev-pullBeta\fR is used to pull the \fIHEV-beta\fR tree to the local
+system.
+
+.PP
+Unlike the \fIHEV\fR production tree which is automatically pushed to all
+\fBSAVG\fR system, the \fIHEV-beta\fR is pulled on an \fIas needed basis\fR.
+
+.PP
+This command will pull from the appropriate server host to match the current
+system, i.e. 32 bits or 64 bits.
+
+.SH OPTIONS
+.TP
+.B --dry-run
+Print the files that need to be updated, but don't actually copy.
+
+.TP
+.B --copy
+Perform the file copy and print the files being updated.
+
+
+.SH NOTES.
+.PP
+Typically two \fIOperation not permitted\fR messages are normal.
+Other error messages may indicate a problem that should be resolved.
+
+.PP
+The user that executes this command will become the owner of the HEV-beta
+tree. Thus, only one person per system should execute this command.
+
+
+
+
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov
+.br
+http://www.nist.gov/itl/math/hpcvg

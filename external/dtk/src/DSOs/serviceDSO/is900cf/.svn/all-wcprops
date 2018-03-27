@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/954/trunk/dtk/DSOs/serviceDSO/is900cf
+END
+VTCaveIS900.config
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/943/trunk/dtk/DSOs/serviceDSO/is900cf/VTCaveIS900.config
+END
+VTWallIS900.config
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/947/trunk/dtk/DSOs/serviceDSO/is900cf/VTWallIS900.config
+END
+VTCaveIS900.txt.old
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/954/trunk/dtk/DSOs/serviceDSO/is900cf/VTCaveIS900.txt.old
+END
+VTCaveIS900.txt
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/diverse/!svn/ver/954/trunk/dtk/DSOs/serviceDSO/is900cf/VTCaveIS900.txt
+END
+VTWallIS900.txt
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/diverse/!svn/ver/852/trunk/dtk/DSOs/serviceDSO/is900cf/VTWallIS900.txt
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/diverse/!svn/ver/909/trunk/dtk/DSOs/serviceDSO/is900cf/CMakeLists.txt
+END
+is900cf.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/diverse/!svn/ver/946/trunk/dtk/DSOs/serviceDSO/is900cf/is900cf.cpp
+END

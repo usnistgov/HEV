@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+#Arg 1: edge-list graph file
+#Arg 2: 'u' for undirected, 'd' for directed
+#Arg 3: source node -- can only be 'none' if target is 'none'
+#Arg 4: target node ('none' if no target node wanted)
+#Weights must be positive
+
+import networkx as nx
+import sys
+
+if(len(sys.argv)==5):
+    myFile = open(sys.argv[1], 'r')
+else:
+    print("Error: wrong number of arguments.")
+    sys.exit()
+
+if(sys.argv[2]=='u'):
+    G=nx.MultiGraph()
+elif(sys.argv[2]=='d'):
+    G=nx.MultiDiGraph()
+
+lines = []
+for edge in myFile:
+    lines.append(tuple(edge.split()))
+
+if(len(lines[0])==2):
+    G.add_edges_from(lines)
+elif(len(lines[0])>=3):
+    for item in lines:
+        G.add_weighted_edges_from([(item[0],item[1],float(item[2]))])
+else:
+    print("Error in input file. Wrong number of elements per line.")
+    sys.exit()
+
+if(sys.argv[3]=='none'):
+    if(sys.argv[4]=='none'):
+        p=nx.shortest_path_length(G,weight='weight')
+        for x,y in p.items():
+            for key,value in y.items():
+                print("Nodes:", x, key, "Path Length:", value)
+    else:
+        print("Error: if no source given, no target can be given.")
+        sys.exit()
+else:
+    if(sys.argv[4]=='none'):
+        p=nx.shortest_path_length(G, source=sys.argv[3],weight='weight')
+        for key, value in p.items():
+            print("Nodes:", sys.argv[3], key, "Path Length:", value)
+    else:
+        print("Nodes:", sys.argv[3], sys.argv[4], "Path Length:",nx.shortest_path_length(G, source=sys.argv[3], target=sys.argv[4], weight='weight'))

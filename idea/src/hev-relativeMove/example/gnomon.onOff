@@ -1,0 +1,6 @@
+# these commands are run when the wand button is pressed and released.
+ON NODEMASK relativeMoveWorldNode-gnomon OFF
+ON NODEMASK relativeMoveSceneNode-gnomon ON
+
+OFF NODEMASK relativeMoveWorldNode-gnomon ON
+OFF NODEMASK relativeMoveSceneNode-gnomon OFF

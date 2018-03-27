@@ -1,0 +1,65 @@
+.TH hev-writeFifo 1 "January 2009" "NIST/MCSD/HPCVG" "HPCVG HEV"
+.SH NAME
+.B hev-writeFifo
+- Write string(s) to a FIFO.
+
+.SH SYNOPSIS
+.B hev-writeFifo    
+msgLen fifoName
+
+.SH DESCRIPTION
+.PP
+.B
+hev-writeFifo
+reads standard input (stdin) and writes each line to
+the indicated FIFO.
+
+
+.SH ARGUMENTS
+
+.TP
+.B msgLen
+The length of each message written to the FIFO.
+Each input line is either truncated or padded to this length
+before being written to the FIFO.
+
+.TP
+.B fifoName
+The name of the FIFO.
+
+
+.SH EXAMPLES
+
+.B echo ACTIVATE  |  hev-writeFifo 200 /tmp/segSelCmd-fifo
+
+Writes the string "ACTIVATE" to the FIFO named /tmp/segSelCmd-fifo
+in a message of 200 bytes.
+
+
+.SH NOTES
+
+Messages are always terminated with a null byte which is included
+in the message length.
+So the maximum length of a string written to the FIFO is msgLen-1.
+Strings that are shorter than this length are padded with null bytes.
+
+We could modify this program to use variable length messages.  
+In this scenario, messages written to the FIFO could be any
+length and they would be terminated by a null byte.
+(This, of course, assumes that our messages are ascii.)
+If we implement this, the 
+.B msgLen
+command line argument would be optional.  
+If 
+.B msgLen
+were not specified, then variable length messages would be used.
+The use of variable length messages imposes a somewhat greater burden on
+any software that reads the FIFO, but it avoids the problems of
+mis-matched message lengths in the reader and writer.
+
+For varying length messages see the iris::FifoReader class and the
+iris-readFifo command.
+
+.SH SEE ALSO
+
+hev-readFifo, iris-readFifo

@@ -1,0 +1,154 @@
+Notes on installing Bullet Physics
+Steve Satterfield
+
+--> updated by John Kelso 8/10/2012 for IRIS install.
+--> Skip down to "Steps building on Dradis (per above directions)" below
+
+To use this library to build an application, use hev-animateWindow(1), as an
+example. It has the "magic" needed to be added for our standard GNUmakefile.
+-sgs, 7/21/10
+
+
+----------------------------------------------------------------------------
+
+
+Date: Thu, 15 Jul 2010 17:05:18 -0400
+From: Judith E Terrill <judith.terrill@nist.gov>
+To: "Satterfield, Steven G." <steven.satterfield@nist.gov>
+Subject: students release code
+
+
+Matthew Du has coded up the dynamics of breaking glass using the 
+        bullet physics Engine
+    a) The bullet physics engine needs installing for everyone before 
+       installing his code.
+          Bullet is on the web at http://bulletphysics.org/wordpress/
+        Here is a set of instructions on how to get Bullet 2.76 working .
+
+   1. Download Bullet 2.76 and cmake 2.8
+   2. cd into bullet-2.76/ and enter "cmake . -G "Unix Makefiles"
+   3. Enter "./autogen.sh"
+   4. In bullet-2.76/Demos/ copy the "Makefile.in" file
+   5. Make a new directory in Demos/ called "ColladaDemo" and paste the 
+      "Makefile.in" file into that directory
+   6. Enter "./autogen.sh" then "./configure" then "make"
+   7. cd into bullet-2.76/Demos/AllBulletDemos/
+   8. enter "./AllBulletDemo"
+
+   Install it where ode is
+
+
+   b) Matthew has a code that uses bullet to create the dynamics of 
+      glass blow outs. Please install that
+
+       It is for the fire project
+
+
+
+--------------------------------------------------------------------------
+
+See also:
+
+http://bulletphysics.org/mediawiki-1.5.8/index.php/Installation#Building
+
+http://code.google.com/p/bullet/source/browse/branches/OpenCL/INSTALL?spec=svn2062&r=2029
+
+-----------------------------------------------------------------------
+
+July 19, 2010
+Steps building on Dradis (per above directions)
+
+      umask 2
+      
+      cd $HEVROOT/external
+      mkdir bulletphysics
+      tar xvf bullet-2.76.tgz
+
+      cd bullet-2.76
+
+      cmake -G "Unix Makefiles"
+
+      ./autogen.sh
+      # This line is odd in that it fails, 
+      
+      mkdir Demos/ColladaDemo
+      cp Demos/Makefile.in  Demos/ColladaDemo
+
+      ./autogen.sh
+
+      ./configure 
+
+      make -j8
+
+      # do the following on dradis once, to create some files
+      # needed for the demos to work
+      cd into bullet-2.76/Demos/AllBulletDemos/
+      ./AllBulletDemo
+
+      # Now the push gets running demo out to the clients.
+      # such that the following works for production HEV
+
+
+      cd $HEVROOT/external/bulletphysics/bullet-2.76/Demos/AllBulletDemos
+      --> in IRIS it's in $HEVROOT/external/bulletphysics/bullet-2.76/Demos/AllBulletDemos
+      ./AllBulletDemo
+
+       --> get the group and permission stuff right
+           cd $HEVROOT/external/bulletphysics
+           chmod -R g+w . ; \
+	   find . -type d -print0 | xargs -0 chmod g+s ; \
+	   chgrp -R diverse .
+           
+      
+===========================================================================
+
+July 21, 2010
+
+The above is the current installation. Below are various other notes trying to
+do a "make install" instead of the install in place per above.
+
+So the following notes can be ignored, I have them here just as an archive of
+stuff I tried
+
+
+
+Notes for reference only that didn't work in any useful way.
+
+      cd bullet-2.76
+
+      
+      D=$HEVROOT/external/bulletphysics/bullet-2.76
+
+      CUSTOM1="-DCMAKE_INSTALL_PREFIX=$D"
+      CUSTOM2=" -DCMAKE_INSTALL_RPATH=$D"
+      BDIR=/usr/local/HEV/external/bulletphysics/bullet-2.76
+
+      cmake $BDIR -G "Unix Makefiles"  -DBUILD_SHARED_LIBS=ON $CUSTOM1 $CUSTOM2
+
+      
+      ./autogen.sh
+      # This line is odd in that it fails, 
+      
+      mkdir Demos/ColladaDemo
+      cp Demos/Makefile.in  Demos/ColladaDemo
+
+      ./autogen.sh
+
+      ./configure --prefix=$D
+
+      make -j4
+
+
+     Try the following without cmake
+
+    ./autogen.sh
+
+      mkdir Demos/ColladaDemo
+      cp Demos/Makefile.in  Demos/ColladaDemo
+
+      ./autogen.sh
+
+      D=$HEVROOT/external/bulletphysics/bullet-2.76
+      ./configure --prefix=$D
+
+      make -j8

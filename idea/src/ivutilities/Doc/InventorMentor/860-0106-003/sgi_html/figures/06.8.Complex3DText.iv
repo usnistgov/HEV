@@ -1,0 +1,48 @@
+#Inventor V2.0 ascii
+
+Group {
+    PerspectiveCamera {
+	position	0.0899992 3.345 65.8324
+	nearDistance	38.5637
+	farDistance	93.1011
+	focalDistance	65.8324
+    }
+    Group {
+	Rotation {
+	}
+	DirectionalLight {
+	    direction	0.2 -0.2 -0.979796
+	}
+	ResetTransform {
+	}
+    }
+    Material {
+	diffuseColor	[ 1 1 1,
+			  1 1 0,
+			  1 1 0 ]
+	specularColor	[ 1 1 1,
+			  1 1 0,
+			  1 1 0 ]
+	shininess	0.1
+    }
+    Font {
+	name	"Times-Roman"
+    }
+    ProfileCoordinate2 {
+	point	[ 0 0,
+			  0.25 0.25,
+			  1.25 0.25,
+			  1.5 0 ]
+    }
+    LinearProfile {
+	index	[ 0, 1, 2, 3 ]
+    }
+    MaterialBinding {
+	value	PER_PART
+    }
+    Text3 {
+	string	"Beveled Text"
+	justification	CENTER
+	parts	ALL
+    }
+}

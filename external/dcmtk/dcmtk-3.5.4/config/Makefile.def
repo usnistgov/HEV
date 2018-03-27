@@ -1,0 +1,94 @@
+#
+# Makefile.def.in for all toolkit code
+# The use of the following code requires:
+#  (a) definition of srcdir
+#  (b) definition of VPATH without using any Makefile variables (optional)
+#  (c) definition of LOCALDEFS an LOCALDEBUG (optional)
+#
+
+prefix = /usr/local/HEV/external/dcmtk
+exec_prefix = ${prefix}
+
+bindir = $(DESTDIR)${exec_prefix}/bin
+etcdir = $(DESTDIR)${prefix}/etc
+datadir = $(DESTDIR)${prefix}/share/data
+docdir = $(DESTDIR)${prefix}/share/doc
+mandir = $(DESTDIR)${prefix}/man
+libdir = $(DESTDIR)${exec_prefix}/lib
+includedir = $(DESTDIR)${prefix}/include
+
+INSTALL = /usr/bin/install -c
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_PROGRAM = ${INSTALL}
+
+PACKAGE_NAME = DCMTK
+PACKAGE_TARNAME = dcmtk-3.5.3
+PACKAGE_VERSION = 3.5.3
+
+#
+# Definition of dependencies file
+#
+
+DEP = Makefile.dep
+
+# Toolkit wide definitions for DEBUGGING
+#
+#  -DDEBUG   Compile with debug code and assertions
+#  -DNDEBUG  Compile without debug code and assertions
+
+DEBUG = -DNDEBUG
+
+#
+# Global definitions
+#
+
+GLOBALDEFS = -DHAVE_CONFIG_H
+
+#
+# ARCH defines special machine archtecture compiler settings
+# (e.g. -arch i386 on NeXT)
+#
+
+# ARCH =
+
+CC = gcc
+CFLAGS = -O -I/usr/include/libxml2 -D_REENTRANT -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L -Wall 
+CXX = c++
+CXXFLAGS = -O -I/usr/include/libxml2 -D_REENTRANT -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L -Wall 
+CPPFLAGS = 
+LDFLAGS = 
+RANLIB = ranlib
+AR = ar
+ARFLAGS = cruv
+LIBS = -lrt -lpthread -lnsl 
+MATHLIBS = -lm
+OPENSSLLIBS = -lssl -lcrypto -ldl
+TIFFLIBS = -ltiff -ljpeg -lz
+PNGLIBS = -lpng
+ZLIBLIBS = -lz
+XMLLIBS = -lxml2
+TCPWRAPPERLIBS = -lwrap
+LIBEXT = a
+BINEXT = 
+INSTALL_PRIVATE_DICTIONARY = NO
+
+#
+# for clean and distclean
+#
+TRASH = *~ "\#*\#" *.bak core
+DISTTRASH = $(TRASH) Makefile *.cache *.log *.status
+
+includes = -I. -I$(srcdir) -I$(top_srcdir)/include -I$(configdir)/include $(LOCALINCLUDES)
+defines = $(GLOBALDEFS) $(LOCALDEFS) $(DEBUG) $(LOCALDEBUG)
+
+
+.SUFFIXES:
+.SUFFIXES: .o .cc .c .h
+
+.cc.o:
+	$(CXX)	$(defines) -c $(includes) $(ARCH) \
+		$(CPPFLAGS) $(CXXFLAGS) $<
+
+.c.o:
+	$(CC)	$(defines) -c $(includes) $(ARCH) \
+		$(CPPFLAGS) $(CFLAGS) $<

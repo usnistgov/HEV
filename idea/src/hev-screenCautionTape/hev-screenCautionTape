@@ -1,0 +1,35 @@
+#! /bin/bash
+
+DATA=${HEVROOT}/idea/etc/hev-screenCautionTape/data
+
+# set ALT_DISPLAY to :0.0 for testing when not on CAVE
+if [ "${ALT_DISPLAY}" != "" ]
+then
+	export DISPLAY=${ALT_DISPLAY}
+else
+	export DISPLAY=:0.3
+fi
+
+DEVICE=$(hev-identifyImmersive)
+
+if [ "${DEVICE}" != "rave" -a "${ALT_DISPLAY}" == "" ]
+then
+     #echo "This command only works on the CAVE host systems"
+     exit
+fi
+
+
+# CAVE is approx 13 pixels per inch, one foot from screen is 13*12 = 156
+
+hev-imageDisplay -geometry +0+156 --noescape --noborder ${DATA}/cautionTapeLeft.png &
+left=$!
+
+hev-imageDisplay -geometry -156+156 --noescape --noborder ${DATA}/cautionTapeFront.png &
+front=$!
+
+trap "kill $left; kill $front" 0
+
+wait
+
+
+

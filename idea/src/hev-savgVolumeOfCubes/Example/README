@@ -1,0 +1,36 @@
+Example of using hev-savgVolumesOfCubes
+
+hev-savgVolumeOfCubes --scale .75 .75 .75 --color .8 0 .8  10 8 6 > vol.savg
+
+# To test max FPS
+export __GL_SYNC_TO_VBLANK=0
+
+irisfly --back .5 .5 .5 --ex vol.savg orthoviews.mcp
+
+# Make sample data
+./makeColors.sh 10 8 6 > colors.dat
+./makeScale.sh  10 8 6 > scale.dat
+
+
+hev-savgVolumeOfCubes --scale .75 .75 .75 --cfile colors.dat  10 8 6 > vol.savg
+
+irisfly --back .5 .5 .5 --ex vol.savg orthoviews.mcp
+
+
+hev-savgVolumeOfCubes --sfile scale.dat --cfile colors.dat  10 8 6 > vol.savg
+
+irisfly --back .5 .5 .5 --ex vol.savg orthoviews.mcp
+
+
+# Now try a much larger example
+
+X=40
+Y=30
+Z=20
+
+./makeColors.sh $X $Y $Z > colors.dat
+./makeScale.sh  $X $Y $Z > scale.dat
+
+hev-savgVolumeOfCubes --sfile scale.dat --cfile colors.dat  $X $Y $Z > vol.savg
+
+irisfly --back .5 .5 .5 --ex vol.savg orthoviews.mcp

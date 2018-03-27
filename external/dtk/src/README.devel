@@ -1,0 +1,75 @@
+Notes on making a DTK release:
+
+
+* first get and install the latest version of doxygen on your GNU/Linux
+box.
+
+* 2 Files that must be edited:
+
+   configure.ac: change the release version
+number, change the lib version numbers if it needs it, see notes in
+configure.ac on that and the release date
+
+   ChangeLog:  add release notes, say why your making a release, sign your
+name, and date
+
+* make sure that the script ./cvsclean is up to date, and doesn't remove
+anything that it should not, or not remove anything that it should.
+
+* Check files in CVS are what you think: Run `cd /TESTDIR && cvs -z3
+co dtk2' (to make sure you have all the files you have are up to date,
+or confirm that you have what you think you have) and `cd /WORKINGDIR
+&& cvs commit' (to confirm that all the files that are in a release
+are in CVS , and packages that DTK depends on) and in a different
+directory `cvs co' to confirm your files are "really" in CVS.
+
+So CVS must be up to date with releases, or we are branching, or other???
+
+* test, test, and test a build and install
+
+* On GNU/Linux run `./cvsclean && make && make dist' to make tarballs
+
+* check that the tarball dtk-$(VERSION).tar.bz2 (or dtk-$(VERSION).tar.gz)
+has got all the files that are in CVS and some more (like configure, and
+Makefile.in, */Makefile.in, */*/Makefile.in, and etc.).  If needed, check
+that the new tarball builds and installs.
+
+* if the tarball fails to have all the needed files start over ... else go
+to the next step
+
+* (optional) Update the homepage if that makes sense, run `make homepage'
+and untar the files in
+username@shell.sourceforge.net:/home/groups/d/di/diversetoolkit/htdocs/
+using the cammand:
+
+(cd /home/groups/d/di/diversetoolkit/htdocs/ && \
+umask 0002 && tar -xvjf dtk_homepage-2.4.12.tar.bz2)
+
+    - `make homepage' needs DTK to be built so that it can make the
+       documents
+
+    - You may need to get some file permissions changed.
+
+
+A homepage update is needed. The web docs that are on sourceforge are a
+little moldy.
+
+* upload dtk-$(VERSION).tar.bz2 and dtk-$(VERSION).tar.gz to sourceforge
+ftp server like so:
+
+ftp upload.sourceforge.net
+anonymous
+USERNAME@users.sourceforge.net
+cd /incoming
+put dtk-$(VERSION).tar.gz.md5
+put dtk-$(VERSION).tar.bz2.md5
+put dtk-$(VERSION).tar.bz2
+put dtk-$(VERSION).tar.gz
+
+* goto
+https://sourceforge.net/project/admin/editpackages.php?group_id=70210
+to add the release.  Look at the other releases to see the name
+convention and etc.  You'll see lots of instruction at that URL.
+
+cheers
+lance

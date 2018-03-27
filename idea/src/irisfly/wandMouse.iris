@@ -1,0 +1,7 @@
+#
+# Tell X11 & window manager to keep the immersive window below all others.
+AFTER  REALIZE exec iris-immersiveWindowBelow $IRISFLY_WANDMOUSE_WINDOW > $IRIS_CONTROL_FIFO
+# Need to ensure all graphics and mcp windows are realized before wand mouse,
+# otherwise MCP menus is behind graphics -Steve 7/16/12
+AFTER  FRAME 1 exec env IRIS_FILES=$IRISFLY_WANDMOUSE_WINDOW iris-wandMouse > $IRIS_CONTROL_FIFO
+

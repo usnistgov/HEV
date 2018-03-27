@@ -1,0 +1,10 @@
+LOAD cow cow.osg
+ADDCHILD cow world
+
+LOAD box box.osg
+DCS boxDCS 5 0 0
+ADDCHILD box boxDCS
+ADDCHILD boxDCS world
+
+EXAMINE
+

@@ -1,0 +1,190 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hyv-utilities 3 "October 17, 2008" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hyv-utilities
+- collection of commands used to visualize data produced by HydratiCA
+
+
+.SH SYNOPSIS
+Refer to individual manual pages. Commands in the collection include:
+.B hyv-selection,
+.B hyv-img2phase,
+.B hyv-phase2vtk,
+.B hyv-phase2iso,
+.B hyv-phase2vf,
+.B hyv-phase2glyph,
+.B hyv-vtk2ivu,
+.B hyv-phase2vf,
+.B hyv-vfplot,
+.B hyv-legend
+.B hyv-isoplot
+.B hyv-voxelGrid
+
+.SH DESCRIPTION
+.PP
+.I hyv-utilities
+are a collection of application specific commands used to create
+visualizations of the data produced by HydratiCA hydration simulation system.
+The application specific commands are named with a
+.B hyv-
+prefix. Other
+.I HEV
+commands are also used to complete the visualization.
+.PP
+Most of the commands allow operations to be executed in parallel on multiple CPU systems.
+.PP
+In general terms, a
+.I "data flow"
+approach is used to create the visualization.
+
+
+.IP "Step 1:"
+A desired set of HydratiCA output files, 
+.B .img,
+are selected and placed into a
+sub-directory. The subsequent commands then operate on the files in that
+directory as a unit.
+
+.IP "Step 2:"
+The
+.B img
+files are converted into a one or more sets of
+.B phase
+files by selecting/combining the columns from the
+.B img
+file.
+
+.IP "Step 3:"
+The
+.B phase
+files are converted to
+.B vtk
+format to allow a VTK based isosurface program to generate
+isosurfaces.
+The phase files are also used to automatically compute a
+.I isovalue
+into a corresponding
+.B iso
+file.
+ 
+.IP "Step 4:"
+The
+.B vtk
+and
+B .iso
+files are used to generate a set of isosurface representations.
+These isosurfaces are sored in corresponding
+.B ivu
+files.
+The
+B ivu
+file is directly displayable using
+.I savgfly
+however further processing is typically done to create an application/demo.
+
+.IP "Step 5:"
+The
+.B ivu
+files are optimized and saved as individual
+.B ive
+format files.
+
+.IP "Step 6:"
+The collection of
+.B ive
+files for each phase is combined into 
+a time sequence animation stored as an
+.B sge
+file.
+The individual
+.B sge
+may be be displayed using
+.I savgfly.
+
+.IP "Step 7:"
+Typically, multiple phase animations are combined into an application/demo
+using
+.I selectionAppBuilder.
+The completed application may be executed with the
+.B runapp
+command produced by
+.I selectionAppBuilder.
+
+
+.SH NEXT
+.PP
+The collection now includes commands
+.B hyv-phase2vf
+and
+.B hyv-vfplot
+for generating and displaying a full volume fraction plot.
+I don't yet have that fully integrated into the completed application.
+It currently must be displayed manually.
+
+.PP
+The
+.B hyv-legend
+has been implemented for generating a legend.  Like the to commands above, the
+resulting png legend file must me displayed manaully.
+
+
+.SH EXAMPLE
+
+.PP
+The full data flow from a set of HydratiCA 
+.B img
+files to a completed application is a bit too extensive to place
+here. Instead, a complete example is available at
+
+.IP
+$HEVROOT/savg/dgl/src/hyv-utilities/hyvExample01.sh
+
+.PP
+In theory, this shell script can be modified for your purposes and executed.
+Be sure to carefully review what it does.
+
+.SH ANOTHER EXAMPLE
+
+.PP
+For another complete example in the form of a shell script, see
+
+.IP
+$HEVROOT/savg/dgl/src/hyv-utilities/hyv-sample_7x7x7
+
+.PP
+This directory contains \fIsample data\fR, a \fIREADME\fR and \fIbuild.sh\fR
+script.
+
+
+
+
+
+.SH SEE ALSO
+On-line manual pages for
+.B hyv-utilities
+and the commands listed above,
+.br
+.I http://snippet.cam.nist.gov:8000/rave/wiki/HydratiCaVisProject,
+.br
+.I http://snippet.cam.nist.gov:8000/hydratica,
+.br
+.I savgfly usage message,
+.br
+.I selectionAppBuilder(1),
+.br
+.I hev-osgOptimize(1)
+
+
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,
+.br
+NIST/ITL/MCSD/SAVG
+
+
+\"  LocalWords:  hyv HydratiCA img vtk iso vf ivu vfplot isosurface isosurfaces
+\"  LocalWords:  isovalue sge runapp HEVROOT

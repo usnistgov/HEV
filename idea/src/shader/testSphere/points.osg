@@ -1,0 +1,32 @@
+Geode {
+  Geometry {
+    StateSet {
+      Point { size 20 }
+      0x8642 ON
+    }
+    PrimitiveSets 1 {
+      DrawArrays POINTS 0 8
+    }
+    VertexArray Vec3Array 8 {
+      -10 -10 -10
+      -10 -10  10
+      -10  10 -10
+      -10  10  10
+       10 -10 -10
+       10 -10  10
+       10  10 -10
+       10  10  10
+    }
+    ColorBinding PER_VERTEX
+    ColorArray Vec3Array 8 {
+      0 0 0
+      0 0 1
+      0 1 0
+      0 1 1
+      1 0 0
+      1 0 1
+      1 1 0
+      1 1 1
+    }
+  }
+}

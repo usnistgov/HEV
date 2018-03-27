@@ -1,0 +1,108 @@
+.TH hev-GridToVtkImage
+.SH NAME
+hev-gridToVtkImage - data block to VTK image grid
+
+.SH SYNOPSIS
+.B hev-gridToVtkImage [ options ] --dim X Y Z inFName outFName
+
+.SH DESCRIPTION
+.B hev-gridToVtkImage
+Converts a data grid (ASCII or binary) into a VTK image grid
+
+.PP
+
+.SH OPTIONS
+.TP
+.B --ncomp or --nc M
+# of components at each grid element.
+Default is 1.
+
+.TP
+.B --type or --t TYPE
+Data type of output grid data.
+Should be one of the following:
+                char
+                uchar
+                short
+                ushort
+                long
+                ulong
+                int
+                uint
+                float
+                double
+
+Default is float.
+
+.TP
+.B --input or --i INPUT
+Indicates whether the input file is text or binary.
+Should be one of the following:
+                text
+                binary
+
+Default is text.
+If binary: The data type must be as indicated by the --type option.
+
+.TP
+.B --spacing or --s s1 s2 s3
+Set the spacing (width,height,length) of the cubical cells that compose the data set.
+Default is 1.0 1.0 1.0.
+
+.TP
+.B --origin or --o o1 o2 o3
+Set the origin of the data. The origin plus spacing determine the position in space of the points.
+Default is 0.0 0.0 0.0.
+
+
+.TP
+.B --vector 
+If this option is present, the grid data is written as vector rather than 
+scalar data.  
+
+
+
+.SH PARAMETERS
+.TP
+.B --dim or --d X Y Z
+Number if grid points in each dimension.
+The --dim parameter is required.
+
+.TP
+.B inFName
+Location/filename of input file with raw grid data.
+
+.TP
+.B outFName
+Location/filename of output file in VTK image grid format.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+
+  hev-gridToVtkImage --d 3 4 5 --t short 
+       raw_short_345.ascii s345.ascii.vtk
+
+
+.SH NOTES
+
+Input file should be a sequence of numbers:
+    - all components for a given grid point should be grouped together
+    - first dimension varies most rapidly
+
+.SH SEE ALSO
+
+hev-gridToVtkRectGrid, hev-gridToVtkStructGrid, vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+June 6th 2012

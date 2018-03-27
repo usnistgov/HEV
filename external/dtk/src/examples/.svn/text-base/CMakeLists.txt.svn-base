@@ -1,0 +1,8 @@
+# CMakeLists.txt to build examples
+
+ADD_SUBDIRECTORY (dtk)
+
+IF (DTK_BUILD_WITH_OPENAL)
+	ADD_SUBDIRECTORY (dtkAL)
+ENDIF (DTK_BUILD_WITH_OPENAL)
+

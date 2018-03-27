@@ -1,0 +1,10 @@
+# shader state file for gpuSphere
+#
+# Usage case 1: put the CULLING and SHADERPROG lines in your own iris file
+# Usage case 2: apply to existing node with iris MERGESTATE command
+# Usage case 3: apply to existing node with hev-mergeState
+
+GROUP gpuSphere
+CULLING gpuSphere OFF
+SHADERPROG gpuSphere V $($HEV_IDEA_DIR)/shader/gpuSphere.vert G P TS 4 $($HEV_IDEA_DIR)/shader/gpuSphere.geom F $($HEV_IDEA_DIR)/shader/gpuSphere.frag
+RETURN gpuSphere

@@ -1,0 +1,682 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 17. Using Inventor with OpenGL</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch16.html" title="Chapter 16. Inventor Component Library"><link rel="next" href="apa.html" title="Appendix A. An Introduction to Object-Oriented Programming for C Programmers"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 17. Using Inventor with OpenGL</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch16.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="apa.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5512950"></a>Chapter 17. <a name="id19349"></a>Using Inventor with OpenGL</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Create Inventor callback nodes that include calls to the OpenGL Library</p>
+</li>
+<li><p>Explain how Inventor uses and affects OpenGL state variables</p>
+</li>
+<li><p>Write a program that combines use of Inventor and OpenGL and uses the <span class="bold"><b>SoGLRenderAction</b></span></p>
+</li>
+<li><p>Use color index mode</p>
+</li>
+</ul></div><p><i>(Advanced)<br>
+</i>This chapter describes how to combine calls to the Inventor and OpenGL libraries in the same window. It includes several examples of programs that combine use of Inventor and OpenGL in different ways. <a href="ch17.html#id46628">Table 17-1</a> through <a href="ch17.html#id42719">Table 17-9</a> show how Inventor affects and is affected by OpenGL state. This entire chapter can be considered advanced material.</p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5513131"></a>Introduction</h2></div></div>
+<p>This chapter is for the experienced OpenGL programmer and is not intended as an introduction to OpenGL. Before you read this chapter, be sure to read <a name="idch171"></a><a name="idch172"></a><i>at least</i> Chapters 1 through 5 and Chapter 9 of this programming guide. You'll need a basic understanding of the Inventor database (<a href="ch01.html#id29544">Chapter 1</a> through <a href="ch04.html#id13751">Chapter 4</a>), Inventor actions (<a href="ch09.html#id14375">Chapter 9</a>), and Inventor event handling (<a href="ch10.html#id10433">Chapter 10</a>) before you begin combining features of OpenGL with Inventor.</p>
+<p>The preferred way to combine use of OpenGL and Inventor is by subclassing. When you subclass, you create a new node that makes calls to OpenGL. This process, which is beyond the scope of this chapter and is described in detail in <i>The Inventor Toolmaker</i>, allows you to build on an existing node. Another advantage of subclassing is that your new class has access to Inventor reading and writing (callback nodes, described in this chapter, do not read and write detailed information to a file).</p>
+<p>It is important to note that Inventor inherits state from OpenGL for <i>rendering only</i>. Additional Inventor features, such as picking, computing bounding boxes, and writing to a file, do not use OpenGL and are unaware of changes made directly to the OpenGL state variables. For example, it is possible to send a viewing matrix directly to OpenGL and then use Inventor to draw a scene without a camera. However, if you then try to pick an object, Inventor will not know what viewing transformation to use for picking, since it doesn't use OpenGL for picking.<a name="idch173"></a></p>
+<p>You can combine Inventor with OpenGL in several ways. An easy way to add custom OpenGL rendering to a scene database is to add a callback node (<a name="idch174"></a><a name="idch175"></a><span class="bold"><b>SoCallback</b></span>; see <a href="ch17.html#id38652">Example 17-2</a>). This node allows you to set a callback function that is invoked for each of the various actions that nodes perform (rendering, picking, bounding-box calculation). The <span class="bold"><b>SoCallback</b></span> node differs from the event callback node in that it provides callbacks for all scene operations rather than just for event handling.</p>
+<p>A second way to combine Inventor with OpenGL is to create a GLX window, make OpenGL and Inventor calls, and then apply an <a name="idch176"></a><a name="idch177"></a><span class="bold"><b>SoGLRenderAction</b></span>, as shown in <a href="ch17.html#id87696">Example 17-3</a>. For instance, you could create a GLX window, clear the background, do some initial rendering into the window, set up the viewing matrix, and then use Inventor to draw a scene by applying a GL render action to the scene graph. Or, you could use Inventor to set up the camera, lights, and materials, and then use OpenGL code to draw the scene. As long as you follow the general rules described in the following section on OpenGL state usage, you can mix OpenGL and Inventor rendering as you wish. (Note that this is an advanced feature, not for the faint of heart.)</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5513336"></a>OpenGL State Variables and Inventor</h2></div></div>
+<p>If you need to combine Inventor and OpenGL calls, <a href="ch17.html#id46628">Table 17-1</a> through <a href="ch17.html#id42719">Table 17-9</a> list the OpenGL state variables and describe which Inventor nodes (or actions) change those variables. If Inventor uses the current value of an OpenGL state variable and never changes it, the variable is omitted from this set of tables. See the <a name="idch178"></a><i>OpenGL Programming Guide</i> for a complete list of all OpenGL state variables and their default values. The recommended value for these variables is the default value, with two exceptions: turn on z-buffering and use RGB color mode.</p>
+<p>Remember, the constructor for <span class="bold"><b>SoGLRenderAction</b></span> takes a parameter that specifies whether to inherit the current OpenGL values. If you specify TRUE, Inventor inherits values from OpenGL. If you specify FALSE (the default), Inventor sets up its own reasonable default values (see <a name="idch179"></a><a href="ch09.html#id14375">Chapter 9</a>).</p>
+<p>To save and restore OpenGL state, use the OpenGL <a name="idch1710"></a><span class="bold"><b>pushAttributes()</b></span> and <span class="bold"><b>popAttributes()<a name="idch1711"></a></b></span> commands. For example, if you change variables in the OpenGL state in a callback node, you need to restore the state when the callback node is finished. Note that if your callback node begins with a <span class="bold"><b>pushAttributes()</b></span> and ends with a <span class="bold"><b>popAttributes()</b></span>, but a render abort occurs in between, <span class="bold"><b>popAttributes()</b></span> is never called and the state is not restored.</p>
+<div class="table"><p><a name="id5513512"></a><b>Table 17-1. <a name="id46628"></a>OpenGL State Variables:  Current Values and Associated Data</b></p>
+<table summary="OpenGL State Variables:  Current Values and Associated Data" border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>OpenGL State Variable</p>
+</th><th valign="top"><p>Inventor Nodes That Change This Variable</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>GL_CURRENT_COLOR</p>
+</td><td valign="top"><p>Shapes, Material, Base Color</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_CURRENT_INDEX</p>
+</td><td valign="top"><p>Color Index node, Shapes</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_CURRENT_TEXTURE_COORDS</p>
+</td><td valign="top"><p>Shapes, TextureCoordinate2</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_CURRENT_NORMAL</p>
+</td><td valign="top"><p>Shapes, Normal</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_CURRENT_RASTER_POSITION</p>
+</td><td valign="top"><p>Text2</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_CURRENT_RASTER_COLOR</p>
+</td><td valign="top"><p>Text2</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_CURRENT_RASTER_INDEX</p>
+</td><td valign="top"><p>Text2</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_CURRENT_RASTER_POSITION_-<br>
+VALID</p>
+</td><td valign="top"><p>Text2</p>
+</td></tr></tbody></table></div><br><div class="table"><p><a name="id5513734"></a><b>Table 17-2. OpenGL State Variables:  Transformation State</b></p>
+<table summary="OpenGL State Variables:  Transformation State" border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>OpenGL State Variable</p>
+</th><th valign="top"><p>Inventor Nodes That Change This Variable</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>GL_MODELVIEW_MATRIX</p>
+</td><td valign="top"><p>Transformation nodes, Cameras</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_PROJECTION_MATRIX</p>
+</td><td valign="top"><p>Cameras</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_MATRIX</p>
+</td><td valign="top"><p>Texture2Transform</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_VIEWPORT</p>
+</td><td valign="top"><p>Cameras</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_DEPTH_RANGE</p>
+</td><td valign="top"><p>Cameras</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_MODELVIEW_STACK_DEPTH</p>
+</td><td valign="top"><p>Transformation nodes</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_STACK_DEPTH</p>
+</td><td valign="top"><p>Texture2Transform</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_MATRIX_MODE</p>
+</td><td valign="top"><p>Cameras, Texture2Transform</p>
+</td></tr></tbody></table></div><br><div class="table"><p><a name="id5513948"></a><b>Table 17-3. OpenGL State Variables:  Coloring</b></p>
+<table summary="OpenGL State Variables:  Coloring" border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>OpenGL State Variable		</p>
+</th><th valign="top"><p>Inventor Nodes That Change This Variable</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>GL_FOG_COLOR</p>
+</td><td valign="top"><p>Environment node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_FOG_INDEX</p>
+</td><td valign="top"><p>Environment node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_FOG_DENSITY</p>
+</td><td valign="top"><p>Environment node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_FOG_START</p>
+</td><td valign="top"><p>Environment node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_FOG_END</p>
+</td><td valign="top"><p>Environment node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_FOG_MODE</p>
+</td><td valign="top"><p>Environment node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_FOG</p>
+</td><td valign="top"><p>Environment node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_SHADE_MODEL</p>
+</td><td valign="top"><p>Light Model, if in color index mode</p>
+</td></tr></tbody></table></div><br><div class="table"><p><a name="id5514162"></a><b>Table 17-4.  OpenGL State Variables:  Lighting</b></p>
+<table summary=" OpenGL State Variables:  Lighting" border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>OpenGL State Variable		</p>
+</th><th valign="top"><p>Inventor Nodes That Change This Variable</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>GL_LIGHTING</p>
+</td><td valign="top"><p>Light Model</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_COLOR_MATERIAL</p>
+</td><td valign="top"><p>Shapes</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_MATERIAL_PARAMETER</p>
+</td><td valign="top"><p>Shapes</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_MATERIAL_FACE</p>
+</td><td valign="top"><p>Shapes</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_AMBIENT</p>
+</td><td valign="top"><p>Shapes, Material</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_DIFFUSE</p>
+</td><td valign="top"><p>Shapes, Material</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_SPECULAR</p>
+</td><td valign="top"><p>Shapes, Material</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_EMISSION</p>
+</td><td valign="top"><p>Shapes, Material</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_SHININESS</p>
+</td><td valign="top"><p>Shapes, Material</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_LIGHT_MODEL_AMBIENT</p>
+</td><td valign="top"><p>Shapes, Material</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_LIGHT_MODEL_LOCAL_VIEWER</p>
+</td><td valign="top"><p>Shapes, Material</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_LIGHT_MODEL_TWO_SIDE</p>
+</td><td valign="top"><p>Shape Hints</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_AMBIENT</p>
+</td><td valign="top"><p>Lights</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_DIFFUSE</p>
+</td><td valign="top"><p>Lights</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_SPECULAR</p>
+</td><td valign="top"><p>Lights</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_POSITION</p>
+</td><td valign="top"><p>Lights</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_CONSTANT_ATTENUATION</p>
+</td><td valign="top"><p>Environment</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_LINEAR_ATTENUATION</p>
+</td><td valign="top"><p>Environment</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_QUADRATIC_ATTENUATION</p>
+</td><td valign="top"><p>Environment</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_SPOT_DIRECTION</p>
+</td><td valign="top"><p>Lights</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_SPOT_EXPONENT</p>
+</td><td valign="top"><p>Lights</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_SPOT_CUTOFF</p>
+</td><td valign="top"><p>Lights</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_LIGHT<i>i</i></p>
+</td><td valign="top"><p>Lights</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_COLOR_INDEXES</p>
+</td><td valign="top"><p>Lights</p>
+</td></tr></tbody></table></div><br><div class="table"><p><a name="id5514765"></a><b>Table 17-5.   OpenGL State Variables:  Rasterization</b></p>
+<table summary="  OpenGL State Variables:  Rasterization" border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>OpenGL State Variable</p>
+</th><th valign="top"><p>Inventor Nodes That Change This Variable</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>GL_POINT_SIZE</p>
+</td><td valign="top"><p>Draw Style</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_POINT_SMOOTH</p>
+</td><td valign="top"><p>Render action</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_LINE_WIDTH</p>
+</td><td valign="top"><p>Draw Style</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_LINE_SMOOTH</p>
+</td><td valign="top"><p>Render Action</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_LINE_STIPPLE_PATTERN</p>
+</td><td valign="top"><p>Draw Style </p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_LINE_STIPPLE</p>
+</td><td valign="top"><p>Draw Style </p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_CULL_FACE</p>
+</td><td valign="top"><p>Shape Hints </p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_CULL_FACE_MODE</p>
+</td><td valign="top"><p>Shape Hints </p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_POLYGON_MODE</p>
+</td><td valign="top"><p>Draw Style </p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_POLYGON_STIPPLE</p>
+</td><td valign="top"><p>Shapes if SCREEN_DOOR transparency</p>
+</td></tr></tbody></table></div><br><div class="table"><p><a name="id5515016"></a><b>Table 17-6. OpenGL State Variables:  Texturing</b></p>
+<table summary="OpenGL State Variables:  Texturing" border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>OpenGL State Variable</p>
+</th><th valign="top"><p>	Inventor Nodes That Change This Variable</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>GL_TEXTURE_<i>x</i></p>
+</td><td valign="top"><p>Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE</p>
+</td><td valign="top"><p>Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_WIDTH</p>
+</td><td valign="top"><p>Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_HEIGHT</p>
+</td><td valign="top"><p>Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_COMPONENTS</p>
+</td><td valign="top"><p>Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_MIN_FILTER</p>
+</td><td valign="top"><p>Complexity node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_MAG_FILTER</p>
+</td><td valign="top"><p>Complexity node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_WRAP_<i>x</i></p>
+</td><td valign="top"><p>Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_ENV_MODE</p>
+</td><td valign="top"><p>Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_ENV_COLOR</p>
+</td><td valign="top"><p>Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_GEN_<i>x</i></p>
+</td><td valign="top"><p>Texture Coordinate Function nodes</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_EYE_LINEAR</p>
+</td><td valign="top"><p>Texture Coordinate Function nodes</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_OBJECT_LINEAR</p>
+</td><td valign="top"><p>Texture Coordinate Function nodes</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_TEXTURE_GEN_MODE</p>
+</td><td valign="top"><p>Texture Coordinate Function nodes</p>
+</td></tr></tbody></table></div><br><div class="table"><p><a name="id5515394"></a><b>Table 17-7. OpenGL State Variables:  Pixel Operations</b></p>
+<table summary="OpenGL State Variables:  Pixel Operations" border="1"><colgroup><col><col></colgroup><tbody><tr valign="top"><td valign="top"><p>GL_BLEND</p>
+</td><td valign="top"><p>Render action, Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_BLEND_SRC</p>
+</td><td valign="top"><p>Render action, Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_BLEND_DST</p>
+</td><td valign="top"><p>Render action, Texture2 node</p>
+</td></tr></tbody></table></div><br><div class="table"><p><a name="id5515460"></a><b>Table 17-8. OpenGL State Variables:  Pixels</b></p>
+<table summary="OpenGL State Variables:  Pixels" border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>OpenGL State Variable</p>
+</th><th valign="top"><p>Inventor Nodes That Change This Variable</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>GL_UNPACK_ALIGNMENT</p>
+</td><td valign="top"><p>Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_*_SCALE<br>
+(* = RED; GREEN; BLUE; ALPHA)</p>
+</td><td valign="top"><p>Texture2 node</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_*_BIAS<br>
+(* = RED; GREEN; BLUE; ALPHA)</p>
+</td><td valign="top"><p>Texture2 node</p>
+</td></tr></tbody></table></div><br><div class="table"><p><a name="id5515568"></a><b>Table 17-9. <a name="id42719"></a>OpenGL State Variables:  Miscellaneous</b></p>
+<table summary="OpenGL State Variables:  Miscellaneous" border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>OpenGL State Variable</p>
+</th><th valign="top"><p>Inventor Nodes That Change This Variable</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>GL_LIST_BASE</p>
+</td><td valign="top"><p>Text2, Text3 nodes</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_LIST_INDEX</p>
+</td><td valign="top"><p>Separator, Text2, Text3 nodes</p>
+</td></tr><tr valign="top"><td valign="top"><p>GL_LIST_MODE</p>
+</td><td valign="top"><p>Separator, Text2, Text3 nodes</p>
+</td></tr></tbody></table></div><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5515677"></a><a name="id22730"></a>Color-Index Mode<a name="idch1712"></a></h2></div></div>
+<p>You can open an X window that supports OpenGL rendering in either RGB mode or color-index (also referred to as <a name="idch1713"></a><i>color-map</i>) mode. If you use color-<br>
+index mode, be sure to load the color map.  <a name="idch1714"></a><a href="ch17.html#id70008">Example 17-1</a> shows how to set the color map for the <span class="bold"><b>SoXtRenderArea</b></span>. See also the <i>Open Inventor C++ Reference Manual</i> on <span class="bold"><b>SoXtRenderArea::setColorMap()</b></span>. </p>
+<p>If you are using BASE_COLOR lighting, use the <span class="bold"><b>SoColorIndex</b></span> node to specify the index into the color map.</p>
+<p>If you are using PHONG lighting, use the <a name="idch1715"></a><span class="bold"><b>SoMaterialIndex</b></span> node to specify indices into the color map for the ambient, diffuse, and specular colors. This node also includes fields for specifying the shininess and transparency values (but not the emissive value). It expects the color map to contain a ramp from ambient to diffuse to specular colors. </p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>You can design a scene graph that can be used in RGB or color index windows by putting both <span class="bold"><b>SoMaterialIndex</b></span> and <span class="bold"><b>SoMaterial</b></span> nodes in it.
+</td></tr></table><hr noshade="noshade"></div><br><div class="example"><p><a name="id5515814"></a><b>Example 17-1. <a name="id70008"></a><a name="idch1716"></a>Using Color Index Mode</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/SoInput.h&gt;
+#include &lt;Inventor/nodes/SoNode.h&gt;
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+#include &lt;GL/glx.h&gt;
+
+// Window attribute list to create a color index visual.
+// This will create a double buffered color index window
+// with the maximum number of bits and a zbuffer.
+int attribList[] = {
+   GLX_DOUBLEBUFFER, 
+   GLX_BUFFER_SIZE, 1, 
+   GLX_DEPTH_SIZE, 1, 
+   None };
+
+// List of colors to load in the color map
+static float colors[3][3] = {{.2, .2, .2}, {.5, 1, .5}, 
+         {.5, .5, 1}};
+
+static char *sceneBuffer = &quot;\
+#Inventor V2.0 ascii\n\
+\
+Separator { \
+   LightModel { model BASE_COLOR } \
+   ColorIndex { index 1 } \
+   Coordinate3 { point [ -1 -1 -1, -1 1 -1, 1 1 1, 1 -1 1] } \
+   FaceSet {} \
+   ColorIndex { index 2 } \
+   Coordinate3 { point [ -1 -1 1, -1 1 1, 1 1 -1, 1 -1 -1] } \
+   FaceSet {} \
+} &quot;;
+
+void
+main(int , char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+   
+   // Read the scene graph in
+   SoInput in;
+   SoNode *scene;
+   in.setBuffer((void *)sceneBuffer, (size_t)
+            strlen(sceneBuffer));
+   if (! SoDB::read(&amp;in, scene) || scene == NULL) {
+      printf(&quot;Couldn't read scene\n&quot;);
+      exit(1);
+   }
+   
+   // Create the color index visual
+   XVisualInfo *vis = glXChooseVisual(XtDisplay(myWindow), 
+      XScreenNumberOfScreen(XtScreen(myWindow)), attribList);
+   if (! vis) {
+      printf(&quot;Couldn't create visual\n&quot;);
+      exit(1);
+   }
+   
+   // Allocate the viewer, set the scene, the visual and
+   // load the color map with the wanted colors.
+   //
+   // Color 0 will be used for the background (default) while
+   // color 1 and 2 are used by the objects.
+   //
+   SoXtExaminerViewer *myViewer = new
+            SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setNormalVisual(vis);
+   myViewer-&gt;setColorMap(0, 3, (SbColor *) colors);
+   myViewer-&gt;setSceneGraph(scene);
+   myViewer-&gt;setTitle(&quot;Color Index Mode&quot;);
+   
+   // Show the viewer and loop forever...
+   myViewer-&gt;show();
+   XtRealizeWidget(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5515916"></a>Using an SoCallback Node<a name="idch1717"></a></h2></div></div>
+<p>A typical use of an <span class="bold"><b>SoCallback</b></span> node is to make calls to OpenGL.  At the beginning of the callback function, you need to check the action type and then proceed based on the type of action that has been applied to the node. Typically, you are interested in the render action:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+if(action-&gt;isOfType(SoGLRenderAction::getClassTypeId())){
+   
+   ...execute rendering code ..
+
+}
+</pre></td></tr></table><br><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5515954"></a>Caching<a name="idch1718"></a></h3></div></div>
+<p>The effects of a callback node may not be cacheable, depending on what it does. For example, if the callback node contains shapes whose geometry is changing, it should not be cached.  In <a name="idch1719"></a><a href="ch17.html#id38652">Example 17-2</a>, the callback node creates a checked background, which can be cached because it is not changing. </p>
+<p>If a callback node relies on any information outside of Inventor that may change (such as a global variable), it should not be cached. To prevent Inventor from automatically creating a cache, use the <a name="idch1720"></a><span class="bold"><b>SoCacheElement::-<br>
+invalidate()</b></span> method from within a callback. For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+void
+myCallback(void *myData, SoAction *action)
+{
+   if (action-&gt;isOfType(SoGLRenderAction::getClassTypeId())){
+      SoCacheElement::invalidate(action-&gt;getState());
+         //makes sure this isn't cached
+      //...make OpenGL calls that depend on a global variable...//
+   }
+}
+</pre></td></tr></table><p>Be careful when opening an OpenGL display list inside an <a name="idch1721"></a><span class="bold"><b>SoCallback</b></span> node. Recall from <a href="ch09.html#id14375">Chapter 9</a> that the Inventor render cache contains an OpenGL display list. Only one OpenGL display list can be open at a time, and a separator node above the callback node may have already opened a display list for caching. If your callback node opens a second display list, an error  occurs. Use the <span class="bold"><b>SoCacheElement::anyOpen()</b></span> method to check whether a cache is open.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5516084"></a>Using a Callback Node</h3></div></div>
+<p><a href="ch17.html#id38652">Example 17-2</a> creates an Inventor render area. It uses Inventor to create a red cube and a blue sphere and then uses an <span class="bold"><b>SoCallback</b></span> node containing GL calls to draw a checked &#8220;floor.&#8221; The floor is cached automatically by Inventor. Note that the <span class="bold"><b>SoXtRenderArea</b></span> automatically redraws the scene when the window is resized. <a href="ch17.html#id87696">Example 17-3</a>, which uses a GLX window, does not redraw automatically.</p>
+<p>Both Examples 17-2 and 17-3 produce the same image, shown in <a href="ch17.html#id29494">Figure 17-1</a>.</p>
+<p><div class="figure"><p><a name="id5516148"></a><b>Figure 17-1. <a name="id29494"></a>Combining Use of Inventor and OpenGL</b></p>
+<div class="mediaobject"><img src="figures/17.1.ex.17.2.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5516217"></a><b>Example 17-2. <a name="id38652"></a>Using a Callback Node</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;GL/gl.h&gt;
+#include &lt;Inventor/SbLinear.h&gt;
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt;
+#include &lt;Inventor/nodes/SoCallback.h&gt;
+#include &lt;Inventor/nodes/SoCube.h&gt;
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoLightModel.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoSphere.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoTransform.h&gt;
+
+float   floorObj[81][3];
+
+// Build a scene with two objects and some light
+void
+buildScene(SoGroup *root)
+{
+   // Some light
+   root-&gt;addChild(new SoLightModel);
+   root-&gt;addChild(new SoDirectionalLight);
+
+   // A red cube translated to the left and down
+   SoTransform *myTrans = new SoTransform;    
+   myTrans-&gt;translation.setValue(-2.0, -2.0, 0.0);
+   root-&gt;addChild(myTrans);
+
+   SoMaterial *myMtl = new SoMaterial;
+   myMtl-&gt;diffuseColor.setValue(1.0, 0.0, 0.0);
+   root-&gt;addChild(myMtl);
+   
+   root-&gt;addChild(new SoCube);
+
+   // A blue sphere translated right
+   myTrans = new SoTransform;    
+   myTrans-&gt;translation.setValue(4.0, 0.0, 0.0);
+   root-&gt;addChild(myTrans);
+
+   myMtl = new SoMaterial;
+   myMtl-&gt;diffuseColor.setValue(0.0, 0.0, 1.0);
+   root-&gt;addChild(myMtl);
+   
+   root-&gt;addChild(new SoSphere);
+}
+
+// Build the floor that will be rendered using OpenGL.
+void
+buildFloor()
+{
+   int a = 0;
+
+   for (float i = -5.0; i &lt;= 5.0; i += 1.25) {
+      for (float j = -5.0; j &lt;= 5.0; j += 1.25, a++) {
+         floorObj[a][0] = j;
+         floorObj[a][1] = 0.0;
+         floorObj[a][2] = i;
+      }
+   }
+}
+
+// Draw the lines that make up the floor, using OpenGL
+void
+drawFloor()
+{
+   int i;
+
+   glBegin(GL_LINES);
+   for (i=0; i&lt;4; i++) {
+      glVertex3fv(floorObj[i*18]);
+      glVertex3fv(floorObj[(i*18)+8]);
+      glVertex3fv(floorObj[(i*18)+17]);
+      glVertex3fv(floorObj[(i*18)+9]);
+   }
+
+   glVertex3fv(floorObj[i*18]);
+   glVertex3fv(floorObj[(i*18)+8]);
+   glEnd();
+
+   glBegin(GL_LINES);
+   for (i=0; i&lt;4; i++) {
+      glVertex3fv(floorObj[i*2]);
+      glVertex3fv(floorObj[(i*2)+72]);
+      glVertex3fv(floorObj[(i*2)+73]);
+      glVertex3fv(floorObj[(i*2)+1]);
+   }
+   glVertex3fv(floorObj[i*2]);
+   glVertex3fv(floorObj[(i*2)+72]);
+   glEnd();
+}
+
+// Callback routine to render the floor using OpenGL
+void
+myCallbackRoutine(void *, SoAction *)
+{
+   glPushMatrix();
+   glTranslatef(0.0, -3.0, 0.0);
+   glColor3f(0.0, 0.7, 0.0);
+   glLineWidth(2);
+   glDisable(GL_LIGHTING);  // so we don't have to set normals
+   drawFloor();
+   glEnable(GL_LIGHTING);   
+   glLineWidth(1);
+   glPopMatrix();
+}
+
+
+main(int, char **)
+{
+   // Initialize Inventor utilities
+   Widget myWindow = SoXt::init(&quot;Example 17.1&quot;);
+
+   buildFloor();
+
+   // Build a simple scene graph, including a camera and
+   // a SoCallback node for performing some GL rendering.
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+
+   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
+   myCamera-&gt;position.setValue(0.0, 0.0, 5.0);
+   myCamera-&gt;heightAngle  = M_PI/2.0;  // 90 degrees
+   myCamera-&gt;nearDistance = 2.0;
+   myCamera-&gt;farDistance  = 12.0;
+   root-&gt;addChild(myCamera);
+
+   SoCallback *myCallback = new SoCallback;
+   myCallback-&gt;setCallback(myCallbackRoutine);
+   root-&gt;addChild(myCallback);
+
+   buildScene(root);
+   
+   // Initialize an Inventor Xt RenderArea and draw the scene.
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+   myRenderArea-&gt;setSceneGraph(root);
+   myRenderArea-&gt;setTitle(&quot;OpenGL Callback&quot;);
+   myRenderArea-&gt;setBackgroundColor(SbColor(.8, .8, .8));
+   myRenderArea-&gt;show();
+   
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5516317"></a>Applying a Render Action Inside a GLX Window<a name="idch1722"></a></h2></div></div>
+<p><a href="ch17.html#id87696">Example 17-3</a>  creates a GLX window, makes Inventor and OpenGL calls, and then applies a GL render action. It uses OpenGL to render a checked &#8220;floor&#8221;  and Inventor to render a red cube and a blue sphere, in the same window. </p>
+<div class="example"><p><a name="id5516343"></a><b>Example 17-3. <a name="id87696"></a>Using a GLX Window</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;GL/glx.h&gt;
+#include &lt;GL/gl.h&gt;
+#include &lt;GL/glu.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/actions/SoGLRenderAction.h&gt;
+#include &lt;Inventor/nodes/SoCube.h&gt;
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoLightModel.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoTransform.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoSphere.h&gt;
+
+#define    WINWIDTH   	400	
+#define    WINHEIGHT  	400	
+
+float   floorObj[81][3];
+
+// Build an Inventor scene with two objects and some light
+void
+buildScene(SoGroup *root)
+{
+   // Some light
+   root-&gt;addChild(new SoLightModel);
+   root-&gt;addChild(new SoDirectionalLight);
+
+   // A red cube translated to the left and down
+   SoTransform *myTrans = new SoTransform;
+   myTrans-&gt;translation.setValue(-2.0, -2.0, 0.0);
+   root-&gt;addChild(myTrans);
+
+   SoMaterial *myMtl = new SoMaterial;
+   myMtl-&gt;diffuseColor.setValue(1.0, 0.0, 0.0);
+   root-&gt;addChild(myMtl);
+   root-&gt;addChild(new SoCube);
+
+   // A blue sphere translated right
+   myTrans = new SoTransform;
+   myTrans-&gt;translation.setValue(4.0, 0.0, 0.0);
+   root-&gt;addChild(myTrans);
+
+   myMtl = new SoMaterial;
+   myMtl-&gt;diffuseColor.setValue(0.0, 0.0, 1.0);
+   root-&gt;addChild(myMtl);
+
+   root-&gt;addChild(new SoSphere);
+}
+
+
+// Build a floor that will be rendered using OpenGL.
+void
+buildFloor()
+{
+   int a = 0;
+
+   for (float i = -5.0; i &lt;= 5.0; i += 1.25) {
+      for (float j = -5.0; j &lt;= 5.0; j += 1.25, a++) {
+         floorObj[a][0] = j;
+         floorObj[a][1] = 0.0;
+         floorObj[a][2] = i;
+      }
+   }
+}
+
+// Callback used by GLX window
+static Bool
+waitForNotify(Display *, XEvent *e, char *arg)
+{
+   return (e-&gt;type == MapNotify) &amp;&amp; 
+            (e-&gt;xmap.window == (Window) arg);
+}
+
+// Create and initialize GLX window.
+void
+openWindow(Display *&amp;display, Window &amp;window)
+{
+   XVisualInfo	*vi;
+   Colormap cmap;
+   XSetWindowAttributes swa;
+   GLXContext cx;
+   XEvent event;
+   static int attributeList[] = {
+            GLX_RGBA,
+            GLX_RED_SIZE, 1,
+            GLX_GREEN_SIZE, 1,
+            GLX_BLUE_SIZE, 1,
+            GLX_DEPTH_SIZE, 1,
+            GLX_DOUBLEBUFFER,	
+            None,
+   };
+
+   display = XOpenDisplay(0);
+   vi = glXChooseVisual(display, 
+            DefaultScreen(display), attributeList);
+   cx = glXCreateContext(display, vi, 0, GL_TRUE);
+   cmap = XCreateColormap(display, 
+            RootWindow(display, vi-&gt;screen), 
+            vi-&gt;visual, AllocNone);
+   swa.colormap = cmap;
+   swa.border_pixel = 0;
+   swa.event_mask = StructureNotifyMask;
+   window = XCreateWindow(display, 
+            RootWindow(display, vi-&gt;screen), 100, 100,
+            WINWIDTH, WINHEIGHT, 0, vi-&gt;depth, InputOutput,
+            vi-&gt;visual, 
+            (CWBorderPixel | CWColormap | CWEventMask), &amp;swa);
+
+   XMapWindow(display, window);
+   XIfEvent(display, &amp;event, waitForNotify, (char *) window);
+   glXMakeCurrent(display, window, cx);
+}
+
+
+// Draw the lines that make up the floor, using OpenGL
+void
+drawFloor()
+{
+   int i;
+
+   glBegin(GL_LINES);
+   for (i=0; i&lt;4; i++) {
+      glVertex3fv(floorObj[i*18]);
+      glVertex3fv(floorObj[(i*18)+8]);
+      glVertex3fv(floorObj[(i*18)+17]);
+      glVertex3fv(floorObj[(i*18)+9]);
+   }
+
+   glVertex3fv(floorObj[i*18]);
+   glVertex3fv(floorObj[(i*18)+8]);
+   glEnd();
+
+   glBegin(GL_LINES);
+   for (i=0; i&lt;4; i++) {
+      glVertex3fv(floorObj[i*2]);
+      glVertex3fv(floorObj[(i*2)+72]);
+      glVertex3fv(floorObj[(i*2)+73]);
+      glVertex3fv(floorObj[(i*2)+1]);
+   }
+   glVertex3fv(floorObj[i*2]);
+   glVertex3fv(floorObj[(i*2)+72]);
+   glEnd();
+}
+
+
+main(int, char **)
+{
+   // Initialize Inventor
+   SoDB::init();
+
+   // Build a simple scene graph
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+   buildScene(root);
+
+   // Build the floor geometry
+   buildFloor();
+
+   // Create and initialize window
+   Display *display;
+   Window window;
+   openWindow(display, window);
+   glEnable(GL_DEPTH_TEST);
+   glClearColor(0.8, 0.8, 0.8, 1.0);
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+   // Set up the camera using OpenGL.
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   gluPerspective(90.0, 1.0, 2.0, 12.0);
+
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+   glTranslatef(0.0, 0.0, -5.0);
+
+   // Render the floor using OpenGL
+   glPushMatrix();
+   glTranslatef(0.0, -3.0, 0.0);
+   glColor3f(0.0, 0.7, 0.0);
+   glLineWidth(2.0);
+   glDisable(GL_LIGHTING);
+   drawFloor();
+   glEnable(GL_LIGHTING);
+   glPopMatrix();
+
+   // Render the scene
+   SbViewportRegion myViewport(WINWIDTH, WINHEIGHT);
+   SoGLRenderAction myRenderAction(myViewport);
+   myRenderAction.apply(root);
+   glXSwapBuffers(display, window);
+
+   sleep (10); 
+   root-&gt;unref();
+   return 0;
+}
+
+</pre></td></tr></table><br></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch16.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="apa.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 16. Inventor Component Library </td><td width="20%" align="center"> </td><td width="40%" align="right">Appendix A. An Introduction to Object-Oriented Programming for C Programmers </td></tr></table></div></body></html>

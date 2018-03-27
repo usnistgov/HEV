@@ -1,0 +1,10 @@
+# blackWhite8.dat: black to white thru eight color combinations
+000 0   0   0  1
+036 0   0   1  1
+072 0   1   0  1
+109 0   1   1  1
+145 1   0   0  1
+182 1   0   1  1
+218 1   1   0  1
+255 1   1   1  1
+

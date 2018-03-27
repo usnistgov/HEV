@@ -1,0 +1,216 @@
+########################################################################
+# start of iris's gnumakefile.rules
+########################################################################
+#
+# GCC Warning Options manual:
+# https://gcc.gnu.org/onlinedocs/gcc-4.8.5/gcc/Warning-Options.html#Warning-Options
+#
+# -Wall enables:
+#    -Waddress
+#    -Warray-bounds (combined with -O2 (implied with -O3))
+#    -Wc++11-compat
+#    -Wnarrowing (implied by -Wc++11-compat)
+#    -Wchar-subscripts
+#    -Wenum-compare (C only, already on in C++)
+#    -Wimplicit-int (C only)
+#    -Wimplicit-function-declaration (C only)
+#    -Wcomment
+#    -Wformat
+#    -Wmain (C only)
+#    -Wmaybe-unitialized
+#    -Wmissing-braces (C only)
+#    -Wnonnull
+#    -Wparentheses
+#    -Wpointer-sign
+#    -Wreorder
+#    -Wreturn-type
+#    -Wsequence-point
+#    -Wsign-compare (C++ only)
+#    -Wstrict-aliasing
+#    -Wstrict-overflow=1
+#    -Wswitch
+#    -Wtrigraphs
+#    -Wuninitialized
+#    -Winit-self (C++ only with -Wuninitialized)
+#    -Wunknown-pragmas
+#    -Wunused-function
+#    -Wunused-label
+#    -Wunused-value
+#    -Wunused-variable
+#    -Wvolatile-register-var
+#
+# -Wextra enables:
+#    -Wclobbered
+#    -Wempty-body
+#    -Wignored-qualifiers
+#    -Wmissing-field-initializers
+#    -Wmissing-parameter-type (C only)
+#    -Wold-style-declaration (C only)
+#    -Woverride-init
+#    -Wsign-compare
+#    -Wtype-limits
+#    -Wuninitialized
+#    -Wunused-parameter (only with -Wall)
+#    -Wunused-but-set-parameter (only with -Wall)
+#
+#    Pointer comparison against integer zero with '<', '<=', '>', '>='
+#    Enumerator and non-enumerator both appear in a conditional expression (C++)
+#    Ambiguous virtual bases (C++ only)
+#    Subscripting array declared 'register' (C++ only)
+#    Taking address of variabled declared 'register' (C++ only)
+#    Base class not initialized in derived class's copy constructor (C++ only)
+#
+# We enable the additional warnings:
+#    -Wtraditional
+#    -Wshadow
+#    -Wpointer-arith
+#    -Wtype-limits
+#    -Wcast-qual
+#    -Wconversion
+#    -Wsign-conversion
+#    -Wsign-compare
+#    -Wlogical-op
+#    -Wstrict-prototypes
+#    -Wold-style-declaration
+#    -Wold-style-definition
+#    -Wmissing-parameter-type
+#
+#
+# define PROJECT to be the directory name containing this software.  If not
+# defined, it defaults to name of this directory.
+PROJECT = iris
+
+ifndef PROJECT
+ PROJECT := $(shell basename $(PWD))
+ MAKE := $(MAKE) PROJECT=$(PROJECT)
+endif
+
+LIBRARY = lib$(PROJECT).so
+
+CXX = $(shell dtk-config --compiler)
+
+CXXFLAGS = $(shell dtk-config --cflags) $(shell dtk-config --include) \
+	 -I $(IRIS_HOME)/include \
+	 $(shell pkg-config --cflags openscenegraph) \
+	 -fPIC -DIRIS_PREFIX=\"$(IRIS_PREFIX)\" \
+	 $(shell pkg-config --cflags iris) -O3 \
+   -Wall -Wextra -Wtraditional -Wshadow -Wpointer-arith -Wtype-limits \
+   -Wcast-qual -Wconversion -Wsign-conversion -Wsign-compare -Wlogical-op \
+   -Wstrict-prototypes -Wold-style-declaration -Wold-style-definition \
+   -Wmissing-parameter-type
+
+LIBS = $(shell dtk-config --libsX) -lXtst \
+       $(shell pkg-config --libs openscenegraph) \
+       -Wl,-rpath -Wl,$(shell pkg-config --libs openscenegraph)\
+       -L $(IRIS_HOME)/lib -l iris \
+       -Wl,-rpath -Wl,$(IRIS_HOME)/src/lib
+
+################# install directories #####################################
+programsdir="$(IRIS_PREFIX)/bin"
+dsodir="$(IRIS_PREFIX)/lib"
+librarydir="$(IRIS_PREFIX)/lib"
+
+programs=$(PROGRAMS)
+dsos=$(DSOS)
+dso_objs=$(patsubst %.so,%.o,$(DSOS))
+programs_objs=$(patsubst %,%.o,$(PROGRAMS))
+
+# don't mess with a library if there aren't any library files
+ifeq ($(LIBRARY_FILES),)
+else
+  library=$(LIBRARY)
+  library_objs ?= $(LIBRARY_FILES)
+endif
+
+dependencyfiles=$(patsubst %.so,%.d,$(dsos))\
+  $(patsubst %,%.d, $(programs))\
+  $(patsubst %.o,%.d, $(library_objs))
+
+################# phoney targets #####################################
+
+.PHONY : build install clean distclean tarball dist
+
+build: $(library) $(dsos) $(programs)
+
+################### create dependency makefiles ####################
+ifneq ($(MAKECMDGOALS),clean)
+ ifneq ($(MAKECMDGOALS),cleaner)
+  ifneq ($(MAKECMDGOALS),distclean)
+   ifneq ($(MAKECMDGOALS),tarball)
+    ifneq ($(MAKECMDGOALS),dist)
+      %.d: %.cpp
+	  @dtk-msgNotice -p Makefile creating dependency file $@
+	  @set -e; rm -f $@; \
+	  $(CXX) -M $(CXXFLAGS) $< > $@.$$$$; \
+	  sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	  rm -f $@.$$$$
+
+      sinclude $(dependencyfiles)
+    endif
+   endif
+  endif
+ endif
+endif
+
+#####compile source to objects, put objects in library, link binaries and DSOS  ####
+%.o %d: %.cpp %.d
+	@dtk-msgNotice -p Makefile compiling $<
+	@dtk-msgNotice -p Makefile $(CXX) -c $(CXXFLAGS) $(INC) -o $@ $<
+	@$(CXX) -c $(CXXFLAGS) $(INC) -o $@ $<
+
+# make/update library
+$(library) : $(library_objs)
+	@dtk-msgNotice -p Makefile creating/updating library
+	@$(CXX) -o $@ $^ -shared
+
+# link a executable
+#$(programs) : $(library) $(programs_objs)
+% : $(library) %.o
+	@dtk-msgNotice -p Makefile linking to create executable $@
+	@$(CXX) $@.o $(library) $(LIBS) $(LDFLAGS) $(LOADLIBS) $(LDLIBS) -o $@
+
+# link a DSO
+#$(dsos) : $(library) $(dso_objs)
+%.so : $(library) %.o
+	@dtk-msgNotice -p Makefile linking to create DSO $@
+	@$(CXX) $(subst .so,.o,$@) $(library) $(LIBS) $(LDFLAGS) $(LOADLIBS) \
+	$(LDLIBS) -o $@ $(version) -shared -Wl,-soname,$(@)
+
+########################################################################
+install: build 
+	 @if [ "$(PROGRAMS)" != "" ] ; then \
+	    mkdir -p "$(programsdir)" ; \
+	    fi ; \
+	 if [ "$(DSOS)" != "" ] ; then \
+	    mkdir -p "$(dsodir)" ; \
+	    fi ; \
+	 if [ "$(LIBRARY_FILES)" != "" ] ; then \
+	    mkdir -p "$(librarydir)" ; \
+	    fi ; \
+	 if [ "$(programs)" != "" ] ; then \
+	    for f in $(programs) ; \
+	       do sh -xc "cp $$f $(programsdir)/$${f%}" ; \
+	       done ; \
+	    fi ; \
+	 if [ "$(dsos)" != "" ] ; then \
+	    for f in $(dsos) ; \
+	       do sh -xc "cp $$f $(dsodir)/$${f%.so}.so" ; \
+	       done ; \
+	    fi ; \
+	 if [ "$(library)" != "" ] ; then \
+	    for f in $(library) ; \
+	       do sh -xc "cp $$f $(librarydir)/$${f%.so}.so" ; \
+	       done ; \
+	    fi ;
+
+################# clean, etc. ##############################################
+
+clean:
+	-rm -f $(library) $(library_objs) \
+		$(programs_objs) $(dso_objs) $(programs) $(dsos) \
+		$(dependencyfiles) $(CLEAN_FILES)
+
+distclean: clean
+	-rm -rf *.d.* *.d $(DISTCLEAN_FILES) core $(CLEANER_FILES)
+	-find -H $$IRIS_HOME -name \*~ -o -name \#\* | xargs rm -f
+

@@ -1,0 +1,34 @@
+.TH NETX-UTILITIES 1 "23 July 2012"
+
+.SH NETWORKX UTILITIES
+
+.SH DESCRIPTION
+
+These are a library of different graph theory algorithms from the software package NetworkX. This is not a comprehensive list, but does contain a large number of the algorithms available from the software package. 
+.br 
+.SH INPUT FILES
+
+Every one of the algorithms requires an input file. This file must be a text file that contains a list of edges that compose the graph. For some of the functions, there are limitations on the types of edges that can be used. See each function for the specifications on whether self-loops or parallel edges (two edges between the same two nodes) are allowed and other limitations on the graph type the function can handle. 
+.br .P
+.br .P
+.PP
+Each function can either accept a directed graph, undirected graph, or both. If a graph can only accept one or the other, the edge file will be read in as that type of graph, regardless of the user's intentions. If the user must specify, then the graph will be read in as specified by the user. If both are accepted and user specification is not required, that means that the type of graph has no bearing on the outcome of the function. For directd graphs, the direction of the edge goes from the first node on the line of the file to the second node on the line. For example, if the the edge-file line reads: \fInode1 node2\fR, the edge goes from node1 to node2. 
+.br .P
+.br .P
+.PP
+Edges can also contain attributes. Any number of attributes can be given to each edge, but, for almost all functions, the first attribute will be considered the weight of that edge. Again, see documentation for individual functions for exceptions. 
+
+
+.SH AUTHOR
+
+Zachary Keller
+
+.PP
+July 2012
+
+.PP 
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/hpcvg/

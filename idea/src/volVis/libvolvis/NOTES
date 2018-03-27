@@ -1,0 +1,6 @@
+
+I have retained some of the test directories and scripts.
+I'm not sure that this is really useful.  Maybe should
+delete these sub-directories when we have more confidence
+in the stability of the code.
+

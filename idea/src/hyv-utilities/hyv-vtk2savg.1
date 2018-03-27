@@ -1,0 +1,91 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hyv-vtk2savg 1 "June 15, 2010" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hyv-vtk2savg
+- convert  *.vtk files for a specified phaseNumber to *.savg (isosurface).
+
+.SH SYNOPSIS
+.B "hyv-vtk2savg"
+[--parallel n] phaseNumber dataDir | vtkFile
+
+.SH DESCRIPTION
+.PP
+.I
+hyv-vtk2savg
+will convert all
+.B *.vtk
+files to
+isosurfaces, i.e
+.B *.savg
+files.
+The required iso surface value is taken from the corresponding
+.B *.iso
+file.
+The resulting
+.B savg
+file has normals, but no color values.
+It uses \fBhev-vtkIsoSavg\fR to generate the iso surface.
+
+
+.SH OPTIONS
+.IP "\fB--parallel n\fR"
+specifies how many concurrent processes to be used convert
+in parallel. On a 2 CPU machine, n of 2 is a good number.
+
+
+.IP "\fBphaseNumber\fR"
+is an integer used to identify the phase being created.
+
+.IP "\fBdataDir\fR"
+is an existing directory containing the 
+.B img
+file.
+The resulting
+.B savg
+files are written to
+.B dataDir
+with names in the form of 
+.B *_{P}.savg
+where
+.B {P}
+is the specified
+.B phaseNumber.
+
+.IP "\fBvtkFile\fR"
+if an
+.B vtk
+file is specified rather than a directory name,
+then the single specified
+.B vtk
+file is converted to an
+.B ivu
+isosurface file in the current directory.
+
+
+
+.SH EXAMPLE
+
+.PP
+Run with 2 parallel processes converting the vtk file of  phase 3
+to the ivu isosurface file.
+
+.IP
+hyv-vtk2ivu --parallel 2  3  C3Ssmall
+
+
+
+
+
+
+.SH SEE ALSO
+.I
+hyv-utilities(3), hev-vtkIsoSavg(1)
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,
+.br
+NIST/ITL/MCSD/SAVG

@@ -1,0 +1,130 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include "hev-presenterFunctions.h"} {} 
+
+Function {make_window()} {open
+} {
+  Fl_Window window {open
+    xywh {4 20 385 230} type Double visible
+  } {
+    Fl_Group {} {open
+      xywh {-1 0 386 312}
+    } {
+      Fl_Button previousSlideButton {
+        label {@+9<-}
+        callback {GUIpressed() ;
+previousSlide() ;}
+        tooltip {go to the previous slide} xywh {79 5 60 40} deactivate
+      }
+      Fl_Button nextSlideButton {
+        label {@+9->}
+        callback {GUIpressed() ;
+nextSlide() ;}
+        tooltip {go to the next slide} xywh {169 5 60 40}
+      }
+      Fl_Button firstSlideButton {
+        label {@+9$->|}
+        callback {GUIpressed() ;
+firstSlide() ;}
+        tooltip {go to the first slide} xywh {4 5 60 40} deactivate
+      }
+      Fl_Button lastSlideButton {
+        label {@+9->|}
+        callback {GUIpressed() ;
+lastSlide() ;}
+        tooltip {go to the last slide} xywh {244 5 60 40}
+      }
+      Fl_Value_Input slideNumberValuator {
+        callback {GUIpressed() ;
+setSlideNumber((int)o->value()) ;}
+        tooltip {type or brush to go to a specific slide} xywh {319 5 60 40} maximum 100 step 1 textsize 28
+      }
+      Fl_Box {} {
+        label {movie:}
+        xywh {4 102 376 125} box BORDER_BOX align 21
+      }
+      Fl_Check_Button movieLoopButton {
+        label loop
+        callback {GUIpressed() ;}
+        tooltip {play the movie in a loop} xywh {14 163 60 20} down_box DOWN_BOX
+      }
+      Fl_Check_Button movieAutoStartButton {
+        label {auto-start}
+        callback {GUIpressed() ;}
+        tooltip {automtically start the movie when it becomes the current slide} xywh {89 163 95 20} down_box DOWN_BOX
+      }
+      Fl_Value_Input movieFPSValuator {
+        label {FPS:}
+        callback {GUIpressed() ;} selected
+        tooltip {type or brush the movie's FPS} xywh {217 163 60 20} align 8 maximum 360 step 0.125 value 1000
+      }
+      Fl_Check_Button movieOverrideFileOptionsButton {
+        label {override input file options}
+        callback {GUIpressed() ;}
+        tooltip {override movie options in the input file} xywh {14 197 206 15} down_box DOWN_BOX
+      }
+    }
+    Fl_Group movieGroup {open
+      xywh {0 93 375 162} align 21 deactivate
+    } {
+      Fl_Button moviePlayBackwardButton {
+        label {@+4<}
+        callback {GUIpressed() ;
+moviePlayBackward() ;}
+        tooltip {play the movie backward} xywh {55 128 38 25}
+      }
+      Fl_Button moviePlayForwardButton {
+        label {@+4>}
+        callback {GUIpressed() ;
+moviePlayForward() ;}
+        tooltip {play the movie forward} xywh {235 128 38 25}
+      }
+      Fl_Button movieJumpToStartButton {
+        label {@+4|<}
+        callback {GUIpressed() ;
+movieJumpToStart() ;}
+        tooltip {jump to the begining of the movie} xywh {10 128 38 25}
+      }
+      Fl_Button movieJumpToEndButton {
+        label {@+4>|}
+        callback {GUIpressed() ;
+movieJumpToEnd() ;}
+        tooltip {jump to the end of the movie} xywh {280 128 38 25}
+      }
+      Fl_Value_Input movieFrameNumberValuator {
+        callback {GUIpressed() ;
+movieFrameNumber((int)o->value()) ;}
+        tooltip {type or brush to a specific frame of the movie} xywh {325 128 50 25} maximum 100 step 1 textsize 21
+      }
+      Fl_Button movieStepBackwardButton {
+        label {@+4<|}
+        callback {GUIpressed() ;
+movieStepBackward() ;}
+        tooltip {go back one frame of the movie} xywh {100 129 38 25}
+      }
+      Fl_Button movieStepForwardButton {
+        label {@+4|>}
+        callback {GUIpressed() ;
+movieStepForward() ;}
+        tooltip {go ahead one frame in the movie} xywh {190 128 38 25}
+      }
+      Fl_Button movieStopButton {
+        label {@+4||}
+        callback {GUIpressed() ;
+movieStop() ;}
+        tooltip {stop playing the movie} xywh {145 128 38 25}
+      }
+    }
+    Fl_Light_Button autoPlayButton {
+      label {auto-play}
+      callback {setAutoPlay((bool)o->value()) ;}
+      tooltip {enable/disable auto-play} xywh {10 60 90 25}
+    }
+    Fl_Box autoPlayingBox {
+      label {auto-playing...}
+      xywh {117 60 140 25} box ENGRAVED_BOX color 2 labelsize 18 align 16 hide
+    }
+  }
+} 

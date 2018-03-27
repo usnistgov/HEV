@@ -1,0 +1,62 @@
+#!/bin/bash
+# load volume and transfer function for running volume rendering test
+
+# get transfer function from first argument, if present
+if [[ $# -ge 1 ]]; then
+  transfer="$1"
+fi
+
+# get scale from second argument, if present
+if [[ $# -ge 2 ]]; then
+  scale="$2"
+fi
+
+# check command line arguments and print usage
+if [[ $# -gt 2 || \
+      ! ( "$transfer" == "emit" || "$transfer" == "lit" || \
+	  "$transfer" == "preint") || \
+      ! ( "$scale" =~ ^[-Ee.0-9]*$ ) ]]; then
+
+    cat <<EOF
+Usage: $0 [<transfer> [<scale>]]
+
+<transfer> is either "emit", "lit" or "preint". See
+hev-voltrace --transfer option for details. If not given on
+the command line, the value of the $transfer environment 
+variable is used instead.
+
+<scale> is an optical scale factor, controlling the degree of
+transparency. For this demo, 20 works well. If not given on
+the command line, the value of the $scale environment variable
+is used instead
+EOF
+  exit 1;
+fi
+
+# Load the volume
+cat >$IRIS_CONTROL_FIFO <<EOF
+LOAD tex3d tex3d.osg
+MERGESTATE tex3d bucky
+UNLOAD tex3d
+EOF
+
+# process transfer function to create mhd file and load it
+if [ "$transfer" = "preint" ]; then
+    hev-createLUT < transfer.dat \
+	| hev-preintegrate --scale $scale > transfer.mhd
+else
+    hev-createLUT < transfer.dat \
+	| hev-LUT2mhd --scale $scale > transfer.mhd
+fi
+cat >$IRIS_CONTROL_FIFO <<EOF
+LOAD transfer transfer.osg
+MERGESTATE transfer bucky
+UNLOAD transfer
+EOF
+
+# kill any old transfer function view
+# would love to find a way to make this more targetted
+killall -q osgviewer
+
+# display transfer function
+osgviewer --window 20 20 256 256 transferPlot.osg &

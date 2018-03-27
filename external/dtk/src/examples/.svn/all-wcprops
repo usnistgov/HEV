@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svnroot/diverse/!svn/ver/963/trunk/dtk/examples
+END
+mkMakefiles
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/mkMakefiles
+END
+copyExamples
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/copyExamples
+END
+Makefile.orig
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/Makefile.orig
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/859/trunk/dtk/examples/CMakeLists.txt
+END

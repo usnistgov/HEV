@@ -1,0 +1,8 @@
+# some simple examples of use when commands
+after abstime 1 exec xeyes -fg red
+after abstime 1 after abstime 1 exec xeyes -fg green
+after abstime 1 after time 1 exec xeyes -fg blue
+after time 3 background .2 .4 .6
+dso writeState
+after realize exec xterm +sb -geometry 85x10 -e iris-readState
+before cleanup dump world foo.osg

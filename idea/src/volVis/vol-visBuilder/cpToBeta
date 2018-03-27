@@ -1,0 +1,4 @@
+
+cp -f vol-visBuilder                   /local/HEV-beta/idea/bin/
+# cp -f volPrep.volRenderingState.osgt /local/HEV-beta/idea/data/
+# cp -f fxCopyFrame.osgt               /local/HEV-beta/idea/data/

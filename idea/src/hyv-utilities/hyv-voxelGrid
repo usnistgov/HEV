@@ -1,0 +1,118 @@
+#! /usr/bin/perl
+#
+# hyv-voxelGrid - see usage message below
+#
+# steve@nist.gov
+#
+
+$version="20081017";
+
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hyv-voxelGrid i j k [r g b]
+
+  Generate a .savg file that is a wire frame 3D grid of the specified volume.
+
+  i j k     is the dimensions of the 3D volume, e.g. 25 25 25
+
+  r g b     is the color of the grid lines. If not specified, the default
+            balue of .5 .5 .5 is used.
+
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+
+GetOptions("debug"       => \$debugFlag);
+
+
+#print "@ARGV\n";
+#$sgs=@ARGV;
+#print "number args = $sgs\n";
+
+$r=.5; $g=.5; $b=.5;
+
+if (@ARGV == 3) {
+    $xDimension= shift;
+    $yDimension= shift;
+    $zDimension= shift;
+} elsif (@ARGV == 6) {
+    $xDimension= shift;
+    $yDimension= shift;
+    $zDimension= shift;
+    $r= shift;
+    $g= shift;
+    $b= shift;
+} else {
+    usage();
+}
+    
+
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "Volume size: $xDimension $yDimension $zDimension\n";
+    print STDERR "Grid color: $r $g $b\n";
+}
+
+
+print "# hev-voxelGrid $xDimension $yDimension $zDimension  $r $g $b\n";
+
+
+# X
+for ($y=0; $y<=$yDimension; $y++) {
+    for ($z=0; $z<=$zDimension; $z++ ) {
+	print "lines\n";
+	print "0 $y $z $r $g $b 1\n";
+	print "$xDimension $y $z $r $g $b 1\n";
+    }
+}
+
+# Y
+for ($z=0; $z<=$zDimension; $z++) {
+    for ($x=0; $x<=$xDimension; $x++ ) {
+	print "lines\n";
+	print "$x 0 $z $r $g $b 1\n";
+	print "$x $yDimension $z $r $g $b 1\n";
+    }
+}
+
+	
+# Z
+for ($y=0; $y<=$yDimension; $y++) {
+    for ($x=0; $x<=$xDimension; $x++ ) {
+	print "lines\n";
+	print "$x $y 0 $r $g $b 1\n";
+	print "$x $y $zDimension $r $g $b 1\n";
+    }
+}
+
+
+
+
+# End

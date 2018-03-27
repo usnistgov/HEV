@@ -1,0 +1,244 @@
+Room fire test case, based on an actual test conducted for US ATF by the University of Maryland. 
+All material properties are completely fabricated.
+
+&HEAD CHID='case_5_v10', TITLE='ATF Room Fire Test, SVN $Revision: 935 $'  / 
+
+&MESH IJK=80,40,20, XB=0.0,16.0,0.0,8.0,0.0,4.0 /
+
+&TIME TWFIN=2000. /
+
+&MISC SURF_DEFAULT='WALL', TEXTURE_ORIGIN=0.0,0.0,0.0 / 
+
+&REAC ID         = 'POLYURETHANE'
+      FYI        = 'C_6.3 H_7.1 N O_2.1, NFPA Handbook, Babrauskas'
+      SOOT_YIELD = 0.10
+      N          = 1.0
+      C          = 6.3
+      H          = 7.1
+      O          = 2.1  /
+
+!&SURF ID='BURNER', HRRPUA=1000., PART_ID='smoke', COLOR='RED' /
+&SURF ID='BURNER', HRRPUA=4000., PART_ID='smoke', COLOR='RED' /
+
+
+&MATL ID                    = 'FABRIC'
+      FYI                   = 'Properties completely fabricated'
+      SPECIFIC_HEAT         = 1.0
+      CONDUCTIVITY          = 0.1
+      DENSITY               = 100.0
+      N_REACTIONS           = 1
+      NU_FUEL               = 1.
+      REFERENCE_TEMPERATURE = 350.
+      HEAT_OF_REACTION      = 3000.
+      HEAT_OF_COMBUSTION    = 15000. /
+
+&MATL ID                    = 'FOAM'
+      FYI                   = 'Properties completely fabricated'
+      SPECIFIC_HEAT         = 1.0
+      CONDUCTIVITY          = 0.05
+      DENSITY               = 40.0
+      N_REACTIONS           = 1
+      NU_FUEL               = 1.
+      REFERENCE_TEMPERATURE = 350.
+      HEAT_OF_REACTION      = 1500.
+      HEAT_OF_COMBUSTION    = 30000. /
+
+&MATL ID            = 'GYPSUM PLASTER'
+      FYI           = 'Quintiere, Fire Behavior'
+      CONDUCTIVITY  = 0.48
+      SPECIFIC_HEAT = 0.84
+      DENSITY       = 1440. /
+
+&MATL ID                    = 'CARPET PILE'
+      FYI                   = 'Completely made up'
+      CONDUCTIVITY          = 0.16
+      SPECIFIC_HEAT         = 2.0
+      DENSITY               = 750.
+      N_REACTIONS           = 1
+      NU_FUEL               = 1.
+      REFERENCE_TEMPERATURE = 290.
+      HEAT_OF_COMBUSTION    = 22300.
+      HEAT_OF_REACTION      = 2000. /
+
+
+&SURF ID             = 'UPHOLSTERY'
+      TEXTURE_MAP    = 'imagemaps/upholstery2.jpg'
+      TEXTURE_WIDTH  = 1
+      TEXTURE_HEIGHT = 1
+      BURN_AWAY      = .TRUE.
+      MATL_ID(1:2,1) = 'FABRIC','FOAM'
+      THICKNESS(1:2) = 0.002,0.1
+      PART_ID        = 'smoke' /
+
+&SURF ID             = 'BOTTOM UPHOLSTERY'
+      TEXTURE_MAP    = 'imagemaps/upholstery3.jpg'
+      TEXTURE_WIDTH  = 1
+      TEXTURE_HEIGHT = 1
+      BURN_AWAY      = .TRUE.
+      MATL_ID(1:2,1) = 'FABRIC','FOAM'
+      THICKNESS(1:2) = 0.002,0.1
+      PART_ID        = 'smoke' /
+
+
+&SURF ID             = 'wood paneling'
+      TEXTURE_MAP    = 'imagemaps/paneling.jpg'
+      TEXTURE_WIDTH  = 1
+      TEXTURE_HEIGHT = 2 /
+
+&SURF ID             = 'brick paneling'
+      TEXTURE_MAP    = 'imagemaps/brick.jpg'
+      TEXTURE_WIDTH  = 1
+      TEXTURE_HEIGHT = 1 /
+
+&SURF ID             = 'WALL'
+      RGB            = 200,200,200
+      MATL_ID        = 'GYPSUM PLASTER'
+      THICKNESS      = 0.012 /
+
+&SURF ID             = 'WALL2'
+      TEXTURE_MAP    = 'imagemaps/drywall.jpg'
+      TEXTURE_WIDTH  = 2
+      TEXTURE_HEIGHT = 2
+      MATL_ID        = 'GYPSUM PLASTER'
+      THICKNESS      = 0.012 /
+
+&SURF ID             = 'door paneling'
+      TEXTURE_MAP    = 'imagemaps/drywall.jpg'
+      TEXTURE_WIDTH  = 2
+      TEXTURE_HEIGHT = 3 /
+
+&SURF ID             = 'CARPET'
+      MATL_ID        = 'CARPET PILE'
+      TEXTURE_MAP    = 'imagemaps/carpet.jpg'
+      TEXTURE_WIDTH  = 4
+      TEXTURE_HEIGHT = 4
+      BACKING        = 'INSULATED'
+      THICKNESS      = 0.006 /
+
+&PART ID='smoke', MASSLESS=.TRUE., SAMPLING_FACTOR=1 /
+
+&OBST XB= 3.00, 5.20, 7.20, 8.00, 0.00, 0.40 SURF_ID='BOTTOM UPHOLSTERY' /
+&OBST XB= 3.00, 5.20, 7.20, 8.00, 0.40, 0.60, SURF_ID='UPHOLSTERY' / Couch, seat cushions
+&OBST XB= 2.80, 3.00, 7.20, 8.00, 0.00, 0.90, SURF_ID='UPHOLSTERY' / Couch, armrest
+&OBST XB= 5.20, 5.40, 7.20, 8.00, 0.00, 0.90, SURF_ID='UPHOLSTERY' / Couch, armrest
+&OBST XB= 3.00, 5.20, 7.80, 8.00, 0.60, 1.20, SURF_ID='UPHOLSTERY' / Couch, back cushions
+
+!&VENT XB= 4.00, 4.10, 7.70, 7.80, 0.60, 0.60, SURF_ID='BURNER' / Ignition source on couch
+&VENT XB= 4.00, 4.10, 7.40, 7.50, 0.60, 0.60, SURF_ID='BURNER' / Ignition source on couch
+
+
+&OBST XB= 11.60, 12.50, 7.20, 8.00, 0.00, 0.40 SURF_ID='BOTTOM UPHOLSTERY' /
+&OBST XB= 11.60, 12.50, 7.20, 8.00, 0.40, 0.60, SURF_ID='UPHOLSTERY' / Chair, back corner, seat cushion
+&OBST XB= 11.40, 11.60, 7.20, 8.00, 0.00, 0.90, SURF_ID='UPHOLSTERY' / Chair, back corner, right armrest
+&OBST XB= 12.50, 12.70, 7.20, 8.00, 0.00, 0.90, SURF_ID='UPHOLSTERY' / Chair, back corner, left armerest
+&OBST XB= 11.60, 12.50, 7.80, 8.00, 0.60, 1.20, SURF_ID='UPHOLSTERY' / Chair, back corner, back cushion
+!&OBST XB=4,12,4,9,-5,5, SURF_ID = 'CARPET' /
+
+
+&VENT XB= 12.00, 12.10, 7.40, 7.50, 0.60, 0.60, SURF_ID='BURNER' / Ignition source on back chair
+
+
+&OBST XB= 0.00, 1.00, 3.80, 4.40, 0.00, 0.40 SURF_ID='BOTTOM UPHOLSTERY' /
+&OBST XB= 0.00, 1.00, 3.80, 4.40, 0.40, 0.60, SURF_ID='UPHOLSTERY' / Chair, left wall, seat cusion
+&OBST XB= 0.00, 1.00, 3.60, 3.80, 0.00, 0.90, SURF_ID='UPHOLSTERY' / Chair, left wall, right armrest
+&OBST XB= 0.00, 1.00, 4.40, 4.60, 0.00, 0.90, SURF_ID='UPHOLSTERY' / Chair, left wall, left armrest
+&OBST XB= 0.00, 0.20, 3.80, 4.40, 0.00, 0.90, SURF_ID='UPHOLSTERY' / Chair, left wall, back cushion
+
+&VENT XB= 0.60, 0.70, 4.00, 4.10, 0.60, 0.60, SURF_ID='BURNER' / Ignition source on chair, left wall
+
+&OBST XB= 7.00, 9.00, 0.00, 1.00, 0.00, 0.20, SURF_ID='UPHOLSTERY' / Futon on floor?
+
+&OBST XB= 7.80, 8.20, 3.80, 4.20, 0.00, 0.40 SURF_ID='BOTTOM UPHOLSTERY' /
+&OBST XB= 7.80, 8.20, 3.80, 4.20, 0.40, 0.60, SURF_ID='UPHOLSTERY' / Small chair, room center, seat cushion
+&OBST XB= 7.60, 7.80, 3.80, 4.20, 0.00, 0.80, SURF_ID='UPHOLSTERY' / Small chair, room center, left armrest
+&OBST XB= 8.20, 8.40, 3.80, 4.20, 0.00, 0.80, SURF_ID='UPHOLSTERY' / Small chair, room center, right armrest
+&OBST XB= 7.60, 8.40, 3.60, 3.80, 0.00, 0.80, SURF_ID='UPHOLSTERY' / Small chair, room center, back cushion
+
+
+&OBST XB=14.0,14.2,0.0,8.0,0.0,4.0, SURF_ID = 'WALL2' / Wall
+!&OBST XB=-0.2,0.0,0.0,8.0,0.0,4.0, SURF_ID = 'WALL2' / Wall
+&OBST XB=0.0,14.2,8.0,8.2,0.0,4.0, SURF_ID = 'WALL2' / Wall
+!&OBST XB=-0.2,14.2,-0.2,0.0,0.0,4.0, SURF_ID = 'WALL2' / Wall
+
+&OBST XB=13.0,14.0,3.0,5.0,0.0,2.0 SURF_ID = 'brick paneling' / Fireplace
+&HOLE XB=12.5,13.9,3.5,4.5,0.2,1.5 /
+
+&HOLE XB=14.0,14.3,0.5,2.0,0.2,3.5 / Door
+
+&OBST XB=14.0,12.5,1.8,2.0,0.2,3.5 SURF_ID = 'door paneling' / open door
+
+&VENT MB='XMAX', SURF_ID='OPEN' /
+
+!&VENT XB=2.0,6.0,0,0,1.0,3.0,SURF_ID='OPEN' /
+!&VENT XB=10.0,14.0,0,0,1.0,3.0,SURF_ID='OPEN' /
+!&VENT XB=0,0,2.0,6.0,1.0,3.0,SURF_ID='OPEN' /
+
+
+!&VENT XB=0.00,14.00,0.00,8.00,0.00,0.00, SURF_ID='CARPET' / 
+&OBST XB= 0.00, 14.00, 0.00, 8.00, 0.00, 0.10, SURF_ID='CARPET' /
+!&VENT XB= 1.00, 1.10, 1.10, 1.20, 0.10, 0.10, SURF_ID='BURNER' / Ignition source on carpet
+
+&VENT XB= 0.00, 1.00, 0.00, 1.00, 0.00, 0.00, SURF13.0,14.0,3.0,5.0,0.0,2.0_ID='BURNER' / Ignition source on carpet
+&VENT XB= 1.00, 14.00, 1.00, 8.00, 0.00, 0.00, SURF_ID='CARPET' / 
+&VENT XB= 1.00, 14.00, 0.00, 1.00, 0.00, 0.00, SURF_ID='CARPET' /
+&VENT XB= 0.00, 1.00, 1.00, 8.00, 0.00, 0.00, SURF_ID='CARPET' /
+
+&BNDF QUANTITY='GAUGE_HEAT_FLUX' /
+&BNDF QUANTITY='WALL_TEMPERATURE' /
+&BNDF QUANTITY='BURNING_RATE' / 
+
+&DUMP DT_SLCF=1.0
+&SLCF PBX=8.0,QUANTITY='HRRPUV' /
+&SLCF PBX=8.0,QUANTITY='MIXTURE_FRACTION' /
+&SLCF PBX=8.0,QUANTITY='TEMPERATURE' /
+&SLCF PBX=4.0, QUANTITY='HRRPUV' / Heat Release Rate per Unit Volume
+
+!&SLCF XB=0.0,16.0,0.0,8.0,0.0,4.0, QUANTITY='TEMPERATURE' /
+
+&DUMP DT_DEVC=20., WRITE_XYZ=.TRUE. /
+&DEVC XYZ=8.0,0.0,3.9, QUANTITY='TEMPERATURE' ,    ID='Gas Temp1' /
+&DEVC XYZ=8.0,0.0,3.9, QUANTITY='THERMOCOUPLE',    ID='Gas TC1' /
+&DEVC XYZ=8.0,0.0,4.0, QUANTITY='ADIABATIC_SURFACE_TEMPERATURE',ID='Adiab TC1', IOR=-3 /
+
+&DEVC XYZ=8.0,0.8,3.9, QUANTITY='TEMPERATURE' ,    ID='Gas Temp2' /
+&DEVC XYZ=8.0,0.8,3.9, QUANTITY='THERMOCOUPLE',    ID='Gas TC2' /
+&DEVC XYZ=8.0,0.8,4.0, QUANTITY='ADIABATIC_SURFACE_TEMPERATURE',ID='Adiab TC2', IOR=-3 /
+
+&DEVC XYZ=8.0,1.6,3.9, QUANTITY='TEMPERATURE' ,    ID='Gas Temp3' /
+&DEVC XYZ=8.0,1.6,3.9, QUANTITY='THERMOCOUPLE',    ID='Gas TC3' /
+&DEVC XYZ=8.0,1.6,4.0, QUANTITY='ADIABATIC_SURFACE_TEMPERATURE',ID='Adiab TC3', IOR=-3 /
+
+&DEVC XYZ=8.0,2.4,3.9, QUANTITY='TEMPERATURE' ,    ID='Gas Temp4' /
+&DEVC XYZ=8.0,2.4,3.9, QUANTITY='THERMOCOUPLE',    ID='Gas TC4' /
+&DEVC XYZ=8.0,2.4,4.0, QUANTITY='ADIABATIC_SURFACE_TEMPERATURE',ID='Adiab TC4', IOR=-3 /
+
+&DEVC XYZ=8.0,3.2,3.9, QUANTITY='TEMPERATURE' ,    ID='Gas Temp5' /
+&DEVC XYZ=8.0,3.2,3.9, QUANTITY='THERMOCOUPLE',    ID='Gas TC5' /
+&DEVC XYZ=8.0,3.2,4.0, QUANTITY='ADIABATIC_SURFACE_TEMPERATURE',ID='Adiab TC5', IOR=-3 /
+
+&DEVC XYZ=8.0,4.0,3.9, QUANTITY='TEMPERATURE' ,    ID='Gas Temp6' /
+&DEVC XYZ=8.0,4.0,3.9, QUANTITY='THERMOCOUPLE',    ID='Gas TC6' /
+&DEVC XYZ=8.0,4.0,4.0, QUANTITY='ADIABATIC_SURFACE_TEMPERATURE',ID='Adiab TC6', IOR=-3 /
+
+&DEVC XYZ=8.0,4.8,3.9, QUANTITY='TEMPERATURE' ,    ID='Gas Temp7' /
+&DEVC XYZ=8.0,4.8,3.9, QUANTITY='THERMOCOUPLE',    ID='Gas TC7' /
+&DEVC XYZ=8.0,4.8,4.0, QUANTITY='ADIABATIC_SURFACE_TEMPERATURE',ID='Adiab TC7', IOR=-3 /
+
+&DEVC XYZ=8.0,5.6,3.9, QUANTITY='TEMPERATURE' ,    ID='Gas Temp8' /
+&DEVC XYZ=8.0,5.6,3.9, QUANTITY='THERMOCOUPLE',    ID='Gas TC8' /
+&DEVC XYZ=8.0,5.6,4.0, QUANTITY='ADIABATIC_SURFACE_TEMPERATURE',ID='Adiab TC8', IOR=-3 /
+
+&DEVC XYZ=8.0,6.4,3.9, QUANTITY='TEMPERATURE' ,    ID='Gas Temp9' /
+&DEVC XYZ=8.0,6.4,3.9, QUANTITY='THERMOCOUPLE',    ID='Gas TC9' /
+&DEVC XYZ=8.0,6.4,4.0, QUANTITY='ADIABATIC_SURFACE_TEMPERATURE',ID='Adiab TC9', IOR=-3 /
+
+&DEVC XYZ=8.0,7.2,3.9, QUANTITY='TEMPERATURE' ,    ID='Gas Temp10' /
+&DEVC XYZ=8.0,7.2,3.9, QUANTITY='THERMOCOUPLE',    ID='Gas TC10' /
+&DEVC XYZ=8.0,7.2,4.0, QUANTITY='ADIABATIC_SURFACE_TEMPERATURE',ID='Adiab TC10', IOR=-3 /
+
+&DEVC XYZ=8.0,7.95,3.9, QUANTITY='TEMPERATURE' ,    ID='Gas Temp11' /
+&DEVC XYZ=8.0,7.95,3.9, QUANTITY='THERMOCOUPLE',    ID='Gas TC11' /
+&DEVC XYZ=8.0,7.95,4.0, QUANTITY='ADIABATIC_SURFACE_TEMPERATURE',ID='Adiab TC11', IOR=-3 /
+
+&TAIL /
+

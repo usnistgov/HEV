@@ -1,0 +1,21 @@
+#!/bin/sh
+file=$IRISFLY_HIDE_SHOW_WINDOWS
+
+if [ -z "$file" ]
+then dtk-msgError "irisfly-removeWindowName: no window file" 1>&2
+    exit 1
+fi
+
+if [ ! -w "$file" ]
+then dtk-msgError "irisfly-removeWindowName: no writeable window file" 1>&2
+    exit 1
+fi
+
+if ( grep -q "^$1$" $file )
+then dtk-msgInfo "irisfly-removeWindowName: removing window \"$1\" from window list" 1>&2
+    sed -i -e "/^$1\$/d" $file
+else dtk-msgInfo "irisfly-removeWindowName: window \"$1\" is not in window list" 1>&2
+fi
+
+
+

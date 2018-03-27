@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 1. Overview</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="pr02.html" title="Color Plates"><link rel="next" href="ch02.html" title="Chapter 2. An Inventor Sampler"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 1. Overview</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="pr02.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch02.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5436220"></a>Chapter 1. <a name="id29544"></a>Overview</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Identify the key elements that constitute the Open Inventor toolkit</p>
+</li>
+<li><p>Explain the relationship of Open Inventor to OpenGL</p>
+</li>
+<li><p>Describe several ways to extend Open Inventor</p>
+</li>
+</ul></div><p>This chapter describes the key elements in Open Inventor and briefly outlines how you can tailor your use of this toolkit to a particular set of needs. It explains how Inventor relates to programming tools you may already be familiar with, such as OpenGL and the X Window System. Most of the topics mentioned in this chapter are covered in detail in later chapters of this book.<a name="idch011"></a></p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5436297"></a>What Is Open Inventor?</h2></div></div>
+<p><i>The Inventor Mentor</i> introduces graphics programmers and application developers to Open Inventor, an object-oriented 3D toolkit. Open Inventor is a library of objects and methods used to create interactive 3D graphics applications. Although it is written in C++, Inventor also includes C bindings.</p>
+<p>Open Inventor is a set of building blocks that enables you to write programs that take advantage of powerful graphics hardware features with minimal programming effort. Based on OpenGL, the toolkit provides a library of objects that you can use, modify, and extend to meet new needs. Inventor objects include <a name="idch012"></a><i>database primitives, </i>including shape, property, group, and engine objects; interactive <i></i><a name="idch013"></a><i>manipulators</i>, such as the handle box and trackball; and <a name="idch014"></a><i>components</i>, such as the material editor, directional light editor, and examiner viewer.</p>
+<p>Inventor offers the economy and efficiency of a complete object-oriented system. In addition to simplifying application development, Inventor facilitates moving data between applications with its 3D interchange file format. End users of 3D programs can cut and paste 3D scene objects and share them among a variety of programs on the desktop.<a name="idch015"></a><a name="idch016"></a></p>
+<p>As shown in <a href="ch01.html#id37380">Figure 1-1</a>, Inventor's foundation is supplied by OpenGL and UNIX. Inventor represents an object-oriented <a name="idch017"></a><a name="idch018"></a><i>application policy</i> built on top of OpenGL, providing a programming model and user interface for OpenGL programs.</p>
+<p><div class="figure"><p><a name="id5436479"></a><b>Figure 1-1. <a name="id37380"></a><a name="idch019"></a>Inventor Architecture</b></p>
+<div class="mediaobject"><img src="figures/1-1new.gif"></div></div><br>
+</p>
+<p>The Inventor toolkit is window system&#8211;independent. A component library is helpful for using Inventor with specific window systems. This book describes one component library provided with the toolkit, which facilitates programming in Inventor using Xt windows and events. A companion to this book, <a name="idch0110"></a><a name="idch0111"></a><i>The Inventor Toolmaker</i>, provides details on how to extend Inventor to work with other window systems.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5436528"></a><a name="id66187"></a>Objects, not Drawings</h2></div></div>
+<p>Inventor focuses on creating <i>3D objects</i>. All information about these objects&#8212;their shape, size, coloring, surface texture, location in 3D space&#8212;is stored in a scene database. This information can be used in a variety of ways. The most common use is to display, or <a name="idch0112"></a><a name="idch0113"></a><i>render</i>, an image of the 3D objects on the screen.</p>
+<p>For many 3D graphics packages, this image is the ultimate goal&#8212;a photorealistic representation on the screen of a 3D scene. But what if a user wants to move one of the objects to a different location, and perhaps view another object from a slightly different viewpoint? What if the user wants to experiment with a different range of colors for the objects and the background of the scene? What if a chemist wants to rearrange how two molecules align with each other? What if an airplane designer wants to redesign the curve of the airplane's wing? If the image exists only as a drawing on the screen, the programmer must write complicated code to implement these functions. Additional code is required to animate parts of the scene. With Open Inventor, the ability to make these changes is built into the programming model. Changing the objects in the scene, adding to the scene, and interacting with the objects becomes a simple process because such changes are part of Inventor's well-defined interface, and because they are anticipated by Inventor's basic design.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5436605"></a>Using Database Objects in a Variety of Ways</h3></div></div>
+<p>Because the Inventor database holds information about the objects as they exist in their own 3D &#8220;world,&#8221; not just as a 2D array of pixels drawn on the screen, other operations in addition to rendering can be performed on the objects. The objects in the scene can be picked, highlighted, and manipulated as discrete entities. Bounding-box calculations can be performed on them. They can be printed, searched for, read from a file, and written to a file. Each of these built-in operations opens up a flexible and powerful arena for the application programmer. In addition, this programming model is intuitive because it is based on the physical and mechanical world we live in.<a name="idch0114"></a><a name="idch0115"></a></p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5436644"></a>Animation<a name="idch0116"></a></h3></div></div>
+<p>Inventor objects can also encapsulate behavior into the description stored in the scene database. <a href="ch01.html#id20250">Example 1-1</a>, an excerpt from an Inventor file, describes a windmill whose blades spin at a specified rate. When this file is read into an Inventor program and displayed on the screen, the windmill is drawn and the blades are animated. No additional application code is used to make the blades spin; this description is part of the windmill object itself. <a href="">Figure 1-2</a> shows an image of this windmill.<a name="idch0117"></a></p>
+<p>
+<div class="example"><p><a name="id5436703"></a><b>Example 1-1. <a name="id20250"></a><i>File Describing a Spinning Windmill</i></b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#Inventor V2.0 ascii
+
+Separator {
+   Separator { 
+      RotationXYZ {	
+         axis Z
+         angle 0 =
+            ElapsedTime {	# Engine to rotate blades
+               speed 0.4
+            }
+            . timeOut	# Engine output connected to 
+                     	# angle of rotation
+      }
+      Transform {
+         translation 0 0 0.5
+      }
+      Separator {	# Shaft for blades
+         Material {
+            diffuseColor 0.05 0.05 0.05
+         }
+         Transform {
+            rotation 1 0 0 1.5708
+            scaleFactor 0.2 0.5 0.2
+         }
+         Cylinder {
+         }
+      }
+      DEF Blade Separator {	# Blade geometry and properties
+         Transform {	# Blade interior
+            translation 0.45 2.9 0.2
+            rotation 0 1 0 0.3
+         }
+         Separator {
+            Transform {
+               scaleFactor 0.6 2.5 0.02
+            }
+            Material {
+               diffuseColor 0.5 0.3 0.1
+               transparency 0.3
+            }
+            Cube {
+            }
+         }
+         Separator {		# Blade frame
+            # .... (Details omitted)	
+         }
+     }
+     Separator {		# Second blade
+        RotationXYZ {
+           axis Z
+           angle 1.5708
+        }
+        USE Blade
+      }
+      Separator {		# Third blade
+         RotationXYZ {
+            axis Z
+            angle 3.14159
+        }
+        USE Blade
+      }
+      Separator {		# Fourth blade
+         RotationXYZ {
+            axis Z
+            angle -1.5708
+         }
+         USE Blade
+      }
+   }
+   Separator { 	# Windmill tower
+      	# ... (Details omitted)
+   }
+}
+<a name="idch0118"></a></pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5436757"></a>How Does Open Inventor Relate to OpenGL?<a name="idch0119"></a></h2></div></div>
+<p>If you are familiar with OpenGL, you are probably curious about how OpenGL relates to Open Inventor. This section supplies an overview of how the two libraries interrelate. <a href="ch17.html#id19349">Chapter 17, &#8220;Using Inventor with OpenGL,&#8221;</a> provides additional information on how to use Open Inventor and OpenGL in a single program&#8212;taking advantage of the fast, flexible 3D rendering of OpenGL and the high-level objects and versatile scene database offered by Inventor.</p>
+<p>Open Inventor uses OpenGL for rendering. In OpenGL, however, rendering is explicit, whereas in Inventor, rendering, along with other operations such as picking, reading, writing, and calculating a bounding box, is encapsulated in the objects. <a name="idch0120"></a></p>
+<p>OpenGL provides immediate-mode access to the frame buffer. It can also use a display list to record drawing commands for objects. This display list can then be played back on demand.<a name="idch0121"></a><a name="idch0122"></a></p>
+<p>Open Inventor does not provide immediate access to the frame buffer. As described previously in the section <a href="ch01.html#id66187">&#8220;Objects, not Drawings&#8221;</a>, it is based on an object-oriented programming model that creates high-level, editable objects stored in a database. Each of these objects encapsulates a set of operations that can be applied to it: rendering, picking, database querying and searching, and bounding-box calculation. In Inventor, rendering to the frame buffer occurs when the render action is invoked. If an Inventor program never issues this command (either directly or indirectly), no drawing will appear.<a name="idch0123"></a></p>
+<p>A simple analogy may help to convey a feel for how Open Inventor contrasts to OpenGL. Suppose it is the year 2020 and you have the time, money, and skills required to build your dream house. You can choose one of two basic approaches, or you can combine elements of both approaches. </p>
+<p>The first approach is to go to the Handyperson Builder's Emporium and purchase all the required materials separately&#8212;nails, wood, pipes, wires, switches, concrete, and so on. This approach gives you complete flexibility, but it also requires detailed knowledge and skill on your part to determine which parts you need and how to construct all elements of the house.</p>
+<p>The second approach is to order a collection of prebuilt units from the <i>Dream Home Catalog</i>, published by a ten-year-old firm that bases its product on concepts of Japanese home building, modular office construction, and the highly successful prefabricated window companies of the 90s. The catalog provides a wide variety of wall-frame units, concrete forms, siding packages, windows, and doors.</p>
+<p>The first approach&#8212;starting with raw materials&#8212;is analogous to using OpenGL for interactive graphics applications. Building a house with this method, you have complete flexibility over how the raw materials are used. You need to be familiar with the details of home construction, and you need different skills to build each part of the home from scratch&#8212;plumbing, electrical, carpentry.</p>
+<p>The second approach&#8212;selecting prebuilt units from a catalog&#8212;is loosely analogous to creating an application with Inventor. The wall panels are prewired with the electrical, security, and plumbing connections. This prewiring can be compared to the built-in event model provided by Inventor. In addition, the complete inventory of parts, sizes, and costs is automatically computed by the catalog firm when you place the order. In a similar way, all operations (rendering, picking, bounding-box calculation, and so on) are built into Inventor objects. You do not need to add extra code (or, in the case of the house, perform extra calculations) to obtain this information. Because the catalog company has been buying parts from the Handyperson Builder's Emporium for years, it knows the exact material and sizes to use for maximum economy and minimum waste. Similarly, Open Inventor achieves high performance from its use of OpenGL.<a name="idch0124"></a></p>
+<p>Although the catalog offers a collection of ready-made modules, you have choices about which modules you use and how to put them together. Whenever you purchase modules from the <i>Dream Home Catalog</i>, standard sizes are used to facilitate replacing, repairing, and updating different parts of the house. With Open Inventor, applications achieve a common look and feel because Inventor provides a set of components with a unified user interface.<a name="idch0125"></a></p>
+<p>If you require parts not available in the catalog, the company also allows you to design your own custom parts and buy the pieces directly from the Handyperson Builder's Emporium. Perhaps you want curved corners on your wall units rather than right-angled corners. Inventor, too, allows you to design your own objects (through <a name="idch0126"></a><i>subclassing</i>, described in <i>The Inventor Toolmaker</i>). With this added flexibility, you are not constrained to the catalog parts, but you can use them to save time and money when they're suitable.</p>
+<p>If you want to save even more time, you can choose a complete house kit from the <i>Dream Home Catalog</i>. It offers many different models: A-frame, Ranch, Victorian, Colonial. These house kits are analogous to Inventor's <i>node kits<a name="idch0127"></a></i>, which provide packaged sets of objects commonly used together.</p>
+<p>When each house has been completed, it takes a highly trained eye to determine which house was constructed from raw materials and which was constructed with catalog parts. Both houses have fine quality finishing, are made of the best materials, and exhibit sturdy construction. Both exhibit touches of creativity and distinctive design. </p>
+<p>The same could be said of applications built with OpenGL and those built with Open Inventor. The approach taken must suit the needs of the builder, and the two approaches can be combined as desired, using a combination of prebuilt Inventor objects and components and OpenGL commands.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5437095"></a>The Inventor Toolkit<a name="idch0128"></a></h2></div></div>
+<p>Inventor provides programming support at a variety of levels. At the end-user interface level, Inventor offers a unified look and feel for 3D graphics interfaces. At the programming level, the Inventor toolkit (shown previously in <a href="ch01.html#id37380">Figure 1-1</a>) offers the following tools, which are explained in greater detail later in this chapter:</p>
+<div class="itemizedlist"><ul type="disc"><li><p><i>A 3D scene database<a name="idch0129"></a><a name="idch0130"></a></i> that includes shape, property, group, engine, and sensor objects, used to create a hierarchical 3D scene</p>
+</li>
+<li><p>A set of <a name="idch0131"></a><i>node kits</i> that provide a convenient mechanism for creating prebuilt groupings of Inventor nodes</p>
+</li>
+<li><p>A set of<i> manipulators,<a name="idch0132"></a></i> including the handle box and trackball, which are objects in a scene database that the user can interact with directly<a name="idch0133"></a><a name="idch0134"></a></p>
+</li>
+<li><p>An <i>Inventor Component Library<a name="idch0135"></a></i> for Xt, including a render area (a window used for rendering), material editor, viewers, and utility functions, used to provide some high-level interactive tasks<a name="idch0136"></a></p>
+</li>
+</ul></div><p>This book explains Open Inventor from the bottom up, starting with the 3D scene database. </p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5437250"></a>The Scene Database<a name="idch0137"></a></h3></div></div>
+<p>The <a name="idch0138"></a><i>node</i> is the basic building block used to create three-dimensional scene databases in Inventor. Each node holds a piece of information, such as a surface material, shape description, geometric transformation, light, or camera. All 3D shapes, attributes, cameras, and light sources present in a scene are represented as nodes.</p>
+<p>An ordered collection of nodes is referred to as a <a name="idch0139"></a><i>scene graph</i>. (<a href="ch01.html#id30580">Figure 1-3</a> shows a simple scene graph. <a href="pr01.html#id31464">Figure In-1</a>, in &#8220;About This Book,&#8221; has the key to the icons used in scene graph diagrams throughout this book.) This scene graph is stored in the Inventor <a name="idch0140"></a><a name="idch0141"></a><i>database</i>. Inventor takes care of storing and managing the scene graph in the database. The database can contain more than one scene graph.</p>
+<p>After you have constructed a scene graph, you can apply a number of operations or <i></i><a name="idch0142"></a><i>actions</i> to it, including rendering, picking, searching, computing a bounding box, and writing to a file. </p>
+<p>Classes of database primitives include <a name="idch0143"></a><a name="idch0144"></a><i>shape nodes</i> (for example, sphere, cube, cylinder, quad mesh), <a name="idch0145"></a><i>property nodes</i> (for example, material, lighting model, textures, environment), and <a name="idch0146"></a><i>group nodes</i> (for example, separator, level-of-detail, and switch). Other special database primitives are <a name="idch0147"></a><i>engines</i> and <a name="idch0148"></a><i>sensors</i>. Engines are objects that can be connected to other objects in the scene graph and used to animate parts of the scene or constrain certain parts of the scene in relation to other parts (see <a href="ch13.html#id11499">Chapter 13, &#8220;Engines&#8221;</a>). A sensor is an object that detects when something in the database changes and calls a function supplied by the application. Sensors can respond to specified timing requirements (for example, &#8220;Do this every <i>n</i> seconds&#8221;) or to changes in the scene graph data (see <a href="ch12.html#id20078">Chapter 12, &#8220;Sensors&#8221;</a>).</p>
+<p><div class="figure"><p><a name="id5437508"></a><b>Figure 1-2. <a name="id30580"></a><a name="idch0149"></a>Example of a Scene Graph</b></p>
+<div class="mediaobject"><img src="figures/1-3.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5437528"></a>Node Kits</h3></div></div>
+<p>Node kits facilitate the creation of structured, consistent databases. Each node kit is a collection of nodes with a specified arrangement. A template associated with the node kit determines which nodes can be added when necessary and where they should be placed. For example, the SoShapeKit node kit is used for any Inventor shape object. If you use this node kit, you don't have to create and arrange each node individually. By default, the template for the <a name="idch0150"></a><a name="idch0151"></a><span class="bold"><b>SoShapeKit</b></span> contains an <span class="bold"><b>SoCube<a name="idch0152"></a></b></span> node, and it allows a material, geometric transformation, and other properties to be inserted in the correct place when required. </p>
+<p>Another use of node kits is to define application-specific objects and semantics. For example, a flight-simulation package might include a variety of objects representing airplanes. Each of these airplanes consists of the same general scene graph structure&#8212;for example, fuselage, wings, and landing gear&#8212;as well as some airplane-specific methods&#8212;for example, <span class="bold"><b>bankLeft()</b></span>, <span class="bold"><b>raiseLandingGear()</b></span>. To an application writer using this package, each type of airplane can be dealt with in a similar way. There is no need to know the details of the structure of the subgraph representing the landing gear to raise it, since the general method, <span class="bold"><b>raiseLandingGear()</b></span>, exists. Creating these new objects and methods requires extending Open Inventor by subclassing, which is described in <a name="idch0153"></a><i>The Inventor Toolmaker</i>. It is highly recommended that you use some form of node kits in your application to maintain order and policy.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5437647"></a>Manipulators</h3></div></div>
+<p>A manipulator is a special kind of node that reacts to user interface events and can be edited directly by the user. Manipulators typically have parts that render in the scene and provide a means for translating events into changes to the database. An example of a manipulator is the <a name="idch0154"></a><a name="idch0155"></a><a name="idch0156"></a><i>handle box</i>, which is a bounding box of another object with handles at the corners and sides. In <a href="ch01.html#id40600">Figure 1-4</a>, handle boxes surround the knights. By picking on a handle and dragging it, the user can change the scale or position of the box and thus the object inside it. Manipulators provide an easy way for applications to incorporate direct 3D interaction.</p>
+<p><div class="figure"><p><a name="id5437707"></a><b>Figure 1-3. <a name="id40600"></a><a name="idch0157"></a>Handle-Box Manipulator</b></p>
+<div class="mediaobject"><img src="figures/1.4.handle.box.gif"></div></div><br>
+</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5437728"></a>Inventor Component Library</h2></div></div>
+<p>The Inventor Component Library provides window-system support and integration with the X Window System. This library includes the following features:<a name="idch0158"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>A render area (window) object<a name="idch0159"></a></p>
+</li>
+<li><p>Main loop and initialization convenience routines<a name="idch0160"></a><a name="idch0161"></a></p>
+</li>
+<li><p>An event translator utility<a name="idch0162"></a><a name="idch0163"></a></p>
+</li>
+<li><p>Editors<a name="idch0164"></a></p>
+</li>
+<li><p>Viewers<a name="idch0165"></a></p>
+</li>
+</ul></div><p>The render area accepts an X event, translates it into an Inventor event, and then passes it to &#8220;smart&#8221; objects, such as manipulators, that may handle the event.</p>
+<p>The Inventor Component Library also contains a set of viewers and editors that fall into the general category of <a name="idch0166"></a><i>components</i>. Components are reusable modules that contain both a render area and a user interface. They are used for editing scene graph nodes (materials, lights, transformations) as well as for viewing scenes in different ways. Rather than solving the same problems over and over again, you can simply select an Inventor component and plug it into your application. If you need added functionality, you can write your own component and add it to Inventor (see <a name="idch0167"></a><i>The Inventor Toolmaker</i>). Examples of components are the material editor, directional light editor (see <a name="idch0168"></a><a href="ch01.html#id31737">Figure 1-5</a>), fly viewer (&#8220;flies&#8221; through the scene), and examiner viewer (looks at a single object from any perspective).</p>
+<p><div class="figure"><p><a name="id5437904"></a><b>Figure 1-4. <a name="id31737"></a><a name="idch0169"></a>Example of a Component: Directional Light Editor (lower right)</b></p>
+<div class="mediaobject"><img src="figures/1.5.dir.light.ed.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5437926"></a>Inventor Class Tree</h2></div></div>
+<p><a href="ch01.html#id33915">Figure 1-6</a> summarizes the Inventor class tree. Base classes are at the left, and derived classes are at the right. <a name="idch0170"></a><a name="idch0171"></a><a name="idch0172"></a><span class="bold"><b>SoBase</b></span> is the base class for <span class="bold"><b>SoFieldContainer<a name="idch0173"></a></b></span>, from which both nodes and engines are derived. Action classes are derived from <a name="idch0174"></a><span class="bold"><b>SoAction</b></span>. <a name="idch0175"></a><span class="bold"><b>SoXtComponent</b></span> is another base class. The Xt render area, as well as the viewers and editors, are all derived from <span class="bold"><b>SoXtComponent</b></span>. Classes to the right in the tree <i>inherit<a name="idch0176"></a></i> the fields and methods of the classes they are derived from.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5438049"></a>Extending the Toolkit<a name="idch0177"></a></h2></div></div>
+<p>One of the most important aspects of Inventor is the ability to program new objects and operations as extensions to the toolkit. One way to extend the set of objects provided by Inventor is to derive new classes from existing ones. See <i>The Inventor Toolmaker</i> for specific examples of creating new classes. </p>
+<p>Another way to include new features in Inventor is by using <a name="idch0178"></a><i>callback functions</i>, which provide an easy mechanism for introducing specialized behavior into a scene graph or prototyping new nodes without subclassing. A callback function is a user-written function that is called under certain conditions. Callback functions provided by Inventor include the following:<a name="idch0179"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p><a name="idch0180"></a><span class="bold"><b>SoCallback</b></span>&#8212;a generic node in the database that provides a callback function for all database actions (see <a href="ch17.html#id19349">Chapter 17, &#8220;Using Inventor with OpenGL&#8221;</a>)</p>
+</li>
+<li><p><span class="bold"><b>SoCallbackAction<a name="idch0181"></a></b></span>&#8212;generic traversal of the database with a callback function at each node (see <a href="ch09.html#id14375">Chapter 9, &#8220;Applying Actions&#8221;</a>)</p>
+</li>
+<li><p><a name="idch0182"></a><span class="bold"><b>SoEventCallback</b></span>&#8212;a node in the database that calls a user-defined function when it receives an event (see <a href="ch10.html#id10433">Chapter 10, &#8220;Handling Events and Selection&#8221;</a>)</p>
+</li>
+<li><p><span class="bold"><b>SoSelection<a name="idch0183"></a></b></span>&#8212;selection callback node (see <a name="idch0184"></a><a href="ch10.html#id10433">Chapter 10, &#8220;Handling Events and Selection&#8221;</a>)</p>
+</li>
+<li><p>Manipulators&#8212;provide callback functions for event processing <br>
+(see <a name="idch0185"></a><a name="idch0186"></a><a href="ch15.html#id31593">Chapter 15, &#8220;Draggers and Manipulators&#8221;</a>)</p>
+</li>
+<li><p><span class="bold"><b>SoXt<a name="idch0187"></a></b></span> components&#8212;support their own callback functions when a change occurs (see <a href="ch16.html#id37269">Chapter 16, &#8220;Inventor Component Library&#8221;</a>).</p>
+<p><div class="figure"><p><a name="id5438340"></a><b>Figure 1-5. <a name="id33915"></a><a name="idch0188"></a>Inventor Class Tree Summary (Part 1 of 3)</b></p>
+<div class="mediaobject"><img src="figures/1.6.summaryA.gif"></div></div><br>
+<div class="figure"><p><a name="id5438358"></a><b>Figure 1-6. Inventor Class Tree Summary (Part 2 of 3)</b></p>
+<div class="mediaobject"><img src="figures/1.6summaryB.gif"></div></div><br>
+<div class="figure"><p><a name="id5438370"></a><b>Figure 1-7. Inventor Class Tree Summary (Part 3 of 3)</b></p>
+<div class="mediaobject"><img src="figures/1.6summaryC.gif"></div><a name="idch0189"></a></div><br>
+</p>
+</li>
+</ul></div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="pr02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02.html">Next</a></td></tr><tr><td width="40%" align="left">Color Plates </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 2. An Inventor Sampler </td></tr></table></div></body></html>

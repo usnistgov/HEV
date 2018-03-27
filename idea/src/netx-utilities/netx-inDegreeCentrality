@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+
+import networkx as nx
+import sys
+
+if(len(sys.argv)==2):
+    myFile = open(sys.argv[1], 'r')
+
+else:
+    print("Error: wrong number of arguments given")
+    sys.exit()
+lines = []
+
+for edge in myFile:
+    lines.append(tuple(edge.split()))
+
+G=nx.MultiDiGraph()
+if(len(lines[0])==2):
+    G.add_edges_from(lines)
+elif(len(lines[0])>=3):
+    for item in lines:
+        G.add_weighted_edges_from([(item[0],item[1],float(item[2]))])
+else:
+    print("Error with input file. Incorrect number of elements per line.")
+    sys.exit()
+
+cent = nx.in_degree_centrality(G)
+
+myList = [x for x in cent.items()]
+myList.sort(key=lambda x: x[0])
+
+for thing in myList:
+    print(thing[0], thing[1])
+
+myFile.close()

@@ -1,0 +1,79 @@
+#!/bin/sh
+
+########################################################################
+# This block was taken from Daniel Elstner's autogen.sh.
+########################################################################
+dir=`echo "$0" | sed 's,[^/]*$,,'`
+test "x${dir}" = "x" && dir='.'
+if test "x`cd "${dir}" 2>/dev/null && pwd`" != "x`pwd`"
+then
+    echo "This script ($0) must be executed directly from the top $0 source directory."
+    exit 1
+fi
+# end taken from Daniel Elstner
+########################################################################
+ 
+
+# copies $1 to $2 with a small head inserted to let we know
+# it's a copy.
+copymk()
+{
+   if [ ! -e $2 ] && [ -e $1 ] ; then
+     echo "copying $1 to $2"
+     echo "#!gmake" > $2
+     echo >> $2
+     echo "# This was an auto generated file." >> $2
+     echo "# This file was copied from `pwd`/$1" >> $2
+     cat $1 >> $2
+   fi
+}
+
+copyc()
+{
+   if [ ! -e $2 ] && [ -e $1 ] ; then
+     echo "copying $1 to $2"
+     echo "/* This was an auto generated file.*/" >> $2
+     echo "/* This file was copied from `pwd`/$1 */" >> $2
+     cat $1 >> $2
+   fi
+}
+
+
+remove()
+{
+  if [ -e $1 ] ; then
+    echo "rm $1"
+    rm $1
+  fi
+}
+
+cpfiles()
+{
+  copymk dtk/Makefile                              dtk/tutorial/Makefile
+  copymk dtk/examplesByClass/dtkUDPSocket/Makefile dtk/examplesByClass/dtkTCPSocket/Makefile
+  copymk dtk/examplesByClass/dtkUDPSocket/Makefile dtk/examplesByClass/dtkSharedMem/Makefile
+  copymk dtk/tutorial/dtkSharedMem/Makefile        dtk/tutorial/balanceStick/Makefile
+  copymk dtk/tests/dtkTCPSocket/Makefile           dtk/tests/dtkFilter/Makefile
+  copymk dtk/tests/dtkTCPSocket/Makefile           dtk/tests/blockingRead/Makefile
+  copyc  ../serviceDSO/hello/hello.cpp             dtk/tutorial/helloService/hello.cpp
+}
+
+rmfiles()
+{
+  remove dtk/tutorial/Makefile
+  remove dtk/examplesByClass/dtkTCPSocket/Makefile
+  remove dtk/examplesByClass/dtkSharedMem/Makefile
+  remove dtk/tutorial/balanceStick/Makefile
+  remove dtk/tests/dtkFilter/Makefile
+  remove dtk/tests/blockingRead/Makefile
+  remove dtk/tutorial/helloService/hello.cpp
+}
+
+
+
+
+if [ "$1" = "-r" ] ; then
+   rmfiles
+else
+   cpfiles
+fi

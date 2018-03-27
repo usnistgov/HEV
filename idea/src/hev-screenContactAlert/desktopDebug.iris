@@ -1,0 +1,16 @@
+# This file is useful to start hev-screenContactAlert when debugging
+# on the desktop.
+#
+# Example: irisfly --ex tape.osg desktopDebug.iris &
+#
+# To on/off the scenegraph:
+#    echo NODEMASK StopSigns ON  > $IRIS_CONTROL_FIFO
+#    echo NODEMASK StopSigns OF > $IRIS_CONTROL_FIFO
+#
+# To test the running program:
+#    echo -1 0 0  0 0 0 | hev-writeFloats wand
+#    echo  0 0 0  0 0 0 | hev-writeFloats wand
+
+AFTER REALIZE EXEC hev-screenContactAlert
+
+

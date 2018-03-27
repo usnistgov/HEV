@@ -1,0 +1,91 @@
+.TH hev-sequentialSymlinks 1 "September 2011" "NIST/MCSD/HPCVG" "HPCVG HEV"
+.SH NAME
+.B hev-sequentialSymlinks
+- create sequentially numbered symlinks
+.SH SYNOPSIS
+.B hev-sequentialSymlinks    
+[ --directory \fIdir\fR ] [ --verbose ] [ --keep | --delete ] [ --start  \fIn\fR ]  [
+--prefix \fIs\fR ] [ \fIcommand\fR ]
+
+.SH DESCRIPTION
+.PP
+.B
+hev-sequentialSymlinks 
+reads file names from standard input (multiple file
+names per line is acceptable) and creates sequentially numbered symlinks to
+each file. Each symlink's name will be a four digit number, with an optional
+prefix. If the source file name has a suffix, such as .png, the suffix will be
+appended to the symlink. The file names passed to
+\fBhev-sequentialSymlinks\fR should contain the full path to the file unless
+using the --directory option. See the example below.
+
+.B
+hev-sequentialSymlinks
+can be useful to specify files to commands like ffmpeg(1) which require
+file names to be sequentially numbered.
+
+.SH OPTIONS
+
+.TP
+.B --directory \fIdir\fR
+specifies the name of a directory to store the symlinks. It will be created
+if it doesn't exist.
+
+By default \fBhev-sequentialSymlinks\fR creates a new directory in /tmp to store the
+symlinks.
+
+.TP
+.B --verbose
+generates extra informational messages
+
+.TP
+.B --keep
+specifies that the directory containing the symlinks should not be deleted on
+exit
+
+.TP
+.B --delete
+specifies that the directory containing the symlinks should be deleted on exit
+
+.TP
+.B --start \fIn\fR
+specifies the number to be used for the first file. \fIn\fR must be a string
+of digits. If \fIn\fR begins with a leading 0 it will be interpreted as an
+octal number.
+
+.TP
+.B --prefix \fIs\fR
+specifies that the string \fIs\fR should be prepended to each symlink name.
+
+.TP
+.I command
+specifies an optional command to be run in the directory containing the symlinks.
+
+.SH NOTE
+
+If neither \fB--delete\fR or \fB--keep\fR are specified the directory will
+be deleted if \fBcommand\fR is given and the default directory is used.
+
+.SH EXAMPLES
+
+In the current directory is a series of png files which when listed
+alphabetically can generate a flipbook animation. This command can used to
+turn them into a movie file with ffmpeg.
+
+.IP 
+echo $PWD/*.png | hev-sequentialSymlinks ffmpeg -f image2 -r 15 -i %04d.png /tmp/out.avi
+
+.P
+or, using relative links, create the symlinks and the movie file in a
+subdirectory. The symlinks are not deleted.
+
+.IP
+mkdir movie
+.br
+cd movie
+.br
+echo ../*.png | hev-sequentialSymlinks --dir $PWD ffmpeg -f image2 -r 15 -i %04d.png out.avi
+
+.SH AUTHOR
+
+John Kelso, kelso@nist.gov,  NIST/ITL/MCSD

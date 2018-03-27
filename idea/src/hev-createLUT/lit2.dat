@@ -1,0 +1,10 @@
+# Experiment with isosurface appearance
+# using --transfer lit
+# hev-createLUT < test.dat > test.lut; volumeAppBuilder --scale 5 --applyLUT test.lut
+# pollupdate test.lut -- 'hev-createLUT < test.dat > test.lut; volumeAppBuilder --scale 5 --applyLUT test.lut'
+  0  0   0     1   .25
+120 .25  0    .25  .25
+128  10   10     0  .999
+130 .25  .25   0   .999
+255  0   1     0   1
+

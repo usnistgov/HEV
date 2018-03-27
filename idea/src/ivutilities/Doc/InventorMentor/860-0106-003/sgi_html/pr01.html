@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>About This Book</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="next" href="pr02.html" title="Color Plates"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">About This Book</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="index.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="pr02.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="preface"><div class="titlepage"><div><h2 class="title"><a name="id5364506"></a>About This Book</h2></div></div>
+<p><i>The Inventor Mentor</i> introduces graphics programmers and application developers to Open Inventor, an object-oriented 3D toolkit. Open Inventor is a library of objects and methods used for interactive 3D graphics. Although it is written in C++, Open Inventor also includes C bindings.</p>
+<p>For the sake of brevity, the examples included in this book are in C++. All C++ examples, as well as equivalent examples written in C, are available on-line. If you are new to the C++ language, see <a href="apa.html#id41783">Appendix A, &#8220;An Introduction to Object-Oriented Programming for C Programmers,&#8221;</a> to help you understand the references to classes, subclasses, and other object-oriented concepts used throughout this book. If you are using the C application programming interface, also see <a href="apb.html#id23008">Appendix B, &#8220;An Introduction to the C API.&#8221;</a></p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5364571"></a>What This Book Contains</h2></div></div>
+<p>This book describes how to write applications using the Open Inventor toolkit. <i>The Inventor Toolmaker</i>, a companion book for the advanced programmer, describes how to create new Inventor classes and how to customize existing classes. </p>
+<p><i>The Inventor Mentor</i> contains the following chapters:</p>
+<div class="itemizedlist"><ul type="disc"><li><p><a href="ch01.html#id29544">Chapter 1, &#8220;Overview,&#8221;</a> provides a general description of Open Inventor concepts and classes and how Inventor relates to OpenGL and the X Window System.</p>
+</li>
+<li><p><a href="ch02.html#id36498">Chapter 2, &#8220;An Inventor Sampler,&#8221;</a> presents a short program that creates a simple object. This program is then modified to show the use of important Inventor objects: engines, manipulators, and components. </p>
+</li>
+<li><p><a href="ch03.html#id18184">Chapter 3, &#8220;Nodes and Groups,&#8221;</a> introduces the concept of a scene graph and shows how to create nodes and combine them into different kinds of groups.</p>
+</li>
+<li><p><a href="ch04.html#id13751">Chapter 4, &#8220;Cameras and Lights,&#8221;</a> describes the camera nodes used to view a scene and the light nodes that provide illumination.</p>
+</li>
+<li><p><a href="ch05.html#id16293">Chapter 5, &#8220;Shapes, Properties, and Binding,&#8221;</a> describes how to create both simple and complex shapes and how to use property nodes, including material, draw style, and lighting model nodes. Binding materials and surface normals to shape nodes is also explained.</p>
+</li>
+<li><p><a href="ch06.html#id34138">Chapter 6, &#8220;Text,&#8221;</a> shows the use of 2D and 3D text nodes.</p>
+</li>
+<li><p><a href="ch07.html#id39277">Chapter 7, &#8220;Textures,&#8221;</a> describes how to apply textures to the surfaces of objects in a scene.</p>
+</li>
+<li><p><a href="ch08.html#id16021">Chapter 8, &#8220;Curves and Surfaces,&#8221;</a> explains how to use NURBS curves and surfaces.</p>
+</li>
+<li><p><a href="ch09.html#id14375">Chapter 9, &#8220;Applying Actions,&#8221;</a> describes how operations are applied to an Inventor scene graph. Actions include OpenGL rendering, picking, calculating a bounding box, calculating a transformation matrix, writing to a file, and searching the scene graph for certain types of nodes.</p>
+</li>
+<li><p><a href="ch10.html#id10433">Chapter 10, &#8220;Handling Events and Selection,&#8221;</a> explains how Inventor receives events from the window system. It also describes how the selection node manages a selection list and performs highlighting.</p>
+</li>
+<li><p><a href="ch11.html#id13752">Chapter 11, &#8220;File Format,&#8221;</a> describes Inventor's interchange file format, used for reading files into Inventor, writing files out from Inventor, and data exchanges such as copy and paste.</p>
+</li>
+<li><p><a href="ch12.html#id20078">Chapter 12, &#8220;Sensors,&#8221;</a> describes how Inventor sensors watch for certain types of events and invoke user-supplied callback functions when these events occur.</p>
+</li>
+<li><p><a href="ch13.html#id11499">Chapter 13, &#8220;Engines,&#8221;</a> describes how you can use Inventor engines to animate parts of a scene graph, or to create interdependencies among the nodes in the graph.</p>
+</li>
+<li><p><a href="ch14.html#id29093">Chapter 14, &#8220;Node Kits,&#8221;</a> introduces node kits, a convenient mechanism for creating groups of related Inventor nodes. Each node kit contains a catalog of nodes from which you select the desired nodes.</p>
+</li>
+<li><p><a href="ch15.html#id31593">Chapter 15, &#8220;Draggers and Manipulators,&#8221;</a> describes how to use draggers and manipulators, which are special objects in the scene graph that respond to user events. Manipulators are nodes with field values that can be edited directly by the user.</p>
+</li>
+<li><p><a href="ch16.html#id37269">Chapter 16, &#8220;Inventor Component Library,&#8221;</a> shows how to use Inventor's Xt components, which are program modules with a built-in user interface for changing the scene graph interactively. It also <a href="ch17.html#id19349">Chapter 17, &#8220;Using Inventor with OpenGL,&#8221;</a> discusses how to use Inventor with the OpenGL Library. </p>
+</li>
+</ul></div><p>There are three appendices:</p>
+<div class="itemizedlist"><ul type="disc"><li><p><a href="apa.html#id41783">Appendix A, &#8220;An Introduction to Object-Oriented Programming for C Programmers,&#8221;</a> describes basic concepts of object-oriented programming, including data abstraction and inheritance.</p>
+</li>
+<li><p><a href="apb.html#id23008">Appendix B, &#8220;An Introduction to the C API,&#8221;</a> explains the differences between the Open Inventor C and C++ interfaces.</p>
+</li>
+<li><p><a href="apc.html#id20971">Appendix C, &#8220;Error Handling,&#8221;</a> describes Inventor's error handling mechanism.</p>
+</li>
+</ul></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5362615"></a>How to Use This Book</h2></div></div>
+<p>It's unrealistic to expect anyone to read a lengthy programmer's guide from start to finish. After you read a few basic chapters, you can skim others and skip around, depending on your particular needs and goals. Here are a few suggested paths for making your way through this book.</p>
+<p>For a basic understanding of how to create nodes and connect them into scene graphs, read Chapters 1 through 5. Then read Chapter 9, &#8220;Applying Actions,&#8221; and Chapter 10, &#8220;Handling Events and Selection.&#8221; </p>
+<p>If you are mainly interested in reading files into the Inventor database, read Chapters 1 and 2 for an overview of Inventor, and then jump to Chapter 11, &#8220;File Format.&#8221;</p>
+<p>If you are an experienced OpenGL programmer, Chapters 1, 2, 10, and 17, &#8220;Using Inventor with OpenGL,&#8221; are important chapters to begin with. Again, for a basic understanding of building a scene graph, you also need to read Chapters 3 through 5 and Chapter 9.</p>
+<p>Chapter 15, &#8220;Draggers and Manipulators,&#8221; and Chapter 16, &#8220;Inventor Component Library,&#8221; describe the programming aspects of Inventor that have an associated user interface. The user interface for individual components is described in the on-line HELP cards provided for each class.</p>
+<p>Once you understand the basic material presented in Chapters 1 through 5, you can skip to Chapter 13, &#8220;Engines,&#8221; and Chapter 14, &#8220;Node Kits.&#8221; Engines, like nodes, are basic building blocks in the scene graph. They allow you to animate parts of the scene graph and to incorporate additional behavior into scene graph objects. If you are creating scene graphs, node kits offer many shortcuts.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5362702"></a>What You Should Know <br>
+Before Reading This Book</h2></div></div>
+<p>This book assumes you are familiar with basic concepts of 3D graphics programming. For example, it assumes you have a reasonable understanding of the following terms: <i>lighting, rendering, vertex, polygon, light source, picking, matrix, OpenGL, pixel, surface normal</i>. If these terms are new to you, consult one or two of the sources listed in &#8220;Suggestions for Further Reading,&#8221; later in this introduction.</p>
+<p>In addition, this book assumes you have some familiarity with concepts related to object-oriented programming. See &#8220;Suggestions for Further Reading&#8221; as well as Appendices A and B for good background information.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5362734"></a>Conventions Used in This Book</h2></div></div>
+<p>This book uses <span class="bold"><b>boldface text</b></span> font for all Inventor classes, methods, and field names: <span class="bold"><b>SoNode</b></span>, <span class="bold"><b>SoMaterial</b></span>, <span class="bold"><b>getValue()</b></span>, <span class="bold"><b>setValue()</b></span>,<span class="bold"><b> ambientColor</b></span>,<span class="bold"><b> and center</b></span>.   Parentheses  indicate  methods. Code examples are in Courier font.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5362786"></a>Tips</h3></div></div>
+<p>Several headings are used in paragrahs to highlight different kinds of text. Programming tips are marked with their own heading <span class="bold"><b>Tip:</b></span>. </p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5362803"></a>Advanced Information</h3></div></div>
+<p>Information that is considered advanced, and could be skipped during your first reading, is marked with their own heading <i>(Advanced)</i>. This heading can apply to a single paragraph or to an entire section or chapter.</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5362841"></a>Key to Scene Graph Diagrams</h2></div></div>
+<p><a href="pr01.html#id31464">Figure In-1</a> shows the symbols used in the scene graph diagrams that appear throughout this guide.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5362856"></a>Suggestions for Further Reading</h2></div></div>
+<p>For a general introduction to computer graphics, see the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Foley, J.D., A. van Dam, S. Feiner, and J.F. Hughes, <i>Computer Graphics Principles and Practice,</i> 2e. Reading, Mass.: Addison-Wesley, 1990.</p>
+</li>
+<li><p>Neider, Jackie, Tom Davis, Mason Woo,<i> OpenGL Programming Guide</i>. Reading, Mass.: Addison-Wesley, 1993.</p>
+</li>
+<li><p>Newman, W., and R. Sproull, <i>Principles of Interactive Computer Graphics</i>, 2e. New York: McGraw-Hill, 1979.</p>
+</li>
+</ul></div><p>For an introduction to the C++ language, see the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Lippman, Stanley B., A C++ <i>Primer</i>, 2e. Reading, Mass.:Addison-Wesley, 1991.</p>
+</li>
+<li><p>Shapiro, Jonathan<span class="bold"><b>,</b></span> A C++ <i>Toolkit</i>. Englewood Cliffs, N.J.: Prentice-Hall, Inc., 1991.</p>
+</li>
+</ul></div><p>For an introduction to object-oriented programming, see</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Meyer, Bertrand, <i>Object-Oriented Software Construction</i>. London: Prentice Hall International, 1988.</p>
+<p><div class="figure"><p><a name="id5362978"></a><b>Figure 1. <a name="id31464"></a><a name="idintro1"></a>Scene Graph Symbols</b></p>
+<div class="mediaobject"><img src="figures/intro-1.gif"></div></div><br>
+</p>
+</li>
+</ul></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5363022"></a>Acknowledgments</h2></div></div>
+<p>As a student of the Open Inventor toolkit, I am deeply indebted to the original Inventor mentors, who contributed so much to the development and content of this book: Rikk Carey, Gavin Bell, Alain Dumesny, Dave Immel, Paul Isaacs, Howard Look, David Mott, Paul Strauss, and Helga Thorvaldsdóttir. Even under the pressures of tight deadlines and numerous competing responsibilities, the members of the Inventor team consistently met my demands: they answered all questions, reviewed numerous drafts, and created the code examples that are the core of this book. Rikk Carey provided dynamic leadership for the Open Inventor project, rigorously questioning and challenging each decision. Paul Strauss, one of the chief architects of Inventor, probably read the most drafts and definitely added the most red (and green) ink to those drafts. His insightful and literate reviews were invaluable to me. Additional eagle-eyed reviewers included Ronen Barzel, Sam Chen, Beth Fryer, and Kevin Goldsmith.</p>
+<p>Putting all the pieces of the puzzle together&#8212;screen shots, line art, color plates, text, code examples&#8212;also required a large cast of people. Rikk Carey created the cover image. Catherine Madonia used Rikk's scene to create the black-and-white images for the part- and chapter-title pages. Paul Isaacs showed his creative genius&#8212;not to mention his ability to work under brutal deadlines&#8212;in creating the many models and scenes for the images shown in <a href="pr02.html#id86827">Figure In-2</a> through <a href="pr02.html#id54861">Figure In-22</a>. I'm also grateful to Maria Mortati, who designed the color plate section and persuaded me to make massive edits to the figure captions. Catherine Madonia helped by creating conceptual images and by taking snapshots of the example programs. The many details of dealing with vendors, coordinating printer tests and schedules, and producing the book were ably handled by Laura Cooper and Lorrie Williams. Line art was drawn by Kay Maitz, Cheri Brown, Dan Young, Howard Look, and Lorrie Williams. Helga Thorvaldsdóttir paid special attention to the code examples: writing many of them, and revising and polishing to the bitter end.</p>
+<p>Many thanks to Kirk Alexander, of the Interactive Computer Graphics Laboratory at Princeton University, who supplied numerous images and revisions to satisfy our requests precisely. The Out-of-Box Experience, an application originally designed for the Silicon Graphics Indy workstation, shown in <a href="pr02.html#id58562">Figure In-38</a> through <a href="pr02.html#id15924">Figure In-41</a>, was created by Leo Blume, Mark Daly, Kevin Goldsmith, Howard Look, and Chee Yu of Silicon Graphics, and Brad de Graf, Shari Glusker, Jill Huchital, Karen Hughes, Peter Oppenheimer, Mark Swain, Drew Takahashi, and Phil Zucco of (Colossal) Pictures. The art gallery tour shown in <a href="pr02.html#id11708">Figure In-31</a> is the work of Gavin Bell, Mark Daly, Kevin Goldsmith, and Linda Roy, all of Silicon Graphics. Many of the models used in the cover scene were created by Acuris, Inc.</p>
+<p>I'd also like to thank Jackie Neider, manager of Developer Publications in the Visual Magic Division of Silicon Graphics, and the other members of my department&#8212;Patricia Creek, Arthur Evans, Liz Deeth, Beth Fryer, Jed Hartman, Ken Jones, John Stearns, Eleanor Bassler, and Carol Geary&#8212;for their consistent support and encouragement during the course of this project (and for sharing the high-speed printer). </p>
+<p>And, most important, thanks to my husband, Steve, and my sons, Jeff and Evan, for a warm dinner and cheerful conversation at the end of some very long days.</p>
+</div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="index.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="pr02.html">Next</a></td></tr><tr><td width="40%" align="left">The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2 </td><td width="20%" align="center"> </td><td width="40%" align="right">Color Plates </td></tr></table></div></body></html>

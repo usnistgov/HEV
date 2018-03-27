@@ -1,0 +1,72 @@
+# objectsOnOff.timeline - 
+#
+#	  Turn objects off and then back on
+#         and Move to positions and grab an image at each:
+#               front, right, back, left, front, bottom, top front
+#                   
+# 4/10/15, Steve Satterfield
+#
+# This file is a modified from sideViews.timeline
+#
+#
+# Front
+00 EXEC echo "========> Starting Timeline <========"
+00 0 0 0 -0 0 -0 1
+01 DSO frameGrabber RESET
+01 DSO frameGrabber SETSEQNUM 0
+01 DSO frameGrabber SNAP
+01 EXEC /bin/echo -e "\a"
+#
+# Right
+04 -2 1.9999999999999996 0 -90.000002504478161 0 0 1
+00 NODEMASK sg_sphere OFF
+01 DSO frameGrabber SNAP
+00 EXEC /bin/echo -e "\a"
+04
+#
+# Back
+04 2.4492935982947064e-16 4 0 180.00000500895632 0 -0 1
+00 NODEMASK sg_cube OFF
+01 DSO frameGrabber SNAP
+00 EXEC /bin/echo -e "\a"
+04
+#
+# left
+00 NODEMASK sg_sphere OFF
+04 2 1.9999999999999996 0 90.000002504478161 0 -0 1
+00 NODEMASK sg_cylinder OFF
+01 DSO frameGrabber SNAP
+00 EXEC /bin/echo -e "\a"
+04 2 1.9999999999999996 0 90.000002504478161 0 -0 1
+#
+# Front
+04 0 0 0 -0 0 -0 1
+00 NODEMASK sg_cylinder ON
+01 DSO frameGrabber SNAP
+00 EXEC /bin/echo -e "\a"
+04 0 0 0 -0 0 -0 1
+#
+# Bottom
+04 0 1.9999999999999996 2 0 -90.000002504478161 0 1
+00 NODEMASK sg_sphere ON
+01 DSO frameGrabber SNAP
+00 EXEC /bin/echo -e "\a"
+04 
+#
+# Top
+4 0 1.9999999999999996 -2 0 90.000002504478161 0 1
+00 NODEMASK sg_cube ON
+01 DSO frameGrabber SNAP
+00 EXEC /bin/echo -e "\a"
+04
+#
+# Front
+04 0 0 0 -0 0 -0 1
+00 DSO frameGrabber SNAP
+00 EXEC /bin/echo -e "\a"
+01 DSO frameGrabber FLUSH
+01 DSO frameGrabber RESET
+00 EXEC echo "========> Timeline Completed <========"
+01 TERMINATE
+# End
+

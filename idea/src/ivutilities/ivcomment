@@ -1,0 +1,13 @@
+#! /bin/sh
+
+# ivcomment  - insert the command line parameters as inventor comments
+
+echo "#Inventor V2.0 ascii"
+
+while [ $# != 0 ]
+do
+	echo "#" $1
+	shift
+done
+iv_stdin_out
+

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# applyLUT - see usage
+
+# steve@nist.gov
+
+case $# in
+1)
+      lutFile=$1
+      ;;
+*)
+      echo "Usage: applyLUT file.lut"
+      echo
+      echo "  Apply look up table, aka transfer function, to running application"
+      echo
+      exit
+      ;;
+esac
+
+# create reference images
+hev-LUT2png  $lutFile transferLUT.png
+hev-LUT2plot $lutFile transferPlot.png
+
+# process transfer function to create 2D pre-integrated transfer table
+scale=1
+hev-preintegrate $scale < $lutFile  > transfer.mhd
+
+# (re)load transfer function and volume
+hev-applyState -s transfer.osg volume

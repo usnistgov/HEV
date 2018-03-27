@@ -1,0 +1,54 @@
+.TH hev-vtkCleanPolyData
+.SH NAME
+hev-vtkCleanPolyData - clean up polygonal data
+
+.SH SYNOPSIS
+.B hev-vtkCleanPolyData [ options ] inFName outFName
+
+.SH DESCRIPTION
+.B hev-hev-vtkCleanPolyData
+Cleans up polygonal data. For example: merges duplicate points,
+removes unused points and removes degenerate cells.
+
+.PP
+
+.SH OPTIONS
+.TP
+.B --pointTolerance or --p VALUE.
+Specifies tolerance for merging points.
+Default is 0.0.
+
+.SH PARAMETERS
+.TP
+.B inFName
+Location/filename of input file in poly data format.
+
+.TP
+.B outFName
+Location/filename of output file in poly data format.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+  hev-vtkCleanPolyData polyFile.vtk cleanPolyFile.vtk
+
+Cleans polyFile.vtk with 0.0 absolute tolerance and writes output into
+cleanPolyFile.vtk.
+
+
+.SH SEE ALSO
+
+hev-vtkContour, vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+June 20th 2012

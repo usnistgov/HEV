@@ -1,0 +1,106 @@
+.TH NETX-AVGDEGCONN 1 "23 July 2012"
+
+.SH NAME
+
+netx-avgDegConn
+
+
+.SH SYNOPSIS
+
+.B netx-avgDegConn
+.I  inputFile
+.I outNode
+(directed graph only)
+.I inNode
+(directed graph only)
+
+.SH GRAPH LIMITATIONS
+\fBDirected:\fR Yes
+.br
+\fBUndirected:\fR Yes
+.br
+\fBSelf-Loops:\fR Yes
+.br
+\fBParallel Edges:\fR Yes
+.br
+\fBOther:\fR None
+.br .br
+.PP
+.SH DESCRIPTION
+
+\fBnetx-avgDegConn\fR lists the degree connectivity of the various degrees of the graph. This function uses a software package called NetworkX that must be installed for the function to work.
+.br .P
+.br .P
+.PP
+Example Output:					
+.br .P										0 0.0		
+.br
+1 0.491803278688 							
+.br .P
+2 3.75
+.br 								
+.br .P
+Where the first number is the degree and the second number is the average connectivity of that degree.
+.br .P
+.br .P
+.PP
+\fBinputFile\fR is a file in edge-list format that contains only text. It does not have any header information. The nodes can have any name, as long as each node has a unique name (i.e. you can't have two nodes both named "sam" in the same graph). Optionally, after listing the two nodes, various other edge attributes can be assigned. In this function, the first value is assumed to be the weight of the edge. No other attribute is used in this function. Below are two example input files. The first has no attributes, the second does.
+.br .P
+.PP
+Example One:
+.br .P
+node1 node2 
+.br .P
+node3 node1
+.br .P
+node4 node5
+.br .P
+.br .P
+.PP
+Where there is an edge between the two nodes on the same line.
+.br .P
+.br .P
+.PP
+Example Two:
+.br .P
+node1 node2 4
+.br .P
+node3 node1 3.14
+.br .P
+node4 node5 2
+.br .P
+.br .P
+.PP
+Where there is an edge between the first two entries (nodes) on the same line and the third number is the weight of that edge.
+.br .P
+.br .P
+.PP
+\fBoutNode\fR is for directed graphs only. It gives the degree type for the source node. The options are 'in', 'out', and 'in+out'. These are the only three options. If outNode is given, inNode must also be given.
+.br .P
+.br .P
+.PP
+\fBinNode\fR is for directed graphs only. It gives the degree type for the targe node. The options are 'in', 'out', and 'in+out'. These are the only three options. If inNode is given, outNode must also be given.
+.br .P
+.br .P
+.PP
+.SH EXAMPLE CALL OF FUNCTION
+.br
+\fBDirected Graph:\fR avgDegConn input.txt out in
+.br .P
+\fBUndirected Graph:\fR avgDegConn input.txt
+.br .P
+.br .P
+.PP
+.SH AUTHOR
+
+Zachary Keller
+
+.PP
+July 2012
+
+.PP 
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/hpcvg/

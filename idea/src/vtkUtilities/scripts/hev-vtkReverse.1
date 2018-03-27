@@ -1,0 +1,64 @@
+.TH hev-vtkReverse
+.SH NAME
+hev-vtkReverse - reverse normal vectors and/or cell ordering from a VTK data file
+
+.SH SYNOPSIS
+.B hev-vtkReverse [ options ] inFName outFName
+
+.SH DESCRIPTION
+.B hev-vtkReverse
+Optionally reverses normal vectors and/or cell odering (isosurfaces or isolines) from VTK data files.
+
+If no argument is given, both cells and normals will be reversed.
+Giving -CellOnly (short: -c) as only argument, will cause cell order reversal, but not normal vectors reversal of the given file.
+The same goes for -NormalOnly (short: -n). This is used to reverse normal vectors to have them point outward rather than inward.
+
+.PP
+
+.SH OPTIONS
+.TP
+.B -CellOnly or -c
+Enables cell order reversal
+
+.TP
+.B -NormalOnly or -n
+Enables normal vector reversal
+
+
+.SH PARAMETERS
+.TP
+.B inFName
+Location/filename of input file.
+This file has to be in VTK format.
+.TP
+.B outFName
+Location/filename of output file. 
+This file is written in VTK format.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  These files can
+be used as input to this program.
+For example:
+
+  hev-vtkReverse cube.vtk cube_reversed.vtk
+
+The output file (cube_reversed.vtk) should have both, normal vectors and cell ordering, reversed.
+See example data.
+
+.SH NOTES
+
+This program was designed to only allow one of the two options. It will throw an error message if both of them are used.
+
+.SH SEE ALSO
+
+hev-vtkAddNormals, vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+May 10th 2012

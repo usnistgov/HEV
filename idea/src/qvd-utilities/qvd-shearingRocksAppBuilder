@@ -1,0 +1,280 @@
+#! /bin/bash
+
+# qvd-shearingRocksAppBuilder
+
+# steve@nist.gov
+version="20130116"
+
+function usage {
+
+cat <<EOF
+
+ Usage: qvd-shearingRocksAppBuilder [--verbose] [--tim|--iris] [--box x y z] rocksDir rocksTemplate file.qvisdat
+
+   Build an application for suspension flow of shearing rocks based on
+   an input set of rocks, rocksDir, and a qvisdat file, file.qvisdat.
+
+   rockTemplate is a string which forms a printf-style template for
+   existing polygonal rock shape files. These files must be savg
+   format.
+
+   The application will be self contained in the $visApp subdirectory.
+   The directory $visApp will be created, so it must not exist prior
+   to executing this command.
+
+ For details, see man page.
+
+ Version: $version
+
+EOF
+exit 1
+}
+
+
+
+function tim_extras {
+
+animator=animator.mcp
+cat > $animator <<EOF
+SIZE 85 20
+BUTTON Animate
+FIRST EXEC ./run_hev-director.sh > \$IRIS_CONTROL_FIFO
+ON EXEC hev-showWindow hev-director
+OFF EXEC hev-hideWindow hev-director
+
+EOF
+
+N=`grep frames tim.out | awk '{print $1;}'`
+N=$((N-1))
+if [ "$verbose" != "" ] ; then
+  echo "Frames: 0 to" $N
+fi
+
+cat > run_hev-director.sh <<EOF
+#! /bin/bash
+
+(hev-director --noescape --last $N & echo kill \$! > \$IRIS_CONTROL_FIFO) | awk '
+{
+   print "UNIFORM ${outname} frame uint 1",\$1;
+   fflush("");
+}'
+
+EOF
+chmod +x run_hev-director.sh
+
+}
+
+
+
+
+
+####################
+# Main Starts Here #
+####################
+
+
+visApp=shearingRocksVis
+#range="-15 -15 -15 15 15 15"
+box="30 30 30"
+
+verbose=""
+
+usageFlag=0
+animationType="tim"
+
+# look for --verbose 
+case $# in
+0)
+	:
+	;;
+*)
+	case $1 in
+	    -v*|--v*)
+		verbose="--verbose"
+		shift
+		;;
+	esac
+	;;
+esac
+
+# look for --tim or --iris
+case $# in
+0)
+	:
+	;;
+*)
+	case $1 in
+	    -t*|--t*)
+		animationType="tim"
+		shift
+		;;
+	    -i*|--i*)
+		animationType="iris"
+		shift
+		;;
+	esac
+	;;
+esac
+
+# look for --box x y z
+case $# in
+0)
+	:
+	;;
+*)
+	case $1 in
+	    -b*|--b*)
+		shift
+		case $# in
+		    6)
+			box="$1 $2 $3"
+			shift
+			shift
+			shift
+			;;
+		    *)
+			usage
+			;;
+		    esac
+		;;
+	esac
+	;;
+esac
+
+
+
+
+case $# in
+3)
+	usageFlag=1
+	;;
+esac
+
+if [ $usageFlag == 0 ]
+then
+    usage
+fi
+	
+
+rocksDir=$1
+rocksTemplate=$2
+qvisdat=$3
+
+if [ "$verbose" != "" ] ; then
+    echo "verbose=" $verbose
+    echo "animationType=" $animationType
+    echo "rocksDir=" $rocksDir
+    echo "rocksTemplate=" $rocksTemplate
+    echo "qvisdat=" $qvisdat
+    echo "box=" $box
+fi
+
+
+
+if [ -d $visApp ]
+then
+    echo "delete or rename directory named: $visApp"
+    exit
+fi
+
+mkdir $visApp
+
+cp -a $rocksDir $visApp
+cp -a $qvisdat $visApp
+
+cd $visApp
+mkdir rockDir
+
+outname=rocks
+
+if [ "$animationType" == "iris" ]
+then
+
+  p=0
+  outFile=${outname}.iris
+
+  if [ "$verbose" != "" ] ; then
+  echo \
+  qvd-toIRIS $verbose --parallel $p $rocksDir/$rocksTemplate $qvisdat $outFile rockDir nickid
+  fi
+  qvd-toIRIS $verbose --parallel $p $rocksDir/$rocksTemplate $qvisdat $outFile rockDir nickid
+
+  animator=animator.mcp
+  hev-animatorMCP nogeometry_rocks.iris > $animator
+
+
+else
+
+  if [ "$verbose" != "" ] ; then
+  echo running: \
+  qvd-toTIM $verbose $rocksDir/$rocksTemplate $qvisdat ${outname}.timo ${outname}.timf
+  fi
+  qvd-toTIM $verbose $rocksDir/$rocksTemplate $qvisdat ${outname}.timo ${outname}.timf
+
+  if [ "$verbose" != "" ] ; then
+  echo running: \
+  hev-tim ${outname}.timo ${outname}.timf ${outname}
+  fi
+  hev-tim ${outname}.timo ${outname}.timf ${outname} > tim.out
+
+  outFile=${outname}.osg  # created by hev-tim
+
+  tim_extras
+  
+fi
+
+# Convert to osgb and add Nick's preferred orientation
+iris-convert $outFile.90,0,0.rot ${outname}.osgb
+# Or use this for no orientation change
+#iris-convert $outFile ${outname}.osgb
+
+
+#
+# Build the final application
+#
+
+
+qvd-wireBox $box .5 .5 .5 box.osgb
+
+hev-moo box.osgb ${outname}.osgb > moo.iris
+
+
+
+cat > light2.iris <<EOF
+# add a second light 
+LIGHTNODE light2 ON POSITION 0 -.707 .707 1 ATTENUATION LINEAR 1
+EOF
+
+cat > light2.mcp <<EOF
+# add a button for second light
+BUTTON Light2
+ON  ADDCHILD    light2 scene
+OFF REMOVECHILD light2 scene
+EOF
+
+extraLight="light2.iris light2.mcp"
+
+
+cat > runapp <<EOF
+#! /bin/bash
+
+irisfly \$* --examine  moo.iris $animator clip.mcp $extraLight
+
+EOF
+chmod +x runapp
+
+#
+# Clean up files not needed in final app
+#
+
+rm -rf data3.qvisdat savg.66 rockDir rocks.iris 
+rm -rf rocks.osg  rocks.timf  rocks.timo  tim.out
+
+
+#
+# All done
+#
+echo
+echo "To execute:"
+echo "cd $visApp"
+echo "./runapp"

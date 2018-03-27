@@ -1,0 +1,69 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH qvd-toTIM 1 "January 2013" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+qvd-toTIM
+- convert .qvisdat file to files suitable for \fBhev-tim\fR.
+
+.SH SYNOPSIS
+.B "qvd-toTIM"
+[Options] rockTemplate inFile.qvisdat out.timo out.timf
+
+.SH DESCRIPTION
+.PP
+.I
+qvd-toIRIS
+converts a 
+.B .qvisdat file
+to 
+.B hev-tim
+files: \fBfile.timo\fR - TIM objects file,
+\fBfile.timf\fR - TIM frames file.
+See
+.B hev-tim(1)
+for details.
+
+
+
+.SH OPTIONS
+.TP
+.B "--verbose"
+produces some  mildly interesting spewage
+
+
+.SH REQUIRED PARAMETERS
+
+.TP
+.B rockTemplate
+is a string which forms a
+printf-style template for existing polygonal rock shape files.
+These files must be \fI.savg\fR format
+(e.g. rocks/rock.poly.%02d.savg)
+
+.TP 
+.B inFile.qvisdat
+is a QVISDAT format data file. This is a text file format, documented
+in comments in the file header.
+
+.TP
+.B out.timo
+is the output TIM objects file. Is should end in \fB.timo\fR.
+
+.TP
+.B out.timf
+is the output TIM frames file. Is should end in \fB.timf\fR.
+
+
+.SH SEE ALSO
+.I
+iris-fly(1),
+printf(1), hev-tim(1).
+
+
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov,  NIST/ITL/ACMD/HPCVG
+.br
+Much credit goes to Marc Olano. This program borrowed heavily,
+i.e. directly lifted sections, from hev-qvToNpr
+

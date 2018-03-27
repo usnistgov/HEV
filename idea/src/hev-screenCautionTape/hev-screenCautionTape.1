@@ -1,0 +1,64 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-screenCautionTape  1 "February 2015" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-screenCautionTape
+
+
+.SH SYNOPSIS
+.B "hev-screenCautionTape"
+
+.PP
+.B screenCautionTape.iris
+
+.PP
+.B virtualCautionTape.iris
+
+.SH DESCRIPTION
+.PP
+.I
+\fBhev-sceenCautionTape\fR displays \fIVirtual Caution Tape\fR
+approximately one foot in front of the left and front screens.  The
+caution tape is display on the floor. The caution tape image is simply
+image displayed on the CAVE floor.
+
+.PP
+The image is not in the 3D scene, so this command should be run after
+the irisfly graphics is displayed so it will be displayed on top of
+the \fIirisfly\fR graphics.
+
+.PP
+For convenience, this command can also be executed via \fIirisfly\fR
+by loading \fBscreenCautionTape.iris\fR. This method has the advantage
+that it will exit when \fIirisfly\fR exits.
+
+.PP
+An alternate \fIvirtual\fR caution tape is also available by loading
+\fBvirtualCautionTape.iris\fR. This alternate form does place the
+caution tape in the 3D scene. Its loaded under it \fBIRIS scene
+node\fR. This has the advantage of being visually consistent with the
+3D world, but has the disadvantage that data in the virtual works can
+obscure the caution tape.
+
+
+.PP
+This command only works on HEV CAVE host systems. It silently exits
+when not on a CAVE host.
+
+
+.SH EXAMPLE
+irisfly --ex tape.osg screenCautionTape.iris
+
+
+
+.SH "SEE ALSO"
+irisfly(1), hev-identifyImmersive(1)
+
+.SH AUTHOR
+.PP
+Steven G. Satterfield
+.br
+steve@nist.gov
+.br
+NIST/ITL/ACMD/HPCVG
+

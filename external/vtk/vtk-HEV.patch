@@ -1,0 +1,12 @@
+diff -ur VTK5.10.1/Rendering/vtkXOpenGLRenderWindow.cxx VTK5.10.1-HEV/Rendering/vtkXOpenGLRenderWindow.cxx
+--- VTK5.10.1/Rendering/vtkXOpenGLRenderWindow.cxx	2012-10-15 16:33:21.000000000 -0400
++++ VTK5.10.1-HEV/Rendering/vtkXOpenGLRenderWindow.cxx	2015-12-28 14:29:16.150438626 -0500
+@@ -27,7 +27,7 @@
+ 
+ // define GLX_GLXEXT_LEGACY to prevent glx.h to include glxext.h provided by
+ // the system
+-//#define GLX_GLXEXT_LEGACY
++#define GLX_GLXEXT_LEGACY
+ #include "GL/glx.h"
+ 
+ #include "vtkgl.h"

@@ -1,0 +1,1117 @@
+#include <fstream>
+
+// separate out the fltk arguments from the others
+int fltk_argc;
+char **fltk_argv;
+int other_argc;
+char **other_argv;
+
+// if we need to to stop, change it to false when it's time to exit
+bool running = true ;
+
+// ignore escapes and close window buttons
+bool noescape = false ;
+void doNothingCB(Fl_Widget*, void*) { } ;
+
+// for parsing input
+int fileNumber = 0 ;
+// the files are part of a movie
+bool inMovie = false ;
+
+// default values for options you can set in the input file
+bool defaultLoopValue = false ;
+bool defaultAutoStartValue = false ;
+float defaultFPSValue = 30 ;
+bool defaultAutoPlayValue = false ;
+bool defaultReplayValue = false ;
+float defaultTimeValue = 10.0 ;
+bool defaultDebugValue = false ;
+
+// options you can set in the input file
+bool fileLoopValue = defaultLoopValue ;
+bool fileAutoStartValue = defaultAutoStartValue ;
+float fileFPSValue = defaultFPSValue ;
+bool fileAutoPlayValue = defaultAutoPlayValue ;
+bool fileReplayValue = defaultReplayValue ;
+float fileTimeValue = defaultTimeValue ;
+bool fileDebugValue = defaultDebugValue ;
+std::string fileEchoValue ;
+
+class Frame
+{
+ public:
+    Frame() { autoStart = fileAutoStartValue ; loop = fileLoopValue ; fps = fileFPSValue ; debug = fileDebugValue ; echo = fileEchoValue ; } ; 
+    int fileNumber ;
+    bool autoStart ;
+    bool loop ;
+    float fps ;
+    bool debug ;
+    std::string echo ;
+} ;
+
+class Slide
+{
+ public:
+    Slide() { movie = inMovie ; autoPlay = fileAutoPlayValue ; replay = fileReplayValue ; time = fileTimeValue ; } ;
+    // if it's a single slide the vector has just one element and Frames::number is all that's needed
+    std::vector<Frame*> frames ;
+    bool movie ;
+    bool autoPlay ;
+    bool replay ;
+    float time ;
+} ;
+
+std::vector<Slide*> slides ;
+
+// what slide are we on?
+int currentSlideNumber = 0 ;
+
+// the slide being built as files are read in
+Slide* newSlide = NULL ;
+
+// the fifo to read control commands
+// only used if $HEV_PRESENTER_FIFO is set
+iris::FifoReader *fifo = NULL ;
+
+// temp file used to send slide file names to hev-imageDisplay
+// use a temp file so we don't need to create a pipe to echo the file names
+// make the forked command easier to kill
+char* tmpFileName ;
+FILE* tmpFILE ;
+
+// PID of hev-imageDisplay 
+pid_t imageDisplayPid = 0 ;
+
+// shared memory to control hev-imageDisplay
+int currentFileNumber = 0 ;
+std::string currentFileNumberShmName = "hev-presenter/currentFileNumber" ;
+dtkSharedMem* currentFileNumberShm ;
+
+// is a movie playing?
+bool moviePlaying = false ;
+// what direction?
+bool forward = true ;
+// what frame?
+int currentFrameNumber = 0 ;
+
+// any PLAY commands reached?
+bool anyAutoPlay = false ;
+
+// are we autoPlaying?
+bool autoPlaying = false ;
+
+// forward references
+void cleanup() ;
+void signalCatcher(int s) ;
+bool createImageDisplay() ;
+void printSlides() ;
+bool parseMovieOptions(std::vector<std::string>& vec) ;
+bool parsePlayOptions(std::vector<std::string>& vec) ;
+bool addSlide(std::string& line) ;
+bool getDisplayFromWindowDSO(char* window, std::string* display) ;
+bool getImageDisplayOptions(std::string* envvars, std::string* options) ;
+bool init(int argc, char **argv) ;
+void usage() ;
+void movieTimerCallback(void*) ;
+void moviePlay() ;
+void autoPlayTimerCallback(void*) ;
+void setAutoPlay(bool b) ;
+void autoPlayStart(bool noWait=false) ;
+void autoPlayStop(bool turnOffAutoPlayBox=true) ;
+void slideNumber(int n) ;
+void setSlideNumber(int n) ;
+void previousSlide() ;
+void nextSlide() ;
+void firstSlide() ;
+void lastSlide() ;
+void setMovieButtons() ;
+void movieFrameNumber(int n) ;
+void movieJumpToStart();
+void movieJumpToEnd();
+void moviePlayBackward() ;
+void moviePlayForward() ;
+void movieStop() ;
+void movieStepBackward() ;
+void movieStepForward() ;
+void movieStart() ;
+bool getMovieAutoStart() ;
+bool getMovieLoop() ;
+float getMovieFPS() ;
+void GUIpressed() ;
+bool debug() ;
+void fifoTimerCallback(void*) ;
+
+////////////////////////////////////////////////////////////////////////
+// called by the signal catcher set in main()
+void signalCatcher(int s)
+{
+    running = false ;
+}
+
+////////////////////////////////////////////////////////////////////////
+void cleanup()
+{
+    if (fifo) delete fifo ;
+    if (tmpFILE)
+    {
+	unlink(tmpFileName) ;
+	tmpFILE = NULL ;
+    }
+    if (imageDisplayPid != 0) kill(imageDisplayPid,SIGTERM) ;
+    if (!window) exit(0) ;
+}
+
+////////////////////////////////////////////////////////////////////////
+// create an hev-imageDisplay process with our slides
+bool createImageDisplay() 
+{
+
+    std::string imageDisplayEnvvars ;
+    std::string imageDisplayOptions ;
+
+    if (!getImageDisplayOptions(&imageDisplayEnvvars, &imageDisplayOptions))
+    {
+	return false ;
+    }
+
+    //if (debug()) fprintf(stderr, "imageDisplayOptions = \"%s\"\n",imageDisplayOptions.c_str()) ;
+
+    std::string execCommand = "exec env " + imageDisplayEnvvars + " hev-imageDisplay " ;
+    execCommand += imageDisplayOptions ;
+    execCommand += " --noescape --shm " ;
+    execCommand += currentFileNumberShmName ;
+    execCommand += " - < " ;
+    execCommand += tmpFileName ;
+    
+    if (debug()) fprintf(stderr, "hev-presenter::createImageDisplay: exec command: \"%s\"\n",execCommand.c_str()) ;
+
+    char* eargv[4] ;
+    eargv[0] = const_cast<char*>("sh") ;
+    eargv[1] = const_cast<char*>("-c") ;
+    eargv[2] = const_cast<char*>(execCommand.c_str()) ;
+    eargv[3] = NULL ;
+
+    imageDisplayPid = fork() ;
+    if (imageDisplayPid == -1)
+    {
+	dtkMsg.add(DTKMSG_ERROR, "hev-presenter::createImageDisplay: unable to fork!\n") ;
+	return false ;
+    }
+    else if (imageDisplayPid == 0)
+    {
+	int ret = execvp("sh",eargv) ;
+	dtkMsg.add(DTKMSG_ERROR, "hev-presenter::createImageDisplay: if you see this something went wrong with the exec, ret = %d\n",ret) ;
+	return false ;
+    }
+
+    return true ;
+}
+
+////////////////////////////////////////////////////////////////////////
+// print the slides for debugging
+void printSlides()
+{
+    for (unsigned int sn=0; sn<slides.size(); sn++)
+    {
+	Slide* slide = slides[sn] ;
+	if (slide->movie)
+	{
+	    fprintf(stderr,"slide: %d, autoPlay = %d, replay = %d, time = %f\n",sn, slide->autoPlay, slide->replay, slide->time) ;
+	    for (unsigned int fn=0; fn<slide->frames.size(); fn++)
+	    { 
+		Frame* frame = slide->frames[fn] ;
+		fprintf(stderr,"  frame: %d, autoStart = %d, loop = %d, fps = %f, file number %d echo = \"%s\"\n",fn, frame->autoStart, frame->loop, frame->fps, frame->fileNumber, frame->echo.c_str()) ;
+	    }
+	}
+	else
+	{
+	    fprintf(stderr,"slide: %d, autoPlay = %d, replay = %d, time = %f, file number %d echo = \"%s\"\n",sn, slide->autoPlay, slide->replay, slide->time, slide->frames[0]->fileNumber,slide->frames[0]->echo.c_str()) ;
+	}
+    }
+    fprintf(stderr,"\n\n") ;
+}
+
+////////////////////////////////////////////////////////////////////////
+bool parseMovieOptions(std::vector<std::string>& vec)
+{
+    // no options
+    if (vec.size() == 1) return true ;
+
+    if (vec.size() > 7) 
+    {
+	dtkMsg.add(DTKMSG_ERROR, "hev-presenter::parseMovieOptions: too many movie options\n") ;
+	return false ;
+    }
+
+    for (unsigned int i=1; i<vec.size(); i+=2)
+    {
+	if (iris::IsSubstring("autostart",vec[i],3))
+	{
+	    bool onOff ;
+	    if (i+1<vec.size() && iris::OnOff(vec[i+1],&onOff)) fileAutoStartValue = onOff ;
+	    else
+	    {
+		dtkMsg.add(DTKMSG_ERROR, "hev-presenter::parseMovieOptions: missing or invalid AUTOSTART option\n") ;
+		return false ;
+	    }
+	}
+	else if (iris::IsSubstring("loop",vec[i],3))
+	{
+	    bool onOff ;
+	    if (i+1<vec.size() && iris::OnOff(vec[i+1],&onOff)) fileLoopValue = onOff ;
+	    else
+	    {
+		dtkMsg.add(DTKMSG_ERROR, "hev-presenter::parseMovieOptions: missing or invalid LOOP option\n") ;
+		return false ;
+	    }
+	}
+	else if (iris::IsSubstring("fps",vec[i],3))
+	{
+	    float fps ;
+	    if (i+1<vec.size() && iris::StringToFloat(vec[i+1],&fps) || fps<0)
+	    {
+		fileFPSValue = fps ;
+	    }
+	    else
+	    {
+		dtkMsg.add(DTKMSG_ERROR, "hev-presenter::parseMovieOptions: missing or invalid FPS option\n") ;
+		return false ;
+	    }
+	}
+	else
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::parseMovieOptions: invalid option\n") ;
+	    return false ;
+	}
+    }
+
+    return true ;
+}
+
+////////////////////////////////////////////////////////////////////////
+bool parsePlayOptions(std::vector<std::string>& vec)
+{
+    // no options
+    if (vec.size() == 1) return true ;
+
+    if (vec.size() > 5) 
+    {
+	dtkMsg.add(DTKMSG_ERROR, "hev-presenter::parsePlayOptions: too many play options\n") ;
+	return false ;
+    }
+
+    for (unsigned int i=1; i<vec.size(); i+=2)
+    {
+	if (iris::IsSubstring("replay",vec[i],3))
+	{
+	    bool onOff ;
+	    if (i+1<vec.size() && iris::OnOff(vec[i+1],&onOff)) fileReplayValue = onOff ;
+	    else
+	    {
+		dtkMsg.add(DTKMSG_ERROR, "hev-presenter::parsePlayOptions: missing or invalid replay option\n") ;
+		return false ;
+	    }
+	}
+	else if (iris::IsSubstring("time",vec[i],3))
+	{
+	    float time ;
+	    if (i+1<vec.size() && iris::StringToFloat(vec[i+1],&time) || time<0) fileTimeValue = time ;
+	    else
+	    {
+		dtkMsg.add(DTKMSG_ERROR, "hev-presenter::parsePlayOptions: missing or invalid Time option\n") ;
+		return false ;
+	    }
+	}
+	else
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::parsePlayOptions: invalid option\n") ;
+	    return false ;
+	}
+    }
+
+    return true ;
+}
+
+////////////////////////////////////////////////////////////////////////
+// process a line of data, adding it to slide
+bool addSlide(std::string& line)
+{
+    std::vector<std::string> vec = iris::ParseString(line) ;
+    if (vec.size() == 0) return true ;
+
+    //fprintf(stderr," addSlide: line = %s\n",line.c_str()) ;
+
+    // begin/end movie, play/stop
+    if (iris::IsSubstring("beginmovie",vec[0],3))
+    {
+	if (inMovie)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::addSlide: BEGINMOVIE reached while already in a movie\n") ;
+	    return false ;
+	}
+	if (!parseMovieOptions(vec)) return false ;
+	inMovie = true ;
+	// implies the beginning of a new slide
+	newSlide = new Slide ;
+    }
+
+    else if (iris::IsSubstring("movie",vec[0],3))
+    {
+	if (!parseMovieOptions(vec)) return false ;
+    }
+
+    else if (vec.size() == 1 && iris::IsSubstring("endmovie",vec[0],3))
+    {
+	if (!inMovie)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::addSlide: ENDMOVIE reached while not in a movie\n") ;
+	    return false ;
+	}
+	inMovie = false ;
+	// implies the end of the slide
+	slides.push_back(newSlide) ;
+
+	if (newSlide->frames.size() == 0)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::addSlide: movie contains no frames\n") ;
+	    return false ;
+	}
+
+	if (newSlide->frames.size() == 1)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::addSlide: movie containing a single frame wil be treated as a slide\n") ;
+	    newSlide->movie = false ;   
+	}
+    }
+
+    else if (iris::IsSubstring("play",vec[0],3))
+    {
+	if (inMovie)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::addSlide: PLAY reached while in a movie\n") ;
+	    return false ;
+	}
+	if (!parsePlayOptions(vec)) return false ;
+	fileAutoPlayValue = true ;
+	anyAutoPlay = true ;
+    }
+
+    else if (iris::IsSubstring("slide",vec[0],4))
+    {
+	if (inMovie)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::addSlide: SLIDE reached while in a movie\n") ;
+	    return false ;
+	}
+	if (!parsePlayOptions(vec)) return false ;
+    }
+
+    else if (vec.size() == 1 && iris::IsSubstring("stop",vec[0],3))
+    {
+	if (inMovie)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::addSlide: STOP reached while in a movie\n") ;
+	    return false ;
+	}
+	fileAutoPlayValue = false ;
+    }
+
+    else if ((vec.size() == 2 && iris::IsSubstring("debug",vec[0],3)))
+    {
+	bool onOff ;
+	if (iris::OnOff(vec[1],&onOff)) fileDebugValue = onOff ;
+	else
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::addSlide: missing or invalid DEBUG option\n") ;
+	    return false ;
+	}
+	if (debug()) fprintf(stderr,"DEBUG ON\n") ;
+	else fprintf(stderr,"DEBUG OFF\n") ;
+    }
+    
+    else if (iris::IsSubstring("echo",vec[0],3))
+    {
+	fileEchoValue += iris::ChopFirstWord(line) ;
+    }
+    
+    // should be the names of image files to pass to hev-imageDisplay
+    else
+    {
+	for (unsigned int i=0; i<vec.size(); i++)
+	{
+	    // expand shell meta characters for each file
+	    // this can result in multiple filenames, so it returns a vector
+	    std::vector<std::string> evec = iris::Wordexp(vec[i]) ;
+	    for (unsigned int j=0; j<evec.size(); j++)
+	    {
+		//if (debug()) fprintf(stderr,"    addSlide: file %s\n",evec[j].c_str()) ;
+	    
+		Frame* frame = new Frame ;
+		// reset ECHO for every slide/frame
+		fileEchoValue = "" ;
+		frame->fileNumber = fileNumber ;
+		// if we're in a movie, just add a frame to the current slide
+		if (inMovie)
+		{
+		    newSlide->frames.push_back(frame) ;
+		}
+		else
+		{
+		    newSlide = new Slide ;
+		    newSlide->frames.push_back(frame) ;
+		    slides.push_back(newSlide) ;
+		}
+		// write the filename to the temp file for hev-imageDisplay
+		fprintf(tmpFILE, "# %d\n%s\n", fileNumber, evec[j].c_str()) ;
+		fileNumber++ ; 
+	    }
+	}
+    }
+    return true ;
+}
+
+////////////////////////////////////////////////////////////////////////
+// liberally stolen from iris-DISPLAYfromWindow
+bool getDisplayFromWindowDSO(char* window, std::string* display)
+{
+    //~dtkMsg.add(DTKMSG_NOTICE, "hev-presenter::getDisplayFromWindowDSO: window \"%s\"\n",window) ;
+    // always create a scenegraph object if reading files
+    // but you don't need a viewer
+    iris::SceneGraph isg(false) ;
+
+    // load DSO
+    iris::LoadFile(window) ;
+
+    // find the first window
+    std::vector<osg::ref_ptr<iris::Window> > wl = iris::Window::getWindowList() ;
+    if (wl.size()==0)
+    {
+	dtkMsg.add(DTKMSG_ERROR,"hev-presenter::getDisplayFromWindowDSO: no Windows defined\n") ;
+	return false ;
+    }
+    else if (wl.size()>1)
+    {
+	dtkMsg.add(DTKMSG_ERROR,"hev-presenter::getDisplayFromWindowDSO: %d Windows defined\n",wl.size()) ;
+	return false ;
+    }
+
+    osg::GraphicsContext::Traits* traits = wl[0]->getTraits() ;
+    *display = traits->displayName() ;
+    if (debug()) fprintf(stderr, "hev-presenter::getDisplayFromWindowDSO: windowName \"%s\" display \"%s\"\n",traits->windowName.c_str(),(*display).c_str()) ;
+    //~dtkMsg.add(DTKMSG_NOTICE, "hev-presenter::getDisplayFromWindowDSO: windowName \"%s\" display \"%s\"\n",traits->windowName.c_str(),(*display).c_str()) ;
+
+    return true ;
+}
+
+////////////////////////////////////////////////////////////////////////
+bool getImageDisplayOptions(std::string* envvars, std::string* options)
+{
+    std::string raveOptions = "-geometry +150+150 -title slideshow" ;
+    std::string powerwallOptions = "-geometry +100+100 -title slideshow" ;
+    std::string desktopOptions = "-title slideshow" ;
+
+    // call hev-identifyImmersive. The return values are shifed left 8 bits
+    int ret = system("a=`hev-identifyImmersive`; if [ $a == rave ] ;then exit 4; elif [ $a == powerwall ]; then exit 3; elif [ $a == desktop ]; then exit 2; else exit 1; fi") ;
+    
+    std::string display ;
+
+    //~dtkMsg.add(DTKMSG_NOTICE, "hev-presenter::getImageDisplayOptions: ret = %d\n",ret) ;
+    
+    if (ret == 4<<8)
+    {
+	// RAVE
+	//~dtkMsg.add(DTKMSG_NOTICE, "hev-presenter::getImageDisplayOptions: RAVE\n") ;
+	if (getenv("HEV_PRESENTER_FIFO"))
+	{
+	    if (!getDisplayFromWindowDSO(const_cast<char*>("raveLeftWindow"),&display)) return false ;
+	}
+	else
+	{
+	    if (!getDisplayFromWindowDSO(const_cast<char*>("raveFrontWindow"),&display)) return false ;
+	}
+	//~dtkMsg.add(DTKMSG_NOTICE, "hev-presenter::getImageDisplayOptions: display = \"%s\"\n",display.c_str()) ;
+	*envvars = "DISPLAY=" + display + " " ;
+	*options = raveOptions ;
+    }
+    else if (ret == 3<<8)
+    {
+      if (!getDisplayFromWindowDSO(const_cast<char*>("powerwallWindow"),&display)) return false ;
+	*envvars = "DISPLAY=" + display + " " ;
+	*options = powerwallOptions ;
+    }
+    else if (ret == 2<<8)
+    {
+      if (!getDisplayFromWindowDSO(const_cast<char*>("desktopWindow"),&display)) return false ;
+	*envvars = "DISPLAY=" + display + " " ;
+	*options = desktopOptions ;
+    }
+    else if (ret == 1<<8) 
+    {
+	dtkMsg.add(DTKMSG_ERROR, "hev-presenter::getImageDisplayOptions: unknown system type returned\n") ;
+	return false ;
+    }
+    else if (ret == -1)
+    {
+	dtkMsg.add(DTKMSG_ERROR, "hev-presenter::getImageDisplayOptions: system call failed\n") ;
+	return false ;
+    }
+    else
+    {
+	dtkMsg.add(DTKMSG_ERROR, "hev-presenter::getImageDisplayOptions: unknown return value from system call\n") ;
+	return false ;
+    }
+
+    char* env = getenv("HEV_PRESENTER_IMAGEDISPLAY_ENVVARS") ;
+    if (env)
+    {
+	*envvars += " " + std::string(env) ;
+    }
+
+    env = getenv("HEV_PRESENTER_IMAGEDISPLAY_OPTIONS") ;
+    if (env)
+    {
+	*options += " " + std::string(env) ;
+    }
+
+    //~dtkMsg.add(DTKMSG_NOTICE, "hev-presenter::getImageDisplayOptions: envars \"%s\", options \"%s\"\n",envvars->c_str(), options->c_str()) ;
+
+    return true ;
+}
+
+////////////////////////////////////////////////////////////////////////
+// process command line options and process data
+bool init(int argc, char **argv)
+{
+
+    //~if (getenv("DISPLAY")) dtkMsg.add(DTKMSG_NOTICE, "hev-presenter::init: $DISPLAY=%s\n",getenv("DISPLAY")) ;
+    //~else dtkMsg.add(DTKMSG_NOTICE, "hev-presenter::init: $DISPLAY is not set\n") ;
+
+    // get a fifo if the envvar is defined
+    if (getenv("HEV_PRESENTER_FIFO"))
+    {
+	fifo = new iris::FifoReader(getenv("HEV_PRESENTER_FIFO")) ;
+	if (!fifo->open())
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::init error opening fifo %s\n",getenv("HEV_PRESENTER_FIFO")) ;
+	    return false ;
+	}
+	//fprintf(stderr,"hev-presenter::init opening fifo %s\n",getenv("HEV_PRESENTER_FIFO")) ;
+	fifo->unlinkOnExit() ;
+	Fl::add_timeout(iris::GetSleep(), fifoTimerCallback) ;
+
+    }
+
+    // create a tmp file to hold the file names- pass this to hev-imageDisplay
+    std::string basename = "hev-presenter-" ;
+    basename += getenv("LOGNAME") ;
+    tmpFileName = iris::GetTempFileName(NULL,"/tmp",basename.c_str()) ;
+    tmpFILE = fopen(tmpFileName,"w") ;
+    if (!tmpFILE)
+    {
+	dtkMsg.add(DTKMSG_ERROR, "hev-presenter::init error opening tmp file %s\n",tmpFileName) ;
+	return false ;
+    }
+    //fprintf(stderr, "hev-presenter::init tmp file name: %s\n",tmpFileName) ;
+
+    currentFileNumberShm = new dtkSharedMem(sizeof(int), currentFileNumberShmName.c_str()) ;
+    if (currentFileNumberShm->isInvalid())
+    {
+	dtkMsg.add(DTKMSG_ERROR, "hev-presenter::init error opening shared memory file %s\n",currentFileNumberShmName.c_str()) ;
+	return false ;
+    }
+    //fprintf(stderr,"init: writing %d to currentFileNumberShm\n",currentFileNumber) ;
+    currentFileNumberShm->write(&currentFileNumber) ;
+    
+    std::string line ;
+    if (argc == 1)
+    {
+	// no files, so try reading stdin
+	//fprintf(stderr, "hev-presenter::init reading data from stdin\n") ;
+	while (iris::GetLine(&line, 10.f))
+	{
+	    if (!addSlide(line)) return false ;
+	}
+	//fprintf(stderr,"done reading stdin\n") ;
+    }
+
+    for (int i=1; i<argc; i++)
+    {
+	//fprintf(stderr, "hev-presenter::init reading file %s\n",argv[i]) ; 
+	std::ifstream file(argv[i]) ;
+	if (!file)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-presenter::init error opening file %s\n",argv[i]) ; 
+	    return false ;
+	}
+	//fprintf(stderr,"reading file\n") ;
+	while (std::getline(file, line))
+	{
+	    if (!addSlide(line)) return false ;
+	}
+	//fprintf(stderr,"finished reading file\n") ;
+    }
+
+    // decrement frame number so it is an index and not a count
+    fileNumber-- ;
+
+    fclose(tmpFILE) ;
+
+    return true ;
+}
+
+////////////////////////////////////////////////////////////////////////
+// every program should have one
+void usage()
+{
+    fprintf(stderr,"Usage: hev-presenter --noescape [ file ]\n") ;
+}
+
+////////////////////////////////////////////////////////////////////////
+void movieTimerCallback(void*)
+{
+    //if (debug()) fprintf(stderr, "movie timer callback: FPS = %f\n",getMovieFPS()) ;
+    if (getMovieFPS()>0)
+    {
+	if (moviePlaying)
+	{
+	    if (forward) movieStepForward() ;
+	    else movieStepBackward() ;
+	    Fl::repeat_timeout(1.0/getMovieFPS(), movieTimerCallback) ;
+	}
+    }
+    // just check back to see if fps is > 0
+    else Fl::repeat_timeout(1.0/defaultFPSValue, movieTimerCallback) ;
+}
+
+////////////////////////////////////////////////////////////////////////
+void moviePlay()
+{
+    moviePlaying = true ;
+    if (getMovieFPS()>0) Fl::add_timeout(1.0/getMovieFPS(), movieTimerCallback) ;
+}
+
+////////////////////////////////////////////////////////////////////////
+void autoPlayTimerCallback(void*)
+{
+    //if (debug()) fprintf(stderr, "autoPlay timer callback: moviePlaying = %d\n",moviePlaying) ;
+    if (moviePlaying) return ;
+    if (debug()) fprintf(stderr, "autoPlay timer callback: frame %d, time = %f\n",currentSlideNumber, slides[currentSlideNumber]->time) ;
+    if (debug()) fprintf(stderr, "  replay = %d, slides.size() = %d\n",slides[currentSlideNumber]->replay, slides.size()) ; 
+    if (currentSlideNumber<slides.size()-1) slideNumber(currentSlideNumber+1) ;
+    else if (slides[currentSlideNumber]->replay && currentSlideNumber == slides.size()-1) 
+    {
+	//if (debug()) fprintf(stderr, "  looping\n") ;
+	firstSlide() ;
+    }
+
+}
+
+////////////////////////////////////////////////////////////////////////
+// called when the auto-play button is pressed or released
+void setAutoPlay(bool b)
+{
+    if (debug()) fprintf(stderr, "setAutoPlay:  %d\n",b) ;
+    autoPlaying = b ;
+    if (!b) autoPlayStop() ;
+    else if (b && slides[currentSlideNumber]->autoPlay) autoPlayStart() ;
+}
+
+////////////////////////////////////////////////////////////////////////
+void autoPlayStart(bool noWait)
+{
+    autoPlayingBox->show() ;
+    if (debug()) fprintf(stderr, "autoPlayStart: slide %d, time = %f\n",currentSlideNumber, slides[currentSlideNumber]->time) ;
+    if (noWait) Fl::add_timeout(0.0, autoPlayTimerCallback) ;
+    else Fl::add_timeout(slides[currentSlideNumber]->time, autoPlayTimerCallback) ;
+}
+
+////////////////////////////////////////////////////////////////////////
+void autoPlayStop(bool turnOffAutoPlayBox)
+{
+    if (turnOffAutoPlayBox) autoPlayingBox->hide() ;
+    if (debug()) fprintf(stderr, "autoPlayStop: off = %d, slide %d\n",turnOffAutoPlayBox,currentSlideNumber) ;
+    if (Fl::has_timeout(autoPlayTimerCallback))
+    {
+	if (debug()) fprintf(stderr, "  autoPlayStop: canceling timeout\n",currentSlideNumber) ;
+	Fl::remove_timeout(autoPlayTimerCallback) ;
+    }
+}
+
+////////////////////////////////////////
+// these are for slides
+void slideNumber(int n)
+{
+    if (debug()) fprintf(stderr,"slideNumber(%d): slides.size() = %d\n",n,slides.size()) ;
+
+    if (n<slides.size() && n>=0)
+    {
+
+	currentSlideNumber = n ;
+	currentFrameNumber = 0 ;
+	slideNumberValuator->value(currentSlideNumber) ;
+	Slide* slide = slides[currentSlideNumber] ;
+	if (debug()) fprintf(stderr,"  autoPlaying = %d, moviePlaying = %d, slide->autoPlay = %d, slide->movie = %d\n", autoPlaying, moviePlaying, slide->autoPlay, slide->movie) ; 
+	
+	// is it a movie or a single slide?
+	if (slide->movie)
+	{
+	    // movie
+	    if (debug()) fprintf(stderr,"  starting movie\n") ;
+	    // turn off autoplay if on but keep the box lit
+	    if (autoPlaying) autoPlayStop(false) ;
+	    movieGroup->activate() ;
+	    movieGroup->show() ;
+	    movieFrameNumberValuator->maximum(slides[currentSlideNumber]->frames.size() -1) ;
+	    setMovieButtons() ;
+	    if (getMovieAutoStart()) movieStart() ;
+	    else movieJumpToStart() ;
+	}
+	else
+	{
+	    // a slide
+	    if (debug()) fprintf(stderr,"  slide->replay = %d, slide->time = %f\n",slide->replay,slide->time) ;
+	    movieStop() ;
+	    movieGroup->deactivate() ;
+	    movieGroup->hide() ;
+	    movieFPSValuator->value(getMovieFPS()) ;
+	    movieAutoStartButton->value(getMovieAutoStart()) ;
+	    movieLoopButton->value(getMovieLoop()) ;
+	    // write file number of slide to shared memory 
+	    //if (debug()) fprintf(stderr,"  writing %d to currentFileNumberShm\n",slide->frames[0]->fileNumber) ;
+	    currentFileNumberShm->write(&(slide->frames[0]->fileNumber)) ;
+	    //if (debug()) fprintf(stderr,"currentFileNumber = %d\n",slide->frames[0]) ;
+	    if (slide->frames[0]->echo != "")
+	    {
+		printf("%s\n",slide->frames[0]->echo.c_str()) ;
+		fflush(stdout) ;
+	    }
+	}
+
+	// if this is an autoPlay slide, how long is it displayed?
+	if (!(slide->movie) && slide->autoPlay && autoPlaying)
+	{
+	    if (debug()) fprintf(stderr,"  display slide %d for %f seconds\n", currentSlideNumber, slide->time) ;
+	    autoPlayStart() ;
+	}
+    }
+
+    previousSlideButton->activate() ;
+    firstSlideButton->activate() ;
+    nextSlideButton->activate() ;
+    lastSlideButton->activate() ;
+    if (currentSlideNumber == slides.size()-1)
+    {
+	nextSlideButton->deactivate() ;
+	lastSlideButton->deactivate() ;
+    }
+    else if (currentSlideNumber == 0)
+    {
+	previousSlideButton->deactivate() ;
+	firstSlideButton->deactivate() ;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+// these are called by the GUI
+
+void setSlideNumber(int n)
+{
+    slideNumber(n) ;
+}
+
+void previousSlide()
+{
+    if (currentSlideNumber>=0) slideNumber(currentSlideNumber-1) ;
+}
+
+void nextSlide()
+{
+    if (debug()) fprintf(stderr,"nextSlide: currentSlideNumber = %d, slides.size() = %d\n", currentSlideNumber, slides.size()) ;
+    if (currentSlideNumber<slides.size()-1) slideNumber(currentSlideNumber+1) ;
+}
+
+void firstSlide()
+{
+    if (debug()) fprintf(stderr,"firstSlide\n") ;
+    if (!(slides[0]->autoPlay)) 
+    {
+	if (debug()) fprintf(stderr,"  turning off autoPlay\n") ;
+	autoPlayStop() ;
+    }
+    slideNumber(0) ; 
+}
+
+void lastSlide()
+{
+    slideNumber(slides.size()-1) ; 
+}
+
+////////////////////////////////////////
+// and these are for movies
+void setMovieButtons()
+{
+    
+    // if playing a movie all that you can do is hit stop
+    if (moviePlaying)
+    {
+	moviePlayForwardButton->deactivate() ;
+	movieJumpToEndButton->deactivate() ;
+	movieStepForwardButton->deactivate() ;
+	movieStopButton->activate() ;
+	moviePlayBackwardButton->deactivate() ;
+	movieJumpToStartButton->deactivate() ;
+	movieStepBackwardButton->deactivate() ;
+    }
+
+    // if not playing turn off stop and turn all the other buttons on
+    else
+    {
+	moviePlayForwardButton->activate() ;
+	movieJumpToEndButton->activate() ;
+	movieStepForwardButton->activate() ;
+	movieStopButton->deactivate() ;
+	moviePlayBackwardButton->activate() ;
+	movieJumpToStartButton->activate() ;
+	movieStepBackwardButton->activate() ;
+    }
+
+    // add tweaks for not playing and not looping when you hit one side or the other
+    if (!getMovieLoop())
+    {
+	int lastFrameNumber = slides[currentSlideNumber]->frames.size() - 1 ;
+	//if (debug()) fprintf(stderr, "lastFrameNumber = %d, currentFrameNumber = %d\n",lastFrameNumber,currentFrameNumber) ;
+	if (currentFrameNumber == 0)
+	{
+	    moviePlayBackwardButton->deactivate() ;
+	    movieJumpToStartButton->deactivate() ;
+	    movieStepBackwardButton->deactivate() ;  
+	}
+	else if(currentFrameNumber == lastFrameNumber)
+	{
+	    moviePlayForwardButton->deactivate() ;
+	    movieJumpToEndButton->deactivate() ;
+	    movieStepForwardButton->deactivate() ; 
+	} 
+    }
+
+}
+
+void movieFrameNumber(int n)
+{
+    if (debug()) fprintf(stderr,"movieFrameNumber: requesting frame number %d of slide number %d\n",n,currentSlideNumber) ;
+    Slide* slide = slides[currentSlideNumber] ;
+
+    // frame number is in the valid range
+    if (n >= 0 && n < slide->frames.size())
+    {
+	currentFrameNumber = n ;
+	movieFrameNumberValuator->value(n) ;
+	currentFileNumberShm->write(&(slide->frames[n]->fileNumber)) ;
+
+	if (slide->frames[n]->echo != "")
+	{
+	    printf("%s\n",slide->frames[n]->echo.c_str()) ;
+	    fflush(stdout) ;
+	}
+
+	if (!movieOverrideFileOptionsButton->value())
+	{
+	    movieLoopButton->value(slide->frames[n]->loop) ;
+	    movieAutoStartButton->value(slide->frames[n]->autoStart) ;
+	    movieFPSValuator->value(slide->frames[n]->fps) ;
+	}
+    }
+
+    if (n <= 0)
+    {
+	if (debug()) fprintf(stderr,"  first frame\n") ;	
+	if (!getMovieLoop()) moviePlaying = false ;
+	currentFrameNumber = 0 ;
+	movieFrameNumberValuator->value(0) ;
+	currentFileNumberShm->write(&(slide->frames[0]->fileNumber)) ;
+    }    
+    else if (n >= slide->frames.size()-1)
+    {
+	if (debug()) fprintf(stderr,"  last frame, autoPlaying = %d\n",autoPlaying) ;	
+	if (!getMovieLoop()) moviePlaying = false ; 
+	currentFrameNumber =  slide->frames.size()-1;
+	movieFrameNumberValuator->value(currentFrameNumber) ;
+	//if (debug()) fprintf(stderr,"  writing %d to currentFileNumberShm\n",slide->frames[currentFrameNumber]->fileNumber) ;
+	currentFileNumberShm->write(&(slide->frames[currentFrameNumber]->fileNumber)) ;
+	// if the movie isn't looping and we're autoplaying go to the next slide immediately
+	if (!moviePlaying && autoPlaying) autoPlayStart(false) ;
+
+    }
+
+    setMovieButtons() ;
+}
+
+void movieJumpToStart()
+{
+    //if (debug()) fprintf(stderr,"movieJumpToStart\n") ;
+    movieFrameNumber(0) ;
+}
+
+void movieJumpToEnd()
+{
+    //if (debug()) fprintf(stderr,"movieJumpToEnd\n") ;
+    movieFrameNumber(slides[currentSlideNumber]->frames.size()-1) ;
+}
+
+void moviePlayBackward()
+{
+    //if (debug()) fprintf(stderr,"moviePlayBackward\n") ;
+    forward = false ;
+    moviePlay() ;
+}
+
+void moviePlayForward()
+{
+    //if (debug()) fprintf(stderr,"moviePlayForward\n") ;
+    forward = true ;
+    moviePlay() ;
+}
+
+void movieStop()
+{
+    //if (debug()) fprintf(stderr,"movieStop\n") ;
+    moviePlaying = false ;
+    setMovieButtons() ;
+}
+
+void movieStepBackward()
+{
+    //if (debug()) fprintf(stderr,"movieStepBackward\n") ;
+    forward = false ;
+    // did we hit the end?
+    if (currentFrameNumber == 0)
+    {
+	// either we loop or we stop
+	if (getMovieLoop()) movieFrameNumber(slides[currentSlideNumber]->frames.size()-1) ;
+	else movieStop() ;
+    }
+    else movieFrameNumber(currentFrameNumber-1) ;
+}
+
+void movieStepForward()
+{
+    //if (debug()) fprintf(stderr,"movieStepForward\n") ;
+    forward = true ;
+    
+    // did we hit the end?
+    if (currentFrameNumber == slides[currentSlideNumber]->frames.size() -1)
+    {
+	// either we loop or stop or autoplay
+	if (getMovieLoop()) movieFrameNumber(0) ;
+	else 
+	{
+	    movieStop() ;
+	    if (autoPlaying && currentSlideNumber<slides.size()) 
+	    {
+		//if (debug()) fprintf(stderr,"movieStepForward: autoadvancing after last slide\n") ;
+		slideNumber(currentSlideNumber+1) ;
+	    }
+
+	}
+    }
+    else movieFrameNumber(currentFrameNumber+1) ;
+}
+
+// start playing forward from the first frame- used when entering a new movie
+void movieStart()
+{
+    //if (debug()) fprintf(stderr,"movieStart\n") ;	
+    movieJumpToStart() ;
+    moviePlayForward() ;
+}
+
+bool getMovieAutoStart() 
+{
+    Slide* slide = slides[currentSlideNumber] ;
+    Frame* frame = slide->frames[currentFrameNumber] ;
+    if (movieOverrideFileOptionsButton->value()) return movieAutoStartButton->value() ;
+    else if (autoPlaying) return true ;
+    else return frame->autoStart ;
+}
+
+bool getMovieLoop()
+{
+    Slide* slide = slides[currentSlideNumber] ;
+    Frame* frame = slide->frames[currentFrameNumber] ;
+    if (movieOverrideFileOptionsButton->value()) return movieLoopButton->value() ;
+    else return frame->loop ;
+}
+
+float getMovieFPS()
+{
+    //if (debug()) fprintf(stderr,"getMovieFPS: currentSlideNumber = %d, currentFrameNumber = %d\n",currentSlideNumber, currentFrameNumber) ;
+    Slide* slide = slides[currentSlideNumber] ;
+    Frame* frame = slide->frames[currentFrameNumber] ;
+    if (movieOverrideFileOptionsButton->value()) 
+    {
+	//if (debug()) fprintf(stderr," returning %f\n",movieFPSValuator->value()) ;
+	return movieFPSValuator->value() ;
+    }
+    else 
+    {
+	//if (debug()) fprintf(stderr," returning %f\n",frame->fps) ;
+	return frame->fps ;
+    }
+}
+
+void GUIpressed()
+{
+    Slide* slide = slides[currentSlideNumber] ;
+    if (debug()) fprintf(stderr,"GUIpressed: currentSlideNumber = %d, autoPlaying = %d, moviePlaying = %d, slide->autoPlay = %d, slide->movie = %d\n", currentSlideNumber, autoPlaying, moviePlaying, slide->autoPlay, slide->movie) ; 
+    autoPlayStop() ;
+} ;
+
+bool debug() 
+{ 
+    // I had to debug debug()!
+    //fprintf(stderr, "debug: currentSlideNumber = %d, currentFrameNumber = %d\n",currentSlideNumber,currentFrameNumber) ;
+    //fprintf(stderr, " fileDebugValue = %d\n",fileDebugValue) ;
+    //fprintf(stderr, " slides.size() = %d\n",slides.size()) ;
+    if (slides.size() == 0) 
+    {
+	return fileDebugValue ;
+    }
+    else
+    {
+	//fprintf(stderr, " slides[currentSlideNumber] = %p\n",slides[currentSlideNumber]) ;
+	//fprintf(stderr, " slides[currentSlideNumber]->frames[currentFrameNumber] = %p\n",slides[currentSlideNumber]->frames[currentFrameNumber]) ;
+	return slides[currentSlideNumber]->frames[currentFrameNumber]->debug ;
+    }
+}
+
+void fifoTimerCallback(void*)
+{
+    std::string line ;
+    while (fifo->readLine(&line))
+    {
+	if (debug()) fprintf(stderr,"hev-presenter: FIFO command \"%s\"\n",line.c_str()) ;
+	std::vector<std::string> vec = iris::ParseString(line) ;
+	if (vec.size() != 0)
+	{
+	    if (vec.size() == 2 && iris::IsSubstring("slide",vec[0],3))
+	    {
+		int n ;
+		if (iris::StringToInt(vec[1], &n) && n>0 && n<slides.size())
+		{
+		    slideNumber(n) ;
+		}
+		else
+		{
+		    dtkMsg.add(DTKMSG_ERROR, "hev-presenter:: invalid FIFO slide number: %s\n",vec[1].c_str()) ;
+		}
+	    }
+	    else
+	    {
+		dtkMsg.add(DTKMSG_ERROR, "hev-presenter:: invalid FIFO command: %s\n",line.c_str()) ;
+	    }
+	}
+    }
+    Fl::repeat_timeout(iris::GetSleep(), fifoTimerCallback) ;
+}
+
+

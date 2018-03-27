@@ -1,0 +1,33 @@
+# run these programs with `dtk-launcher --list programList'
+
+dtk-destroySharedMem -r
+
+dtk-getSharedMem 4 unfiltered
+dtk-getSharedMem 4 filtered
+dtk-getSharedMem 4 f
+
+writeSin unfiltered filtered
+dtk-floatSliders unfiltered -N 1
+dtk-floatSliders filtered -N 1
+dtk-floatSliders f -N 1
+
+dtk-floatScope unfiltered filtered
+dtk-floatScope unfiltered filtered --poll
+
+dtk-caveDeviceSimulator -v
+dtk-caveDeviceSimulator
+
+dtk-listFilters filtered
+
+load.sh filtered r/floatLnInterp --time-delay=0.8
+load.sh filtered r/floatRC
+load.sh filtered r/floatShockAbsorber
+load.sh filtered r/getTrackdHead
+load.sh filtered w/forward f
+
+unload.sh filtered r/floatLnInterp
+unload.sh filtered r/floatRC
+unload.sh filtered r/floatShockAbsorber
+unload.sh filtered r/getTrackdHead
+unload.sh filtered w/forward
+

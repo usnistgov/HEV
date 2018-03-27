@@ -1,0 +1,82 @@
+.TH hev-killStrays 1 "19 Jul 2011"
+.SH NAME
+hev-killStrays \- Find stray HEV processes and kill them.
+
+
+.SH SYNOPSIS
+.B hev-killStrays [-i] [<string>]
+
+
+.SH DESCRIPTION
+.PP
+.I
+hev-killStrays 
+uses hev-Stray to find stray HEV processes, then list them 
+and asks for confirmation before killing them. hev-Stray 
+searches for process that contain the strings hev, dkt, dgl, 
+dosg, hyv, qvd, osgconv, savgfly, or iris. hev-killStrays 
+then filters this list for processes that are owned by $USER 
+and only kills those. 
+
+The optional <string> parameter is used to expand the search.
+It is a space delimited list of one or more strings. 
+Any procesess that contains one of the strings is also treated
+as a possilbe stray.
+
+.SS Options
+.TP
+.B -i
+Interactive kill. The user is prompted before killing each process.
+This option must come before <string>
+
+ 
+.SH Examples
+To kill HEV procesess plus preocesses containing 'window':
+    $> hev-killStrays window
+
+    UID        PID  PPID  C STIME TTY          TIME CMD
+    smith    19265     1  0 17:40 pts/2    00:00:00 hev-dglToWorld 
+    smith    19264     1  0 17:40 pts/2    00:00:00 hev-sgeWriteFifo
+    smith    19263     1  0 17:40 pts/2    00:00:00 hev-lineSegment
+    smith    17854     1  0 17:34 pts/2    00:00:00 ./windowrunner.sh
+       :
+       :
+    smith    17279  5096  0 17:13 pts/2    00:00:01 emacs hev-test
+    Are you sure (yes or no)? yes
+   
+
+
+To kill interactively
+    $ hev-killStrays -i window
+
+    UID        PID  PPID  C STIME TTY          TIME CMD
+    smith    19265     1  0 17:40 pts/2    00:00:00 hev-dglToWorld 
+    smith    19264     1  0 17:40 pts/2    00:00:00 hev-sgeWriteFifo
+    smith    19263     1  0 17:40 pts/2    00:00:00 hev-lineSegment
+    smith    17854     1  0 17:34 pts/2    00:00:00 ./windowrunner.sh
+       :
+       :
+    smith    17279  5096  0 17:13 pts/2    00:00:01 emacs hev-test
+    Are you sure (yes or no)? yes
+    Kill process 19265 (y/n)? y Killed
+    Kill process 19264 (y/n)? y Killed
+    Kill process 19263 (y/n)? y Killed
+    Kill process 17854 (y/n)? y Killed
+       :
+       :
+    Kill process 17279 (y/n)? n Not Killed
+
+The first four proceses were part of a 'dead' visualization. Note that
+the fourth process would not have been found without the addional string 'window.' 
+The last process was an edit process for a file with 'hev' in 
+the name and didn't need to be killed.
+
+.SH NOTES
+Some processes that are found may not be strays. They may part of running
+HEV app, or some other process that happens to contain one of the key 
+strings.
+
+
+.SH AUTHOR
+.PP
+Terence Griffin, NIST/ITL/ACMD/HPCVG

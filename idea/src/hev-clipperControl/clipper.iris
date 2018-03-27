@@ -1,0 +1,13 @@
+# irisfly --ex clipper.iris cow.osg 
+DSO setHeadWand
+EXEC hev-writeButtons buttons 0
+EXEC hev-writeFloats wand 0 0 0 0 0 0
+#AFTER REALIZE EXEC dtk-caveDeviceSimulator
+
+# put clipper out in front of the wand a bit
+DCS inFrontOfWand 0 .1 0
+ADDCHILD inFrontOfWand wand
+
+# for debugging
+#ECHO ON
+

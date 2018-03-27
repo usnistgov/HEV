@@ -1,0 +1,169 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0110 
+header_name {.h} 
+code_name {.cxx}
+Function {make_window()} {open
+} {
+  Fl_Window {} {open
+    xywh {99 351 320 440} type Double box BORDER_BOX
+    code0 {main_window = o ;} visible
+  } {
+    Fl_Button {} {
+      label RESET
+      callback {reset() ;
+update() ;}
+      xywh {195 405 70 20} color 3
+    }
+    Fl_Group {} {
+      label {position:}
+      xywh {5 24 265 110} align 5
+    } {
+      Fl_Roller {} {
+        label {X:}
+        callback {current.xt = ((double)o->value()) ; update() ;}
+        xywh {25 35 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002
+        code0 {xtRoller = o ;}
+        code1 {o->value(current.xt) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Roller {} {
+        label {Y:}
+        callback {current.yt = ((double)o->value()) ; update() ;}
+        xywh {25 70 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002
+        code0 {ytRoller = o ;}
+        code1 {o->value(current.yt) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Roller {} {
+        label {Z:}
+        callback {current.zt = ((double)o->value()) ; update() ;}
+        xywh {25 105 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002
+        code0 {ztRoller = o ;}
+        code1 {o->value(current.zt) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Input {} {
+        callback {current.xt = (atof((char*)o->value())) ; update() ;}
+        xywh {195 35 112 20} when 8
+        code0 {xtText = o ;}
+        code1 {o->value("0") ;}
+      }
+      Fl_Input {} {
+        callback {current.yt = (atof((char*)o->value())) ; update() ;}
+        xywh {195 70 112 20} when 8
+        code0 {ytText = o ;}
+        code1 {o->value("0") ;}
+      }
+      Fl_Input {} {
+        callback {current.zt = (atof((char*)o->value())) ; update() ;}
+        xywh {195 105 112 20} when 8
+        code0 {ztText = o ;}
+        code1 {o->value("0") ;}
+      }
+    }
+    Fl_Group {} {
+      label {orientation:} open
+      xywh {5 138 277 123} align 21
+    } {
+      Fl_Roller {} {
+        label {H:}
+        callback {//fprintf(stderr, "\\nstart of H callback, current.h = %f, value = %f\\n",current.h, (double)o->value()) ;
+current.h = ((double)o->value()) ; update() ;}
+        xywh {25 165 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.2
+        code0 {hRoller = o ;}
+        code1 {o->value(current.h) ;}
+      }
+      Fl_Roller {} {
+        label {P:}
+        callback {//fprintf(stderr, "\\nstart of P callback, current.p = %f, value = %f\\n",current.p, (double)o->value()) ;
+current.p = ((double)o->value()) ; update() ;}
+        xywh {25 200 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.2
+        code0 {pRoller = o ;}
+        code1 {o->value(current.p) ;}
+      }
+      Fl_Roller {} {
+        label {R:}
+        callback {//fprintf(stderr, "\\nstart of R callback, current.r = %f, value = %f\\n",current.r, (double)o->value()) ;
+current.r = ((double)o->value()) ; update() ;}
+        xywh {25 235 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.2
+        code0 {rRoller = o ;}
+        code1 {o->value(current.r) ;}
+      }
+      Fl_Input {} {
+        callback {current.h = (atof((char*)o->value())) ; update() ;}
+        xywh {195 165 112 20} when 8 deactivate
+        code0 {hText = o ;}
+        code1 {o->value("0") ;}
+      }
+      Fl_Input {} {
+        callback {current.p = (atof((char*)o->value())) ; update() ;}
+        xywh {195 200 112 20} when 8 deactivate
+        code0 {pText = o ;}
+        code1 {o->value("0") ;}
+      }
+      Fl_Input {} {
+        callback {current.r = (atof((char*)o->value())) ; update() ;}
+        xywh {195 235 112 20} when 8 deactivate
+        code0 {rText = o ;}
+        code1 {o->value("0") ;}
+      }
+      Fl_Check_Button {} {
+        label relative
+        callback {setRelativeRollers(o->value()) ;} selected
+        xywh {100 140 107 15} down_box DOWN_BOX value 1
+      }
+    }
+    Fl_Group {} {
+      label {scale:}
+      xywh {5 268 274 126} align 21
+    } {
+      Fl_Roller {} {
+        label {X:}
+        callback {current.xs = ((double)o->value()) ; 
+if (uniformScaling) { current.ys *= current.xs/previous.xs ; current.zs *= current.xs/previous.xs ; } ;
+previous.xs = current.xs ;
+update() ;}
+        xywh {25 297 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002 value 1
+        code0 {xsRoller = o ;}
+        code1 {o->value(current.xs) ;}
+      }
+      Fl_Roller {} {
+        label {Y:}
+        callback {current.ys = ((double)o->value()) ; update() ;}
+        xywh {25 332 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002 value 1 deactivate
+        code0 {ysRoller = o ;}
+        code1 {o->value(current.ys) ;}
+      }
+      Fl_Roller {} {
+        label {Z:}
+        callback {current.zs = ((double)o->value()) ; update() ;}
+        xywh {25 367 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002 value 1 deactivate
+        code0 {zsRoller = o ;}
+        code1 {o->value(current.zs) ;}
+      }
+      Fl_Input {} {
+        callback {current.xs = (atof((char*)o->value())) ; update() ;}
+        xywh {195 297 112 20} when 8
+        code0 {xsText = o ;}
+        code1 {o->value("1") ;}
+      }
+      Fl_Input {} {
+        callback {current.ys = (atof((char*)o->value())) ; update() ;}
+        xywh {195 332 112 20} when 8 deactivate
+        code0 {ysText = o ;}
+        code1 {o->value("1") ;}
+      }
+      Fl_Input {} {
+        callback {current.zs = (atof((char*)o->value())) ; update() ;}
+        xywh {195 367 112 20} when 8 deactivate
+        code0 {zsText = o ;}
+        code1 {o->value("1") ;}
+      }
+      Fl_Check_Button {} {
+        label uniform
+        callback {setUniformScaling(o->value()) ;}
+        xywh {100 267 123 25} down_box DOWN_BOX value 1
+      }
+    }
+  }
+} 

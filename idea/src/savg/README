@@ -1,0 +1,152 @@
+Keywords- all are case iNsEnSaTiVe and can be abbreviated to their first three letters
+
+END
+
+  terminate the preceding primitive
+
+TRISTRIPS|LINES|POINTS [r g b a]
+
+  start a primitive with an optional indicated color
+
+POLYGONS [r g b a] [n]
+
+  start a polygon with an optional indicated color.  If "n" is supplied it
+  is the number of sides of the polygon, and multiple polygons can be given
+  in one primitive.  If "n" is not supplied one polygon will be created.
+
+  OpenGL 3 note: polygons are implemented as tristrips
+
+PIXELSIZE s 
+
+  sets the size of points and width of lines in pixels.  This is a global
+  value, and will set all points and lines in the savg file.  The last value
+  wins.
+
+TEXT STRING string 
+ [FONT font] //default = arial
+ [PARTS FRONT|SIDES|ALL|BACK]
+ [XYZ x y z] // default = 0,0,0, reset each command
+ [SXYZ x y z] [S s] // default = 1,1,1
+ [HPR h p r] // default = 0,0,0
+ [RGBA r g b a] // default - last color used, or 1,1,1,1
+ // depricated- use alignment instead
+ [JUSTIFICATION LEFT|RIGHT|CENTER] // default = LEFT
+
+  creates a text string with the indicated properties.  The text string is
+  created using a call to the Inventor Text3 command. All paramters are
+  reset every TEXT command
+
+
+ATTRIBUTE n s ...
+
+  specifies that vertex data can be supplied for attribute number "n" with
+  size "s".  "n" can be between 1 and 15 inclusive, and "s" can be between 1
+  and 4, inclusive.  All vertex data are in floating point format.  Multiple
+  pairs of "n" and "s" can be specified on a single line. You can also have
+  multiple ATTRIBUTE commands per file, but they need to specify disjoint
+  sets of attributes.  Attributes are global to the file, and need to be
+  specified before vertex attribute data are provided.
+  
+
+PROGRAM type[:geomSpec] filename [ n name ... ]
+
+  loads a shader file into the StateSet of the returned node.  "type" can be
+  either "VERTEX", "FRAGMENT" or "GEOMETRY".  If "n" and "name" are
+  specified, the vertex data for attribute "n" will be bound to the
+  attribute variable named "name".  Multiple shaders of the same type can be
+  loaded into the file, but only the last one is active.
+
+  If the optional geomSpec parameter is supplied to a gemeotry shader it
+  specifies the input and output primitive type, and the maximum number of
+  vertices the geometry shader will generate.  If geomSpec is not supplied
+  for a geometry shader a value of tt3 is used.  The geomSpec parameter is
+  ignored if the shader type isn't "GEOMETRY".  It has the same format as
+  hev-applyState geomSpec parameter, namely:
+
+    The first letter indicates the type of input primitive the shader
+    handles: p=POINTS, l=LINES, t=TRIANGLES. The second letter indicates the
+    type of output the shader produces: p=POINTS, l=LINE_STRIP, t=TRIAN-
+    GLE_STRIP. The remainder of geomSpec is the maximum number of vertices
+    produced.
+
+    For example, a geometry shader that turns lines into quads would use a
+    geomSpec "lt4", indicating that its input is lines, and its output is a
+    four-vertex triangle strip. A geometry shader that turns each input
+    triangle into two disjoint triangles might use "tt6", since its input is
+    triangles and its output is two three-vertex triangle strips for a total
+    of six vertices.
+
+NOOPTIMIZATIONS
+
+  if present anywhere in the savg file, causes the default optimizations to
+  be skipped.  For more information see the end of this file.
+
+========================================================================
+
+data lines for geometry can be of the form:
+  x y z [ ATTRIBUTE n data ... ]
+  x y z xn yn zn [ ATTRIBUTE n data ... ]
+  x y z r g b a [ ATTRIBUTE n data ... ]
+  x y z r g b a xn yn zn [ ATTRIBUTE n data ... ]
+
+where:
+
+  x y z is a vertex position
+
+  r g b a is a vertex color
+
+  xn yn zn is a vertex normal
+
+  ATTRIBUTE n data ... is vertex data.  "n" is the attribute number,
+  followed by as many floating point numbers as the attribute specified.
+
+For any primitive, all of the vertex data lines need to be of the same format.
+
+Notes:
+
+the savg loader creates a small scenegraph:
+
+  group
+    opaqueGroup
+      opaquePointsLinesGeode
+      opaquePolysGeode
+    transparentGroup
+      transparentPointsLinesGeode
+      transparentPolysGeode
+    textGroup
+
+Before returning the node the loader trims off any unused group nodes.  If all
+geometry is under a single geode it just returns the geode instead of a group
+node.  Keep in mind that scenegraph culling is done at the geode level, so
+very large savg files might not be able to benefit from scenegraph culling.
+
+Lighting is turned off for lines and points, so they're in separate
+geodes.
+
+Transparent geometry is put it the "transparent bin" and blending is
+enabled, so transparent geometry is also in their own geodes.  Transparent
+geometry is any primitive with any vertex with an alpha less than 0.9.
+
+"fast" transparency is the default behavior.  This can cause some artifacts
+if a drawable faces both forwards and backwards, as in the case of a sphere
+where a primitive wraps around the viewable edge of the sphere.  To
+eliminate this effect you can either pass the "--backfacecull" option to
+savgfly or use "slow" transparency, where each primitive in the savg file is
+a separate primitive in the scenegraph. This is accomplished by *not*
+optimizing the scenegraph and using triangles instead of polygons.  See
+below.
+
+Before the scenegraph is returned the TRI_STRIP and MERGE_GEOMETRY
+optimizations are applied, hopfully creating as few drawables and primitives
+as possible.  Include the NOOPTIMIZATIONS keyword anywhere in the savg file
+to skip the default optimizations.
+
+If the environment variable OSG_OPTIMIZER is set the default optimizations
+are not applied and instead the specified optimizations are applied in the
+order given- even duplicates are allowed.
+
+To have NO optimizations applied to the scenegraph set OSG_OPTIMIZER to
+"" at run time, or include the NOOPTIMIZATIONS keyword in the file.
+
+Finally, all geometry is converted from draw arrays into draw elements before
+returning the node.

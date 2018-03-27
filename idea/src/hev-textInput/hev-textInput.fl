@@ -1,0 +1,38 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0108 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include <stdio.h>} {} 
+
+decl {\#include <dtk.h>} {} 
+
+Function {} {open
+} {
+  code {int fltk_argc;
+char **fltk_argv;
+int other_argc;
+char **other_argv;
+if(dtkFLTKOptions_get(argc, (const char **) argv,
+			   &fltk_argc,  &fltk_argv,
+			   &other_argc, &other_argv)) 
+  {
+    return 1 ;
+  }
+
+std::string text ;
+
+for (int i = 1; i<other_argc; i++) { text += other_argv[i] ; if (i<other_argc-1) text += " " ; }
+
+argc = fltk_argc ;
+argv = fltk_argv ;} {}
+  Fl_Window {} {open
+    xywh {118 695 545 35} type Double resizable visible
+  } {
+    Fl_Input {} {
+      callback {printf("%s\\n",o->value());
+fflush(stdout) ;} selected
+      xywh {5 2 534 30} when 10 resizable
+      code0 {o->value(text.c_str()) ;}
+    }
+  }
+} 

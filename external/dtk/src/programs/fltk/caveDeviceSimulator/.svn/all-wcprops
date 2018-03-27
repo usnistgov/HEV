@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/diverse/!svn/ver/915/trunk/dtk/programs/fltk/caveDeviceSimulator
+END
+dtk-caveDeviceSimulator.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/caveDeviceSimulator/dtk-caveDeviceSimulator.cpp
+END
+trackerWidget.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/caveDeviceSimulator/trackerWidget.cpp
+END
+dtk-caveDeviceSimulator.h
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/caveDeviceSimulator/dtk-caveDeviceSimulator.h
+END
+helpButton.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/caveDeviceSimulator/helpButton.cpp
+END
+trackerWidget.h
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/caveDeviceSimulator/trackerWidget.h
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/diverse/!svn/ver/915/trunk/dtk/programs/fltk/caveDeviceSimulator/CMakeLists.txt
+END
+mainWindow.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/caveDeviceSimulator/mainWindow.cpp
+END

@@ -1,0 +1,118 @@
+.TH hev\-savgTransformation 1 "January 2010"
+
+.SH NAME
+hev-savgTransformation
+.SH SYNOPSIS
+.B hev-savgTransformation 
+[ --hpr H P R ] 
+[ --quat Xq Yq Zq Wq ] 
+[ --scale Xs Ys Zs] 
+[ --translate | --xyz Xt Yt Zt ]
+
+
+.SH DESCRIPTION 
+.I hev-savgTransformation 
+reads a savg file from \fIstdin\fR, applies the indicated transformation to all
+data and text lines, and writes its output to \fIstdout\fR.
+
+.SH OPTIONS
+.IP \fB--hpr\ H\ P\ R\fR
+specifies a Euler angle rotation
+
+.IP \fB--quat\ Xq\ Yq\ Zq\ Wq\fR
+specifies a quaternion rotation
+
+.IP \fB--scale\ Xs\ Ys\ Zs\fR
+specifies a scale for each axis
+
+.IP \fB--translate\ |\ --xyz\ Xt\ Yt\ Zt\fR
+specifies a translation
+
+.P
+Regardless of the order of the parameters, the transformations are
+calculated as:
+
+.IP \ 
+transformation.makeRotate(rotation);
+.br
+transformation.postMultTranslate(translation);
+.br
+transformation.preMultScale(scale);
+
+This is the same order as the \fBIRIS DCS\fR control command and the
+\fBosg::PositionAttitudeTransformation\fR node. For more complicated
+transformations refer to the iris-DCS(1) command.
+
+.P
+If \fBhev-savgTransformation\fR encounters a line that is a valid
+\fBhev-savgTransformation\fR command it will modify all subsequent
+transformations to use the indicated parameters.
+
+.SH EXAMPLES
+.TP
+if the command foo.savg contains:
+
+.IP \ 
+POINT 1 0 0 1
+.br
+1 2 3
+.br
+TEXT STRING foo XYZ 2 2 2 HPR 30 0 0 SXYZ .1 .1 .1
+.br
+hev-savgTransformation --xyz 10 20 30 --hpr 0 0 45 --scale .1 .1 .1
+.br
+POINT 1 0 0 1
+.br
+1 2 3
+.br
+TEXT STRING foo XYZ 2 2 2 HPR 30 0 0 SXYZ .1 .1 .1
+
+.P
+The output of the command:
+
+.IP
+hev-savgTransformation --xyz -5 -10 -20 --hpr 0 30 0 --scale 2 4 6
+
+.P 
+is
+
+.IP
+# the data below were processed by the command "hev-savgTransformation --xyz -5 -10 -20 --hpr 0 30 0 --scale 2 4 6"
+.br
+POINT 1 0 0 1
+.br
+-3.000000 -12.071797 -0.411543
+.br
+TEXT STRING "foo" XYZ -3.000000 -8.000000 -18.000000 HPR 33.690063 25.658907 -16.102110 SXYZ 0.200000 0.400000 0.600000
+.br
+# the data below were processed by the command "hev-savgTransformation --xyz 10 20 30 --hpr 0 0 45 --scale .1 .1 .1"
+.br
+POINT 1 0 0 1
+.br
+10.282843 20.200001 30.141422
+.br
+TEXT STRING "foo" XYZ 12.000000 22.000000 32.000000 HPR 22.207651 20.704811 40.893402 SXYZ 0.010000 0.010000 0.010000
+
+
+
+
+.SH SEE ALSO
+savg, savg-scale, savg-rotate, savg-translate, iris-DCS,
+osg::PositionAttitudeTransform
+
+.SH AUTHORS
+.PP
+John Kelso
+.TP
+.br
+January 2010
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+

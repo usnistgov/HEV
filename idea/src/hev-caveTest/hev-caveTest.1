@@ -1,0 +1,91 @@
+.\" This is a comment
+.TH hev-caveTest 3 "January 2015" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-caveTest - interactive visual CAVE tests
+
+.SH SYNOPSIS
+
+\fBhev-caveTest\fR
+
+.SH DESCRIPTION
+.PP
+.I
+hev-caveTest
+is an interactive tool to visually perform a variety of tests to check
+proper operation of the CAVE and PowerWall. The command is based on
+\fIirisfly\fR so basic HEV operation is also tested.
+
+.PP
+A menu of available tests is displayed for user selection.
+
+.PP
+While starting, a audio count down is played through the speakers providing
+a audio test.
+
+.SH "TEST BUTTONS"
+
+.PP
+\fBModel Off - \fR Selects a 3D model to immersively display.
+.IP
+\fISmartGel\fR is one time step of the
+\fIsmartGelAnimation\fR demo.  This is a simple but effective model to
+test general viewing. If this model looks good, the CAVE is working.
+.IP
+\fIWirecube\fR is a simple wire frame cube. Its useful to show
+screen alignment errors. The lines should looks straight. Screen
+alignment issues will cause discontinuities in the lines.
+
+.PP
+\fBAudio Left Test - \fRPlays an audio sample only on the
+left speaker.
+
+.PP
+\fBAudio Right Test - \fRPlays an audio sample only on the
+right speaker.
+
+.PP
+\fBSpeak Digits - \fRSelects a sample numerical string to \fIspeak\fR
+through the speakers using \fBhev-speakDigits\fR command.
+
+.PP
+\fBEyeTest - \fRRuns the \fBhev-leftRightEyeTest\fR command
+to test the stereo is properly displaying the left image to the user's
+left eye and the right image to the user's right eye. It is based on
+an small OpenGL program fully independent from the HEV software.
+
+.PP
+\fBScreenAlign - \fRDisplays 2D full screen images useful for
+checking screen edge alignment. Two images are available here. For a
+more extensive set of images refer to
+\fB$HEVROOT/admin/ive/CAVEGridTests\fR and use the script
+\fB./runTest\fR.
+
+.PP
+\fBDisplay ID - \fRPops up a message box on each of the
+console and projectors identifying the X11 display number confirming
+the displays are properly assigned.
+
+.PP
+\fBWand Test - \fRAttaches a 3D axis glyph (gnomon) to the
+wand. It also displays windows showing the XYZHPR of the wand and head
+devices using \fBdtk-gnomonDisplay\fR command which is independent to
+\fBirisfly\fR. This test verifies the tracker is operating properly.
+
+.SH SEE ALSO
+\fI
+irisfly(1),
+hev-speakDigits(1)
+\fR
+
+
+.SH AUTHOR
+
+.PP
+Steven G. Satterfield, steve@nist.gov,  NIST/ITL/ACMD/HPCVG
+
+
+\"  LocalWords:  hev caveTest NIST PowerWall fIirisfly fR fBModel immersively
+\"  LocalWords:  3D IP fISmartGel fIsmartGelAnimation fIWirecube fBAudio fRThis
+\"  LocalWords:  fISpeak fIspeak fBhev speakDigits fIEyeTest leftRightEyeTest
+\"  LocalWords:  OpenGL fBScreenAligh 2D fB HEVROOT fBDisplay X11 fBWand gnomon
+\"  LocalWords:  XYZHPR dtk gnomonDisplay fBirisfly fI irisfly speakDIgits

@@ -1,0 +1,99 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-triangulation 1 "March 18, 2009" "NIST/MCSD/SAVG" "SAVG"
+.SH NAME
+hev-triangulation
+- Triangulate a convex set of 3D points in the plane.
+
+
+
+.SH SYNOPSIS
+.B hev-triangulation
+input.savg output.savg
+
+
+
+.SH DESCRIPTION
+.I
+hev-triangulation
+is a program that creates a Delaunay triangulation with the usual Euclidean metric for the vertical projection of a set of 3D points
+.I A.
+.br
+The points have elevation, that is they are 3D points, but the predicates used to build the Delaunay triangulation are computed using only the x and y coordinates of these points.
+Each point can also have a color (rgba) which is added to the corresponding vertex in the triangulation.
+.br
+The triangulation has vertices at the points of
+.I A
+and its domain covers the convex hull of
+.I A
+. For this reason, if
+.I A
+is not convexe, and if the density of
+.I A
+is low, some unwanted triangles may appear. In this case, use
+.B hev-constrainedTriangulation(1).
+.PP
+The input,
+.I input.savg,
+and the output,
+.I output.savg,
+are .savg files (See http://math.nist.gov/mcsd/savg/software/loaders/#id634273 for more details).
+.PP
+This program uses the class
+.I Delaunay_triangulation_2<Traits,Tds>
+of the Computational Geometry Algorithms Library (CGAL) (See http://www.cgal.org).
+
+
+
+.SH FILES
+.B input.savg
+.RS
+input file. It contains the set of 3D points we want to triangulate. The format is:
+.RS
+.B points [r g b a]
+.br
+.I x y z [r g b a]
+.br
+...
+.RE
+where:
+.RS
+.I x y z
+define a vertex position in 3 space
+.br
+.I r g b a
+define a color and transparency (values range from 0 to 1). If it is ommitted, the default color of the computed surface will be white ("
+.I 1 1 1 1
+").
+.RE
+.RE
+.B output.savg
+.RS
+output file. It contains a set of polygons that represents a surface. 
+
+
+
+.SH EXAMPLES
+hev-triangulation   flat_color.savg   flat_color_surface.savg
+
+
+
+.SH SEE ALSO
+.I
+hev-constrainedTriangulation(1),
+.br
+.I
+http://www.cgal.org
+
+
+
+.SH AUTHORS
+Audrey Lemoussu
+.br
+Judith Terrill (group leader)
+.br
+NIST/ITL/MCSD/SAVG
+.br
+Original implementation March 2009.
+
+

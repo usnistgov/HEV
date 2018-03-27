@@ -1,0 +1,56 @@
+.TH hev-shmOnOff 1 "April 2011"
+
+.SH NAME
+hev-shmOnOff
+
+.SH SYNOPSIS 
+.B hev-shmOnOff [--usleep t] [--selector name] shm
+
+.SH DESCRIPTION
+
+\fB hev-shmOnOff\fR opens an existing shared memnory file and reads commands
+from standard input. (Blank lines and #comments are ignored).  Lines
+beginning with the word ON will have the remainder of the line printed to
+standard output when the shared memory file changes from zero to
+non-zero. Lines beginning with the word OFF will have the remainder of the
+line printed to standard output when the shared memory file changes from
+non-zero to zero.  Multiple ON and OFF commands can be give, and they will
+be issued in the order given.
+
+Once stardard input is closed (end-of-data on the FILE), no further standard
+input reads are done.
+
+Queued reads are done of the shared memory file, in a loop, so no data
+changes will be lost.
+
+.SH OPTIONS
+
+.IP "--usleep t"
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.IP "--selector name"
+indicates that the shared memory will only be read when the string in the shared memory
+file "idea/selector" matches \fIname\fR.
+
+.SH EXAMPLE
+
+.IP
+echo -e "ON exec hev-showWindow xeyes\\nOFF exec hev-hideWindow xeyes\\n" | hev-shmOnOff foo > $IRIS_CONTROL_FIFO
+
+.P
+will open the shared memory file foo and read its initial value. When the
+value changes from zero to non-zero, the command "exec hev-showWindow
+xeyes" will be send to the IRIS control fifo for execution.  When the value
+changes from non-zero to zero, the command "exec hev-hideWindow xeyes" will
+be send to the IRIS control fifo for execution.
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+April 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

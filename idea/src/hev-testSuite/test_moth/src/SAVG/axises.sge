@@ -1,0 +1,34 @@
+GROUP Axises
+
+SCS X 1 0 0
+SCS Y 0 1 0
+SCS Z 0 0 1
+ON X Axises
+ON Y Axises
+ON Z Axises
+
+BILLBOARD XName
+BILLBOARD YName
+BILLBOARD ZName
+ON XName X
+ON YName Y
+ON ZName Z
+
+TEXT Xa STRING "a" FONT "symbol.ttf" SIZE 0.1 COLOR 1 0 0 1
+TEXT X1 STRING "   1" SIZE 0.04 COLOR 1 0 0 1
+ON Xa  XName
+ON X1 XName
+
+TEXT Ya STRING "a" FONT "/home/griffin/fonts/symbol.ttf" SIZE 0.1 COLOR 0 1 0 1
+TEXT Y2 STRING "   2" SIZE 0.04 COLOR 0 1 0 1
+ON Ya YName
+ON Y2 YName
+
+TEXT ZEnergy STRING "Energy"  SIZE 0.05 COLOR 0 0 1 1
+ON ZEnergy ZName
+
+load AxisesLines ./axises.savg
+ON AxisesLines Axises
+
+ON Axises world
+

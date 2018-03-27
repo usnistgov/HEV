@@ -1,0 +1,155 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/922/trunk/dtk/programs/sharedMemUtils
+END
+charOptions.h
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/charOptions.h
+END
+dtk-destroySharedMem.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-destroySharedMem.cpp
+END
+dtk-printSharedMemAddresses.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-printSharedMemAddresses.cpp
+END
+dtk-copyShm.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/diverse/!svn/ver/669/trunk/dtk/programs/sharedMemUtils/dtk-copyShm.cpp
+END
+dtk-readLine.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/diverse/!svn/ver/669/trunk/dtk/programs/sharedMemUtils/dtk-readLine.cpp
+END
+dtk-readFloats.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-readFloats.cpp
+END
+floatsOptions.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/floatsOptions.cpp
+END
+dtk-readStrings.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-readStrings.cpp
+END
+dtk-loadFilter.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/922/trunk/dtk/programs/sharedMemUtils/dtk-loadFilter.cpp
+END
+dtk-noiseFloats.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-noiseFloats.cpp
+END
+dtk-zeroShm.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/diverse/!svn/ver/669/trunk/dtk/programs/sharedMemUtils/dtk-zeroShm.cpp
+END
+dtk-unloadFilter.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-unloadFilter.cpp
+END
+floatsOptions.h
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/floatsOptions.h
+END
+dtk-readVRCOSysV.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-readVRCOSysV.cpp
+END
+doublesOptions.h
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/doublesOptions.h
+END
+buttonsOptions.h
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/buttonsOptions.h
+END
+dtk-writeLine.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/diverse/!svn/ver/669/trunk/dtk/programs/sharedMemUtils/dtk-writeLine.cpp
+END
+dtk-writeShm.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/diverse/!svn/ver/669/trunk/dtk/programs/sharedMemUtils/dtk-writeShm.cpp
+END
+dtk-writeFloats.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-writeFloats.cpp
+END
+dtk-listFilters.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-listFilters.cpp
+END
+dtk-writeStrings.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-writeStrings.cpp
+END
+dtk-getSharedMem.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-getSharedMem.cpp
+END
+dtk-getSize.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/diverse/!svn/ver/669/trunk/dtk/programs/sharedMemUtils/dtk-getSize.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/diverse/!svn/ver/915/trunk/dtk/programs/sharedMemUtils/CMakeLists.txt
+END
+dtk-readCAVEDevices.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/sharedMemUtils/dtk-readCAVEDevices.cpp
+END

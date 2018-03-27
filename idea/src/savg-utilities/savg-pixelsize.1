@@ -1,0 +1,40 @@
+.TH SAVG\-PIXELSIZE 1 "24 March 2005"
+.SH NAME
+savg-pixelsize \- SAVG ToolBox: basic option pixelsize
+.SH SYNOPSIS
+.B savg-pixelsize
+[-style val] [ -pixelsize val] [-shrinkage val]
+.SH DESCRIPTION
+.I Savg-pixelsize
+ defines the size of a point, or the width of a line, in pixels.
+The specified pixelsize will affect all subsequent geometry until another 
+pixelsize keyword is given.  If no pixelsize keyword is given, 1.0 is used.
+It accepts the object from
+.I stdin
+and outputs to 
+.I stdout.
+Exactly one command line argument must be present or 
+a usage message will appear and the program will 
+terminate. A real number must be given to define the size. 
+
+.SH OPTIONS
+.TP
+.B \savg-pixelsize val
+Val is a floating point number.
+
+.SH EXAMPLES
+.TP
+.B cat sample.savg | savg-pixelsize 1.7 > sample_1.7.savg
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Spring 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

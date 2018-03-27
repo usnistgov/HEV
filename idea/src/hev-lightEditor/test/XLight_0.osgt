@@ -1,0 +1,23 @@
+#Ascii Scene 
+#Version 90 
+#Generator OpenSceneGraph 3.1.0 
+
+osg::LightSource {
+  UniqueID 1 
+  CullingActive FALSE 
+  StateSet TRUE {
+    osg::StateSet {
+      UniqueID 2 
+    }
+  }
+  Light TRUE {
+    osg::Light {
+      UniqueID 3 
+      Ambient 0 0 0 1 
+      Diffuse 0.9 0.9 0.9 1 
+      Specular 1 1 1 1 
+      Position 0 -1.41421 1.41421 0 
+      Direction 0 1 0 
+    }
+  }
+}

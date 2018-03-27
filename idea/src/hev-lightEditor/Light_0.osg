@@ -1,0 +1,22 @@
+LightSource {
+  nodeMask 0xffffffff
+  cullingActive FALSE
+  StateSet {
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+  }
+  referenceFrame RELATIVE
+  Light {
+    light_num 0
+    ambient 0 0 0 1
+    diffuse 0.92 0.92 0.92 1
+    specular 1 1 1 1
+    position -0.699957 -0.59782 -0.390731 0
+    direction 0 1 0
+    constant_attenuation 1
+    linear_attenuation 0
+    quadratic_attenuation 0
+    spot_exponent 0
+    spot_cutoff 180
+  }
+}

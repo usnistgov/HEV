@@ -1,0 +1,34 @@
+Node {
+  DataVariance STATIC
+  StateSet {
+    DataVariance STATIC
+    textureUnit 2 {
+      Texture3D {
+        DataVariance STATIC
+        file "bucky.mha"
+        min_filter LINEAR
+        mag_filter LINEAR
+	wrap_s CLAMP_TO_EDGE
+	wrap_t CLAMP_TO_EDGE
+	wrap_r CLAMP_TO_EDGE
+        maxAnisotropy 1
+        borderColor 0 0 0 0
+        borderWidth 0
+        useHardwareMipMapGeneration FALSE
+        unRefImageDataAfterApply TRUE
+        internalFormatMode USE_IMAGE_DATA_FORMAT
+        resizeNonPowerOfTwo FALSE
+      }
+    }
+    Uniform {
+      DataVariance STATIC
+      name "volumeTexture"
+      int 2
+    }
+    Uniform {
+      DataVariance STATIC
+      name "voxelSize"
+      vec3 32 32 32
+    }
+  }
+}

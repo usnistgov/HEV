@@ -1,0 +1,6 @@
+ObjectType = Image
+NDims = 3
+DimSize = 32 32 32
+ElementNumberofChannels = 1
+ElementType = MET_UCHAR
+ElementDataFile = bucky.raw

@@ -1,0 +1,111 @@
+#! /bin/env python
+
+import sys
+import os
+import os.path
+
+usageMsg = """compare-binary <file 1> <file 2>
+
+  This script compares two files, byte by byte, and
+  outputs the number of bytes that differ.
+
+  If the files are of different size, then the number output
+  will be at least the difference in the sizes.
+
+  Exit status 0 when files equal.
+  Exit status 1 when files differ.
+  
+"""
+
+# ---------------------------------------------------------------------------
+def usage():
+  sys.stdout.write("%s\n" % usageMsg)
+    
+def main():
+
+  bufSize = 4096
+
+  diffCount = 0
+  
+  if len(sys.argv) != 3:
+    usage()
+    sys.exit(1)
+    
+  f1_name = sys.argv[1]
+  f2_name = sys.argv[2]
+  #sys.stdout.write("Comparing %s with %s\n" % (f1_name, f2_name))
+
+  try:
+    f1 = open(f1_name, "rb")
+  except:
+    sys.stderr.write("Failed to open: %s\n" % f1_name)
+    sys.exit(1)
+
+  try:
+    f2 = open(f2_name, "rb")
+  except:
+    sys.stderr.write("Failed to open: %s\n" % f2_name)
+    sys.exit(1)
+
+  done = False
+  while not done:
+    a1 = f1.read(bufSize)
+    a2 = f2.read(bufSize)
+
+    if len(a1) < len(a2):
+      done = True
+      for i in range(len(a1)):
+        if a1[i] != a2[i]:
+          diffCount = diffCount + 1
+                     
+      diffCount = diffCount + len(a2) - len(a1)
+
+    elif len(a2) < len(a1):
+      done = True
+      for i in range(len(a2)):
+        if a1[i] != a2[i]:
+          diffCount = diffCount + 1
+                     
+      diffCount = diffCount + len(a1) - len(a2)
+
+    else:
+
+      for i in range(len(a1)):
+        if a1[i] != a2[i]:
+          diffCount = diffCount + 1
+
+      if len(a1) < bufSize:
+        done = True
+   
+  # If the files are of different size, then we read the rest of
+  # the larger file and count the bytes as all different.
+
+  if len(a1) > len(a2):
+    done = False
+    while not done:
+      a = f1.read(bufSize)
+      diffCount = diffCount + len(a)
+      if len(a) < bufSize:
+        done = True
+
+
+  elif len(a2) > len(a1):
+    done = False
+    while not done:
+      a = f2.read(bufSize)
+      diffCount = diffCount + len(a)
+      if len(a) < bufSize:
+        done = True
+
+  sys.stdout.write("%d\n" % diffCount)
+    
+  if diffCount > 0:
+    exitCode=1
+  else:
+    exitCode=0
+    
+  sys.exit(exitCode)
+
+# ----------------------------------------------------------------------------- 
+if __name__ == "__main__":
+  main()

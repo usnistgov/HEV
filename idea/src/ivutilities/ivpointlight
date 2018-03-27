@@ -1,0 +1,58 @@
+#! /bin/sh
+
+function usage {
+    echo "Usage: ivpointlight [-intensity i] [-color r g b] [-location x y z]"
+    echo "   or"
+    echo "       ivpointlight [-i i] [-c r g b]  [-l x y z]"
+    echo
+    echo "   i     range 0-1   default=1"
+    echo "   r g b range 0-1   default 1 1 1"
+    echo "   x y z range any   default 0 0 1"
+   exit
+}
+
+case $# in
+1)
+    usage
+    ;;
+esac
+
+
+
+echo "#Inventor V2.0 ascii"
+echo "Separator {"
+echo "PointLight {"
+
+
+if [ $# != 0 ]
+then
+  while /bin/true
+  do
+	if [ $# = 0 ]
+	then
+	    break
+	fi
+	case $1 in
+	-i|i|-in|in|intensity|-intensity)
+		echo "intensity $2"
+		shift;shift;
+		;;
+	-c|c|-co|co|color|-color)
+		echo "color $2 $3 $4"
+		shift;shift;shift;shift
+		;;
+	-l|l|-lo|lo|location|-location)
+		echo "location $2 $3 $4"
+		shift;shift;shift;shift
+		;;
+	*)
+		usage
+		;;
+        esac
+  done
+fi
+echo "}"
+
+iv_stdin_out
+
+echo "}"

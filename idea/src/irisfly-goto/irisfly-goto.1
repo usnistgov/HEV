@@ -1,0 +1,61 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH irisfly-goto 1 "January 2014" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+irisfly-goto
+
+.SH SYNOPSIS
+
+\fBirisfly-goto --create | --goto  file.timeline \fR 
+
+.SH DESCRIPTION
+
+\fIirisfly-goto\fR is a utility to reproduce the same position and
+orientation for multiple irisfly executions.
+
+
+.SH OPTIONS
+.TP
+.B "--create | -c"
+create a one line hev-timeline file for the
+current running irisfly position and orientation
+
+.TP
+.B "--goto | -g"
+cause current running irisfly to go to the position
+and orientation in the specified timeline file,
+typically created with --create
+
+
+.TP
+.B "--help | -h"
+prints a usage message.
+
+
+.SH EXAMPLE
+
+irisfly --ex tape.osg &
+
+# Manually navigate the scene
+
+irisfly-goto --create my.timeline
+
+# Manually navigate the scene again
+
+irisfly-goto --goto my.timeline
+
+# The scene should snap to the previous position and orientation
+	
+
+
+
+.SH SEE ALSO
+irisfly(1), hev-timeline(5)
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov
+

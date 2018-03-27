@@ -1,0 +1,143 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/991/trunk/dtk/DSOs/augmentDSO/dtk
+END
+dummyPrintDisplay.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/dummyPrintDisplay.cpp
+END
+dtkShmNav.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/dtkShmNav.cpp
+END
+dummyNav.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/dummyNav.cpp
+END
+caveDTKInput.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/caveDTKInput.cpp
+END
+caveDTKOutput.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/caveDTKOutput.cpp
+END
+iconSleepKeyboardMod.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/iconSleepKeyboardMod.cpp
+END
+trackballNav.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/trackballNav.cpp
+END
+wandShmNav.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/905/trunk/dtk/DSOs/augmentDSO/dtk/wandShmNav.cpp
+END
+navDTKOutput.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/navDTKOutput.cpp
+END
+dummyPrint.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/dummyPrint.cpp
+END
+caveInputPrint.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/caveInputPrint.cpp
+END
+caveInputTestGroup.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/caveInputTestGroup.cpp
+END
+wandJoystickNav.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/wandJoystickNav.cpp
+END
+gameNav.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/gameNav.cpp
+END
+dtkShmPivotNavMod.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/diverse/!svn/ver/981/trunk/dtk/DSOs/augmentDSO/dtk/dtkShmPivotNavMod.cpp
+END
+buttonNavControl.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/buttonNavControl.cpp
+END
+wandJoystickScaleNav.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/wandJoystickScaleNav.cpp
+END
+dtkShmLocationNavMod.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/981/trunk/dtk/DSOs/augmentDSO/dtk/dtkShmLocationNavMod.cpp
+END
+desktopFlyNav.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/diverse/!svn/ver/991/trunk/dtk/DSOs/augmentDSO/dtk/desktopFlyNav.cpp
+END
+wandButtonNav.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/wandButtonNav.cpp
+END
+sleepSyncDisplay.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/sleepSyncDisplay.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/991/trunk/dtk/DSOs/augmentDSO/dtk/CMakeLists.txt
+END
+joystickXYtransNav.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/783/trunk/dtk/DSOs/augmentDSO/dtk/joystickXYtransNav.cpp
+END

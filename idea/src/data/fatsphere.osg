@@ -1,0 +1,46 @@
+Node {
+  DataVariance STATIC
+  StateSet {
+    DataVariance STATIC
+
+    Comment { 
+      savg point files turn on GL_POINT_SMOOTH, but (at least on some
+      of our cards) it makes shaders very slow
+    }
+    GL_POINT_SMOOTH OVERRIDE|OFF
+
+    Comment { 
+      osg does not know the name of this OpenGL option, but this is 
+      GL_VERTEX_PROGRAM_POINT_SIZE, which allows a vertex shader to 
+      change the point size
+    }
+    0x8642 ON
+
+    Comment {
+      The remainder is equivalent to a .state file with these 3 lines:
+        uniform fatpointSize 1 float .01
+        vertex sphere.vert
+        fragment sphere.frag
+    }
+    Uniform {
+      DataVariance STATIC
+      name "fatpointSize"
+      float .01
+    }
+
+    Program {
+      DataVariance STATIC
+      num_shaders 2
+      Shader {
+        DataVariance STATIC
+	type VERTEX
+	file "fatsphere.vert"
+      }
+      Shader {
+        DataVariance STATIC
+	type FRAGMENT
+	file "fatsphere.frag"
+      }
+  }
+}
+ 

@@ -1,0 +1,197 @@
+#! /bin/sh
+#
+# ivstick - draw an Inventor "stick" between two points.
+#           The stick is represented by the Inventor cylinder shape stretched
+#           between the two specified points.
+#
+#   If the environment variable IVStick is set to "VRML1" then
+#   the output is VRML1. Just the header is changed.
+#
+#
+# Steve Satterfield
+# NIST/ITL/MCSD/SAVG
+# April 11, 2003
+# November 23, 2007
+# March 18, 2008
+#
+
+export IVStickParts="ALL"
+
+case $# in
+1|7|8)
+      case $1 in
+      SIDES|TOP|BOTTOM|ALL)
+             export IVStickParts=$1
+	     shift
+	     ;;
+       esac
+esac
+      
+
+case $# in
+6)
+    echo $1 $2 $3 $4 $5 $6
+    ;;
+7)
+    echo $1 $2 $3 $4 $5 $6 $7
+    ;;
+1)
+    echo "Usage: ivstick [parts] [x1 y1 z1  x2 y2 z2] [radius]" > /dev/tty
+    echo > /dev/tty
+
+    echo " If command line parameters not given, multiple lines of" > /dev/tty
+    echo " x1 y1 z1 x2 y2 z3 are read from stdin." > /dev/tty
+    echo > /dev/tty
+
+    echo " The radius of the stick can be specified by setting" > /dev/tty
+    echo " IVStickRadius environment variable. The default is .05" > /dev/tty
+    echo > /dev/tty
+    echo " The radius can also be specified as an optional last parameter."> /dev/tty
+    echo " This parameter will override the environment radius."> /dev/tty
+    echo > /dev/tty
+
+    echo " parts is an optional parameter that is passed to the Inventor" > /dev/tty
+    echo "       cylinder command. Only the following case sensitive strings" > /dev/tty
+    echo "       should be specified:  SIDES or TOP or BOTTOM or ALL" >/dev/tty
+    echo "       Typically, 'SIDES' is used to indicate an open ended cylinder." > /dev/tty
+    echo "       Otherwise do not specify this paramater for a closed end cylinder." > /dev/tty
+    echo > /dev/tty
+
+    exit
+    ;;
+*)
+    /bin/cat
+esac |\
+awk '
+#
+# return the length of a vector
+#
+function v3length(v3) {
+	return sqrt( (v3[x]*v3[x])+(v3[y]*v3[y])+(v3[z]*v3[z])  );
+}
+#
+# normalize the input vector and return it
+#
+function v3normalize(v3) 
+{
+    len = v3length(v3);
+    if (len != 0.0) { v3[x]=v3[x]/len;  v3[y]=v3[y]/len; v3[z]=v3[z]/len; }
+}
+BEGIN {
+      linecount=0;
+      x=0;y=1;z=2;
+      radius = ENVIRON["IVStickRadius"]; 
+      if (radius <=0) radius=.05;
+      if (ENVIRON["IVStick"] == "VRML1") {
+	print "#VRML V1.0 ascii"
+      }
+      else {
+        print "#Inventor V2.0 ascii";
+      }
+      print "Separator {";
+      parts = ENVIRON["IVStickParts"];
+      #print "parts=",parts > "/dev/tty";
+}
+#
+# Main:  Read in the end points  from stdin
+#
+{
+  linecount++;
+  if (substr($0,1,1) != "#" && (NF > 0)) {
+    p1[x]=$1; p1[y]=$2; p1[z]=$3;
+    p2[x]=$4; p2[y]=$5; p2[z]=$6;
+
+    if (NF==7) {
+	    radius=$7;
+            #print "radius=",radius > "/dev/tty";
+    }
+
+    # convert to a vector
+    for (i=0; i<3; i++) {
+        v1[i]=p2[i]-p1[i];
+    }
+
+    bondlength=sqrt(v1[x]*v1[x]+v1[y]*v1[y]+v1[z]*v1[z]);
+
+    # print "# v1:",v1[x],v1[y],v1[z];
+    v3normalize(v1);
+    # print "# v1(n):"v1[x],v1[y],v1[z];
+
+
+    print "Separator {";
+
+
+#    Identity for debugging
+#    r0[0]=1;     r0[1]=0;  r0[2]=0;    r0[3]=0;
+#    r1[0]=0;     r1[1]=1;  r1[2]=0;    r1[3]=0;
+#    r2[0]=0 ;    r2[1]=0;  r2[2]=1;    r2[3]=1;
+#    r3[0]=p1[x]; r3[1]=p1[y]; r3[2]=p1[z]; r3[3]=1;
+
+#   YX Rotation
+    a=v1[x]; b=v1[y]; c=v1[z];
+    d=sqrt(b*b+c*c);
+    bl=bondlength/2;
+    if (d == 0) {
+	 if (p1[x] > p2[x]) {bl=-bl}
+	 printf("# d=0 at line %d: %s\n",linecount,$0);
+#        r0[0]=1;        r0[1]=0;        r0[2]=0;        r0[3]=0;
+#        r1[0]=0;        r1[1]=1;        r1[2]=0;        r1[3]=0;
+#        r2[0]=0;        r2[1]=0;        r2[2]=1;        r2[3]=0;
+#        r3[0]=p1[x]+bl; r3[1]=p1[y];    r3[2]=p1[z];    r3[3]=1;
+
+         r0[0]=0;        r0[1]=1;     r0[2]=0;      r0[3]=0;
+         r1[0]=-1;       r1[1]=0;     r1[2]=0;      r1[3]=0;
+         r2[0]=0;        r2[1]=0;     r2[2]=1;      r2[3]=0;
+         r3[0]=p1[x]+bl; r3[1]=p1[y]; r3[2]=p1[z]; r3[3]=1;
+    }
+    else {
+        e=c/-d;
+        f=b/d;
+        bl=-bondlength/2;
+
+#    Just the YX Rotation
+#    r0[0]=d;     r0[1]=a*-f;  r0[2]=a*e;    r0[3]=0;
+#    r1[0]=0;     r1[1]=e;     r1[2]=f;      r1[3]=0;
+#    r2[0]=-a;    r2[1]=d*-f;  r2[2]=d*e;    r2[3]=0;
+#    r3[0]=p1[x]; r3[1]=p1[y]; r3[2]=p1[z]; r3[3]=1;
+
+
+#    Cylinder is defined along Y centered at 0,0,0 so rotate 90
+#    r0[0]=d;     r0[1]=a*-f;  r0[2]=a*e;    r0[3]=0;
+#    r1[0]=-a;    r1[1]=d*-f;  r1[2]=d*e;    r1[3]=0;
+#    r2[0]=0;     r2[1]=-e;    r2[2]=-f;     r2[3]=0;
+#    r3[0]=p1[x]; r3[1]=p1[y]; r3[2]=p1[z]; r3[3]=1;
+
+    # The actual matrix needed includes above plus a translation
+    # to account for the cylinder definition
+    r0[0]=d;     r0[1]=a*-f;  r0[2]=a*e;    r0[3]=0;
+    r1[0]=-a;    r1[1]=d*-f;  r1[2]=d*e;    r1[3]=0;
+    r2[0]=0;     r2[1]=-e;    r2[2]=-f;     r2[3]=0;
+    r3[0]=bl*(-a)+p1[x]; r3[1]=bl*(d*-f)+p1[y]; r3[2]=bl*(d*e)+p1[z]; r3[3]=1;
+
+    }
+
+    print "MatrixTransform {";
+    printf("matrix %10.6g %10.6g %10.6g %10.6g\n",r0[0],r0[1],r0[2],r0[3]);
+    printf("       %10.6g %10.6g %10.6g %10.6g\n",r1[0],r1[1],r1[2],r1[3]);
+    printf("       %10.6g %10.6g %10.6g %10.6g\n",r2[0],r2[1],r2[2],r2[3]);
+    printf("       %10.6g %10.6g %10.6g %10.6g\n",r3[0],r3[1],r3[2],r3[3]);
+    print "}";
+
+
+    if (parts == "ALL") {
+	printf("Cylinder {radius %g height %g}\n",radius,bondlength);
+    } else {
+	printf("Cylinder {parts %s radius %g height %g}\n",parts,radius,bondlength);
+    }
+
+    print "}";
+
+    }
+}
+END {
+    print "}";
+    print "# end";
+}'
+
+

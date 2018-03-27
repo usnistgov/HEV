@@ -1,0 +1,31 @@
+BUTTON probe
+  # this is run while probe is up- it shows the probe's position in world coordinates
+    FIRST EXEC $HEV_IDEA_DIR/etc/hev-probe/bin/probeRun.sh
+    FIRST WAIT irisfly-select probe
+
+  # load a probe object under a noclip node under the wand probe
+  # the probe is under this node when it's on
+    FIRST LOAD  ${HEV_IDEA_DIR}/etc/hev-probe/data/pointerGlyph.iris
+
+  # load the glyph object so it's ready to be instanced when the right button is pressed
+    FIRST LOAD irisflyPlus3d plus3d.osg
+    FIRST NOCLIP irisflyPlus3d
+
+  # what to do when the wand buttons are pressed
+    FIRST EXEC hev-shmOnOff --selector probe idea/buttons/left < $HEV_IDEA_DIR/etc/hev-probe/data/probeEventLeft.onOff > $IRIS_CONTROL_FIFO
+    FIRST EXEC hev-shmOnOff --selector probe idea/buttons/right < $HEV_IDEA_DIR/etc/hev-probe/data/probeEventRight.onOff > $IRIS_CONTROL_FIFO
+
+  # name of probe windows to show
+    FIRST WAIT irisfly-addAndShowWindow probePosition
+
+  # make the probe visible and turn on button routing, make message windows visible
+    ON WAIT irisfly-select probe
+    ON NODEMASK irisflyPointerGlyph ON
+    ON WAIT irisfly-addAndShowWindow probePosition
+    ON WAIT irisfly-addAndShowWindow probe@
+
+  # make the probe and its message windows invisible and turn off button routing
+    OFF NODEMASK irisflyPointerGlyph OFF
+    OFF WAIT irisfly-removeAndHideWindow probePosition
+    OFF WAIT irisfly-removeAndHideWindow probe@
+    OFF WAIT irisfly-deselect

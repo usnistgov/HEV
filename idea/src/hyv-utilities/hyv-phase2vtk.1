@@ -1,0 +1,99 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hyv-phase2vtk 1 "May 26, 2010" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hyv-phase2vtk
+- convert *.phase files to *.vtk files
+
+.SH SYNOPSIS
+.B "hyv-phase2vtk"
+[--parallel n] [-phantom value] i j k  dataDir | phaseFile
+
+.SH DESCRIPTION
+.PP
+.I
+hyv-phase2vtk
+will convert all
+.B *.phase
+files found in the data directory into
+.B *.vtk
+files.
+the
+.B "i j k"
+data dimensions of the phase file are required.
+
+
+
+.SH OPTIONS
+.IP "\fB--parallel n\fR"
+specifies how many concurrent processes to be used convert
+in parallel. On a 2 CPU machine, n of 2 is a good number.
+
+.IP "\fB--phantom\fR"
+A specified phantom value is added to all sides of the volume.  The
+dimensions of the the volume in the resulting vtk file is increased.  For
+example, an input 25x25x25 volume will be output as 27x27x27.
+.IP
+This parameter is useful to improve the look of the resulting isosurfaces by
+producing \fIclosed\fR surfaces along the volume boundaries which by default
+are open.
+
+
+.IP "\fBi j k\fR"
+is the dimensions of the image that created the
+.B phase
+file. For example: \fI25 25 25\fB.
+
+
+.IP "\fBdataDir\fR"
+is an existing directory containing the 
+.B img
+file.
+The resulting
+.B phase
+files are written to
+.B dataDir
+with names in the form of 
+.B *_{P}.phase
+where
+.B {P}
+is the specified
+.B phaseNumber.
+
+.IP "\fBphaseFile\fR"
+if a
+.B phase
+file is specified rather than a directory name,
+then the single specified
+.B phase
+file is converted to a
+.B vtk
+file in the current directory.
+
+
+
+.SH EXAMPLE
+
+.PP
+Run with 2 parallel processes converting a 25x25x25 phase file to vtk
+
+.IP
+ hyv-phase2vtk --parallel 2  25 25 25 C3Ssmall
+
+
+
+
+
+
+.SH SEE ALSO
+.I
+hyv-utilities(3)
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,
+.br
+NIST/ITL/MCSD/SAVG
+

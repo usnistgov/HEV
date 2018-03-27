@@ -1,0 +1,20 @@
+#Created by Divya Mouli on 6/12/2012
+#Based on the work of Luis Daniel Catacora 
+#This file creates the Gestures button in the MCP and assigns behavior for
+#its ON and OFF conditions
+
+
+BUTTON Gestures
+	#Behavior during ON state of Gestures button
+	#Writes 1 to GON, determines which gesture number the performed action
+	#corresponds with in readGestureNum
+	ON EXEC dtk-writeShm GON 1 1 %i 1
+	ON EXEC bash gestureControl/gestureAction
+
+	
+	#Behavior during OFF state of Gestures button
+	#Writes 0 to GON and kills related window
+	OFF EXEC dtk-writeShm GON 1 1 %i 0
+	OFF EXEC killall -q hev-messageBox
+	OFF EXEC killall -q hev-imageDisplay 
+	OFF EXEC killall -q hev-wandMouseGestureControl

@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/axisPad
+END
+help.sh
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/axisPad/help.sh
+END
+axisPad.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/axisPad/axisPad.cpp
+END
+configure.sh
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/axisPad/configure.sh
+END
+config.h
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/axisPad/config.h
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/axisPad/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/axisPad/README
+END
+demo.sh
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/axisPad/demo.sh
+END
+launcherList
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/axisPad/launcherList
+END

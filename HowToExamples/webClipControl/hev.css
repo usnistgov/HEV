@@ -1,0 +1,34 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 50px; /* margin-bottom by .footer height */
+}
+
+body > .container-fluid {
+  padding: 50px 15px 0;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 50px; /* fixed height of footer must match body margin-bottom */
+  background-color: #f8f8f8;
+}
+
+.footer > .container-fluid {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.container-fluid .text-muted {
+  margin: 15px 0;
+}
+
+.slider {
+  width: 100% !important;
+}
+

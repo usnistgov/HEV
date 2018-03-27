@@ -1,0 +1,40 @@
+.TH hev-worldToScene 1 "March 2011"
+.SH NAME
+
+hev-worldToScene
+
+.SH SYNOPSIS
+
+\fBhev-worldToScene [--usleep t] worldShm sceneShm
+
+.SH DESCRIPTION
+
+\fBhev-worldToScene\fR reads a DTK shared memory file created by
+irisfly to convert world coordinate values in the DTK shared
+memory file named \fBworldShm\fR to scene coordinates in the DTK shared
+memory file named \fBsceneShm\fR.
+
+Each shared memory file contains 16 doubles representing a tranaformatino matrix.
+If either sceneShm or worldShm don't exist they will created.
+
+.SH OPTIONS
+
+.IP "--usleep t"
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.SH EXAMPLE
+
+echo exec hev-worldToScene tmp/sceneWand wand > $IRIS_CONTROL_FIFO
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/mcsd/mcsd/\fR
+

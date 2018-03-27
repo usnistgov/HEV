@@ -1,0 +1,20 @@
+#Inventor V2.0 ascii
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}

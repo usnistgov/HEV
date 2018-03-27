@@ -1,0 +1,465 @@
+#######################################################
+# Input.txt
+# 
+# This is a sample user input file.
+# Copy this file into your directory and then modify the values as needed.
+# The user input file allows the user to specify basic things such as the \
+#    number of spokes and circular cracks on the window, the coordinates of the
+#    window, and the output file names.  
+#
+# Please refer to the comments to make sure you are following the rules when
+#     figuring out an appropriate value
+# 
+# Please do not remove any variable names even if you want to leave them
+#     blank (such at the break point)
+#
+# Any line  beginning with a # is considered a comment
+#
+#######################################################
+
+############### IMPORTANT ################
+# Format of inputs:
+# Variable_name: Value
+# 
+# THE VALUE MUST BE SEPARATED FROM THE VARIABLE NAME BY A COLON (':')
+# THE VALUE AND VARIABLE PAIR MUST BE CONTAINED IN A SINGLE LINE
+#
+###########################################
+
+
+
+############### LIST OF INPUT OPTIONS #################
+
+# list of things users can currently decide:
+
+# ~~~~~~~ values relating to basic window parameters ~~~~~~~
+# WINDOW VERTICES
+# NUMBER OF SPOKES
+# NUMBER OF CIRCULAR BREAKS
+# BREAK POINT
+
+
+# RANDOM SEED VALUE
+
+
+
+# ~~~~~~~ values relating to outputs ~~~~~~~~~
+
+# SEPARATE VS. COMBINED SHARD FILE
+# WHETHER OR NOT TO DISPLAY SAVG IMAGE AT END
+# SHARD POLYGONS FILENAME (for combined output files)
+# TANGENTED OUTLINES FILENAME (for combined output files)
+# MAIN FILENAME (for separate output files)
+# SHARD POLYGONS FILES BASENAME (for separate output files)
+# TANGENTED OUTLINES FILES BASENAME (for separate output files)
+# BREAK POINT FILENAME
+# WHETHER OR NOT TO OUTPUT ADJACENCY FILE
+# WHETHER OR NOT TO OUTPUT CENTROID FILE
+# ADJACENCY FILENAME
+# CENTROID FILENAME 
+
+
+
+# ~~~~~~~ values relating to randomness in pattern ~~~~~~~
+
+# MIN VALUE OF SEMIMAJOR AXIS FACTOR
+# MAX VALUE OF SEMIMAJOR AXIS FACTOR
+# SEMIMINOR AXIS FACTOR MEAN
+# SEMIMINOR AXIS FACTOR STANDARD DEVIATION
+# LENIENCY ANGLE FACTOR
+# BOUNDARY MARGIN FACTOR
+# SPOKE RANDOM PATH ANGLE FACTOR STANDARD DEVIATION
+# CIRCULAR BREAK INTERSECTION STANDARD DEVIATION
+# CHANCE DIVERGE
+# DIVERGE FACTOR
+# CHANCE OF SKIPPING CIRCULAR BREAK SEGMENT
+# SIMPLIFY SPOKE PATH
+# SPOKE RANDOM PATH STEP FACTOR MEAN
+# SPOKE RANDOM PATH STEP FACTOR STANDARD DEVIATION
+#######################################################
+
+
+
+###### WINDOW VERTICES ######
+# Enter the vertices of the window as a list of tuples.
+# vertices_inner is for the vertices of the window on the inner plane
+# vertices_outer is for the vertices of the window on the outer plane
+# NOTE: The window MUST be parallel to either the xy-,xz-, or yz- plane;
+#       The only difference between vertices_inner and vertices_outer should
+#           be the value of the coordinate on the axis perpendicular to the
+#           parallel plane.  
+
+vertices_inner: [(0, 0, 0), (1.2, 0, 0), (1.2, 0, 1), (0, 0, 1)]
+vertices_outer: [(0, 0.01, 0), (1.2, 0.01, 0), (1.2, 0.01, 1), (0, 0.01, 1)]
+
+
+######
+
+
+
+###### NUMBER OF SPOKES ######
+# num_spokes is the number of spokes you want to radiate from the break point
+# NOTE: You must specify a number GREATER THAN 3, or otherwise
+#       you will likely get strange results.  It is possible to occassionally
+#       get somewhat odd results with num_spoke >= 4 as well, though unlikely
+
+num_spokes: 15
+######
+
+
+###### NUMBER OF CIRCULAR BREAKS ######
+# num_breaks is the number of circular breaks (the number of splits in a 
+#     spoke)
+
+num_breaks: 6
+######
+
+
+
+###### BREAK POINT ######
+# Input x and y coordinates (x_br and y_br) for break position.
+# (Ignore the axis perpendicular to the window.  So if the window lies parallel
+#       to the yz-plane, enter the y and z values for the break point as the
+#       x_br and y_br values)
+# Leave blank to generate randomly.
+# Note: Do not enter a position that is right at the edge of the window.  If
+#       the break position is too close to the window edges (or not within
+#       the boundaries), then a random break position will be chosen
+#       How close the break point can get is determined by the boundary margin
+#       factor, which is specified in parameters portion of program
+
+x_br: 
+y_br: 
+######
+
+
+###### RANDOM SEED VALUE ######
+# Enter a seed value if desired (can be any hashable object, such as an 
+#      integer).  If left blank, seed will be generated based on current
+#      system time.  
+# Allows you to regenerate results.  
+
+seed: 
+######
+
+
+###### SEPARATE VS. COMBINED SHARD FILE ######
+# Input True for multiple if you want the output to be multiple savg files
+# (each shard in its separate file and each shard's outlines in a separate 
+# file); will also produce a file that lists out all the .savg files to  be
+# displayed
+#
+# Input False if you want to output a single savg file for all the shards and
+# a single savg file for all the outlines
+
+separate: True 
+######
+
+
+
+###### WHETHER OR NOT TO DISPLAY SAVG IMAGE AT END ######
+# If True is entered, savgfly will automatically be executed by the program
+# so that the window can be seen after its pattern has been calculated.
+# If False, the user may execute savgfly himself in order to see the image
+
+display: False
+######
+
+
+
+###### SHARD POLYGONS FILENAME (for combined output files) ######
+# This specifies the name of the output savg file which will contain
+#     the polygon definitions for all the shards that make up the 
+#     window.  
+# This input is used when the separate variable is set to False
+ 
+shard_filename: window.savg
+######
+
+
+###### TANGENTED OUTLINES FILENAME (for combined output files) ######
+# This specifies the name of the output savg file which will contain
+#     the line definitions that specify the outlines of each of the
+#     shards that make up the window (each line is defined along with its 
+#     tangent)
+# This input is used when the separate variable is set to False
+
+tang_filename: tangented.savg
+######
+
+ 
+###### MAIN FILENAME (for separate output files) ######
+# This specifies the name of the file that lists out all of the outputted
+#     shard and tangented savg files.
+# This input is used when the separate variable is set to True
+
+main_filename: main_file.txt
+######
+
+
+###### SHARD POLYGONS FILES BASENAME (for separate output files) ######
+# This specifies the name to start each outputted shard savg file with.  
+#     A shard savg file contains the polygon definition for one given shard.
+# Example: if there are 105 shards, and the shard_basename is set to 'shard'
+#          then the outputted shard savg files will be shard-000.savg, 
+#          shard-001.savg, shard-002.savg, ..., shard-104.savg
+# This input is used when the separate variable is set to True
+
+shard_basename: shard
+######
+
+
+###### TANGENTED OUTLINES FILES BASENAME (for separate output files) ######
+# This specifies the name to start each outputted tangented savg file with.  
+#     A tangented savg file contains the line definition that specify the 
+#     outline for one given shard.  (Each line is defined along with its
+#     tangent)
+# Example: if there are 105 shards, and the tang_basename is set to 'tang'
+#          then the outputted tangented savg files will be tang-000.savg, 
+#          tang-001.savg, tang-002.savg, ..., tang-104.savg
+# This input is used when the separate variable is set to True
+
+tang_basename: tang
+######
+
+###### BREAK POINT FILENAME ######
+# Enter the name of the output file that stores the coordinates of the break 
+#     point.
+break_point_filename: BreakPoint.dat
+######
+
+
+###### WHETHER OR NOT TO OUTPUT ADJACENCY FILE ######
+# Enter True for write_adj_file if you want the adjacency file to be outputted
+#    to the output directory.  This file will list out all the shards each
+#    shard is adjacent to.
+# Enter False if you don't want this file outputted
+
+write_adj_file: False
+######
+
+
+###### WHETHER OR NOT TO OUTPUT CENTROID FILE ######
+# Enter True for write_centroid_file if you want the centroid file to be
+# outputted to the output direcotry.  This file will list each shard along
+# with its centroid.
+
+write_centroid_file: True
+######
+
+
+###### ADJACENCY FILENAME ######
+# This specifies the name to name the outputted adjacency file.  This file
+#     will list out all the shards along with what shards each one neighbors.
+# This input is used when the write_adj_file input is set to True.
+
+adj_filename: "adjacency.txt" 
+######
+
+
+###### CENTROID FILENAME ######
+# This specifies the name to name the outputted centroid file.  This file
+#     will list out all the shards along with their centroids value.
+# This input is used when the write_centroid_file input is set to True.
+
+centroid_filename: "centroid.txt"  
+######
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###### MIN VALUE OF SEMIMAJOR AXIS FACTOR ######
+# This factor helps determine how small the circular breaks (which are actually
+#     ellipses) can get.  
+# This factor will be multiplied by the maximum distance between the break 
+#     point and the window edges to get the minimum possible value for the
+#     semimajor axis of the ellipses.  
+#
+# NOTE: This value should be much lower than the max_a_factor value.  It 
+#       should also be >= 0.  (The max_a_factor value should be <= 1)
+
+min_a_factor: 0.01
+######
+
+
+
+###### MAX VALUE OF SEMIMAJOR AXIS FACTOR ######
+# This factor helps determine how big the circular breaks (which are actually
+#     ellipses) can get.  
+# This factor will be multiplied by the maximum distance between the break 
+#     point and the window edges to get the maximum possible value for the
+#     semimajor axis of the ellipses.  
+#
+# NOTE: This value should be much higher than the max_a_factor value.  It 
+#       should also be <= 0.  (The min_a_factor value should be >= 0)
+
+max_a_factor: 1
+######
+
+
+
+###### SEMIMINOR AXIS FACTOR MEAN ######
+# This value will be the mean value of the semiminor axis factors.
+# A semiminor axis factor is the factor that a semimajor axis value is
+#     multiplied by to get the value of the semiminor axis (a random one is 
+#     chosen around this given mean factor using the given sigma value for 
+#     each separate circular break)
+
+mu_b_factor: 0.9
+######
+
+
+
+###### SEMIMINOR AXIS FACTOR STANDARD DEVIATION ######
+# This value will be the standard deviation of the semiminor axis factors 
+#     around the mean (given by mu_b_factor).
+# A semiminor axis factor is the factor that a semimajor axis value is
+#     multiplied by to get the value of the semiminor axis (a random one is 
+#     chosen around the given mean factor using this sigma value for each 
+#     separate circular break)
+
+sigma_b_factor: 0.03
+######
+
+
+###### LENIENCY ANGLE FACTOR ######
+# This value helps determine how much the spoke angle can deviate from its 
+#      orignial, given angle.  
+# Factor is multiplied by the angle between the spokes (given evenly spaced
+#      spokes) to get final value of how much the spoke angle can deviate
+# This is used in creating a random path for the spoke.  So if this factor
+#      is 0, the spoke will be perfectly straight.
+# NOTE: This value must be less than 0.5, or otherwise, spokes may intersect.
+
+leniency_angle_factor: 0.48
+######
+
+
+###### BOUNDARY MARGIN FACTOR ######
+# The boundary margin factor helps determine how close the break point can get
+#     to the edge of the window.  The program does not work properly if the
+#     break point is on the window edge, and so this factor is put in place
+#     to specify how close the point can get. 
+# This factor is multiplied by the distance between the left and right edges
+#     of the window to get how close the break point can be to the left and
+#     right edges; it is multiplied by the distance between the top and bottom
+#     edges to get how close the point can get to these edges.
+# NOTE: value should be greater than 0, though close to 0.  It should be
+#      less than 0.5.
+
+boundary_margin_factor: 0.1
+######
+
+
+
+###### SPOKE RANDOM PATH ANGLE FACTOR STANDARD DEVIATION  ######
+# This factor determines the standard deviation for the change in angle at each
+#       step of a spoke's path (used in creating the randomized path for 
+#       the spoke).  The factor is multiplied by the angle between the spoke 
+#       (given evenly spaced spokes) for the final standard deviation in the
+#       angle.    
+
+sigma_del_angle_factor: 0.3      
+######
+
+
+
+###### CIRCULAR BREAK INTERSECTION STANDARD DEVIATION ######
+# This standard deviation is used to modify the location of where the 
+#       circular breaks intersect the spokes so that the circular breaks 
+#       are not perfect ellipses.  This value will be multiplied by the
+#       distance between the current circular break intersection and the 
+#       nearest neighboring intersection on the same given spoke (this nearest
+#       intersection could be another circular break, the break point, or the
+#       edge of the window). 
+
+sigma_br_inter: 0.04
+#######
+
+
+
+###### CHANCE DIVERGE ######
+# This is the probability that a given point where a circular break intersects
+#       with a spoke will diverge for a given spoke.  This means there will
+#       be a discontinuity from where the circular break meets a spoke from
+#       the previous spoke and where the circular break leaves the spoke to go
+#       to the next spoke.
+
+chance_diverge: 0.2
+######
+
+
+
+###### DIVERGE FACTOR ######
+# This factor is the fraction of the distance between a given circular break
+#       intersection and the neighboring points in the spoke's path that the
+#       intersection point can diverge to at the most.  This diverge factor
+#       is used to create the discontinuities in circular breaks at a given
+#       spoke.  
+# NOTE: value must be less than 1
+
+diverge_factor: 0.1
+######
+
+
+
+
+###### CHANCE OF SKIPPING CIRCULAR BREAK SEGMENT ######
+# This is the chance that a segment of a circular break connecting two 
+#       neighboring spokes will be skipped.
+
+chance_skip: 0.1
+######
+
+
+
+###### SIMPLIFY SPOKE PATH ######
+# This boolean value determines if the spoke path should be simplified such
+#      that it only changes directions in path when it reaches an intersection
+#      point with a circular break.  Enter true to simplify, and false to leave
+#      it unspimplified.  
+# NOTE: For animations, it is optimal to leave this value to true, so that
+#      polygon shapes will be much simpler.  The value false, however, will
+#      create more realistic looking patterns.  You can simplify the path in
+#      general by increasing the mu_step_factor.  
+
+simplify_path: true
+######
+
+
+###### SPOKE RANDOM PATH STEP FACTOR MEAN ######
+# This value is the mean step size factor that will be used when generating
+#     random Spoke paths.  
+# Each step size will be equal to a randomly 
+#     generated step size factor multiplied by the distance between the start
+#     and end point of a Spoke (assuming the Spoke is perfectly straight).   
+# NOTE: Value should be between 0 and 1;
+
+mu_step_factor: 0.1
+######
+
+###### SPOKE RANDOM PATH STEP FACTOR STANDARD DEVIATION ######
+# This value is the standard deviation of the  step size factor that will be 
+#     used when generating random Spoke paths.  
+# Each step size will be equal to a randomly 
+#     generated step size factor multiplied by the distance between the start
+#     and end point of a Spoke (assuming the Spoke is perfectly straight).   
+# NOTE: value should be between 0 and 1
+
+sigma_step_factor: 0.01
+######
+
+
+
+

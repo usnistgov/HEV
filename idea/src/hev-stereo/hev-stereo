@@ -1,0 +1,19 @@
+#! /bin/bash
+
+case $1 in
+-on|--on) 
+    echo interocular .1  > $IRIS_CONTROL_FIFO
+    ;;
+
+-of*|--of*)
+    echo interocular 0   > $IRIS_CONTROL_FIFO
+    ;;
+
+-i*|--i*)
+    echo interocular $2   > $IRIS_CONTROL_FIFO
+    ;;
+*)
+    echo "Usage: hev-stereo --on | --off | --interocular value" > /dev/tty
+    ;;
+esac
+

@@ -1,0 +1,154 @@
+.TH hev-mergeState 1 
+
+
+.SH NAME
+
+hev-mergeState 
+
+
+.SH SYNOPSIS
+
+
+.B hev-mergeState
+.I  sourceFile targetFile outputFile
+.br
+      or
+.br
+.B hev-mergeState
+.I  sourceFile targetNode
+
+.SH DESCRIPTION
+
+\fBhev-mergeState\fR merges the state from the source file
+into the state of the target file or node.
+It can produce an output file or it can modify a node's state in
+a running irisfly session.
+
+All of the non-state data of the target is unchanged in the result.
+
+The state that is modified by this program is the contents of the
+OSG StateSet object associated with a node.  The StateSet specifies
+various attributes that determine how a model is rendered.
+These include material properties, lighting properties, shader programs,
+textures, and many other rendering characteristics.
+
+
+
+.SH FILES
+
+The following are a few pre-installed files that have useful state.
+These files could be used as the \fIsoureFile\fR.  See below for
+some examples that use these files.
+
+These files are currently in \fI$HEVROOT/idea/data\fR.
+
+.TP
+.B wire.osg
+Draws in wire-frame/line mode
+
+.TP
+.B solid.osg
+Draws in solid/filled polygon mode
+
+.TP
+.B unlit.osg
+Disables the standard OpenGL lighting
+
+.TP
+.B lit.osg
+Enables standard OpenGL lighting
+
+.TP
+.B unlitWire.osg
+Combines unlit.osg and wire.osg to give bright wireframe lines (which
+is usually what you want)
+
+.TP
+.B litSolid.osg
+Combines lit.osg and solid.osg to give lit and shaded solid surfaces.
+
+.TP
+.B lineAA.osg
+Turns on line antialiasing. Requires .savg files to have been
+processed with \fIosgconv --prune-StateSet\fR to remove the blending
+default set in these files. Generally, you will also need to apply
+unlit.osg to restore the un-lit look of these osgconv-processed lines.
+
+.TP
+.B noShader.osg
+Removes any shaders on the given node
+
+.TP
+.B fatpoint.osg
+Uses shaders to render point primitives as small spheres. There is a
+uniform float variable, \fIfatpointSize\fR that applications can use
+to control the sphere size. The default size is 0.01.
+
+.TP
+.B fatglyph.osg
+Uses shaders to render point primitives as small n-sided polygons. The
+X component of the normal specifies the number of sides for each
+glyph. The Y component controls the per-glyph size, and the uniform
+float variable \fIfatpointSize\fR provides a global size control.
+
+.TP
+.B litFatSphere.osg
+Uses shaders to render point primitives as small perspective correct
+spheres, correctly illuminated using OpenGL's 8 lights. The uniform
+variable \fIfatpointSize\fR controls the size of the spheres (default
+0.01), and the variable \fIshininess\fR controls the size of specular
+highlights (default 60).
+
+
+
+
+
+
+.SH EXAMPLES
+
+
+Here are some examples of modifying the state of a model file to 
+produce an output file:
+
+ # draw a cube in wireframe:
+ hev-mergeState wire.osg cube.savg cube.wf.osg
+
+ # draw the wireframe with unlit lines:
+ hev-mergeState unlit.osg cube.wf.osg cube.unlit.wf.osg
+
+ # transfer fatpoint rendering to points model
+ hev-mergeState fatpoint.osg pts.savg ptsFat.osg
+
+To modify the state of a node in the scenegraph of an executing 
+irisfly session, suppose you start up irisfly like this:
+
+ irisfly --examine boundingBox.osg &
+ echo LOAD cube cube.savg > $IRIS_CONTROL_FIFO
+ echo ADDCHILD cube world > $IRIS_CONTROL_FIFO
+
+You can then modify the shader programs for the node "cube" with 
+commands like these:
+
+ # render cube without lighting
+ hev-mergeState unlit.osg cube
+
+ # render in wireframe
+ hev-mergeState wire.osg cube
+
+
+.SH SEE ALSO
+
+\fBhev-setShader\fR(1)
+
+.SH AUTHOR
+
+Marc Olano & John Hagedorn
+
+.PP
+June 2011
+
+.PP 
+High Performance Computing and Visualization Group
+.br
+NIST
+.br

@@ -1,0 +1,45 @@
+.TH SAVG\-SPLIT 1 "11 April 2005"
+
+.SH NAME
+savg-split \- SAVG Toolbox: split
+.SH SYNOPSIS
+.B savg-split
+[rootfilename (lines_per_file)]
+
+.SH DESCRIPTION
+.I Savg-split
+Used to split up a very large savg files into smaller files. Keyword
+information is saved and stored in each new file. If 2 lines with
+the same keyword appear, the last occurrence of that keyword will
+be written to the files.
+.SH OPTIONS
+.TP
+.B rootfilename
+This sets the name of each new file. They are name in numeric
+order as they are created, by combining the root name, a 4 digit
+number (0001 to 9999), and ".savg". If there are more than 9999
+files created, the number will be larger than 4 digits.
+.TP
+.B val
+This sets the number of lines per file. The files will not split
+during the definition of a geometric object. The default is 100,000.
+.SH EXAMPLES
+.TP
+.B "cat bigfile.savg | savg-split smallerfile 2500"
+Creates the files smaller0001.savg, smaller0002.savg, etc.  from bigfile.savg, each with 2500 lines.
+
+.PP
+.SH AUTHOR
+.PP
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Spring 2005, modified June 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

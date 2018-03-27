@@ -1,0 +1,17 @@
+#! /bin/sh
+
+case $# in
+0)
+    continue
+    ;;
+*)
+    echo "Usage: hev-tclVtkIsosurfaceClean [-h] < in.iv > out.iv" > /dev/tty
+    echo > /dev/tty
+    echo "Clean cruft and Material Properties produced by VTK." > /dev/tty
+    echo "Inventor commands for color and materials can be added" > /dev/tty
+    echo "to the file manually or with ivutilities." > /dev/tty
+    exit 1
+    ;;
+esac
+
+sed '3,20d' | sed '/Transform/,+11d'| sed '$d'

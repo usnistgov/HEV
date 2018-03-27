@@ -1,0 +1,19 @@
+##############################################################
+#
+# bashScript.mcp - creates a single button menu:
+#                  ON  executes bash script named by 
+#                      environment variable $HEV_USR_SCRIPT_1
+#
+#                  OFF  executes bash script named by 
+#                      environment variable $HEV_USR_SCRIPT_0
+#
+##############################################################
+
+BUTTON Script
+
+
+ON  EXEC $($HEV_USR_SCRIPT_1)
+
+OFF EXEC $($HEV_USR_SCRIPT_0)
+
+

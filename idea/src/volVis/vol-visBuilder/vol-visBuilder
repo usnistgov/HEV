@@ -1,0 +1,2319 @@
+#!/usr/bin/env python2
+
+import os
+import stat
+import sys
+import optparse
+import subprocess
+import time
+import datetime
+import shutil
+import tempfile
+
+
+
+
+
+
+
+# NOTES:
+#
+# We assume that our data volumes are 3D.
+#
+# This program must generate the following:
+#       - volume texture files
+#       - geometry file for volume box, and other planes 
+#       - transfer function texture files
+#       - GLSL for transfer function
+#       - complete vertex and fragment programs
+#       - mcp file for menu configuration
+#       - iris files for flipbook and startup
+#       - some shell scripts for startup and making various changes
+#
+#
+#
+
+
+class VolPrepError (Exception) : pass
+
+################################################################################
+# each of these globals is a list of strings
+global AllFileList   # list of names of all files produced
+global Log           # list of actions taken
+global LogFP         # pointer to open log file
+AllFileList = []
+Log = []
+LogFP = None
+global CleanUp
+CleanUp = False
+global ProgName
+ProgName = "vol-visBuilder"
+
+
+
+################################################################################
+################################################################################
+
+# Create and maintain a log file: a file of all of the actions taken and errors
+
+def openLogFile (params) :
+        logFN = os.path.join (params.outDir, 
+                     params.outBaseName+".log")
+        try:
+                global LogFP
+                LogFP = open (logFN, "w")
+        except IOError, err:
+                errMsg = params.progName + \
+                  ": Unable to open the output file " + logFN + \
+                  ":\n            " + err.strerror + ".\n"
+                writeErrMsg (errMsg)
+                LogFP = None
+                return False
+        
+        global AllFileList
+        AllFileList.append (logFN)
+
+        addLogEntry ("Openned log file", logFN)
+
+        return True
+
+        # end of openLogFile
+
+def addLogEntry (*args) :
+        global LogFP
+        if LogFP != None :
+            print >>LogFP, \
+                datetime.datetime.now().strftime('%H:%M:%S ') + \
+                " ".join(args)
+            LogFP.flush ()
+
+        # end of addLogEntry
+
+def closeLogFile () :
+        global LogFP
+        if LogFP != None :
+            # addLogEntry ("Closing log file.")
+            LogFP.close()
+            LogFP = None
+        #end of closeLogFile
+
+
+# 
+
+def writeErrMsg (errMsg) :
+        print >>sys.stderr, errMsg
+        addLogEntry (errMsg)
+        return True
+
+
+###############################
+
+# If there is a error condition, we might want to 
+# remove all of the files produced.
+
+def removeFiles (fileList) :
+
+        # We loop through the list popping file names off the end of the list
+        # and deleting the files.  At the end of the loop, the list is empty.
+
+        n = len (fileList)
+        for i in range (n):
+            fn = fileList.pop()
+            global CleanUp
+            if CleanUp :
+                try :
+                    os.remove (fn)
+                except OSError , err :
+                    errMsg = params.progName + \
+                        ": Error encountered while deleting file " + fn + \
+                        ":\n            " + err.strerror + ".\n"
+                    writeErrMsg (errMsg)
+            else :
+                writeErrMsg (ProgName + 
+                        ": Not removing file: " + fn)
+
+        
+        return True
+    # end of removeFiles
+
+
+
+
+################################################################################
+
+
+# This class handles the parsing of the command line args
+
+class CmdParams:
+
+    def __init__ (self):
+
+        self.progName = os.path.basename(sys.argv[0])
+
+        self.usageMsg =  self.progName + \
+                " [options] [volFN ....] transferFuncFN outputBaseFN" 
+
+        # we use optparse to extract optional parameters from the command line
+        optparser = optparse.OptionParser (usage=self.usageMsg)
+
+        self.usageMsg = "\nUsage: " + self.usageMsg + "\n"
+
+        # Here are the defaults for the cmd line options
+        optparser.set_defaults (
+                outDir=".",
+                writeVolData = True,
+                box = [1.0,1.0,1.0],
+                volConvOptions = "",
+                embeddedObjects = False,
+                near = True,
+                clip = True,
+                slices = 0,
+                densityScale = 1.0,
+                alphaOffset = 0.0,
+                alphaScale = 1.0,
+                rayStep = 0.5,
+                randStep = True,
+                lighting = "gradOpaque",
+                volTxtrFilter = "LINEAR",
+                integration = "point",
+                opacityGUI = True,
+                include = ["."],
+                txtrUnitStart = 0,
+                tfVol = "",
+                cleanUp = False,
+                verbose = False
+                )
+
+        # Tell the optparser what to expect.
+        # Note that the default destination attribute name for an option 
+        # is the same as the first -- name
+        # Whenever there is an upper case char in the name, we allow the
+        # all lower case version.
+
+        optparser.add_option ("--outDir", "--outdir")
+        optparser.add_option ("--box", nargs=3, type="float")
+        optparser.add_option ("--volConvOptions", "--volconvoptions")
+        optparser.add_option ("--tfVol", "--tfvol")
+
+        optparser.add_option ("--cleanUp", "--cleanup", 
+                        dest="cleanUp", action="store_true")
+
+        optparser.add_option ("--noCleanUp", "--nocleanup", 
+                        dest="cleanUp", action="store_false")
+
+        optparser.add_option ("--volWrite", "--volwrite", 
+                        dest="writeVolData", action="store_true")
+
+        optparser.add_option ("--noVolWrite", "--novolwrite", 
+                        dest="writeVolData", action="store_false")
+
+        optparser.add_option ("--polygons", 
+                        dest="embeddedObjects", action="store_true")
+        optparser.add_option ("--noPolygons", "--nopolygons",
+                        dest="embeddedObjects", action="store_false")
+
+        optparser.add_option ("--near", 
+                                dest="near", action="store_true")
+        optparser.add_option ("--noNear", "--nonear",
+                                dest="near", action="store_false")
+
+        optparser.add_option ("--clip", 
+                                dest="clip", action="store_true")
+        optparser.add_option ("--noClip", "--noclip",
+                                dest="clip", action="store_false")
+
+        # For now we remove slices as an option
+        # optparser.add_option ("--slices", type="int")
+
+        optparser.add_option ("--alphaScale", "--alphascale", type="float")
+        optparser.add_option ("--alphaOffset", "--alphaoffset", type="float")
+
+        optparser.add_option ("--densityScale", "--densityscale",
+                              "--scaleOpacity", "--scaleopacity", type="float")
+
+        optparser.add_option ("--rayStep", "--raystep", type="float")
+        optparser.add_option ("--txtrUnitStart", "--txtrunitstart", type="int")
+
+        optparser.add_option ("--randStep", "--randstep",
+                        dest="randStep", action="store_true")
+        optparser.add_option ("--noRandStep", "--norandstep",
+                        dest="randStep", action="store_false")
+
+
+        optparser.add_option ("--integration")
+
+        optparser.add_option ("--lighting")
+
+        optparser.add_option ("--volTxtrFilter", "--voltxtrfilter")
+
+        optparser.add_option ("--opacityGUI", "--opacitygui",
+                                dest="opacityGUI", action="store_true")
+        optparser.add_option ("--noOpacityGUI", "--noopacitygui",
+                                dest="opacityGUI", action="store_false")
+
+        optparser.add_option ("--include", action="append")
+
+        optparser.add_option ("-v", "--verbose", action="store_true")
+
+        # Here we get the results from the optparser
+        (options, remainingArgs) = optparser.parse_args (sys.argv[1:])
+
+        # Now distribute this info into the member data attributes
+        self.outDir = options.outDir
+        
+        self.writeVolData = options.writeVolData
+
+        self.tfVol = options.tfVol
+
+        self.startTxtrUnit = 0
+        self.startTxtrUnit = options.txtrUnitStart
+        self.box = options.box
+        self.volConvOptions = options.volConvOptions
+        self.embeddedObjects = options.embeddedObjects
+        self.near = options.near
+        self.clip = options.clip
+
+        # self.slices = options.slices
+        self.slices = 0
+
+        self.alphaScale = options.alphaScale
+        self.alphaOffset = options.alphaOffset
+        self.densityScale = options.densityScale
+        self.rayStep = options.rayStep
+        self.randStep = options.randStep
+        self.lighting = options.lighting
+        self.volTxtrFilter = options.volTxtrFilter
+        self.integration = options.integration
+        self.opacityGUI = options.opacityGUI
+        self.include = options.include
+        self.verbose = options.verbose
+
+        self.cleanUp = options.cleanUp
+
+        
+        global CleanUp
+        CleanUp = self.cleanUp
+
+
+        # Now we deal with the positional args
+        self.volDataFNList = []  # an empty list
+        self.transferFuncFN = ""
+        self.outBaseName = ""
+
+        self.success = True
+
+        # print "options = ", options
+        # print "remaining args: ", remainingArgs, len (remainingArgs)
+
+        # See if we have the minimal number of remaining arguments needed
+        if len(remainingArgs) < 2 :
+                errMsg = self.progName + \
+                            ": Error: Too few command line arguments."
+                writeErrMsg (errMsg)
+                writeErrMsg (self.usageMsg)
+                self.success = False
+                return
+
+        # we get the two positional args from the end of the list
+        self.outBaseName = remainingArgs[-1]
+        self.transferFuncFN = remainingArgs[-2]
+
+        
+        # If there are any volume data file names, get them
+        if len (remainingArgs) > 2 :
+                self.volDataFNList = remainingArgs[:-2]
+
+        # Check the validity of the cmd line args we just got.
+        if not self.paramsOK ():
+                self.success = False
+
+    # end of __init__
+    #################
+                
+
+    def paramsOK (self):
+        # this function checks that the parameters are consistent and valid
+
+        if not self.success:
+                return False
+
+        if self.box[0]<=0 or self.box[1]<=0 or self.box[2]<=0 :
+                errMsg = self.progName + \
+                                ": Error: Box sizes must be greater than zero."
+                writeErrMsg (errMsg)
+                writeErrMsg (self.usageMsg)
+                return False
+                
+        if self.integration != 'point'  and  self.integration != 'linear' :
+                errMsg = self.progName + \
+                        ": Error: Bad value for integration (" + \
+                        self.integration + ")."
+                writeErrMsg (errMsg)
+                writeErrMsg (self.usageMsg)
+                return False
+
+
+        if self.slices < 0 :
+                errMsg = self.progName + \
+                        ": Bad value for slices (" + \
+                        str(self.slices) + ")."
+                writeErrMsg (errMsg)
+                writeErrMsg (self.usageMsg)
+                return False
+
+        if self.densityScale <= 0 :
+                errMsg = self.progName + \
+                        ": Bad value for densityScale (" + \
+                        str(self.densityScale) + ")."
+                writeErrMsg (errMsg)
+                writeErrMsg (self.usageMsg)
+                return False
+
+        if self.alphaScale <= 0 :
+                errMsg = self.progName + \
+                        ": Bad value for alphaScale (" + \
+                        str(self.alphaScale) + ")."
+                writeErrMsg (errMsg)
+                writeErrMsg (self.usageMsg)
+                return False
+
+        if self.alphaOffset <= -1 or self.alphaOffset >= 1 :
+                errMsg = self.progName + \
+                        ": Bad value for alphaOffset (" + \
+                        str(self.alphaOffset) + ")."
+                writeErrMsg (errMsg)
+                writeErrMsg (self.usageMsg)
+                return False
+
+        if self.lighting != "none" and self.lighting != "gradOpaque" and \
+           self.lighting != "gradopaque" :
+                errMsg = self.progName + \
+                        ": Bad value for lighting (" + \
+                        str(self.lighting) + ")."
+                writeErrMsg (errMsg)
+                writeErrMsg (self.usageMsg)
+                return False
+
+        if self.volTxtrFilter != "LINEAR" and self.volTxtrFilter != "NEAREST" :
+                errMsg = self.progName + \
+                        ": Bad value for volTxtrFilter (" + \
+                        str(self.volTxtrFilter) + ")."
+                writeErrMsg (errMsg)
+                writeErrMsg (self.usageMsg)
+                return False
+
+
+        if self.rayStep <= 0 :
+                errMsg =  self.progName + \
+                        ": Bad value for rayStep (" + \
+                        str(self.raystep) + ")."
+                writeErrMsg (errMsg)
+                writeErrMsg (self.usageMsg)
+                return False
+
+        if len(self.transferFuncFN) == 0 :
+                writeErrMsg (self.progName + \
+                     ": Error: Transfer function file name has zero length." )
+                writeErrMsg (self.usageMsg)
+                return False
+
+        if len(self.outBaseName) == 0 :
+                writeErrMsg (self.progName + \
+                        ": Error: Output base file name has zero length." )
+                writeErrMsg (self.usageMsg)
+                return False
+
+
+        for fn in self.volDataFNList :
+            if len (fn) == 0 :
+                writeErrMsg (self.progName + \
+                        ": Error: Volume data file name list has zero length." )
+                writeErrMsg (self.usageMsg)
+                return False
+
+        return True
+
+    # end of paramsOK
+    #################
+
+
+    def __str__ (self):
+        return \
+                "CmdParams: \n" + \
+                "    progName = " + str(self.progName) + "\n" + \
+                "    verbose = " + str(self.verbose) + "\n" + \
+                "    outDir = " + str(self.outDir) + "\n" + \
+                "    box = " + str(self.box) + "\n" + \
+                "    volConvOptions = " + str(self.volConvOptions) + "\n" + \
+                "    embeddedObjects = " + str(self.embeddedObjects) + "\n" + \
+                "    near = " + str(self.near) + "\n" + \
+                "    clip = " + str(self.clip) + "\n" + \
+                "    slices = " + str(self.slices) + "\n" + \
+                "    densityScale = " + str(self.densityScale) + "\n" + \
+                "    alphaScale = " + str(self.alphaScale) + "\n" + \
+                "    alphaOffset = " + str(self.alphaOffset) + "\n" + \
+                "    rayStep = " + str(self.rayStep) + "\n" + \
+                "    randStep = " + str(self.randStep) + "\n" + \
+                "    lighting = " + str(self.lighting) + "\n" + \
+                "    volTxtrFilter = " + str(self.volTxtrFilter) + "\n" + \
+                "    integration = " + str(self.integration) + "\n" + \
+                "    opacityGUI = " + str(self.opacityGUI) + "\n" + \
+                "    include = " + str(self.include) + "\n" + \
+                "    volDataFNList = " + str(self.volDataFNList) + "\n" + \
+                "    transferFuncFN = " + str(self.transferFuncFN) + "\n" + \
+                "    outBaseName = " + str(self.outBaseName) + "\n" + \
+                "    success = " + str(self.success) + "\n" + \
+                "    writeVolData = " + str(self.writeVolData) + "\n" + \
+                "\n"
+
+
+    # end of __str__
+    #################
+
+
+#  end of class CmdParams
+##################################################################
+
+def executeCmd (cmd, suppressErrorOutput = True) :
+    try :
+        proc = subprocess.Popen ( cmd.split(), 
+                                  stdout=subprocess.PIPE, 
+                                  stderr=subprocess.PIPE )
+        addLogEntry (cmd)
+        # Yes, I know that there are other ways of doing this....
+        (tfOut, tfErr) = proc.communicate()
+    except OSError, err :   # add ValueError?
+            errMsg = ProgName + \
+                ": Error encountered while executing " + cmd + \
+                " :\n             " + err.strerror + ".\n"
+            writeErrMsg (errMsg)
+            raise VolPrepError
+
+    # if vol-tfPrep produced any output on stderr, print it
+    if tfErr != None and tfErr != "" :
+        if not suppressErrorOutput :
+            writeErrMsg (tfErr)
+
+    # we we got a bad return code
+    if proc.returncode != 0 :
+        # if err output was suppressed above, print it here
+        if suppressErrorOutput :
+            if tfErr != None and tfErr != "" :
+                writeErrMsg ("Error output from command: "+cmd)
+                writeErrMsg (tfErr)
+        errMsg = ProgName + ": Bad return code (" + \
+                str(proc.returncode) + ") from command: \n" + \
+                "        " + cmd 
+        writeErrMsg (errMsg)
+        raise VolPrepError
+
+    return 0
+
+    # end of executeCmd
+
+##################################################################
+
+
+class ReqExternal:
+
+    def __init__ (self, stdNm="", objT="", dataT="", glslNm=""):
+        self.stdName = stdNm
+        self.objType = objT
+        self.dataType = dataT
+        self.glslName = glslNm
+
+    # the following serves as an alternate constructor
+    @classmethod
+    def constructByTokens (klass, toks) :
+        reqExt = klass (toks[0], toks[1], toks[2], toks[3])
+        reqExt.info = toks[4:]
+        return reqExt
+
+
+
+    def __str__ (self):
+        infoStr = ""
+        for i in range (len(self.info)) :
+            infoStr += " " + self.info[i]
+            
+        return  "ReqExt:" + \
+                "   stdName=" + self.stdName + \
+                "   objType=" + self.objType + \
+                "   dataType=" + self.dataType + \
+                "   glslName=" + self.glslName + \
+                "   info=" + infoStr
+
+##################################################################
+
+class DerivedTexture:
+    def __init__ (self, origNm, derivNm, deriv, glslNm):
+        self.origFN = origNm
+        self.derivedFN = derivNm
+        self.derivation = deriv
+        self.glslName = glslNm
+
+    def __str__ (self):
+        return  "DerivedTexture:" + \
+                "   origFN=" + self.origFN + \
+                "   derivedFN=" + self.derivedFN + \
+                "   derivation=" + self.derivation + \
+                "   glslName=" + self.glslName 
+
+##################################################################
+
+# looks at a .mha/.mhd file and gets the dimensions.
+
+def getMhaDimSize ( fn ) :
+        # Invoke cmd:  grep --text DimSize fn
+        cmd = [ 'grep', '--text', 'DimSize', fn ]
+
+        try :
+            grepProc = subprocess.Popen (  cmd, 
+                                            stdout=subprocess.PIPE, 
+                                            stderr=subprocess.PIPE )
+            addLogEntry (*cmd)
+            (grepOut, grepErr) = grepProc.communicate()
+        except OSError, err :   # add ValueError?
+                errMsg = ProgName + \
+                    ": Error encountered while executing " + cmd[0] + \
+                    " :\n             " + err.strerror + ".\n"
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+
+        # if grep any output on stderr, print it
+        if grepErr != None and grepErr != "" :
+                writeErrMsg (grepErr)
+
+        # we we got a bad return code
+        if grepProc.returncode != 0 :
+                errMsg = ProgName + \
+                   ": Bad return code from grep (" + \
+                   str(grepProc.returncode) + ") processing terminated."
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+
+        # Now parse tfOut to generate the lists of texture and GLSL files.
+        # The output consists of a series of lines, each line must
+
+        lines = grepOut.split("\n")
+        if len(lines) < 1 :
+                errMsg = ProgName + \
+                 ": Unable to find DimSize line in texture file "+\
+                 fn + "; processing terminated."
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+        line = lines[0]
+        addLogEntry ("Output from getMhaDimSize grep:", line)
+        tok = line.split ()
+        if len(tok) < 3 :
+                errMsg = ProgName + \
+                 ": Bad format for DimSize line in texture file "+\
+                 fn + "; processing terminated."
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+        if  tok[1] != '=' :
+                errMsg = ProgName + \
+                 ": Bad format for DimSize line in texture file "+\
+                 fn + "; processing terminated."
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+
+        dimSize = []
+        for i in range (2,len(tok)) :
+                dimSize.append (int (tok[i]))
+
+        return dimSize
+        # end of def getMhaDimSize ( fn ) :
+
+
+# Generate the volume texture files in .mha format
+
+def genVolumeTextures ( params ) :
+        myFiles = []
+        volTxtrFNs = []
+
+        volDims = None
+
+        # loop through all of the specified volume files
+        seqNum = 0
+        for volFn in params.volDataFNList:
+                baseFn = os.path.basename (volFn)
+                (rootFn, extFn) = os.path.splitext (baseFn)
+
+                # the following are used to test if volFn is already in the
+                # output directory
+                volFnAbs = os.path.abspath (volFn)
+                volFnOutDirAbs = \
+                   os.path.abspath (os.path.join(params.outDir, baseFn))
+
+                seqStr = '%05d' % seqNum
+                outTxtrFn = params.outBaseName + '.' + \
+                                baseFn + '.' + ('%05d' % seqNum) + ".mha"
+                outTxtrFn = os.path.join (params.outDir, outTxtrFn)
+
+
+
+                # Note that params.volConvOptions gives the options
+                # to hev-convertDataArray.  If this is not an empty string
+                # then we assume that existing .mha/.mhd files will need
+                # to be processed.
+
+                # check if it is already a texture file (mha or mhd)
+                # that's in the right place that doesn't need to be
+                # transformed.
+                if   ( extFn == '.mha' or  extFn == '.mhd') and \
+                     ( volFnAbs == volFnOutDirAbs)          and \
+                     ( params.volConvOptions == '' )  :
+
+                        # do not add this to list of produced files
+                        # myFiles.append (volFn)
+                        # But add it to the list of texture files
+                        # JGH: or should we append baseFn?
+                        volTxtrFNs.append (volFn)
+                        addLogEntry ("Using existing volume texture", volFn)
+
+                elif ( extFn == '.mha' or  extFn == '.mhd') and \
+                     ( volFnAbs != volFnOutDirAbs)          and \
+                     ( params.volConvOptions == '' )  :
+
+                        # It's mha/mhd, no transformation is needed, but it's 
+                        # not in the right directory so copy it.
+                        if params.writeVolData :
+                            shutil.copyfile (volFn, 
+                                         os.path.join(params.outDir, baseFn) )
+                            addLogEntry ("Using existing volume texture", 
+                                         volFn, 
+                                         "copied to directory", params.outDir)
+                        volTxtrFNs.append (baseFn)
+
+                else :
+
+                        # if we get here, volFn is either not a texture
+                        # file (.mha or .mhd) or we require 
+                        # a format conversion and/or data transformation
+                        # The conversion / transformation is
+                        # accomplished with hev-convertDataArray.
+
+                        cmd = ["hev-convertDataArray"] + \
+                                        params.volConvOptions.split ()
+
+                        cmd +=  [
+                                volFn,
+                                outTxtrFn 
+                                ]
+
+                        # params.writeVolData says whether to actually
+                        # do the processing.  If not, we use the file name
+                        # but we don't actually generate the file.
+
+                        if params.writeVolData :
+                            try:
+                                rtn = subprocess.call (cmd)
+                            except OSError, err :   
+                                errMsg = params.progName + \
+                                 ": Error encountered while executing " + \
+                                 cmd[0] + \
+                                 " :\n             " + err.strerror + ".\n"
+                                writeErrMsg (errMsg)
+                                raise VolPrepError
+
+
+                            addLogEntry ("Creating vol texture", outTxtrFn, 
+                                        "from", volFn, ":")
+                            addLogEntry (*cmd)
+
+                            if rtn != 0 :
+                                # an error occurred
+                                errMsg = params.progName + \
+                                  ": Error converting volume file " + \
+                                  volFn + "; volume processing terminated."
+                                print >>sys.stderr, errMsg
+                                removeFiles (myFiles)
+                                raise VolPrepError
+
+                            myFiles.append (outTxtrFn)
+                            # end of section if params.writeVolData
+
+                        volTxtrFNs.append (outTxtrFn)
+
+                seqNum = seqNum + 1
+        # end of loop over volume files
+
+        global AllFileList
+        AllFileList += myFiles 
+
+        if params.tfVol == "" :
+            params.tfVol = volTxtrFNs[0]
+
+        return volTxtrFNs
+        # end of genVolumeTextures
+
+
+##################################################################
+
+# Generate transfer function texture files and GLSL file
+def genTF ( params ) :
+
+        outTFTxtrs = []
+        outTFGLSLs = []
+
+        myFiles = []
+
+        # Invoke cmd:  vol-tfPrep transferFuncFN  outputBaseFN
+        cmd = [
+              'vol-tfPrep',
+              '--volume',
+              params.tfVol,
+              params.transferFuncFN,
+              os.path.join(params.outDir, params.outBaseName)
+              ]
+
+        try :
+            tfProcess = subprocess.Popen (  cmd, 
+                                            stdout=subprocess.PIPE, 
+                                            stderr=subprocess.PIPE )
+            addLogEntry (*cmd)
+            # Yes, I know that there are other ways of doing this....
+            (tfOut, tfErr) = tfProcess.communicate()
+        except OSError, err :   # add ValueError?
+                errMsg = params.progName + \
+                    ": Error encountered while executing " + cmd[0] + \
+                    " :\n             " + err.strerror + ".\n"
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+        # if vol-tfPrep produced any output on stderr, print it
+        if tfErr != None and tfErr != "" :
+                writeErrMsg (tfErr)
+
+        # we we got a bad return code
+        if tfProcess.returncode != 0 :
+                errMsg = params.progName + \
+                   ": Bad return code from vol-tfPrep (" + \
+                   str(tfProcess.returncode) + ") processing terminated."
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+        # Now parse tfOut to generate the lists of texture and GLSL files.
+        # The output consists of a series of lines, each line must
+        # take one of these forms:
+        #   TEXTURE  fileName.mha glslVarNm nChan nDim norm0 norm1
+        #   GLSL     fileName.glsl funcName 
+        #   REQ_EXTERNAL ....   
+        #   #comment
+
+        outTFTxtrs = []
+        outTFGLSLs = []
+        outReqExts = []
+        for line in tfOut.split("\n"):
+            addLogEntry ("Output from vol-tfPrep:", line)
+            tok = line.split ()
+
+            '''
+            if len(tok) > 7 :
+                removeFiles (myFiles)
+                errMsg = params.progName + \
+                   ": vol-tfPrep: Bad format for output line '" + \
+                   line + "'; processing terminated."
+                writeErrMsg (errMsg)
+                raise VolPrepError
+            '''
+
+            if len(tok) > 0 :
+                # ignore lines that start with #vol-tfPrep:
+                if tok[0][0] != '#' :
+                    if tok[0] == 'REQ_EXTERNAL' :
+                        if len(tok) < 5 :
+                                errMsg = params.progName + \
+                                    ": vol-tfPrep: Bad arg count " + \
+                                    " for output line '" + \
+                                    line + "'; processing terminated."
+                                writeErrMsg (errMsg)
+                                removeFiles (myFiles)
+                                raise VolPrepError
+                        # outReqExts.append (ReqExternal (tok[1], tok[2], tok[3], tok[4]))
+                        outReqExts.append (
+                            ReqExternal.constructByTokens (tok[1:]) )
+
+
+                    elif tok[0] == 'TEXTURE' :
+                        
+                        if len(tok) < 7 :
+                                errMsg = params.progName + \
+                                    ": vol-tfPrep: Bad arg count " + \
+                                    " for output line '" + \
+                                    line + "'; processing terminated."
+                                writeErrMsg (errMsg)
+                                removeFiles (myFiles)
+                                raise VolPrepError
+                        txtrFN = tok[1]
+                        glslVarName = tok[2]
+                        nChan = int (tok[3])
+                        nDim = int (tok[4])
+
+
+                        if len(tok) != (5 + 2*nDim) :
+                                errMsg = params.progName + \
+                                    ": vol-tfPrep: Bad arg count " + \
+                                    " for output line '" + \
+                                    line + "'; processing terminated."
+                                writeErrMsg (errMsg)
+                                removeFiles (myFiles)
+                                raise VolPrepError
+
+                        # create a list of ranges, each range is a pair of floats
+                        ranges = []
+                        for i in range(nDim) :
+                            ranges.append( [float(tok[5+i*2]), float(tok[5+i*2+1])] )
+                        outTFTxtrs.append ( [txtrFN, glslVarName, nChan, nDim, ranges] )
+        
+                        '''
+                        norm0 = float (tok[5])
+                        norm1 = float (tok[6])
+                        outTFTxtrs.append (
+                            [txtrFN, glslVarName, nChan, nDim, norm0, norm1] )
+                        '''
+
+
+                        myFiles.append (txtrFN)
+                    elif tok[0] == 'GLSL' :
+                        if len(tok) != 3 :
+                                errMsg = params.progName + \
+                                    ": vol-tfPrep: Bad arg count " + \
+                                    " for output line '" + \
+                                    line + "'; processing terminated."
+                                writeErrMsg (errMsg)
+                                removeFiles (myFiles)
+                                raise VolPrepError
+                        tfFN = params.transferFuncFN
+                        fileName = tok[1]
+                        funcName = tok[2]
+                        inDecl = ""
+                        outDecl = "vec4"
+                        outTFGLSLs.append (
+                            [tfFN, fileName, funcName, inDecl, outDecl] )
+                        myFiles.append (fileName)
+
+                    else :
+                        removeFiles (myFiles)
+                        errMsg = params.progName + \
+                                ": vol-tfPrep: Bad format for output line '" + \
+                                line + "'; processing terminated."
+                        writeErrMsg (errMsg)
+                        raise VolPrepError
+                
+        # end of loop over lines in tfOut
+
+        # print "outReqExts = "
+        # print outReqExts
+
+        global AllFileList
+        AllFileList += myFiles
+
+        return (outTFTxtrs, outTFGLSLs, outReqExts)
+        # end of genTF
+
+
+def genShaderProgs (params) :
+
+        tfGLSL = None
+
+        (tfTxtrs, tfGLSL, tfReqExts) = genTF ( params )
+
+        # Now we use params and tfGLSL to produce shaderProgs
+
+        ##########
+        # Fake version:
+        # shaderProgs = [ "fake.vert", "fake.frag" ]
+        # return (tfTxtrs, shaderProgs)
+        # return True
+        ##########
+
+
+        cppOptions = ""
+        cppOptions += "-C "  # preserve comments in cpp output
+
+        # is there a params flag for box?
+        if True :
+                cppOptions += " -DBOX"
+
+        if params.embeddedObjects :
+                cppOptions += " -DDEPTH"
+
+        if params.near :
+                cppOptions += " -DNEAR"
+                
+        if params.clip :
+                cppOptions += " -DCLIP"
+                
+        if params.randStep :
+                cppOptions += " -DRANDSTEP"
+                
+        if params.slices != 0 :
+                cppOptions += " -DSLICES="+str(params.slices)
+
+        if params.lighting == "gradOpaque" or params.lighting == "gradopaque" :
+                cppOptions += " -DLIGHT_OPAQUE"
+
+
+        params.lookup = 'lookup'  # lookup is unused??
+
+        cppOptions += ' -DTRANSFER_FUNC_FN=' + tfGLSL[0][1]
+        cppOptions += ' -DTRANSFER_FUNC_NAME=' + tfGLSL[0][2]
+        cppOptions += ' -DINTEGRATION_FUNC_FN=vol.integration.' + \
+                      params.integration + '.glsl'
+
+
+        for inc in params.include :
+                cppOptions += " -I "+inc
+        
+
+        # print "cppOptions = " + cppOptions
+                
+        hevRoot = os.environ["HEVROOT"]
+        if hevRoot == None or hevRoot == '' :
+                hevRoot = "."
+        shaderDir = os.path.join (hevRoot, "idea", "shader")
+        # print shaderDir
+        
+        cppOptions += ' -I ' + shaderDir
+
+        outVertFN = os.path.join (params.outDir, params.outBaseName + ".vert")
+        outFragFN = os.path.join (params.outDir, params.outBaseName + ".frag")
+
+        inVertFN = os.path.join (shaderDir, "vol.trace.A.vert")
+        inFragFN = os.path.join (shaderDir, "vol.trace.A.frag")
+
+        inPragmaFN = os.path.join (shaderDir, "vol.pragma.glsl")
+
+
+        try:
+                pragmaFP = open (inPragmaFN, "r")
+                pragma = pragmaFP.read()
+                pragmaFP.close()
+        except IOError, err:
+                errMsg = params.progName + \
+                    ": Unable to open the input file " + inPragmaFN +  \
+                    " :\n             " + err.strerror + ".\n"
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+        # print pragma
+
+        vertCmd = "cpp -nostdinc -I. " + cppOptions + " " + inVertFN + \
+                " | sed -e 's/^\\(# [0-9]* \".*\"\\).*/\\1/'"
+        fragCmd = "cpp -nostdinc -I. " + cppOptions + " " + inFragFN + \
+                " | sed -e 's/^\\(# [0-9]* \".*\"\\).*/\\1/'"
+
+        # print vertCmd.split()
+        # print fragCmd.split()
+
+
+        try :
+            vProcess = subprocess.Popen (  vertCmd, 
+                                             stdout=subprocess.PIPE, 
+                                             stderr=subprocess.PIPE,
+					     shell=True )
+            (vOut, vErr) = vProcess.communicate()
+
+            # if cpp produced any output on stderr, print it
+            if vErr != None and vErr != "" :
+                writeErrMsg (vErr)
+
+            fProcess = subprocess.Popen (  fragCmd, 
+                                             stdout=subprocess.PIPE, 
+                                             stderr=subprocess.PIPE,
+					     shell=True )
+            (fOut, fErr) = fProcess.communicate()
+
+            # if cpp produced any output on stderr, print it
+            if fErr != None and fErr != "" :
+                writeErrMsg (fErr)
+
+        except (OSError,ValueError) , err :   # add ValueError?
+                errMsg = params.progName + \
+                    ": Error encountered while executing " + cmd[0] + \
+                    " :\n             " + err.strerror + ".\n"
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+
+        try :
+            shFP = open (outVertFN, "w")
+            shFP.write (pragma)
+            shFP.write (vOut)
+            shFP.close
+            shFP = open (outFragFN, "w")
+            shFP.write (pragma)
+            shFP.write (fOut)
+            shFP.close
+        except IOError, err :
+            errMsg = params.progName + \
+              ": Error writing output files " + \
+              outVertFN + " and " + outFragFN + \
+              " :\n             " + err.strerror + ".\n"
+            writeErrMsg (errMsg)
+            raise VolPrepError
+
+        global AllFileList
+        AllFileList.append (outVertFN)
+        AllFileList.append (outFragFN)
+
+        shaderProgs = [outVertFN, outFragFN]
+
+        return (tfTxtrs, shaderProgs, tfReqExts)
+        # end of genShaderProgs
+
+
+##################################################################
+
+def genWithVprobe (inMhaFN, infoStrs, derivation, scVec, outMhaFN):
+
+    hevRoot = os.environ["HEVROOT"]
+    if hevRoot == None or hevRoot == '' :
+        hevRoot = "."
+    vprobeExe = os.path.join (hevRoot, 
+        "external/teem/teem-1.6.0-src/linux.64/bin", "vprobe")
+
+    kernelOpts = " "
+    if len(infoStrs) != 0 :
+        if len(infoStrs) > 4 :
+            errMsg = params.progName + ": Bad vprobe parameter count."
+            writeErrMsg (errMsg)
+            raise VolPrepError
+
+        if infoStrs[0] != "gkKernels" :
+            errMsg = params.progName + \
+                ": Bad vprobe parameter ("+infoStrs[0]+")."
+            writeErrMsg (errMsg)
+            raise VolPrepError
+
+        for i in range (len(infoStrs)-1) :
+            kernelOpts += " -k"+str(i)+str(i) + " " + infoStrs[i+1]
+
+    # Here's how to make a temp file
+    # (fd, fn) = tempfile.mkstemp (".mha", "hvol.")
+    # os.close(fd)
+    # now use fn however you like; os.remove(fn) when you're done
+
+    # Here's the outline of what we're going to do:
+    #   vol-mhaToNrrd to convert inMhaFN to nrrd
+    #   vprobe to create the desired output in nrrd format
+    #   vol-nrrdToMha to convert to the final file: outMhaFN
+
+
+    # first we create (reserve) the two temporary files and file names
+
+    (fd, vprobeInFN) = tempfile.mkstemp (".nrrd", "vprobeIn")
+    os.close(fd)
+    AllFileList.append (vprobeInFN)
+
+    (fd, vprobeOutFN) = tempfile.mkstemp (".nrrd", "vprobeOut")
+    os.close(fd)
+    AllFileList.append (vprobeOutFN)
+
+
+    # convert from mha to nrrd
+    cmd = "vol-mhaToNrrd " + inMhaFN + " " + vprobeInFN
+    executeCmd (cmd)
+
+    # derive the data file
+    cmd =   vprobeExe + " -k scalar -q " + derivation + \
+                kernelOpts + " " + \
+                " -i " + vprobeInFN + " " + \
+                " -o " + vprobeOutFN
+    executeCmd (cmd, True)
+
+    # convert back from nrrd to mha
+    scVecOpt = " "
+    if scVec == "vector" :
+        scVecOpt = " --vector "
+    cmd = "vol-nrrdToMha " + scVecOpt + vprobeOutFN + " " + outMhaFN
+    executeCmd (cmd)
+        
+    return 0
+    # end of genWithVprobe
+
+
+
+def genDerivedTxtr (params, volFN, glslName, infoStrs, derivation, outScVec):
+
+    # make the gradient magnitude mha file 
+    outFN = os.path.join (params.outDir, 
+                     params.outBaseName + "." + glslName + ".mha")
+
+    genWithVprobe (volFN, infoStrs, derivation, outScVec, outFN)
+
+    return DerivedTexture (volFN, outFN, derivation, glslName)
+
+
+    
+def genGradMag (params, volFN, glslName, infoStrs):
+    # print "gradMag of " + volFN
+    return genDerivedTxtr (params, volFN, glslName, infoStrs, "gm", "scalar")
+
+def genGrad (params, volFN, glslName, infoStrs):
+    return genDerivedTxtr (params, volFN, glslName, infoStrs, "grad", "vector")
+
+
+def genReqExts (params, tfReqExts, volFN, predefinedExts) :
+
+    # Will return a list of DerivedTextures derived from volFN based on
+    # the requirements of tfReqExts.  This list could be empty.
+
+    volTxtrs = []
+    rmExts = []
+    for i in range (len(tfReqExts)) :
+
+        # tfReqExts[i] is a ReqExternal
+        # tfReqExts[i] has fields stdName objType dataType glslName
+        
+        tfExt = tfReqExts[i]
+
+        # print "genReqExts tfExt = " + str(tfExt)
+
+
+        if tfExt.stdName != tfExt.glslName :
+            # can,t handle this yet
+            errMsg = params.progName + \
+                ": Error (1) generating required external " + \
+                tfExt.stdName + "."
+            writeErrMsg (errMsg)
+            raise VolPrepError
+
+        stdExt = predefinedExts.get (tfReqExts[i].stdName)
+        if stdExt != None :
+            if stdExt.objType != tfExt.objType :
+                errMsg = params.progName + \
+                   ": Error (2) generating required external " + \
+                   tfExt.stdName + "."
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+            if stdExt.dataType != tfExt.dataType :
+                errMsg = params.progName + \
+                   ": Error (3) generating required external " + \
+                   tfExt.stdName + "."
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+            # we've found that it matches a pre-defined external, so we
+            # can just remove it from the list of externals
+            # tfReqExts.remove (tfExt)
+            rmExts.append (tfExt)
+
+        else :
+            # We have a required external that is not supplied by default.
+            # Can we figure out how to provide it?
+
+            if tfExt.stdName == "volGradMag" :
+                # this is the one we need first
+                volTxtrs.append (genGradMag (params, volFN, 
+                                                # tfExt.glslName, 
+                                                "VolTxtrSc0GradMag",
+                                                tfExt.info))
+
+            elif tfExt.stdName == "volGrad" :
+                # this is the one we need first
+                volTxtrs.append (genGrad (params, volFN, 
+                                                #tfExt.glslName, 
+                                                "VolTxtrSc0Grad", 
+                                                tfExt.info))
+
+            else :
+                errMsg = params.progName + \
+                    ": Unrecognized external reference required by GLSL: " + \
+                    tfExt.stdName + ".\n"
+                writeErrMsg (errMsg)
+                raise VolPrepError
+            
+    for tfe in rmExts :
+        tfReqExts.remove (tfe)
+ 
+    return volTxtrs
+    # end of genReqExts
+
+def mkStdExtFltFunc (stdExtDict, name, dType) :
+    stdExtDict[name] = ReqExternal (name, "func", dType, name)
+
+
+def genPerVolReqExtTxtrs (params, volFNs, tfReqExts) :
+    preDefExts = dict()
+
+    mkStdExtFltFunc (preDefExts, "alphaScale", "float")
+    mkStdExtFltFunc (preDefExts, "alphaOffset", "float")
+    mkStdExtFltFunc (preDefExts, "volScalar", "float")
+    # mkStdExtFltFunc (preDefExts, "volGradMag", "float")
+    mkStdExtFltFunc (preDefExts, "volGradMagCalc", "float")
+    mkStdExtFltFunc (preDefExts, "volPos", "vec3")
+    mkStdExtFltFunc (preDefExts, "volPosPrev", "vec3")
+    mkStdExtFltFunc (preDefExts, "volGradCalc", "vec3")
+    # mkStdExtFltFunc (preDefExts, "volGrad", "vec3")
+
+    perVolDerivedTxtrs = []
+    for volFN in volFNs :
+        perVolDerivedTxtrs.append (
+            genReqExts (params, tfReqExts, volFN, preDefExts) ) 
+
+    return perVolDerivedTxtrs
+    # end of genPerVolReqExtTxtrs (params, volFNs, tfReqExts) 
+
+
+##################################################################
+
+# Produce .savg file with geometry for box, near, clip, slices
+
+def genGeomFile ( params ) :
+        
+    geomFN = os.path.join (params.outDir, 
+                     params.outBaseName + ".geom.savg")
+    try:
+        geomFP = open (geomFN, "w")
+    except IOError, err:
+        errMsg = params.progName + \
+          ": Unable to open the output file " + geomFN + \
+          " :\n             " + err.strerror + ".\n"
+        writeErrMsg (errMsg)
+        raise VolPrepError
+
+
+    addLogEntry ("Creating geom file ", geomFN)
+
+
+    try:
+        print >> geomFP, \
+            "# This file contains geometry required for volume rendering.\n"
+
+        # vb is neg and pos half the sizes
+        vb = [ [ -params.box[0]/2, -params.box[1]/2, -params.box[2]/2 ], \
+               [  params.box[0]/2,  params.box[1]/2,  params.box[2]/2 ]  ]
+
+        # if params.drawBox :
+        if True :
+            print >> geomFP, "# Volume box comprises six rectangles:"
+            print >> geomFP, "polygon 1 1 1 1"
+            print >> geomFP, str(vb[0][0])+' '+str(vb[0][1])+' '+str(vb[0][2])
+            print >> geomFP, str(vb[0][0])+' '+str(vb[1][1])+' '+str(vb[0][2])
+            print >> geomFP, str(vb[1][0])+' '+str(vb[1][1])+' '+str(vb[0][2])
+            print >> geomFP, str(vb[1][0])+' '+str(vb[0][1])+' '+str(vb[0][2])
+            print >> geomFP, ''
+             
+                
+            print >> geomFP, "polygon 1 1 1 1"
+            print >> geomFP, str(vb[0][0])+' '+str(vb[0][1])+' '+str(vb[1][2])
+            print >> geomFP, str(vb[1][0])+' '+str(vb[0][1])+' '+str(vb[1][2])
+            print >> geomFP, str(vb[1][0])+' '+str(vb[1][1])+' '+str(vb[1][2])
+            print >> geomFP, str(vb[0][0])+' '+str(vb[1][1])+' '+str(vb[1][2])
+            print >> geomFP, ''
+
+            print >> geomFP, "polygon 1 1 1 1"
+            print >> geomFP, str(vb[0][0])+' '+str(vb[0][1])+' '+str(vb[0][2])
+            print >> geomFP, str(vb[0][0])+' '+str(vb[0][1])+' '+str(vb[1][2])
+            print >> geomFP, str(vb[0][0])+' '+str(vb[1][1])+' '+str(vb[1][2])
+            print >> geomFP, str(vb[0][0])+' '+str(vb[1][1])+' '+str(vb[0][2])
+            print >> geomFP, ''
+                
+            print >> geomFP, "polygon 1 1 1 1"
+            print >> geomFP, str(vb[1][0])+' '+str(vb[0][1])+' '+str(vb[0][2])
+            print >> geomFP, str(vb[1][0])+' '+str(vb[1][1])+' '+str(vb[0][2])
+            print >> geomFP, str(vb[1][0])+' '+str(vb[1][1])+' '+str(vb[1][2])
+            print >> geomFP, str(vb[1][0])+' '+str(vb[0][1])+' '+str(vb[1][2])
+            print >> geomFP, ''
+
+            print >> geomFP, "polygon 1 1 1 1"
+            print >> geomFP, str(vb[0][0])+' '+str(vb[0][1])+' '+str(vb[0][2])
+            print >> geomFP, str(vb[1][0])+' '+str(vb[0][1])+' '+str(vb[0][2])
+            print >> geomFP, str(vb[1][0])+' '+str(vb[0][1])+' '+str(vb[1][2])
+            print >> geomFP, str(vb[0][0])+' '+str(vb[0][1])+' '+str(vb[1][2])
+            print >> geomFP, ''
+                
+            print >> geomFP, "polygon 1 1 1 1"
+            print >> geomFP, str(vb[0][0])+' '+str(vb[1][1])+' '+str(vb[0][2])
+            print >> geomFP, str(vb[0][0])+' '+str(vb[1][1])+' '+str(vb[1][2])
+            print >> geomFP, str(vb[1][0])+' '+str(vb[1][1])+' '+str(vb[1][2])
+            print >> geomFP, str(vb[1][0])+' '+str(vb[1][1])+' '+str(vb[0][2])
+            print >> geomFP, ''
+
+
+        # we need to tag the vertices with coordinates so that the vertex
+        # tags are ordered to match the scheme in the vertex shader.
+        reorderV = [0.0, 2.0, 4.0, 5.0, 3.0, 1.0]
+
+        xHex = []
+        yHex = []
+        zHex = []
+        for iVert in range (6) :
+            fVert = reorderV[iVert]
+            xHex.append (str ( vb[0][0] + 
+                               (float(fVert)/5.0) * (vb[1][0] - vb[0][0]) ) )
+            yHex.append (str ( vb[0][1] + 
+                               (float(fVert)/5.0) * (vb[1][1] - vb[0][1]) ) )
+            zHex.append (str ( vb[0][2] + 
+                               (float(fVert)/5.0) * (vb[1][2] - vb[0][2]) ) )
+
+        # all centers must be '0'
+        xCen = '0'
+        yCen = '0'
+        zCen = '0'
+
+        if params.clip :
+                # Draw six hexagons: one for each of the six clipping planes:
+                #       X is centered
+                #       Y encodes vertex number within hexagon
+                #       Z encodes clipping plane number
+                print >> geomFP, "# User clipping planes comprise six hexagons:"
+                for iPlane in range (6) :
+                        print >> geomFP, "polygon 1 1 1 1"
+                        for iVert in range (6) :
+                          print >> geomFP, xCen+' '+yHex[iVert]+' '+zHex[iPlane]
+                        print >> geomFP, ''
+                        # end of loop over verts
+                # end of loop over clipping planes
+        else :
+                print >> geomFP, "# User clipping planes not requested.\n"
+                
+
+
+        if params.near :
+                # Draw a hexagon with:
+                #    X is centered
+                #    Y encodes vert # as for clipping plane
+                #    Z is centered
+                # note that the near clipping plane looks like the
+                # clipping planes above
+                print >> geomFP, "# Near clipping plane comprises one hexagon."
+                print >> geomFP, "polygon 1 1 1 1"
+                for iVert in range (6) :
+                        #y = vb[0][2] + (float(iVert)/5.0)*(vb[1][1] - vb[0][1])
+                        print >> geomFP, xCen+' '+yHex[iVert]+' '+zCen
+                        # end of loop over verts
+                print >> geomFP, ''
+        else :
+                print >> geomFP, "# Near clipping plane not requested.\n"
+                
+
+        if params.slices != 0 :
+                # Draw a hexagon for each slice:
+                #       X encodes vertex number
+                #       Y is centered
+                #       Z encodes slice number
+                print >> geomFP, "#"+ " %d"%params.slices + \
+                                " Slices comprise " + \
+                                " %d"%params.slices + " hexagons:"
+                for iSlice in range (params.slices ) :
+                    zStr = str ( 
+                           (((float(iSlice)+0.5)/float(params.slices))-0.5) * 
+                                   (vb[1][2] - vb[0][2]) ) 
+                    print >> geomFP, "polygon 1 1 1 1"
+                    for iVert in range (6) :
+                        print >> geomFP, xHex[iVert]+' '+yCen+' '+zStr
+                        # end of loop over verts
+                    print >> geomFP, ''
+                    # end of loop over clipping planes
+        else :
+                print >> geomFP, "# No slices specified.\n"
+                                
+    except IOError, err:
+        errMsg = params.progName + \
+          ": Error while writing output file " + geomFN + \
+          " :\n             " + err.strerror + ".\n"
+        writeErrMsg (errMsg)
+        raise VolPrepError
+
+
+    try :
+        geomFP.close ()
+    except IOError, err:
+        errMsg = params.progName + \
+          ": Non-fatal error while closing output file " + geomFN + \
+          " :\n             " + err.strerror + ".\n"
+        writeErrMsg (errMsg)
+        errMsg = params.progName + \
+          ": Check that file " + geomFN + " is complete."
+
+    global AllFileList
+    AllFileList.append (geomFN)
+
+    return geomFN
+    # end of genGeomFile
+
+##################################################################
+
+
+# make a file executable
+def mkExecutable (fileName) :
+        # makes it both user, group, and other executable
+        os.chmod (fileName, os.stat(fileName).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        # end of mkExecutable
+
+def mkTxtrUnitMap (startUnitNum, tfTxtrs, perVolTxtrs) :
+
+    unitNum = startUnitNum
+    txtrUnitMap = dict()
+    txtrUnitMap["VolTxtrSc0"] = unitNum
+    unitNum += 1
+
+    for tfTxtr in tfTxtrs :
+        # each tfTxtr is a list: 
+        # [txtrFN, glslVarName, nChan, nDim, norm0, norm1 )
+        #
+        # associate a texture unit with this glsl name
+        txtrUnitMap[tfTxtr[1]] = unitNum
+        unitNum += 1
+
+    for volTxtrs in perVolTxtrs :
+        for txtr in volTxtrs :
+            # txtr is a DerivedTexture
+            if txtrUnitMap.get(txtr.glslName) == None :
+                # associate a texture unit with this glsl name
+                txtrUnitMap[txtr.glslName] = unitNum
+                unitNum += 1
+        
+
+    return (txtrUnitMap, unitNum)
+    # end of mkTxtrUnitMap
+
+
+# generate the flipbook and associated files
+def genFlipBook (params, geomFN, tfTxtrs, shaderProgs, volTxtrFNs, perVolTxtrs):
+
+
+        # perVolTxtrs gives textures associated with each volume data set
+        # perVolTxtrs is a list, one element per element of volTxtrFNs
+        #
+        # Each element in perVolTxtrs is a list of textures derived from
+        # or associated with the corresponding element of volTxtrFNs
+        # each on of those derived textures is an object of type DerivedTexture
+
+        # we're going to have to set up a mapping from the per volume
+        # texture glsl names and texture unit numbers
+        
+        myFiles = []
+        txtrUnit = params.startTxtrUnit
+
+        # Note that embeddedObject uses fxcam which uses texture units 0 and 1
+        # Should parameterize the use of fxcam txtr units
+        if txtrUnit<2 and params.embeddedObjects :
+                txtrUnit = 2
+
+
+        (txtrUnitMap, txtrUnit) = mkTxtrUnitMap (txtrUnit, tfTxtrs, perVolTxtrs)
+        # txtrUnitMap is a dict() that associates txtrUnit nums with glsl names
+        # In the iris code that we're generating, this association is constant.
+        
+
+        # full flipbook
+        irisFBFN = os.path.join (params.outDir, 
+                     params.outBaseName + ".flipbook.iris")
+
+        # skeleton flipbook; used by hev-animator
+        irisSkelFN = os.path.join (params.outDir, 
+                     params.outBaseName + ".flipbook.animator.iris")
+
+        # shell script that shows how to change various uniforms
+        uniScrFN = os.path.join (params.outDir, 
+                     params.outBaseName + ".otherUniforms.sh")
+
+        # shell script that shows how to change shader programs
+        shaderScrFN = os.path.join (params.outDir, 
+                     params.outBaseName + ".shaders.sh")
+
+        # shell script that shows how to change the transfer function texture(s)
+        xferScrFN = os.path.join (params.outDir, 
+                     params.outBaseName + ".transfer.sh")
+
+        # shell script that shows how to change the volume textures.
+        volTxtrsScrFN = os.path.join (params.outDir, 
+                     params.outBaseName + ".volumeTextures.sh")
+
+        try:
+            irisFB_FP = open (irisFBFN, "w")
+            irisSkel_FP = open (irisSkelFN, "w")
+            uniScr_FP = open (uniScrFN, "w")
+            shaderScr_FP = open (shaderScrFN, "w")
+            xferScr_FP = open (xferScrFN, "w")
+            volTxtrsScr_FP = open (volTxtrsScrFN, "w")
+
+            addLogEntry ("Created flipbook file "+irisFBFN)
+            addLogEntry ("Created flipbook skeleton file "+irisSkelFN)
+            addLogEntry ("Created other uniforms script "+uniScrFN)
+            addLogEntry ("Created shader script "+shaderScrFN)
+            addLogEntry ("Created transfer function script "+xferScrFN)
+            addLogEntry ("Created volume textures script "+volTxtrsScrFN)
+
+            geomFN = os.path.basename (geomFN)
+
+            print >>irisFB_FP, "\n#######################################\n"
+            print >>irisFB_FP, \
+            "\n# The node " + geomFN + " contains all of the geometry and\n" + \
+            "# state associated with the volume.\n"
+
+
+            print >>irisSkel_FP, "\n#######################################\n"
+            print >>irisSkel_FP, \
+            "\n# This file contains the same flipbook node structure as \n" + \
+            "# the file " + os.path.basename(irisFBFN) + ".\n" + \
+            "# This file is intended as input to hev-animator.\n"
+
+
+            print >>uniScr_FP, "#! /bin/sh"
+            print >>uniScr_FP, "#"
+            print >>uniScr_FP, \
+             "# This script gives example commands that show how to change some"
+            print >>uniScr_FP, \
+             "# of the uniforms associated with this volume visualization."
+            print >>uniScr_FP, "#"
+
+
+
+
+            print >>irisFB_FP, "LOAD " + geomFN + " " + geomFN
+
+            print >>irisFB_FP, "UNIFORM " + geomFN + " OpticalScale float 1 " +\
+                               str(params.densityScale)
+
+            print >>uniScr_FP, "# echo " + \
+                               "UNIFORM " + geomFN + " OpticalScale float 1 " +\
+                               str(params.densityScale) + \
+                               " > $IRIS_CONTROL_FIFO"
+
+
+            print >>irisFB_FP, "UNIFORM " + geomFN + " AlphaScale float 1 " + \
+                               str(params.alphaScale)
+
+            print >>uniScr_FP, "# echo " + \
+                               "UNIFORM " + geomFN + " AlphaScale float 1 " + \
+                               str(params.alphaScale) + \
+                               " > $IRIS_CONTROL_FIFO"
+
+
+            print >>irisFB_FP, "UNIFORM " + geomFN + " AlphaOffset float 1 " + \
+                               str(params.alphaOffset)
+
+            print >>uniScr_FP, "# echo " + \
+                               "UNIFORM " + geomFN + " AlphaOffset float 1 0" +\
+                               str(params.alphaOffset) + \
+                               " > $IRIS_CONTROL_FIFO"
+
+
+
+
+
+            print >>irisFB_FP, "UNIFORM " + geomFN + \
+                               " RayStep float 1 " + str(params.rayStep)
+            print >>uniScr_FP, "# echo " + \
+                               "UNIFORM " + geomFN + \
+                               " RayStep float 1 " + str(params.rayStep) + \
+                               " > $IRIS_CONTROL_FIFO"
+
+            print >>irisFB_FP, "UNIFORM " + geomFN + \
+                               " VolumeSize vec3 1 " + \
+                               " " + str(params.box[0]) + \
+                               " " + str(params.box[1]) + \
+                               " " + str(params.box[2]) 
+
+            print >>uniScr_FP, "# echo " + \
+                               "UNIFORM " + geomFN + \
+                               " VolumeSize vec3 1 " + \
+                               " " + str(params.box[0]) + \
+                               " " + str(params.box[1]) + \
+                               " " + str(params.box[2])  + \
+                               " > $IRIS_CONTROL_FIFO"
+
+
+
+
+
+
+
+            # for VoxelSize, we need to get the dimensions from one
+            # of the Mha files in the list volTxtrFNs
+            if params.writeVolData :
+                voxelSize = getMhaDimSize ( volTxtrFNs[0] )
+            else :
+                voxelSize = [128, 128, 128]
+
+            if len (voxelSize) < 3 :
+                errMsg = params.progName + \
+                        ": Volume file " + volTxtrFNs[0] + \
+                        " has fewer than 3 dimensions.\n" + \
+                        "       Will assume remaining dimensions are 1.\n"
+                writeErrMsg (errMsg)
+                for i in range(len(voxelSize),3) :
+                        voxelSize += 1
+            elif len (voxelSize) > 3 :
+                errMsg = params.progName + \
+                        ": Volume file " + volTxtrFNs[0] + \
+                        " has more than 3 dimensions.\n" + \
+                        "       Processing terminated.\n"
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+            print >>irisFB_FP, "UNIFORM " + geomFN + \
+                               " VoxelSize vec3 1 " + \
+                               " " + str(voxelSize[0]) + \
+                               " " + str(voxelSize[1]) + \
+                               " " + str(voxelSize[2]) 
+            print >>uniScr_FP, "# echo " + \
+                               "UNIFORM " + geomFN + \
+                               " VoxelSize vec3 1 " + \
+                               " " + str(voxelSize[0]) + \
+                               " " + str(voxelSize[1]) + \
+                               " " + str(voxelSize[2]) + \
+                               " > $IRIS_CONTROL_FIFO"
+
+
+
+
+            # Now we put in the uniform VolumeIsContinuous.
+            # This can be used to determine how to calculate 
+            # field normals within the scalar volume.
+            if params.volTxtrFilter == "LINEAR" :
+                continVal = "1"
+            else:
+                continVal = "0"
+
+            print >>irisFB_FP,  "\n"
+            print >>irisFB_FP,  "# The uniform VolumeIsContinuous indicates whether the"
+            print >>irisFB_FP,  "# scalar value of volume varies continuously."
+            print >>irisFB_FP,  "# Generally the only circumstance under which this is false"
+            print >>irisFB_FP,  "# is when the corresponding TXTR filter is NEAREST."
+            print >>irisFB_FP,  "UNIFORM " + geomFN + \
+                                " VolumeIsContinuous bool 1 " + continVal
+            print >>irisFB_FP,  "\n"
+
+            print >>uniScr_FP,  "\n"
+            print >>uniScr_FP,  "# The uniform VolumeIsContinuous indicates whether the"
+            print >>uniScr_FP,  "# scalar value of volume varies continuously."
+            print >>uniScr_FP,  "# Generally the only circumstance under which this is false"
+            print >>uniScr_FP,  "# is when the corresponding TXTR filter is NEAREST."
+            print >>uniScr_FP,  "# echo " + \
+                                "UNIFORM " + geomFN + \
+                                " VolumeIsContinuous bool 1 " + continVal + \
+                                " > $IRIS_CONTROL_FIFO"
+            print >>uniScr_FP,  "\n"
+
+
+
+
+
+
+            volTxtrUnit = txtrUnitMap["VolTxtrSc0"]
+            # volTxtrUnit = txtrUnit
+            # txtrUnit = txtrUnit + 1
+            # print >>irisFB_FP
+            # print >>irisFB_FP, "UNIFORM " + geomFN + \
+                           # " VolTxtrSc0 int 1 " + str(volTxtrUnit)
+            # print >>irisFB_FP
+
+
+
+
+
+
+
+
+
+
+
+            print >>shaderScr_FP, "#! /bin/sh"
+            print >>shaderScr_FP, "# Examples of how to change shader programs."
+
+
+
+
+
+            print >>irisFB_FP,  "SHADERPROG " + geomFN + \
+                                " V " + os.path.basename (shaderProgs[0]) + \
+                                " F " + os.path.basename (shaderProgs[1])
+
+            print >>shaderScr_FP, "# echo " + \
+                                "SHADERPROG " + geomFN + \
+                                " V " + os.path.basename (shaderProgs[0]) + \
+                                " F " + os.path.basename (shaderProgs[1]) + \
+                                " > $IRIS_CONTROL_FIFO"
+
+
+
+            print >>shaderScr_FP, "# echo " + \
+                                "SHADERPROG " + geomFN + \
+                                " V " + os.path.basename (shaderProgs[0]) + \
+                                " > $IRIS_CONTROL_FIFO"
+
+            print >>shaderScr_FP, "# echo " + \
+                                "SHADERPROG " + geomFN + \
+                                " F " + os.path.basename (shaderProgs[1]) + \
+                                " > $IRIS_CONTROL_FIFO"
+
+
+
+
+            print >>irisFB_FP, "CULLING " + geomFN + " ON"
+
+        
+            print >>irisFB_FP, \
+            "LOAD vol.RenderingState.osgt vol.RenderingState.osgt"
+
+            print >>irisFB_FP, \
+                "MERGESTATE " + " vol.RenderingState.osgt " + geomFN
+
+            print >>irisFB_FP, "UNLOAD vol.RenderingState.osgt"
+                
+
+
+            print >>xferScr_FP, "#! /bin/sh"
+            print >>xferScr_FP, \
+             "# Examples of how to change the transfer function textures and "
+            print >>xferScr_FP, \
+             "# normalization ranges."
+
+
+            for tfTxtr in tfTxtrs :
+                # each tfTxtr is a list: 
+                # [txtrFN, glslVarName, nChan, nDim, norm0, norm1 )
+                #
+
+                # specify the texture unit associated with this TF texture
+                tu = txtrUnitMap[tfTxtr[1]]
+                # print >>irisFB_FP, "UNIFORM " + geomFN + " " +\
+                        # tfTxtr[1] + \
+                        # " int 1 " + str(tu)
+                # give the file name containing the texture data
+                print >>irisFB_FP, "TXTR " + geomFN + " " + \
+                        str(tu) + " " + os.path.basename (tfTxtr[0]) 
+                print >>xferScr_FP, "# echo " + \
+                        "TXTR " + geomFN + " " + \
+                        str(tu) + " " + os.path.basename (tfTxtr[0]) + \
+                        " > $IRIS_CONTROL_FIFO"
+
+                # txtrUnit = txtrUnit + 1
+                
+
+                # new version:
+                # loop over each dimension and output ranges as uniforms
+                ranges = tfTxtr[4]
+                for i in range (tfTxtr[3]) :
+                  if (ranges[i][0] != 0) or (ranges[i][1] != 0) :
+                    print >>irisFB_FP, \
+                      "UNIFORM " + geomFN + " " + \
+                      tfTxtr[1] + "_Range" + str(i) + "   float 4  " + \
+                      str(ranges[i][0]) + " " + str(ranges[i][1]) + " " + \
+                      str(-ranges[i][0]) + " " + \
+                      str(1.0/(ranges[i][1]-ranges[i][0]))
+
+                    print >>xferScr_FP, "# echo " + \
+                      "UNIFORM " + geomFN + " " + \
+                      tfTxtr[1] + "_Range" + str(i) + "   float 4  " + \
+                      str(ranges[i][0]) + " " + str(ranges[i][1]) + " " + \
+                      str(-ranges[i][0]) + " " + \
+                      str(1.0/(ranges[i][1]-ranges[i][0])) + \
+                      " > $IRIS_CONTROL_FIFO"
+
+
+                ''' old version:
+                print >>irisFB_FP, \
+                        "UNIFORM " + geomFN + " " + \
+                        tfTxtr[1] + "_Range   float 4  " + \
+                        str(tfTxtr[4]) + " " + str(tfTxtr[5]) + " " + \
+                        str(-tfTxtr[4]) + " " + str(1.0/(tfTxtr[5]-tfTxtr[4]))
+                        
+
+                print >>xferScr_FP, "# echo " + \
+                        "UNIFORM " + geomFN + " " + \
+                        tfTxtr[1] + "_Range   float 4  " + \
+                        str(tfTxtr[4]) + " " + str(tfTxtr[5]) + " " + \
+                        str(-tfTxtr[4]) + " " + str(1.0/(tfTxtr[5]-tfTxtr[4])) + \
+                        " > $IRIS_CONTROL_FIFO"
+                '''
+
+
+
+            print >>irisFB_FP, "\n#######################################\n"
+
+            print >>irisFB_FP, "# Texture unit numbers for all textures"
+            for tu in txtrUnitMap.items() :
+                print >>irisFB_FP, "UNIFORM " + geomFN + " " + tu[0] + \
+                                                        " int 1 " + str(tu[1])
+
+
+            print >>irisFB_FP, "\n#######################################\n"
+
+            fbNode = params.outBaseName + ".fb" 
+            print >>irisFB_FP, "# Now we create the flip book under the node " + \
+                        fbNode
+            print >>irisFB_FP
+            print >>irisFB_FP,   "GROUP " + fbNode
+            print >>irisFB_FP
+            print >>irisSkel_FP, "GROUP " + fbNode
+            print >>irisSkel_FP
+
+            print >>volTxtrsScr_FP, "#! /bin/sh"
+            print >>volTxtrsScr_FP, \
+             "# Examples of how to change the volume textures."
+
+
+            for i in range (len(volTxtrFNs)) :
+                subNode = params.outBaseName + ".%05d"%i
+
+                print >>irisFB_FP,   "  GROUP " + subNode
+                print >>irisSkel_FP, "  GROUP " + subNode
+
+
+
+
+
+
+
+
+
+
+                print >>irisFB_FP, "  " + \
+                                "TXTR " + subNode + " " + \
+                                str(volTxtrUnit) + " " + \
+                                os.path.basename (volTxtrFNs[i]) + \
+                                " FILTER " + params.volTxtrFilter
+
+
+
+
+
+                print >>volTxtrsScr_FP, "# echo " + \
+                                "TXTR " + subNode + " " + \
+                                str(volTxtrUnit) + " " + \
+                                os.path.basename (volTxtrFNs[i]) + \
+                                " FILTER " + params.volTxtrFilter + \
+                                " > $IRIS_CONTROL_FIFO"
+
+
+
+
+                '''
+                for j in txtrUnitMap.items() :
+                    print "Texture unit map " + str(j)
+                    print "Texture unit map " + j[0] + " " + str(j[1])
+
+                for j in range (len(perVolTxtrs[i])) :
+                    glslName = perVolTxtrs[i][j].glslName
+                    print "per vol txtr glslName = "+glslName
+                '''
+
+
+
+                # Loop over other per-volume textures to create a 
+                # TXTR command for each.
+                # Note that each element of perVolTxtrs is a list of 
+                # DerivedTexture objects.
+                for j in range (len(perVolTxtrs[i])) :
+                    glslName = perVolTxtrs[i][j].glslName
+                    txtrFN = perVolTxtrs[i][j].derivedFN
+                    txtrUnit = str (txtrUnitMap[glslName])
+                    print >>irisFB_FP, "  " + \
+                                "TXTR " + subNode + " " + \
+                                txtrUnit + " " + os.path.basename (txtrFN) + \
+                                " FILTER " + params.volTxtrFilter
+
+                    print >>volTxtrsScr_FP, "# echo " + \
+                                "TXTR " + subNode + " " + \
+                                txtrUnit + " " + os.path.basename (txtrFN) + \
+                                " FILTER " + params.volTxtrFilter + \
+                                " > $IRIS_CONTROL_FIFO"
+
+                if i == 0 :
+                    print >>irisFB_FP,   "  NODEMASK " + subNode + " ON"
+                    print >>irisSkel_FP, "  NODEMASK " + subNode + " ON"
+                else :
+                    print >>irisFB_FP,   "  NODEMASK " + subNode + " OFF"
+                    print >>irisSkel_FP, "  NODEMASK " + subNode + " OFF"
+
+                print >>irisFB_FP,   "  ADDCHILD " + geomFN + " " + subNode
+
+                print >>irisFB_FP,   "  ADDCHILD " + subNode + " " + fbNode
+                print >>irisFB_FP
+                print >>irisSkel_FP, "  ADDCHILD " + subNode + " " + fbNode
+                print >>irisSkel_FP
+
+                
+            print >>irisSkel_FP, "return " + fbNode
+    
+
+            # Now the real flipbook is possibly going to diverge from
+            # skeleton flipbook based on whether we need to handle 
+            # embedded polygonal objects
+
+            if params.embeddedObjects :
+                fxNode = params.outBaseName + ".FX" 
+                print >>irisFB_FP, "LOAD " + fxNode + ' ' + fxNode + ".fxcam"
+                print >>irisFB_FP, "MAP " + fxNode 
+                print >>irisFB_FP, "# Example of how to load polygonal data:"
+                print >>irisFB_FP, "# LOAD yourNodeName polygonalGeometryFN"
+                print >>irisFB_FP, "# ADDCHILD yourNodeName pre_"+fxNode
+                print >>irisFB_FP, "LOAD fxcopy fxCopyFrame.osgt"
+                print >>irisFB_FP, "ADDCHILD fxcopy post_"+fxNode
+                print >>irisFB_FP, "ADDCHILD " + fbNode + " post_" + fxNode
+                print >>irisFB_FP, "return " + fxNode
+                polyScrFN = os.path.join (params.outDir, 
+                                params.outBaseName + ".polyLoad.iris")
+                polyScr_FP = open (polyScrFN, "w")
+                print >>polyScr_FP, \
+                 "# Example IRIS commands for loading polygonal data so that"
+                print >>polyScr_FP, \
+                 "# it renders correctly with the volume:"
+                print >>polyScr_FP, "# LOAD yourNodeName polygonalGeometryFN"
+                print >>polyScr_FP, "# ADDCHILD yourNodeName pre_"+fxNode
+                polyScr_FP.close ()
+            else :
+                print >>irisFB_FP, "return " + fbNode
+
+            print >>irisFB_FP,   "\n#######################################\n"
+            print >>irisSkel_FP, "\n#######################################\n"
+
+            irisFB_FP.close ()
+            irisSkel_FP.close ()
+
+            uniScr_FP.close ()
+            shaderScr_FP.close()
+            xferScr_FP.close()
+            volTxtrsScr_FP.close()
+
+        except IOError, err:
+            errMsg = params.progName + \
+                  ": Error writing the output file " + \
+                  irisFBFN + " or " + irisSkelFN + \
+                  " :\n             " + err.strerror + ".\n"
+            writeErrMsg (errMsg)
+            raise VolPrepError
+
+
+        myFiles.append (irisFBFN)
+        myFiles.append (irisSkelFN)
+
+        myFiles.append (uniScrFN)
+        myFiles.append (shaderScrFN)
+        myFiles.append (xferScrFN)
+        myFiles.append (volTxtrsScrFN)
+
+        mkExecutable (uniScrFN)
+        mkExecutable (shaderScrFN)
+        mkExecutable (xferScrFN)
+        mkExecutable (volTxtrsScrFN)
+
+        if params.embeddedObjects :
+            myFiles.append (polyScrFN)
+
+        global AllFileList
+        AllFileList += myFiles
+
+        return irisFBFN, irisSkelFN
+        # end of genFlipBook
+
+##########################################################################
+
+
+# create the wireframe box around the volume
+def genWireframe (params) :
+
+        wireframeFN = os.path.join (params.outDir, 
+                     params.outBaseName + ".volWire.savg")
+
+        try:
+                outFP = open (wireframeFN, "w")
+
+                addLogEntry ("Creating wireframe box file ", wireframeFN)
+
+                strBox = \
+                        [str(params.box[0]/2), 
+                         str(params.box[1]/2), 
+                         str(params.box[2]/2)]
+
+                print >>outFP, "line 0.7 0.7 0.7 1" 
+
+                print >>outFP, ' -'+strBox[0]+' -'+strBox[1]+' -'+strBox[2] 
+                print >>outFP, '  '+strBox[0]+' -'+strBox[1]+' -'+strBox[2]
+                print >>outFP, '  '+strBox[0]+"  "+strBox[1]+' -'+strBox[2]
+                print >>outFP, ' -'+strBox[0]+"  "+strBox[1]+' -'+strBox[2]
+                print >>outFP, ' -'+strBox[0]+' -'+strBox[1]+' -'+strBox[2] 
+                print >>outFP, ' -'+strBox[0]+' -'+strBox[1]+'  '+strBox[2] 
+                print >>outFP, '  '+strBox[0]+' -'+strBox[1]+'  '+strBox[2] 
+                print >>outFP, '  '+strBox[0]+'  '+strBox[1]+'  '+strBox[2] 
+                print >>outFP, ' -'+strBox[0]+'  '+strBox[1]+'  '+strBox[2] 
+                print >>outFP, ' -'+strBox[0]+' -'+strBox[1]+'  '+strBox[2] 
+                print >>outFP, '  '+strBox[0]+' -'+strBox[1]+'  '+strBox[2] 
+                print >>outFP, '  '+strBox[0]+' -'+strBox[1]+' -'+strBox[2] 
+                print >>outFP, '  '+strBox[0]+'  '+strBox[1]+' -'+strBox[2] 
+                print >>outFP, '  '+strBox[0]+'  '+strBox[1]+'  '+strBox[2] 
+                print >>outFP, ' -'+strBox[0]+'  '+strBox[1]+'  '+strBox[2] 
+                print >>outFP, ' -'+strBox[0]+'  '+strBox[1]+' -'+strBox[2] 
+
+                outFP.close ()
+
+        except IOError, err:
+                errMsg = params.progName + \
+                  ": Error writing the output file " + wireframeFN + \
+                  " :\n             " + err.strerror + ".\n"
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+
+        global AllFileList
+        AllFileList.append (wireframeFN)
+        return wireframeFN
+        # end of genWireframe
+        
+
+###############################################################################
+
+# creates a .mcp file that adds buttons for animate & density 
+def genAddToMcp (params, skelFN, geomNode) :
+
+        skelFN = os.path.basename (skelFN)
+        geomNode = os.path.basename (geomNode)
+        
+        addToMcpFN = os.path.join (params.outDir, 
+                     params.outBaseName + ".addToMcp.mcp")
+        try:
+                outFP = open (addToMcpFN, "w")
+                addLogEntry ("Creating MCP file ", addToMcpFN)
+
+                print>>outFP, "SIZE 85 20"
+
+                if len (params.volDataFNList) > 1 :
+                    print>>outFP, "BUTTON Animate"
+                    print>>outFP, "FIRST EXEC hev-animator -title Run " + \
+                                    "--descend VolFrame " + skelFN + "  > " + \
+                                    "$IRIS_CONTROL_FIFO"
+                    print>>outFP, "ON EXEC hev-showWindow Run"
+                    print>>outFP, "OFF EXEC hev-hideWindow Run"
+
+                if params.opacityGUI:
+                    commentStr = ""
+                else :
+                    commentStr = "# "
+
+                print>>outFP, commentStr + "BUTTON Opacity"
+                print>>outFP, commentStr + \
+                                "FIRST EXEC vol-opacityAdjust " + \
+                                "--noescape " + \
+                                "--init " + str(params.alphaOffset) + " " + \
+                                str(params.alphaScale) + " " + \
+                                str(params.densityScale) + " " + \
+                                geomNode + " > $IRIS_CONTROL_FIFO"
+                print>>outFP, commentStr + \
+                                "ON EXEC hev-showWindow vol-opacityAdjust"
+                print>>outFP, commentStr + \
+                                "OFF EXEC hev-hideWindow vol-opacityAdjust"
+
+                outFP.close ()
+
+        except IOError, err:
+                errMsg = params.progName + \
+                  ": Error writing the output file " + addToMcpFN + \
+                  " :\n             " + err.strerror + ".\n"
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+
+        global AllFileList
+        AllFileList.append (addToMcpFN)
+
+        return addToMcpFN
+        # end of genAddToMcp
+
+
+
+
+###############################################################################
+
+# write out the list of generated files
+
+def genFileListFile ( params ) :
+
+        fileListFN = os.path.join (params.outDir, 
+                     params.outBaseName + ".fileList.txt")
+        try:
+                outFP = open (fileListFN, "w")
+
+                addLogEntry ("Creating file list file ", fileListFN)
+
+                global AllFileList
+                AllFileList.append (fileListFN)
+
+                for fn in AllFileList :
+                        print >>outFP, fn
+
+
+                print >>outFP, fileListFN
+                outFP.close ()
+
+        except IOError, err:
+                errMsg = params.progName + \
+                  ": Unable to open the output file " + fileListFN + \
+                  " :\n             " + err.strerror + ".\n"
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+
+
+
+        return fileListFN
+        # end of genFileListFile
+
+
+
+
+###############################################################################
+
+# Writes some auxiliary files
+
+def genAdditionalFiles ( params, irisFlipBook, skelFN, geomFN ) :
+
+        myFiles = []
+
+        wireframeFN = genWireframe (params) 
+        myFiles.append (wireframeFN)
+
+        addToMcpFN = genAddToMcp (params, skelFN, geomFN)
+        myFiles.append (addToMcpFN)
+
+
+        runScrFN = os.path.join (params.outDir,
+                     params.outBaseName + ".run.sh")
+
+        startupFN = os.path.join (params.outDir, 
+                     params.outBaseName + ".startup.iris")
+        try:
+                # create simple run script
+                runScrFP = open (runScrFN, "w")
+                addLogEntry ("Creating main run script ", runScrFN)
+                print >>runScrFP, "#! /bin/sh"
+                print >>runScrFP, "irisfly " + os.path.basename (startupFN)
+
+                runScrFP.close ()
+                mkExecutable (runScrFN)
+
+
+                # create a single .iris file that encompasses entire vol vis
+                startupFP = open (startupFN, "w")
+
+                addLogEntry ("Creating startup IRIS file ", startupFN)
+
+                irisFlipBook = os.path.basename (irisFlipBook)
+                wireframeFN = os.path.basename (wireframeFN)
+                addToMcpFN = os.path.basename (addToMcpFN)
+
+                print >>startupFP, "LOAD " + irisFlipBook + " " + irisFlipBook
+                print >>startupFP, "ADDCHILD " + irisFlipBook + " world"
+                print >>startupFP, "LOAD " + wireframeFN + " " + wireframeFN
+                print >>startupFP, "ADDCHILD " + wireframeFN + " world"
+                print >>startupFP, "LOAD backgroundWhite.iris"
+                if params.clip :
+                    print >>startupFP, "EXEC irisfly-addToMCP clip.mcp"
+                print >>startupFP, "EXEC irisfly-addToMCP " + addToMcpFN
+                print >>startupFP, "EXAMINE"
+
+                startupFP.close ()
+
+        except IOError, err:
+                errMsg = params.progName + \
+                  ": Error writing the output file " + startupFN + \
+                  " :\n             " + err.strerror + ".\n"
+                writeErrMsg (errMsg)
+                raise VolPrepError
+
+
+
+        myFiles.append (runScrFN)
+        myFiles.append (startupFN)
+
+        global AllFileList
+        AllFileList += myFiles 
+
+        genFileListFile ( params ) 
+
+        return True
+        # end of genAdditionalFiles ( param, irisFlipBook ) :
+
+
+
+
+
+
+##################################################################
+#
+# the "main" function
+
+
+def main () :
+
+        cmdLine = " ".join(sys.argv)
+
+        # first parse the command line
+        params = CmdParams ()
+        # print params
+        global ProgName
+        ProgName = params.progName
+
+        if not params.success:
+                errMsg = params.progName + \
+                  ": Error parsing command line."
+                writeErrMsg (errMsg)
+                return -1
+
+        # set up the log file
+        openLogFile (params)
+        addLogEntry ("Command line:", cmdLine)
+
+        #
+        # I'm just going to pass the full set of command line arguments (params)
+        # into each function that needs some of them.  This is probably not 
+        # the best practice, but I don't see the harm in a program of this size.
+        # Alternatively, could make params global. 
+        #
+        # The right thing to do is to pass in only the parameters needed by 
+        # each function.
+        #
+
+        try:
+            volTxtrFNs = genVolumeTextures ( params ) 
+            geomFN = genGeomFile ( params) 
+            (tfTxtrs, shaderProgs, tfReqExts) = genShaderProgs (params)
+
+
+
+            '''
+            print "In main : tfReqExts = " 
+            for i in range (len (tfReqExts)) :
+                print tfReqExts[i]
+            '''
+
+            perVolTxtrs = genPerVolReqExtTxtrs (params, volTxtrFNs, tfReqExts)
+            (flipBookFN, skelFN) = genFlipBook (params, geomFN, tfTxtrs, 
+                                        shaderProgs, volTxtrFNs, perVolTxtrs)
+            genAdditionalFiles ( params, flipBookFN, skelFN, geomFN) 
+
+        except VolPrepError:
+            global AllFileList
+            removeFiles (AllFileList)
+            return -1
+
+
+        # print "Normal exit."
+        addLogEntry ("Normal exit.")
+        closeLogFile ()
+        return 0
+
+
+#  end of function main
+##################################################################
+#
+# Here's where execution really starts:
+if __name__ == "__main__" :
+        sys.exit (main())
+
+
+#
+##################################################################

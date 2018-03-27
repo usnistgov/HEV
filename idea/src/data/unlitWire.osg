@@ -1,0 +1,8 @@
+Node {
+  StateSet {
+    GL_LIGHTING PROTECTED|OFF
+    PolygonMode {
+      mode FRONT_AND_BACK LINE
+    } 
+  }
+}

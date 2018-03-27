@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# hev-raveProjectorStatus
+
+# Executes COMMAND remotely on MONITOR_HOST via ssh.
+
+MONITOR_HOST=acadie.cam.nist.gov
+COMMAND=$HEVROOT/idea/etc/hev-raveProjectorStatus/bin/get-projector-status
+QUIET=
+
+usage() {
+    echo "USAGE: $0 [-q]"
+    echo "  -q: quiet mode, i.e., no output."
+    echo "  -h: usage message (this one)."
+    exit 2
+}
+
+while getopts "dhq" OPTION; do
+    case $OPTION in
+	q) QUIET=-q
+	    ;;
+	h|?) usage
+	    ;;
+    esac
+done
+
+/usr/bin/ssh -q $USER@$MONITOR_HOST $COMMAND $QUIET

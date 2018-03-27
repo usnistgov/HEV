@@ -1,0 +1,124 @@
+#!/bin/bash
+
+function usage {
+cat <<EOF
+
+Usage: hev-setShader [options] inFile outFile
+        or
+       hev-setShader [options] nodeName
+
+Applies vertex, geometry, or fragment shaders to a file or node. 
+
+Options:
+  -v shaderFN         Loads the vertex shader file
+  -g inPrim outPrim maxV shaderFN 
+                      Loads the geometry shader file with the 
+                      specified inputs and outputs (see man page)
+  -f shaderFN         Loads the fragment shader file
+  -r                  Remove all shaders.  This option cannot
+                      be combined with any of the other options.
+
+Note that any of the shader program files can be specified as:
+
+  _REMOVE_
+
+This indicates that you want to remove the indicated shader type
+from the node or file.
+
+For more details see the hev-setShader man page.
+
+EOF
+
+exit 1
+}
+
+
+# Note to myself (JGH) about the next while loop, which was written by Marc.
+# The first part of each of the case clauses looks something like this:
+#   [ $# -le 1 ] && usage
+# This is two commands combined with the logical operator &&.  The
+# shell evaluates the first, and if it it true, it must evaluate
+# the second to determine the value of the expression involving the &&.
+# The second command is the usage function which exits the script.
+#
+# If the first is false, it does not evaluate the second.  In this case
+# that means that usage is skipped.
+#
+# In other words, this takes advantage of the short-circuit evaluation of 
+# logical expressions in the shell.
+#
+# Note also that the shift that's after the case accounts for the - option
+# and the shifts within the case account for the args associated with
+# the - option.
+
+# parse options
+while [ $# -ne 0 ]; do
+  case "$1" in
+      -v) [ $# -le 1 ] && usage; VERT="$2"; V="V"; shift;;
+      -g) [ $# -le 4 ] && usage; GIN="$2" GOUT="$3" GV="$4" GEOM="$5"; G="G"; shift 4;;
+      -f) [ $# -le 1 ] && usage; FRAG="$2"; F="F"; shift;;
+      -r) [ $# -le 1 ] && usage; RMPROG="_REMOVE_";;
+      -*) echo ; echo hev-setShader: Unrecognized option: "$1"; usage;;
+      *) break;;
+  esac
+  shift
+done
+
+# print usage and exit if we don't have either one or two arguments left
+if [ $# -ne 1 -a $# -ne 2 ]; then
+ usage
+fi
+
+TARGET="$1"
+
+if [ $# -eq 2 ]; then
+  RESULT="$2"
+fi
+
+if   [ "$RMPROG" == "_REMOVE_" ] && \
+   ( [ "$VERT" != "" ] || [ "$GEOM" != "" ] || [ "$FRAG" != "" ] ); then
+  echo
+  echo hev-setShader: Cannot combine -r with -v, -f, or -g options.
+  usage
+fi
+
+
+
+
+# Note that the code below uses the fact that if a shader type (vert, 
+# geom, frag) is not specified, then none of the associated shell
+# variables are set.  So when we include those variables on an output 
+# command line, the unset variables don't appear while the set variable
+# do what they are supposed to do.
+#
+
+# If RESULT is specified then TARGET is a file name
+# If RESULT is not specified then TARGET is a node name
+
+# If result file was given, then we create a .iris command file and convert
+# it to the result file.
+if [ -n "$RESULT" ]; then
+
+  CMDFILE=${TMPDIR:-/tmp}/$USER-$$.iris
+  # The command file just loads the input (target) file, specifies the
+  # shaders and returns the top node.
+  cat > $CMDFILE <<EOF
+    LOAD $TARGET $TARGET 
+    SHADERPROG $TARGET $RMPROG $V $VERT $G $GIN $GOUT $GV $GEOM $F $FRAG
+    RETURN $TARGET
+EOF
+
+  # we convert this file to desired output file.
+  iris-convert $CMDFILE $RESULT
+  rm -f $CMDFILE
+  exit 0
+
+else
+
+  # If we get here then RESULT is not set and TARGET is a node name in 
+  # a running irisfly session.
+  echo SHADERPROG $TARGET $RMPROG $V $VERT $G $GIN $GOUT $GV $GEOM $F $FRAG > $IRIS_CONTROL_FIFO
+
+fi
+
+exit 0;

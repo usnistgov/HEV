@@ -1,0 +1,12 @@
+# NIST CAVE Stop Signs Model
+
+# The actual model is already loaded, so all we need to do
+# here is hook it in to a NOCLIP node.
+
+NOCLIP StopSigns
+
+NODEMASK StopSigns OFF
+ADDCHILD StopSigns scene
+NOLIGHTING StopSigns
+
+#End

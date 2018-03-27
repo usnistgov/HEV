@@ -1,0 +1,40 @@
+
+Completed:
+---------
+hev-vtkContour             - iso-lines or iso-surfaces
+hev-vtkSmoothMesh          - smooth a polygonal mesh
+hev-vtkReverse             - reverse normals or cell ordering
+osgdb_vtk.so               - OSG plugin: load VTK file into OSG
+
+
+
+
+Next Development
+----------------
+
+hev-gridToVtkImage         - data block to VTK image grid
+hev-vtkGridToGeom          - basic geometric representation of grid
+hev-vtkGridResample        - resample grid at specified points
+hev-vtkPolyDecimate        - reduce number of triangles in a mesh
+hev-vtkAddNormals          - add normals to a set of polygons
+hev-vtkGridSmooth          - apply smoothing to grid data
+hev-vtkGridSubset          - extract a spatial subset of a grid
+hev-vtkCleanPolyData       - clean up polygonal data
+hev-vtkBoundingHull        - generate a convex hull (not minimal)
+hev-gridToVtkRectGrid      - data block to VTK rectilinear grid
+hev-gridToVtkStructGrid    - data block to VTK structured grid
+hev-vtkGradient            - gradient vectors from scalar grid
+hev-vtkVectorMagnitude     - magnitude of a vector field
+hev-vtkVectorGlyph         - glyphs for vector data
+hev-vtkStreamLine          - stream lines from vector or tensor data
+hev-vtkConnectedComponents - split / count # of connected components
+hev-vtkExtractBoundary     - extract boundary for set of polygons
+hev-vtkDelaunay            - generate Delaunay triangulation
+hev-vtkClipGeom            - clip polygon data
+hev-vtkPolyCoordTransform  - transform polygon coords and normals
+hev-vtkGridCoordTransform  - transform coordinates of grid pts
+hev-vtkTensorGlyph         - glyphs for tensor data
+hev-vtkConvertToStrips     - convert to tristrips and polylines
+hev-vtkConvertToTriangles  - convert all polygons to triangles
+
+

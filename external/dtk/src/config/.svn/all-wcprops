@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svnroot/diverse/!svn/ver/981/trunk/dtk/config
+END
+_config.h.in
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/915/trunk/dtk/config/_config.h.in
+END
+config.h.in
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/diverse/!svn/ver/915/trunk/dtk/config/config.h.in
+END
+dtk-config.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/981/trunk/dtk/config/dtk-config.cpp
+END
+_config.h.win32
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/915/trunk/dtk/config/_config.h.win32
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/895/trunk/dtk/config/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svnroot/diverse/!svn/ver/569/trunk/dtk/config/README
+END

@@ -1,0 +1,36 @@
+#!/bin/sh
+
+########################################################################
+# This block was taken from Daniel Elstner's autogen.sh.
+########################################################################
+dir=`echo "$0" | sed 's,[^/]*$,,'`
+test "x${dir}" = "x" && dir='.'
+if test "x`cd "${dir}" 2>/dev/null && pwd`" != "x`pwd`"
+then
+    echo "This script ($0) must be executed directly from the top $0 source directory."
+    exit 1
+fi
+# end taken from Daniel Elstner
+########################################################################
+
+if [ "$1" = "" ]
+then
+  echo "Usage: $0 TODIR/"
+  echo "copies examples/ to TODIR/"
+  exit 1
+fi
+
+mkdir -p $1/examples/
+
+for i in `find dtk \! -name 'CVS' -type d -print`
+do
+  mkdir -p $1/examples/$i
+done
+
+for i in `find dtk -type f -print`
+do
+  if ! echo "$i" | grep '/CVS/' > /dev/null
+  then
+    cp -f $i $1/examples/$i
+  fi
+done

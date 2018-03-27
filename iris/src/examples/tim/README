@@ -1,0 +1,5 @@
+simple example of using the tim DSO and a driver program
+
+to run:
+
+iris-viewer timTest.iris

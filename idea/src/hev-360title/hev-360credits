@@ -1,0 +1,51 @@
+#!/bin/bash
+
+width=3840
+height=2160
+
+while getopts "hW:H:" opt; do
+    case $opt in
+        W) width=$OPTARG ;;
+        H) height=$OPTARG ;;
+        ?|h)
+            echo "usage: $0 [options] \"credits\" <OUTPUT_PREFIX>";
+            echo "    -W <width>  final image width (3840)"
+            echo "    -H <height> final image height (2160)"
+            exit 1
+            ;;
+    esac
+done
+
+shift $(($OPTIND-1))
+if [ -z "$1" ]; then echo "$0: No credits text specified"; exit 1; fi
+if [ -z "$2" ]; then echo "$0: No output prefix specified"; exit 1; fi
+
+credits=$1
+out=$2
+shift 2
+
+mvg=$(mktemp /tmp/hev-360credits-XXXXXX.mvg)
+png=$(mktemp /tmp/hev-360credits-XXXXXX.png)
+irs=$(mktemp /tmp/hev-360credits-XXXXXX.iris)
+trap "rm -f /tmp/hev-360credits-*" EXIT
+
+sed -e "s,@CREDITS@,$credits," \
+    < $HEV_IDEA_DIR/etc/hev-360title/data/credits.mvg.in >> $mvg
+gm convert mvg:$mvg $png
+
+sed -e "s,@CREDITS_TEXTURE@,$png," \
+    < $HEV_IDEA_DIR/etc/hev-360title/data/credits.iris.in >> $irs
+irisfly $irs 2>&1 > /dev/null < /dev/null
+
+COPTS="+matte -type TrueColor -depth 8"
+gm convert /tmp/hev-360credits-$USER-snap-raveLeft-000000.pam $COPTS ${out}Left.png
+gm convert /tmp/hev-360credits-$USER-snap-raveFront-000000.pam $COPTS ${out}Front.png
+gm convert /tmp/hev-360credits-$USER-snap-raveBack-000000.pam $COPTS ${out}Back.png
+gm convert /tmp/hev-360credits-$USER-snap-raveRight-000000.pam $COPTS ${out}Right.png
+gm convert /tmp/hev-360credits-$USER-snap-raveFloor-000000.pam $COPTS ${out}Floor.png
+gm convert /tmp/hev-360credits-$USER-snap-raveCeiling-000000.pam $COPTS ${out}Ceiling.png
+
+hev-stitch -O ${out}.png -W ${width} -H ${height} ${out}Left.png \
+    ${out}Right.png ${out}Ceiling.png ${out}Floor.png ${out}Front.png \
+    ${out}Back.png
+

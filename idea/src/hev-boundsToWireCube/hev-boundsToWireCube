@@ -1,0 +1,63 @@
+#! /bin/bash
+
+awk '
+BEGIN {
+    r=.5; g=.5; b=.5; a=1;
+}
+
+function out()
+{
+    print "lines";
+    print xmin,ymin,zmin,r,g,b,a;
+    print xmax,ymin,zmin,r,g,b,a;
+    print xmax,ymin,zmax,r,g,b,a;
+    print xmin,ymin,zmax,r,g,b,a;
+    print xmin,ymin,zmin,r,g,b,a;
+
+    print xmin,ymax,zmin,r,g,b,a;
+
+    print xmin,ymax,zmin,r,g,b,a;
+    print xmax,ymax,zmin,r,g,b,a;
+    print xmax,ymax,zmax,r,g,b,a;
+    print xmin,ymax,zmax,r,g,b,a;
+    print xmin,ymax,zmin,r,g,b,a;
+
+    print "lines";
+    print xmin,ymin,zmax,r,g,b,a;
+    print xmin,ymax,zmax,r,g,b,a;
+
+    print "lines";
+    print xmax,ymin,zmax,r,g,b,a;
+    print xmax,ymax,zmax,r,g,b,a;
+
+    print "lines";
+    print xmax,ymin,zmin,r,g,b,a;
+    print xmax,ymax,zmin,r,g,b,a;
+
+
+}
+
+{
+    if (substr($1,1,1) == "#") next;
+    n=NF;
+    if (n == 4) {
+	if ($1 == "box_min:") {
+	    xmin=$2;
+	    ymin=$3;
+	    zmin=$4;
+	}
+	if ($1 == "box_max:") {
+	    xmax=$2;
+	    ymax=$3;
+	    zmax=$4;
+	    out();
+	}
+    }
+    if (n >= 6) {
+	xmin=$1; ymin=$2; zmin=$3;
+	xmax=$4; ymax=$5; zmax=$6;
+	out();
+    }
+
+}'
+

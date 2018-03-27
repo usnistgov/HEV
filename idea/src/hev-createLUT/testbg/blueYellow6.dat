@@ -1,0 +1,8 @@
+# blueYellow.dat: blue to yellow thru six combinations (no black or white)
+000 0   0   1  1
+051 0   1   0  1
+102 0   1   1  1
+153 1   0   0  1
+204 1   0   1  1
+255 1   1   0  1
+

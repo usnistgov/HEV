@@ -1,0 +1,59 @@
+.TH SAVG\-ROTATE 1 "18 June 2004"
+
+.SH NAME
+savg-rotate \- SAVG Toolbox: rotation
+.SH SYNOPSIS
+.B savg-rotate 
+[hval] [pval] [rval]
+.PP
+.br
+.SH DESCRIPTION 
+.I Savg-rotate 
+applies a \fIheading\fP, \fIpitch\fP, or \fIroll\fP rotation to a \fIsavg\fP file from 
+.I stdin 
+and writes the resultant figure to 
+.I stdout.
+Rotations are done in the order in which they were entered.  You may do from 1 to 3 rotations at once.
+.SH OPTIONS
+.TP
+.B hval
+Specify the degree of heading change.
+.TP
+.B pval
+Specify the degree of pitch change.
+.TP
+.B rval
+Specify the degree of roll change
+.SH EXAMPLES
+.TP
+.B "savg-rotate 45 0 0 < obj.savg > robj.savg"
+writes in a file 
+.I robj.savg 
+the savg data from 
+.I obj.savg 
+with the heading changed +45 degrees.
+.TP
+.B "savg-rotate 30 30 30 < obj.savg"
+writes to 
+.I stdout
+the savg data from 
+.I obj.savg 
+with the heading, pitch, and roll changed by 30 degrees in the order heading, pitch, then roll.
+
+.SH SEE ALSO
+savg-translate, savg-scale
+
+.SH AUTHOR
+.PP
+Brandon M. Smith
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Summer 2004, modified June 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

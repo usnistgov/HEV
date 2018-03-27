@@ -1,0 +1,314 @@
+.TH hev-relativeMove 1
+
+\# This is a comment
+\" This is also a comment.
+\# Use .br for a line break
+
+
+.SH NAME
+.B hev-relativeMove 
+- Interactive control of location and orientation based on relative motion.
+
+.SH SYNOPSIS
+
+.B hev-relativeMove  
+[ options ]
+
+.SH DESCRIPTION
+
+.B hev-relativeMove
+generates a transformation based on an input transformation and
+button information.  
+The program begins with an initial transformation which is
+changed while a button is pressed.
+When a button is pressed, the current input and output transformations
+are stored.
+While the button remains depressed, changes to the
+input transformation are calculated relative to the starting input
+transformation and those changes are
+applied to starting output transformation.
+
+Translation and rotation are handled separately and can be
+updated independently.
+
+In addition, a plane equation based on the output transformation
+can also be generated and the coefficients output.  
+The plane equation is calculated by transforming the plane Y=0
+by the current output transformation.
+
+The program can be in an active or inactive state. 
+The methods for activating and deactivating the program
+are described in detail in the section below entitled 
+Activation and Deactivation.
+
+.SH OPTIONS
+
+.br
+
+Note that in the following options, 
+at least one of the outputs must be specified.
+
+
+.TP
+--inShm  shmName
+.br
+Name of the shared memory file from which 
+to receive the input transformation.
+The default is \fBwandMatrix\fR.
+This file must contain 16 doubles (a 4x4 transformation matrix).
+All outputs are generated in the coordinate system of
+this input transformation.
+
+
+.TP
+--inTRButtonShm  shmName
+.br
+The name of the shared memory file that gives the current
+state of the button that enables change of both
+translation and rotation.
+Default is \fBidea/buttons/left\fR.
+
+.TP
+--inTButtonShm  shmName
+.br
+The name of the shared memory file that gives the current
+state of the button that enables change of 
+translation only.
+Default is \fBidea/buttons/right\fR.
+
+.TP
+--inRButtonShm  shmName
+.br
+The name of the shared memory file that gives the current
+state of the button that enables change of 
+rotation only.
+
+.TP
+--initCoord X Y Z [H P R [Xscale Yscale Zscale]]
+.br
+Gives the initial output transformation.
+.br
+The default is  0 0 0  0 0 0  1 1 1.
+
+
+.TP
+--boxConstrain  Xmin Ymin Zmin   Xmax Ymax Zmax
+.br
+When specified, the translation of the output transformation
+is constrained to the given axis-aligned box.  
+
+
+.TP
+--outShm  shmName
+.br
+Name of the shared memory file to which to write
+the output transformation.
+If the file does not exist, it will be created with
+the length of 16 doubles and matrix output will be produced.
+All outputs are generated in the coordinate system of
+the input data.
+If this option is not specified, the data are not written.
+
+
+.TP
+--outMatrixNode  nodeName
+.br
+Specifies the name of a node in the scene graph 
+to be transformed by the output transformation.
+If this is specified, IRIS MATRIX commands are written
+to standard output to perform the transformation.
+
+
+.TP
+--outPlaneShm  shmName
+.br
+Specifies the name of the shared memory file to
+which the output plane equation coefficients
+are written.
+If not specified, the data are not written.
+
+
+
+.TP
+--outPlaneUni  nodeName uniformName
+.br
+The plane equation coefficients will be written
+to the specified uniform variable under the specified node.
+If this is specified, IRIS UNIFORM commands are written
+to standard output to perform the operation.
+
+
+
+.TP
+--selectorShm  shmName
+.br
+Specifies the name of a shared memory file that can be used
+to activate and deactivate the operation of this program.
+Default is \fBidea/selector\fR.  
+There is a detailed description of activation and deactivation below.
+
+
+
+.TP
+--selectorStr  string
+.br
+Specifies the string that will activate this program when
+present in the shared memory file specified by the
+\fBselectorShm\fR
+option (see above).
+The default is \fBhev-relativeMove\fR.
+There is a detailed description of activation and deactivation below.
+
+
+
+.TP
+--absolute
+.br
+When specified, the output transformation is identical to
+the input transformation.
+
+
+.TP
+--usleep t
+.br
+Specifies the number of microseconds to sleep at the end of each
+update loop.  If not specified, iris::GetUsleep() is used.
+
+
+.TP
+--pid fileName
+.br
+The program will write its PID to the indicated file.
+This can be useful for killing the process or for sending
+USR1 and USR2 signals for activation and deactivation.
+
+
+
+.TP
+--verbose
+.br
+Turn on verbose mode.
+
+.TP
+--help                     
+.br
+Show usage message and exit.
+
+
+.SH ACTIVATION and DEACTIVATION
+
+.br
+
+As mentioned above, hev-relativeMove can be in an active or 
+an inactive state.
+When active, the program monitors the state of one or more buttons
+and generates outputs while the buttons are pressed.
+When inactive, the program ignores all inputs except those that
+can activate it.  The program begins in an inactive state.
+There are two mechanisms for activating/deactivating the program.
+
+The first mechanism uses the shared memory file specified by
+the option \fB--selectorShm\fR described above.
+This file is constantly monitored by this program.  
+When the shared memory file contains the string specified by 
+the option \fB--selectorStr\fR, the program is active; if the string
+from the file and the selectorStr strings do not match, then the
+program is inactive.
+
+Suppose that hev-relativeMove is started with the following options:
+
+        --selectorShm tmp/control  --selectorStr relMv
+
+Then you could activate the program with this command:
+
+        hev-writeStrings tmp/control relMv
+
+and you could deactivate the program with this command:
+
+        hev-writeStrings tmp/control none
+
+This activation mechanism is intended to be used when there
+are multiple tools are available but you only want one active
+at any one time.  If all of the tools use this mechanism and
+are monitoring the same shared memory selector file, then
+you can switch tools simply by writing the appropriate string
+to the selector file.
+
+The second mechanism for activating and deactivating
+hev-relativeMove uses the signals USR1 and USR2.
+To activate the program, you send the process the signal
+USR1; and to deactivate the program you send the process
+the signal USR2.
+
+Suppose that hev-relativeMove has been been started up and the
+PID of the process is 1000.  Then you can activate the program
+with this command:
+
+        kill -s USR1 1000
+
+and you can deactive the program with this command:
+
+        kill -s USR2 1000
+
+
+If the two activation methods (shared memory and signals) are mixed, 
+the activation status of the program
+will be determined by the most recent USR1 or USR2 signal or 
+the most recent change in the state of the selector shared memory match.
+It is strongly recommended that you do not mix these two activation methods.
+
+.SH relativeMove.iris
+
+.br
+
+The
+.B hev-relativeMove
+directory includeds a file named \fBrelativeMove.iris\fR, which is
+installed along with
+\fBhev-relativeMove\fR,
+allowing irisfly(1) to load it without having to specify a path.
+
+To use \fBrelativeMove.iris\fR the application creates an IRIS file which sets the IRIS variable 
+.B RELATIVE_MOVE
+to a unique value and loads \fBrelativeMove.iris\fR. The application then
+loads geometry under the nodes \fBrelativeMoveSceneNode-$(RELATIVE_MOVE)\fR and
+\fBrelativeMoveWorldNode-$(RELATIVE_MOVE)\fR.
+
+Objects loaded under the \fBrelativeMoveSceneNode-$(RELATIVE_MOVE)\fR node will
+move relative to changes in the offset wand when the left wand button is
+pressed. 
+
+When the left wand button is released objects under the
+\fBrelativeMoveWorldNode-$(RELATIVE_MOVE)\fR node receive the transformation
+in world coordinates equivalent to the transformation under the
+\fBrelativeMoveSceneNode-$(RELATIVE_MOVE)\fR node, and the objects will move with
+navigational changes.
+
+If the same objects are loaded under each node (instancing them is OK), and their visibility is
+toggled by the left wand button, it will appear that the objects will move
+relative to changes in the offset wand when the button is pressed, and
+will move with navigation when the button is released.
+
+.SH EXAMPLE
+
+.br
+
+hev-relativeMove --inShm tmp/wandWorld --outCoordNode probe  --inTRButtonShm idea/buttons/left --inTButtonShm idea/buttons/right > $IRIS_CONTROL_FIFO
+
+cd $HEV_IDEA_DIR/src/hev-relativeMove/example
+.br
+irisfly --ex tape.osg gnomon.mcp
+
+cd $HEV_IDEA_DIR/src/hev-relativeMove/example
+.br
+irisfly --ex tape.osg radio.mcp
+
+.SH FUTURE DEVELOPMENT
+
+.br
+
+Other constraints in motion such as rotation only about a specified axis.
+
+Handling of transformations with non-unit scaling.
+
+

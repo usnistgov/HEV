@@ -1,0 +1,16 @@
+#Inventor V2.0 ascii
+Separator {
+Rotation { rotation 1 0 0 -1.57079632679}
+Separator {
+Translation { translation 1 0 0 }
+Separator {
+Material {
+diffuseColor 0.7 0.0 0.0
+transparency 0
+}
+Separator {
+Sphere { radius 0.07 }
+}
+}
+}
+}

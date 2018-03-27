@@ -1,0 +1,77 @@
+.TH iris-readStdinUpdateShmWriteStdout 1 "August 2011"
+
+.SH NAME
+iris-readStdinUpdateShmWriteStdout
+
+.SH SYNOPSIS 
+
+.B iris-readStdinUpdateShmWriteStdout [ \fI--usleep t\fR] [\fI--noread\fR] [\fI--nowrite\fR] \fIshmName\fR
+
+.SH OPTIONS
+
+.IP "\fI--usleep t\fR"
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.IP "\fI--noread\fR"
+specifies that stdin will not be read
+
+.IP "\fI--nowrite\fR"
+specifies that stdout will not be written
+
+.TP 
+\fIshmName\fR
+.br
+the name of an existing DTK shared memory file
+
+.SH DESCRIPTION
+\fBiris-readStdinUpdateShmWriteStdout\fR loops, and every loop does the
+ following:
+
+.IP "1)"
+reads the DTK shared memory file \fIshmName\fR, and if it has changed from
+the previous iteration, and \fI--nowrite\fR was not specified, writes the binary
+contents of the shared memory file to standard output.
+
+.IP "2"
+if the shared memory has not changed, and \fI--noread\fR was not specified,
+stdin is read, and if the data read are different than the contents of the
+shared memory file, the data read are written to the shared memory file.
+
+.P
+It is hoped that \fBiris-readStdinUpdateShmWriteStdout\fR can be used to
+transmit DTK shared memory data across ssh tunnels, but this has not actually
+been tested yet.
+
+.SH EXAMPLE
+
+.IP "in one window type:"
+.br
+dtk-caveDeviceSimulator & hev-writeFloats -c 6 foo 0 ; hev-readFloats -i foo
+
+.IP "in another window type:"
+iris-readStdinUpdateShmWriteStdout --noread head | iris-readStdinUpdateShmWriteStdout --nowrite foo
+
+.P 
+move the sliders for the head and see if the first window updates to match the sliders
+
+.SH NOTE
+
+All reads and writes are non-blocking. The first time DTK shared memory is
+read, it is written to stdout if \fI--nowrite\fR was not specified.
+
+.SH BUGS
+
+The name is sort of klunky- any suggestions?
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+August 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+ 

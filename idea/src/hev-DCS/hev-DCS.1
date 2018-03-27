@@ -1,0 +1,70 @@
+.TH "hev-DCS" 1 "February 4, 2009"
+.SH NAME
+
+hev-DCS
+
+.SH SYNOPSIS
+
+\fBhev-DCS [ --step value ] [ --under parentNodeName ] nodeName [ xt yt zt [ h p r [ xs [ ys zs ] ] ] ] ]
+
+
+.SH DESCRIPTION
+
+\fBhev-DCS\fR is a GUI which writes IRIS control commands to standard
+output.  It It will hopefully facilitate the manipulation of an object in
+the virtual environment when running in a desktop window.
+
+.SH OPTIONS
+
+.IP "\fI--step value\fR"
+specifies the smallest amount to change the x, y, and z translation rollers when moved.  The default
+value is .002.
+
+.IP "\fI--under parentNodeName\fR"
+is a convenience parameter which causes \fBhev-DCS\fR to print the string
+"ADDCHILD \fInodename\fR \fIparentNodename\fR" after creating the DCS node.
+
+.IP "\fInodeName\fR"
+is the name of the DCS node to be created or modified
+
+.IP "\fIxt yt zt\fR" 
+species the initial x, y and z translation values to use.  The default is 0, 0, 0.
+
+.IP "\fIh p r\fR"
+species the initial h, p, and r values to use.  The default is 0, 0, 0.
+
+.IP "\fIxs ys zs\fR" 
+species the initial x, y and z scale values to use.  The default is 1, 1, 1.
+
+.P
+Each roller has a text box which displays the current value of the roller.
+Text can also be entered in these boxes to modify the roller's value.
+
+.P
+\fBhev-DCS\fR has checkbox labeled "relative" which when checked, will
+cause changes in orientation to be relative to the DCS.  For example, if
+"relative" is not checked, changes in roll would affect the object's
+orientation only after first being rotated by the specified heading and
+pitch.  If "relative" is checked, changes to roll will occur before the
+current heading, pitch and roll are applied, which is hopefully more
+intuitive for the user.  When "relative" is selected, the orientation text
+boxes display the cumulative orientation, but are not available for input.
+
+.SH EXAMPLE
+
+cd $HEVROOT/ida/src/hev-DCS
+.br
+irisfly hevDCStest.iris
+
+.P
+Use the Y roller to move the object into view, then play around with the
+other rollers and buttons.
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+.br
+\fBhttp://www.nist.gov/acmd/hpcvg/\fR
+

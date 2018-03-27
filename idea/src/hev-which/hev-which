@@ -1,0 +1,114 @@
+#! /bin/bash
+
+# Steve Satterfield
+# steve@nist.gov
+
+version="20150611"
+
+function usage {
+cat <<EOF
+
+Usage: hev-which [--help] [--quiet] [--title]
+
+  Prints to stdout which HEV environment is currently set.
+  Also sets the an exit status, which can be tested with \$?
+
+            Exit status    HEV environment
+
+               0           no HEV set
+
+              10           HEV Classic
+              11           HEV Classic Beta
+
+              20           HEV IRIS
+              21           HEV IRIS Beta
+
+
+
+  --quiet   quietly sets the exit status, 
+            i.e. doesn't print a message.
+            May be abbreviated to -q.
+
+  --title   Places an HEV identifier in the current terminal's
+            title bar. See man page for details.
+
+
+Version: $version
+EOF
+exit 1
+}
+
+exitStatus=0
+title=0
+q=1
+
+case $# in
+0)
+	:
+	;;
+1|2|3)
+	n=$#
+	for ((i=0; i<$n; i++))
+	do
+	  case $1 in
+	      -q*|--q*)
+		  q=0
+		  shift
+		  ;;
+	      -t*|--t*)
+		  title=1
+		  shift
+		  ;;
+
+	      -h*|--h*)
+		  usage
+		  ;;
+	  esac
+	done
+        ;;
+*)
+	usage
+	;;
+esac
+
+echo $HEVROOT | grep beta > /dev/null
+beta=$?
+
+if [ "$HEV_IRIS_PROFILE" == "1" ]
+then
+    if [ "$beta" == "0" ]
+    then
+	(( $q == 1 )) && echo "You are using HEV IRIS Beta (HEVROOT=$HEVROOT)"
+	exitStatus=21
+    else
+	(( $q == 1 )) && echo "You are using HEV IRIS (HEVROOT=$HEVROOT)"
+	exitStatus=20
+    fi
+elif [ "$HEV_SAVG_PROFILE" == "1" ]
+then
+    if [ "$beta" == "0" ]
+    then
+	(( $q == 1 )) && echo "You are using HEV Classic Beta (HEVROOT=$HEVROOT)"
+	exitStatus=11
+    else
+	(( $q == 1 )) && echo "You are using HEV Classic (HEVROOT=$HEVROOT)"
+	exitStatus=10
+    fi
+else
+	(( $q == 1 )) && echo "You have no HEV environment set"
+	exitStatus=0
+fi
+
+if [ "$title" == "1" ]
+then
+
+    hevWhich="HEV Not Set"
+    [ ! -z "$HEV_SAVG_DIR" ] && hevWhich="HEV/SAVG"
+    [ ! -z "$IRIS_HOME" ] && hevWhich="HEV/IRIS"
+
+    echo -ne "\033]0;${USER}@${HOSTNAME%%.*} $hevWhich HEVROOT ${HEVROOT-Undefined}\007"
+fi
+
+exit $exitStatus
+
+

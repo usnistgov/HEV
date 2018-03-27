@@ -1,0 +1,50 @@
+.TH SAVG\-AMBIENT 1 "26 May 2009"
+.SH NAME
+savg-ambient \- SAVG ToolBox: ambient
+.SH SYNOPSIS
+.B savg-ambient r g b/default
+.SH DESCRIPTION
+.I savg-ambient
+sets the ambient color for \fIsavg\fP files (\fISAVG ToolBox\fP).  It 
+accepts input from
+.I stdin
+and outputs to
+.I stdout.
+If invalid arguments or no arguments are given, 
+then 
+.I savg-ambient
+prints usage information and terminates.
+.SH OPTIONS
+.TP
+.B \   savg-ambient val val val or savg-ambient default
+Accepts floating 
+point numbers from 0 to 1 and defaults to 1.
+.SH EXAMPLES
+.TP
+.B savg-ambient 0.5 0.2 0.1 < in.savg > out.savg
+Reads from 
+.I in.savg
+and set the ambient to 0.5,0.2,0.1.  Then outputs to 
+.I out.savg.
+.SH BUGS
+(none)
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+March 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

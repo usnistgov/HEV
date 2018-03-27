@@ -1,0 +1,57 @@
+Group {
+  DataVariance DYNAMIC
+  cullingActive TRUE
+  StateSet {
+    UniqueID StateSet_1
+    DataVariance STATIC
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+    textureUnit 0 {
+      TextureCubeMap {
+        DataVariance STATIC
+        image POSITIVE_X "Cubemap_axis/posx.png"
+        image NEGATIVE_X "Cubemap_axis/negx.png"
+        image POSITIVE_Y "Cubemap_axis/posy.png"
+        image NEGATIVE_Y "Cubemap_axis/negy.png"
+        image POSITIVE_Z "Cubemap_axis/posz.png"
+        image NEGATIVE_Z "Cubemap_axis/negz.png"
+        wrap_s CLAMP
+        wrap_t CLAMP
+        wrap_r CLAMP
+        min_filter LINEAR_MIPMAP_LINEAR
+        mag_filter LINEAR
+        internalFormatMode USE_IMAGE_DATA_FORMAT
+        subloadMode OFF
+      }
+    }
+    Uniform { name "texcube" int 0 }
+
+    textureUnit 1 {
+      Texture2D {
+        DataVariance STATIC
+        file "skymap.jpg"
+        wrap_s CLAMP
+        wrap_t CLAMP
+        min_filter LINEAR_MIPMAP_LINEAR
+        mag_filter LINEAR
+        internalFormatMode USE_IMAGE_DATA_FORMAT
+        subloadMode OFF
+      }
+    }
+    Uniform { name "texsphere" int 1 }
+
+    textureUnit 2 {
+      Texture2D {
+        DataVariance STATIC
+        file "land_shallow_topo_2048.jpg"
+        wrap_s REPEAT
+        wrap_t REPEAT
+        min_filter LINEAR_MIPMAP_LINEAR
+        mag_filter LINEAR
+        internalFormatMode USE_IMAGE_DATA_FORMAT
+        subloadMode OFF
+      }
+    }
+    Uniform { name "tex2d" int 2 }
+  }
+}

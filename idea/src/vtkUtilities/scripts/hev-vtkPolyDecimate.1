@@ -1,0 +1,72 @@
+.TH hev-vtkPolyDecimate
+.SH NAME
+hev-vtkPolyDecimate - reduce number of triangles in a mesh
+
+.SH SYNOPSIS
+.B hev-vtkPolyDecimate [ options ] targetReduction inFName outFName
+
+.SH DESCRIPTION
+.B hev-vtkPolyDecimate
+Reduces the number of triangles in a mesh.
+
+.PP
+
+.SH OPTIONS
+.TP
+.B --method or --m METHOD
+Selects the decimation algorithm. Can be one of the following:
+                pro
+                quad
+Default is "pro"
+
+.TP
+.B --fangle or --f VALUE
+VALUE describes the feature angle if "pro" method has been selected.
+Will be ignored otherwise.
+Default is 15.
+
+.TP
+.B --sangle or --f VALUE
+VALUE describes the split angle if "pro" method has been selected.
+Will be ignored otherwise.
+Default is 75.
+
+
+.SH PARAMETERS
+.TP
+.B targetReduction
+Is a number between 0 and 1, 0.9 means reduce by 90%.
+
+.TP
+.B inFName
+Location/filename of input file.
+This file has to be in vtk format.
+
+.TP
+.B outFName
+Location/filename of output file. 
+This file is written in VTK format.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+  hev-vtkPolyDecimate --method pro 0.1 input.vtk output.vtk
+
+Reduce the number of triangles in input.vtk by 10% and write to output.vtk.
+
+.SH SEE ALSO
+
+vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+June 15th 2012

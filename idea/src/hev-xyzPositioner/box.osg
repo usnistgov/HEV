@@ -1,0 +1,206 @@
+MatrixTransform {
+  DataVariance UNSPECIFIED
+  name "/tmp/foo.iv"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  referenceFrame RELATIVE
+  Matrix {
+    1 0 0 0
+    0 0 1 0
+    0 -1 0 0
+    0 0 0 1
+  }
+  num_children 1
+  Group {
+    DataVariance UNSPECIFIED
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    num_children 1
+    Group {
+      DataVariance UNSPECIFIED
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_children 1
+      Group {
+        DataVariance UNSPECIFIED
+        nodeMask 0xffffffff
+        cullingActive TRUE
+        num_children 1
+        Group {
+          DataVariance UNSPECIFIED
+          nodeMask 0xffffffff
+          cullingActive TRUE
+          num_children 1
+          Geode {
+            DataVariance UNSPECIFIED
+            nodeMask 0xffffffff
+            cullingActive TRUE
+            num_drawables 1
+            Geometry {
+              DataVariance UNSPECIFIED
+              StateSet {
+                DataVariance UNSPECIFIED
+                rendering_hint DEFAULT_BIN
+                renderBinMode INHERIT
+                GL_LIGHTING ON
+	        GL_CULL_FACE ON
+	          CullFace {
+		    DataVariance STATIC
+		    mode FRONT
+		  }
+                Material {
+                  DataVariance UNSPECIFIED
+                  ColorMode DIFFUSE
+                  ambientColor 0.2 0.2 0.2 1
+                  diffuseColor 0.25 0.25 0.25 1
+                  specularColor 0 0 0 1
+                  emissionColor 0 0 0 1
+                  shininess 0
+                }
+              }
+              useDisplayList TRUE
+              useVertexBufferObjects FALSE
+              PrimitiveSets 6
+              {
+                DrawElementsUShort TRIANGLE_STRIP 4
+                {
+                  1 2 0 3 
+                }
+                DrawElementsUShort TRIANGLE_STRIP 4
+                {
+                  7 4 6 5 
+                }
+                DrawElementsUShort TRIANGLE_STRIP 4
+                {
+                  23 20 22 21 
+                }
+                DrawElementsUShort TRIANGLE_STRIP 4
+                {
+                  19 16 18 17 
+                }
+                DrawElementsUShort TRIANGLE_STRIP 4
+                {
+                  13 14 12 15 
+                }
+                DrawElementsUShort TRIANGLE_STRIP 4
+                {
+                  9 10 8 11 
+                }
+              }
+              VertexArray Vec3Array 24
+              {
+                1.005 1.005 1.005
+                -1.005 1.005 1.005
+                -1.005 -1.005 1.005
+                1.005 -1.005 1.005
+                -1.005 1.005 -1.005
+                1.005 1.005 -1.005
+                1.005 -1.005 -1.005
+                -1.005 -1.005 -1.005
+                -1.005 1.005 1.005
+                -1.005 1.005 -1.005
+                -1.005 -1.005 -1.005
+                -1.005 -1.005 1.005
+                1.005 1.005 -1.005
+                1.005 1.005 1.005
+                1.005 -1.005 1.005
+                1.005 -1.005 -1.005
+                1.005 1.005 -1.005
+                -1.005 1.005 -1.005
+                -1.005 1.005 1.005
+                1.005 1.005 1.005
+                1.005 -1.005 1.005
+                -1.005 -1.005 1.005
+                -1.005 -1.005 -1.005
+                1.005 -1.005 -1.005
+              }
+              NormalBinding PER_VERTEX
+              NormalArray Vec3Array 24
+              {
+                0 0 1
+                0 0 1
+                0 0 1
+                0 0 1
+                0 0 -1
+                0 0 -1
+                0 0 -1
+                0 0 -1
+                -1 0 0
+                -1 0 0
+                -1 0 0
+                -1 0 0
+                1 0 0
+                1 0 0
+                1 0 0
+                1 0 0
+                0 1 0
+                0 1 0
+                0 1 0
+                0 1 0
+                0 -1 0
+                0 -1 0
+                0 -1 0
+                0 -1 0
+              }
+              ColorBinding PER_VERTEX
+              ColorArray Vec4Array 24
+              {
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+                0.25 0.25 0.25 1
+              }
+              TexCoordArray 0 Vec2Array 24
+              {
+                1 1
+                0 1
+                0 0
+                1 0
+                1 1
+                0 1
+                0 0
+                1 0
+                1 1
+                0 1
+                0 0
+                1 0
+                1 1
+                0 1
+                0 0
+                1 0
+                1 1
+                0 1
+                0 0
+                1 0
+                1 1
+                0 1
+                0 0
+                1 0
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

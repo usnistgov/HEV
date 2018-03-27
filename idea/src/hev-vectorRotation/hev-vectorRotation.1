@@ -1,0 +1,45 @@
+.TH "hev-vectorRotation" 1 "June 30, 2009"
+.SH NAME
+
+hev-vectorRotation
+
+.SH SYNOPSIS
+
+\fBhev-vectorRotation node [ x y z ]
+
+.SH DESCRIPTION
+
+\fBhev-vectorRotation\fR is a GUI which prints IRIS commands to cause an
+object to rotate around a vector.
+
+.SH OPTIONS
+
+.IP \fBnode\fR
+is the name of a scenegraph node under which is the object to be rotated
+
+.IP \fBx\ y\ z\fR 
+specifies the initial vector value.  If omitted, 0 0 1 is used.
+
+.SH EXAMPLE
+
+See test.sh in $HEVROOT/idea/src/hev-vectorRotation
+
+.SH NOTE
+
+The object rotates around the origin of its coordinates system.  To have an
+object rotate around its center, center the object.
+
+.SH BUGS
+
+Changing the vector after the object has already been rotated can also cause
+the object to rotate.  It's best to do a RESET before changing the vector.
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/acmd/hpcvg/\fR
+

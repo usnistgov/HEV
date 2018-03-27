@@ -1,0 +1,7 @@
+
+
+cp -f libvolvis.a /local/HEV-beta/idea/lib/
+
+cp -f *.h /local/HEV-beta/idea/include 
+cp -f GNUmakefile *.cpp *.h /local/HEV-beta/idea/src/volVis/libvolvis
+

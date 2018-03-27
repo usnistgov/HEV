@@ -1,0 +1,21 @@
+#! /bin/sh
+
+case $1 in
+BASE_COLOR|basecolor|base_color|base)
+	model="BASE_COLOR"
+	;;
+
+PHONG|phong)
+	model="PHONG"
+	;;
+*)
+	echo "Usage: ivlightmodel BASE_COLOR | PHONG" > /dev/tty
+	exit 1
+	;;
+esac
+
+echo "#Inventor V2.0 ascii"
+echo "Separator {"
+echo "LightModel {model ${model} }"
+iv_stdin_out
+echo "}"

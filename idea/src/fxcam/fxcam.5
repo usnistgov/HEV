@@ -1,0 +1,78 @@
+.TH FXCAM 5 "October 2012"
+
+
+.SH NAME
+
+fxcam - effects camera OSG pseudo-loader
+
+
+.SH DESCRIPTION
+
+\fBfxcam\fR is an OSG pseudo-loader for per-frame post processing
+effects. As a pseudo-loader, it behaves as a file loader, but
+interprets the file name as a command for the pseudo-loader rather
+than as an actual file to load. The \fBfxcam\fR
+pseudo-loader creates three nodes based on the filename given. If
+asked to load \fIname\fR.fxcam, the pseudoloader will create the
+following named nodes:
+
+.IP "\fIname\fR"
+The parent node. This is the node used to add or remove the fxcam
+subtree from the OSG scene graph.
+
+.IP "\fBpre_\fIname\fR"
+Anything attached to this node is rendered into a pair of
+color and depth textures. The rendered geometry will not be visible
+unless textured onto visible geometry.
+
+.IP "\fBpost_\fIname\fR"
+Anything attached to this node is rendered normally and will be
+visible in the final frame. However, geometry attached to
+\fBpost_\fIname\fR can use the generated color and depth textures from
+\fBpre_\fIname\fR to perform image post-processing effects. Shaders
+can tell if they are attached to the \fBpost_\fIname\fR node by
+checking if the shader uniform bool \fBfxcam\fR is true. The color
+texture is a texture rectangle attached to texture unit 0, with the
+shader name \fBfxcamColor\fR. The depth texture is also a texture
+rectangle, attached to texture unit 1, with the shader name
+\fBfxcamDepth\fR.
+
+.SH "FILES"
+
+For the common case when the \fBpre_\fIname\fR geometry should be
+visible, but either the color or depth texture are needed, attach the
+following file to the \fBpost_\fIname\fR node. This file is installed
+in \fI$HEVROOT/idea/data\fR, which should be in the file search
+path, allowing just the file name to be used when loading.
+
+.IP "\fBfxCopyFrame.osg\fR"
+Creates a screen-filling square and copies the generated color \fIand
+depth\fR into it. Since both color and depth are copied, it appears as
+if it were the full 3D geometry.
+
+.SH "IRIS NOTES"
+If the \fBLOAD\fR \fIIRIS control command\fR is used for loading, the
+\fBMAP\fR command will be needed to add the children nodes to the
+global map of nodenames.
+
+.SH AUTHOR
+
+Marc Olano
+
+.SH "BUGS"
+
+The generated textures are hard-coded at 2048x2048. For smaller screen
+sizes, this is wasteful. For huge screen sizes, this may be too
+small. Could code into the pseudo-loader file name.
+
+.PP
+December 2008 original
+.br
+October 2012 updated by Steve
+
+.PP 
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/hpcvg/

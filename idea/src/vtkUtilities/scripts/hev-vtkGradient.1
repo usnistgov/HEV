@@ -1,0 +1,48 @@
+.TH hev-vtkGradient
+.SH NAME
+hev-vtkGradient - gradient vectors from scalar grid
+
+.SH SYNOPSIS
+.B hev-vtkGradient inFName outFName
+
+.SH DESCRIPTION
+.B hev-vtkGradient
+Calculates gradient vectors from a scalar grid.  The input and output
+files are in VTK format.
+
+
+.SH PARAMETERS
+.TP
+.B inFName
+Location/filename of input scalar grid file
+
+.TP
+.B outFName
+Location/filename of output file where the gradient data is written.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+  hev-vtkGradient sphData.sp.1.vtk sphData.sp.1.grad.vtk
+
+
+.SH NOTES
+
+The calculated gradient at the boundary of the grid may not be valid.
+
+.SH SEE ALSO
+
+vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+June 27th 2012

@@ -1,0 +1,23 @@
+
+
+#
+# This script executes an approximation of the tutorial at:
+#     http://teem.sourceforge.net/bane/intro/index.html
+# It is only an approximation because interfaces to
+# some of the programs have (apparently) changed since the
+# tutorial was written.
+#
+#
+# Everything is done by executing the programs that were
+# built with Teem.
+
+# Here's where to find the executables:
+BINDIR=$HEVROOT/external/teem/teem-1.6.0-src/linux.64/bin
+
+
+$BINDIR/vprobe     \
+    -k scalar \
+    -q grad \
+    -i set9559.nhdr \
+    -o set9559.grad.nrrd
+

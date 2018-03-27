@@ -1,0 +1,3 @@
+dso writeState
+exec xterm +sb -geometry 85x9 -e iris-readState
+exec ./timTest > $IRIS_CONTROL_FIFO

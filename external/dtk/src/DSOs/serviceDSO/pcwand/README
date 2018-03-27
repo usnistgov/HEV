@@ -1,0 +1,37 @@
+
+This service reads from RS232 serial to an IRIX machine, to get the
+old (1995 or so) CAVE (TM) Wand Joystick data (2 floats) and 3 (up to
+8) buttons.
+
+This "standard" was developed by the University of Illinois Electronic
+Visualization Lab in Chicago.  A PC was used to read using some kind
+of cheap ISA AtoD board and then write the data via RS232, hence the
+name "PCWand".  It's from the first and original ImmersaDesk (TM).
+
+It reads the RS232 serial line and then writes to DTK shared memory
+named "joysick" (2 floats) and "wand" (unsigned char).
+
+Also it can write the Wand joystick and button data to system V shared
+memory using the old VRCO Trackd format.
+
+
+------------------------------------------------------------------------
+ The DIVERSE Toolkit
+Copyright (C) 2000 - 2003  Virginia Tech
+
+This is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License (GPL) as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+This software is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this software, in the top level source directory in a file
+named "COPYING.GPL"; if not, see it at:
+http://www.gnu.org/copyleft/gpl.html or write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA.

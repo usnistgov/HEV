@@ -1,0 +1,29 @@
+.TH savg-tetra  1 "January 2009" "NIST/MCSD/SAVG" 
+.SH NAME
+savg-tetra
+.SH SYNOPSIS
+.B savg-tetra
+[-unit]
+
+.SH DESCRIPTION
+.I savg-tetra
+generates a regular tetrahedron.  The size and location of the tetrahedron
+is determined by whether the -unit option is specified.
+
+By default (i.e. without the -unit option), 
+the tetrahedron is located with one face on the XY plane
+centered at the origin; the vertex not on that face is
+located on the Z axis.  
+The edge length of the default tetrahedron is 1.
+
+.SH OPTIONS
+.TP
+.B -unit
+Generates the tetrahedron centered at the origin with all of the
+vertices on the unit sphere.  
+This produces a tetrahedron with an edge length of 2*sqrt(2)/sqrt(3).  
+The orientation is the same as the default.
+
+
+.SH SEE ALSO
+savg-cube, savg-octa, savg-cone, savg-cylinder, savg-sphere

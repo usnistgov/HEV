@@ -1,0 +1,29 @@
+.TH hev-hideWindow 1 
+
+.SH NAME
+
+ hev-hideWindow name ...
+
+ hev-showindow name ...
+
+.SH DESCRIPTION
+
+These are two small scripts that exec either hev-raiseWindow or
+hev-mapWindow, or hev-lowerWindow or hev-unmapWindow.
+
+The purpose is to use them in all scripts that need to make windows
+appear and disappear.  If it is determined that raise/lower works better
+than map/unmap, the scripts can be changed to modify the behavior of all
+calling programs.
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST Scientific Applications & Visualization Group
+.br
+June 2007
+.br
+\fBhttp://www.nist.gov/mcsd/idea/\fR
+

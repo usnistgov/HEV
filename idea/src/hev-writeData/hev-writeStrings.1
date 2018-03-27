@@ -1,0 +1,44 @@
+.TH hev-writeStrings 1 "April 2011"
+.SH NAME
+
+hev-writeStrings
+
+.SH SYNOPSIS
+
+\fBhev-writeStrings [ -c N ] shmName [ string ]
+
+.SH DESCRIPTION
+
+\fBhev-writeStrings\fR
+writes strings to the specified DTK shared memory file.
+.PP
+Unless -c is specified, the specified shared memory must exist prior to executing the command.
+.PP
+If one or more \fIstring\fR values are supplied on the command line, they
+are concatenated into a single space separated string.
+.PP
+If \fIstring\fR is not supplied on the command line, strings will be read
+from stdin and written to \fIshmName\fR until EOF.
+.PP
+If the -c option is specified, the shared memory file will be created, sized
+to store N characters.
+
+.SH NOTE
+It's OK for the string to be smaller than the size of the shared memory
+file, but it can't be larger.  Use \fBdtk-getSize\fR if in doubt about the
+shared memory file's size.
+
+.SH "SEE ALSO"
+.BR dtk-writeShm "(no man page currently available)"
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

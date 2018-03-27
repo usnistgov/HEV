@@ -1,0 +1,4 @@
+https://www.cgl.ucsf.edu/Overview/stereotest.html
+
+cc -o stereoTest stereotest-x11.c -lGLU -lGL -lX11
+cp stereoTest ~/bin

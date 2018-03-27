@@ -1,0 +1,9 @@
+# You must also load holodeck.iris (Star Teck Color)
+# or for a black grid, load holodeck_black.iris
+
+BUTTON Holodeck
+FIRST NODEMASK    holodeck ON
+
+ON    NODEMASK    holodeck ON
+
+OFF   NODEMASK    holodeck OFF

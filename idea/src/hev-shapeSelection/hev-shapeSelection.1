@@ -1,0 +1,76 @@
+.TH hev-shapeSelection 1 "July, 30 2012"
+.SH NAME
+
+hev-shapeSelection
+
+.SH SYNOPSIS
+
+\fBhev-shapeSelection\fR
+--transformation shmName 
+( --points fileName | --bpoints fileName )
+--eligible shmName 
+--selected shmname 
+
+
+.SH DESCRIPTION
+
+\fBhev-shapeSelection\fR is a GUI which turns the visibility of points on
+and off based on whether they are inside or outside of a specified geometric
+object.  Currently cubes, spheres, pyramids and tetrahedrons are supported.
+
+.SH OPTIONS
+
+.IP \fI--transformation\fR
+specifies the name of a dtk shared memory segment containing a transformation
+matrix (16 doubles in osg::Matrix order). Centered normalized shapes are
+transformed by this matrix to determine the selected points.
+
+.IP \fI--points\fR
+specifies the name of a formatted file containing three X Y Z coordinates
+per line, each line representing a point, to be used for selection.
+
+.IP \fI--bpoints\fR
+specifies the name of a binary file containing an array of
+X Y Z coordinates, each one representing a point, to be used for
+selection. The first "sizeof(unsigned int)" bytes in the file contains the
+number of coordinate triples that follow. Each coordinate triple uses
+"3*sizeof(double)" bytes.
+
+.IP \fI--eligible\fR
+specifies the name of a dtk shared memory segment containing an array of
+bytes, one byte per point. If the byte is zero, the point will not be
+considered for selection. If non-zero the point will be considered.
+
+.IP \fI--selected\fR
+specifies the name of a dtk shared memory segment containing an array of
+bytes, one byte per point. If the byte is zero, the point was not
+selected. If non-zero the point is selected.
+
+.P
+\fBhev-shapeSelection\fR has a pair of radio buttons which can be used to
+choose which geometric object to use, and two checkboxes to specify whether
+data should be displayed inside or outside the geometric object.
+
+.P
+Shape selection objects are loaded and turned on and off via IRIS control
+commands sent to standard output.
+
+.SH EXAMPLE
+
+cd $HEVROOT/idea/src/hev-shapeSelection
+.br
+irisfly --ex examplePoints.iris
+.br
+irisfly --ex exampleBPoints.iris
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/mcsd/savg/\fR
+

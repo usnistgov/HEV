@@ -1,0 +1,80 @@
+.TH savg-prism  1 "January 2009" "NIST/MCSD/SAVG" 
+.SH NAME
+savg-prism
+.SH SYNOPSIS
+.B savg-prism
+[nSides] [height] [scale] [face]
+
+.SH DESCRIPTION
+.I savg-prism
+
+Creates a polyhedron made of a regular n-sided polygonal base,
+a top polygon which is a translated and scaled copy of that base,
+and quadrilateral faces joining corresponding sides of the base and top.
+
+The base polygon is centered at the origin and lies on the XY plane.
+The top polygon is a copy of the base polygon translated along
+the positive Z axis, and scaled about its center.  The amount of
+translation and scaling is controlled by command line arguments.
+
+The geometry is output to stdout in .savg format.
+
+
+
+
+
+.SH ARGUMENTS
+
+
+Note that all arguments are optional, however their meaning is
+determined by their position in the argument list.  Thus you
+can only omit arguments that are at the end of the list.
+
+.TP
+.B nSides
+number of sides of the base and top polygon (default is 16)
+
+.TP
+.B height
+the amount of translation of the top polygon (default is 1)
+
+.TP
+.B scale
+the amount that the top polygon is scaled (default is 1)
+
+.TP
+.B face 
+indicates whether to include the base and top polygons
+
+    top       - include top but not bottom
+    bottom    - include bottom but not top
+    open      - include neither top nor bottom
+    (default) - include both top and bottom
+
+
+
+.SH EXAMPLES
+
+.TP
+.B savg-prism 20 2 0.3 open  >  obj1.savg
+
+Creates a polyhedron with 20 rectangular sides, with a height of 2,
+the top is scaled at 0.3 the size of the base, and the base and top
+polygons are omitted.
+
+
+.TP
+.B savg-prism 20 2  >  obj2.savg
+
+Creates a polyhedron with 20 rectangular sides and with a height of 2.
+The 
+.B scale 
+and 
+.B face
+parameters are given their default values.
+
+
+
+
+.SH SEE ALSO
+savg-cylinder, savg-cone, savg-cube, savg-tetra, savg-octa, savg-sphere

@@ -1,0 +1,39 @@
+This is an example fltk program which displays an image in a sub-window and
+reports the position of the cursor when it's clicked inside the image.
+
+To use this as a base for your application:
+
+1) create a new directory for your work and go to the new directory. For
+this example, call it "myNewApplication"
+
+     mkdir myNewApplication
+     cd myNewApplication
+
+2) copy the example files
+
+     cp $HEVROOT/idea/examples/showCursorPositionInImage/* .
+
+  and rename the files:
+
+    mv showCursorPositionInImage.cpp myNewApplication.cpp
+    mv showCursorPositionInImageFunctions.h myNewApplicationFunctions.h
+    mv showCursorPositionInImageGUI.fl myNewApplicationGUI.fl
+
+3) edit the GNUmakefile, changing the file old names to the new file names
+
+4) start modifying the program by running fluid:
+
+   fluid myNewApplicationGIU.fl
+
+5) then edit the other files, changing showCursorPositionInImage to myNewApplication, and
+   modifying the callbacks, functions and variables as needed.
+
+   myNewApplication.cpp is used to call the widgets created by
+   myNewApplicationGIU.fl
+
+   myNewApplicationFunctions.h contains the functions called by
+   myNewApplicationGIU.fl and global variables used in myNewApplication.cpp
+
+6) make and run:
+
+   make && ./myNewApplication wallacegromit.jpg

@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/730/trunk/dtk/examples/dtk/tests/blockingRead
+END
+blockingRead.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tests/blockingRead/blockingRead.cpp
+END
+blockingQRead.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/diverse/!svn/ver/730/trunk/dtk/examples/dtk/tests/blockingRead/blockingQRead.cpp
+END
+Makefile.orig
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/tests/blockingRead/Makefile.orig
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/tests/blockingRead/CMakeLists.txt
+END

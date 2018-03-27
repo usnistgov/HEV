@@ -1,0 +1,20 @@
+2012-09-28
+==========
+
+1) Put the fastbit tar file in /usr/loca/HEV/external
+   At this time, the tar file is called fastbit-ibis1.1.5.tar.gz
+
+2) Expand the tar file.
+
+3) cd fastbit-ibis1.1.5
+
+4) mv the tar files to this directory
+
+5) Type the following commands:
+
+   ./configure
+   make
+
+6) After the build is complete, type:
+
+   make full-check

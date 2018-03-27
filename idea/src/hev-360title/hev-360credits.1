@@ -1,0 +1,36 @@
+.TH hev-360credits 1 "September, 2016" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+hev-360credits
+- generate a credits "card" for a 360 video
+
+.SH SYNOPSIS
+.B hev-360credits
+.I [ -W width ]
+.I [ -H height ]
+.I 'credits' output
+
+.SH PARAMETERS
+
+.TP
+.B 'credits'
+the credits text (can contain escaped newlines).
+
+.TP
+.B output
+the prefix of all generated files. The final, stitched image is written to
+output.png and the intermediate cube map images are written to outputFACE.png.
+
+.SH OPTIONS
+
+.TP
+.B -W \fIwidth\fR
+specify the final image width (default is 3840)
+
+.TP
+.B -H \fIheight\fR
+specify the final image height (default is 2160)
+
+.SH AUTHOR
+Wesley Griffin, <wesley.griffin@nist.gov>
+

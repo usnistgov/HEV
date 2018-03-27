@@ -1,0 +1,6 @@
+This simple file loader accepts a file with an "mcp" extension. It sends a
+control command to an iris-viewer process launced by irisfly to tell the
+running hev-masterControlPanel process to load the named file.
+
+Since the file loader needs the file name the streamed version isn't
+implemented. This means using a file like foo.mcp.gz won't work.

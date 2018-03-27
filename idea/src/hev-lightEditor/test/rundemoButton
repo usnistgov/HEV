@@ -1,0 +1,9 @@
+#! /bin/sh
+
+
+
+
+irisfly testScene.osg lightEditor.iris
+
+
+

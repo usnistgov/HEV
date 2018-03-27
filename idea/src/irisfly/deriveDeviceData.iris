@@ -1,0 +1,38 @@
+# set these up and any program that needs them can use them
+  # standard left and right buttons
+  # the middle is omitted as it's used by wandMouse
+  # initialize to zero
+    WAIT hev-writeButtons -c 1 idea/buttons/left 0
+    WAIT hev-writeButtons -c 1 idea/buttons/right 0
+    DSO buttonMapper MAP idea 1 idea/buttons/left 4 idea/buttons/right
+    DSO buttonMapper ON idea 
+
+  # selector shared memory, create if needed and set to null
+    WAIT hev-writeStrings -c 1024 idea/selector "" 
+
+  # hev-sceneToWorld and hev-worldToScene use this
+    WAIT hev-writeDoubles -c 16 idea/worldToScene 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+    DSO shmChildParentTransformation INIT idea/worldToScene world scene
+
+  # coord in shm with length of wand offset in scene coords
+  # programs like the probe and the clipper use this
+
+    # immersive.iris and simulator.iris, or any other application can overwrite idea/wandOffsetDistance
+      WAIT hev-writeFloats -c 1 idea/wandOffsetDistance 0
+
+    # idea/offsetWand is a matrix
+      WAIT hev-writeDoubles -c 16 idea/offsetWand 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+      EXEC hev-offsetY wandMatrix idea/wandOffsetDistance idea/offsetWand
+
+    # matrix in shm with idea/offsetWand in world coords
+      WAIT hev-writeDoubles -c 16 idea/worldOffsetWand 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+      EXEC hev-sceneToWorld idea/offsetWand idea/worldOffsetWand
+
+    # matrix in shm with wand in world coords
+      WAIT hev-writeDoubles -c 16 idea/worldWand 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+      EXEC hev-sceneToWorld wandMatrix idea/worldWand
+
+    # and a node under that follows the probe
+      SHMMATRIXTRANSFORM offsetWand idea/offsetWand
+      ADDCHILD offsetWand scene
+

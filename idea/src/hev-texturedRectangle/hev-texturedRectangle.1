@@ -1,0 +1,63 @@
+.TH hev-texturedRectangle 1 "September, 2016"
+.SH NAME
+
+hev-texturedRectangle
+
+.SH SYNOPSIS
+
+\fBhev-texturedRectangle  [ --nonormals ]  [ --tmin x z ] [ --tmax x z ] [ --min x z ] [ --max x z ] texFile outFile
+
+
+.SH DESCRIPTION
+
+\fBhev-texturedRectangle\fR generates an OpenSceneGraph loadable file
+consisting of a textured rectangle in the XZ plane, with Y = 0.  The
+rectangle's attributes support transparent textures.
+
+.SH OPTIONS
+
+.IP "\fI--nonormals\fR"
+specifies that the rectangle will not have any normals.  By default, normals
+of 0, -1, 0 are supplied.
+
+.IP "\fI--tmin x z\fR"
+specifies the lower left coordinate of the texture.  If not specified, the
+default is 0, 0.
+
+.IP "\fI--imax x z\fR"
+specifies the upper right coordinate of the texture.  If not specified, the
+default is 1, 1.
+
+
+.IP "\fI--min x z\fR"
+specifies the lower left coordinate of the rectangle.  If not specified, the
+default is -1, -1.
+
+.IP "\fI--max x z\fR"
+specifies the upper right coordinate of the rectangle.  If not specified, the
+default is 1, 1.
+
+.IP "\fItexFile\fR "
+is the name of an image file.  Most standard image formats
+are acceptable.  For best results scale the image to be a power of two in
+each dimension.
+
+.IP "\fIoutFile\fR 
+is the of the file to be created.  The file's extension can be either "osgt"
+or "osgb", and "osg" or "ive" though depricated, are still supported.  An
+osgt or osg file is a text file and contains the name of the texture file,
+so the texture file needs to be in the file load path for the file to be
+loaded.  An "osgb" or "ive" file is a binary file, and includes the texture
+in the file.
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/itl/math/hpcvg/\fR
+

@@ -1,0 +1,96 @@
+.TH savg\-line\-tangents 1 "9 June 2014"
+
+.SH NAME
+
+savg-line-tangents
+
+
+.SH SYNOPSIS
+
+.B savg-line-tangents \fR[--smooth]\fB
+
+.SH DESCRIPTION
+
+\fIsavg-line-tangents\fR adds tangent vectors to lines in a \fIsavg\fR
+file.  It can compute either per-line faceted tangents or per-vertex
+smooth tangents, and stores them in the vertex normal. Intented for
+use with lit lines.
+
+It accepts input from \fIstdin\fR and outputs to \fIstdout\fR. 
+
+.SH OPTIONS
+.TP
+.B --smooth
+Compute smooth per-vertex tangents rather than faceted per-segment
+tangents.
+
+
+.SH EXAMPLES
+
+.B $HEV_IDEA_DIR/src/savg-utilities/test/line-test 512 16 | \\\\
+.RS 4
+.B savg-line-tangents --smooth > tang.savg
+.RE
+.B echo PROGRAM VERTEX lineLight.vert >> tang.savg
+.br
+.B echo PROGRAM FRAGMENT lineLight.frag >> tang.savg
+.br
+.B irisfly --examine tang.savg &
+.br
+
+Creates a spiral wireframe sphere, adds tangents to it, adds the
+line-lighting shaders, and displays the resulting model.
+
+To also enable line antialiasing:
+
+.B echo -e \(dqLOAD tmp lineAA.osg\\\\n\(dq \\\\
+.RS 4
+.B \(dqMERGESTATE tmp world\\\\n\(dq \\\\
+.br
+.B \(dqUNLOAD tmp\(dq > $IRIS_CONTROL_FIFO
+.RE
+
+To set 5-pixel wide lines:
+
+.B echo -e \(dqSTARTMODELDATA tmp osg\\\\n\(dq \\\\
+.RS 4
+.B \(dqNode{ StateSet{ LineWidth{width 5}}}\\\\n\(dq \\\\
+.br
+.B \(dqENDMODELDATA\\\\n\(dq \\\\
+.br
+.B \(dqMERGESTATE tmp world\\\\n\(dq \\\\
+.br
+.B \(dqUNLOAD tmp\(dq > $IRIS_CONTROL_FIFO
+.RE
+
+An extension of that to interactively change the line width:
+
+.B dtk-floatRollers -ti \(dqLine Width\(dq -N 1 -s 0 1 20 1 | \\\\
+.RS 4
+.B while read x; do \\\\
+.RS 4
+.B echo -e \(dqSTARTMODELDATA tmp osg\\\\n\(dq \\\\
+.RS 4
+.B \(dqNode{StateSet{LineWidth{width $x}}}\\\\n\(dq \\\\
+.br
+.B \(dqENDMODELDATA\\\\n\(dq \\\\
+.br
+.B \(dqMERGESTATE tmp world\\\\n\(dq \\\\
+.br
+.B \(dqUNLOAD tmp\(dq; \\\\
+.RE
+.RE
+.B done > $IRIS_CONTROL_FIFO
+.RE
+
+.SH SEE ALSO
+\fBirisfly\fR(1), \fBdtk-floatRollers\fR(1)
+
+.SH AUTHOR
+
+Marc Olano
+.br
+.br 
+NIST High Performance Computing and Visualization Group
+.br
+.B www.nist.gov/mcsd/hpcvg/

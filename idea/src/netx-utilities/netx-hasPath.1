@@ -1,0 +1,88 @@
+.TH NETX-HASPATH 1 "24 July 2012"
+
+.SH NAME
+
+netx-hasPath
+
+
+.SH SYNOPSIS
+
+.B netx-hasPath
+.I  inputFile
+.I graphType
+.I sourceNode
+.I targetNode
+.SH GRAPH LIMITATIONS
+\fBDirected:\fR Yes
+.br
+\fBUndirected:\fR Yes
+.br
+\fBSelf-Loops:\fR Yes
+.br
+\fBParallel Edges:\fR Yes
+.br
+\fBOther:\fR
+.br .br
+.PP
+.SH DESCRIPTION
+
+\fBnetx-hasPath\fR prints 'True' if a path exists between \fBsourceNode\fR and \fBtargetNode\fR or 'False' if no path exists. This function uses a software package called NetworkX that must be installed for the function to work.
+.br .P
+.br .P
+.PP
+\fBinputFile\fR is a file in edge-list format that contains only text. It does not have any header information. The nodes can have any name, as long as each node has a unique name (i.e. you can't have two nodes both named "sam" in the same graph). Optionally, after listing the two nodes, various other edge attributes can be assigned. In this function, the first attribute is assumed to be the weight of the edge. Below are two example input files. The first has no attributes, the second has one, weight.
+.br .P
+.PP
+Example One:
+.br .P
+node1 node2 
+.br .P
+node3 node1
+.br .P
+node4 node5
+.br .P
+.br .P
+.PP
+Where there is an edge between the two nodes on the same line.
+.br .P
+.br .P
+.PP
+Example Two:
+.br .P
+node1 node2 4
+.br .P
+node3 node1 3.14
+.br .P
+node4 node5 2
+.br .P
+.br .P
+.PP
+Where there is an edge between the first two entries (nodes) on the same line and the third number is the weight of that edge.
+.br .P
+.br .P
+.PP
+\fBgraphType\fR is the type of graph (directed or undirected) that the user wishes the edge file to be read as. There are two options: 'u' for undirected and 'd' for directed. These are the only two options. 
+.br .P
+.br .P
+.PP
+\fBsourceNode\fR is the node that will be used to see if there exists a path from it to \fBtargetNode\fR. It must be the name of a node in the graph.
+.br .P
+.br .P
+.PP
+\fBtargetNode\fR is the node that will be used to see if a path exists from \fBsourceNode\fR to it. It must be the name of a node in the graph. 
+.br .P
+.br .P
+.PP
+.SH AUTHOR
+
+Zachary Keller
+
+.PP
+July 2012
+
+.PP 
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/hpcvg/

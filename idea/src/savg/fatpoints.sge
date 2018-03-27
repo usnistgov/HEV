@@ -1,0 +1,7 @@
+LOAD fatpoint fatpoints.savg
+ADDCHILD fatpoint world
+UNIFORM fatpoint fatpointSize 1
+
+# output of savg-cube | savg-wireframe | savg-scale .25 .25 .25
+LOAD cube cube.savg
+ADDCHILD cube world

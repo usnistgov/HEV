@@ -1,0 +1,42 @@
+#
+# Models
+#
+LOAD smartgel smartGel.000100.osg
+NODEMASK smartgel OFF
+ADDCHILD smartgel world
+
+LOAD wirecube0 wirecube.savg
+SCS wirecube
+ADDCHILD wirecube0 wirecube
+EXAMINE wirecube
+NODEMASK wirecube0 OFF
+ADDCHILD wirecube world
+
+LOAD tape0 tape.osg
+SCS tape
+ADDCHILD tape0 tape
+EXAMINE tape
+NODEMASK tape0 OFF
+ADDCHILD tape world
+
+LOAD caffeine0 caffeine.osg
+SCS caffeine
+ADDCHILD caffeine0 caffeine
+EXAMINE caffeine
+NODEMASK caffeine0 OFF
+ADDCHILD caffeine world
+
+
+LOAD gpuSpheres0 gpuSpheres.iris
+SCS gpuSpheres
+ADDCHILD gpuSpheres0 gpuSpheres
+EXAMINE gpuSpheres
+NODEMASK gpuSpheres0 OFF
+ADDCHILD gpuSpheres world
+
+LOAD 3cubes0 3cubes.savg
+SCS 3cubes
+ADDCHILD 3cubes0 3cubes
+NODEMASK 3cubes0 OFF
+ADDCHILD 3cubes world
+

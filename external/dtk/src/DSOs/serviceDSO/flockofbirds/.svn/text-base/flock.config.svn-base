@@ -1,0 +1,110 @@
+# This is an example configuration file for the dtkConfigService for Flock of Birds
+
+# serviceType defines the name to be used for the service followed by the base
+# name of the serviceDSO
+serviceType flock flock
+
+# The port option specifies the device port for communication with the flock
+serviceOption flock port /dev/ttyS0
+
+# The baud option should match the dipswitch settings on the bird units
+serviceOption flock baud 38400
+
+# The diverseUnit option specifies the units of measurement to be used for 1 diverse unit.
+# Typically, the diverseUnit is half the width of the stereo display device(s) for CAVE/RAVE
+# immersive environments. This should be in meters
+serviceOption flock diverseUnit 1.21
+
+# The trackd or trackdEmulation option specifies whether trackd emulation should be used
+# Valid values: true, false, on, off, yes, no
+#serviceOption flock trackd yes
+
+# NOT YET FULLY IMPLEMENTED
+# If trackd emulation is used, then the trackdtype option specifes the sensorID
+# followed by the type ("tracker" or "controller") and the shm key to be used.
+#serviceOption flock trackdType 2 tracker 4126
+#serviceOption flock trackdType 3 controller 4127
+
+# The hemisphere option specifies the hemisphere of the transmitter which will
+# be used for operation.
+# Acceptable values are: forward, rear, upper, lower, left, and right
+#serviceOption flock hemisphere upper
+serviceOption flock hemisphere lower
+
+# The transmitter option specifies the flock address of the transmitter to be used
+# and the transmitter address (0 - 3) of the transmitter. An ERC can have 4 transmitters
+# (addresses 0 - 3) whereas a bird can have only one standard range transmitter (address
+# must be 0).
+# Comment or omit this option if you want the service to use the first erc or
+# first bird with transmitter attached.
+serviceOption flock transmitter 1 0
+
+# The srtScale option specifies to expand scaling for short range transmitters (SRT)
+# from 36 inches to 72 inches.
+# This option will be ignored if using an extended range transmitter (ERT)
+# Valid values: true, false, on, off, yes, no
+#serviceOption flock srtScaleExpand no
+
+# NOT YET IMPLEMENTED
+# The metal indiciator provides error detection related to existence of metals
+# Valid values: true, false, on, off, yes, no
+#serviceOption flock metal 2 off
+
+# NOT YET IMPLEMENTED
+#serviceOption flock metalSensitivity 2 0
+# NOT YET IMPLEMENTED
+#serviceOption flock metalOffset 2 0
+# NOT YET IMPLEMENTED
+#serviceOption flock metalSlope 2 0
+# NOT YET IMPLEMENTED
+#serviceOption flock metalAlpha 2 0
+
+# The dtkShm option specifies the name to use for the dtkSharedMem segment.
+serviceOption flock dtkShm 2 head
+serviceOption flock dtkShm 3 wand
+#serviceOption flock dtkShm 4 hand
+
+# The sensoroffset from the sensor relative to the sensor's reference frame in inches
+#serviceOption flock sensorOffset 2 0.2917 0 -0.2083
+serviceOption flock sensorOffset 3 0 0.5 0
+
+# The sensorrotation option takes the angles Azimuth (A), elevation (E), and roll (R)
+# as arguments in degrees
+serviceOption flock sensorRotation 2 0 0 90
+serviceOption flock sensorRotation 3 0 0 180
+
+# The transmissionoffset from the sensor relative to the sensor's reference frame in feet
+#serviceOption flock transmitterOffset 0 0 4.167
+#serviceOption flock transmitterOffset 1.167 0.25 4.167
+serviceOption flock transmitterOffset 0 -3.25 -4
+
+# The transmitterroration option takes the angles Azimuth (A), elevation (E), and roll (R)
+# as arguments in degrees
+serviceOption flock transmitterRotation -90 0 0
+#serviceOption flock transmitterRotation 0 90 0
+
+# The axismap option adjusts the data for signage and axis orientation
+# Valid values are +x, -x, +y, -y, +z, -z, +h, -h, +p, -p, +r, -r
+serviceOption flock axisMap +y +x -z -h +p +r
+#serviceOption flock axisMap +x -y -z -h +p +r
+
+# THIS IS NOT IMPLEMENTED AS DIVERSE EXPECTS 6 FLOATS REPRESENTING XYZHPR
+# THEREFORE THE DEFAULT DATAMODE IS POSITIONANGLES
+# The datamode specifies the type of data which should be output by each bird
+# The number following the datamode parameter is the bird address.
+# Acceptable values are: angles, matrix, quaternion, position, positionAngles,
+# positionMatrix, and positionQuaternion. The default value is positionAngles.
+#serviceOption flock dataMode 2 positionAngles
+#serviceOption flock dataMode 3 positionAngles
+#serviceOption flock dataMode 4 positionAngles
+
+# The angleunits option specifies the output type for angles
+# Acceptable values are: radians or degrees
+# The default is degrees
+#serviceOption flock angleunits 2 degrees
+#serviceOption flock angleunits 3 radians
+
+# The calibration option specifies the name of the dtkCalibration DSO to load
+# and any parameters which are to be passed to it.
+serviceOption flock calibration flockCalibration -c rainbow.correction.dat
+

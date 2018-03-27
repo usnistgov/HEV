@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/975/trunk/dtk/DSOs/serviceDSO/is900
+END
+help.sh
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/diverse/!svn/ver/853/trunk/dtk/DSOs/serviceDSO/is900/help.sh
+END
+is900.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/975/trunk/dtk/DSOs/serviceDSO/is900/is900.cpp
+END
+configure.sh
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/853/trunk/dtk/DSOs/serviceDSO/is900/configure.sh
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/is900/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/diverse/!svn/ver/853/trunk/dtk/DSOs/serviceDSO/is900/README
+END
+dtk-is900.sh
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/853/trunk/dtk/DSOs/serviceDSO/is900/dtk-is900.sh
+END

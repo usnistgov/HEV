@@ -1,0 +1,50 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-playAudioFilesGui 1 "July 2016" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-playAudioFilesGui
+- a GUI to run the hev-playAudioFiles utility
+
+
+.SH SYNOPSIS
+.B hev-playAudioFilesGui
+
+.SH DESCRIPTION
+.PP
+.I hev-playAudioFilesGui
+is a GUI for the hev-playAudioFiles utility. This GUI allows the user to easily 
+see and manage which files they have loaded as well as provides a visual 
+representation for them to track which setting configuration is active. The GUI 
+provides the ability to load various files, control the left and right channels, 
+switch fade modes and control blocking. Many of the elements of the GUI have tooltips 
+that provide additional detail. Finally, the GUI provides the option to save and 
+load configuration files, which store the loaded files and all the current settings. 
+The save button writes all that information out to a file called "config" in the 
+current directory. The load option scans for a file of the same name in the 
+same location and loads it. These config files are able to be loaded into the command 
+line execution of hev-playAudioFiles, allowing the user to easily set up and use various 
+setups that would have been complicated to enter in command line.
+
+.SH CONFIG FILE FORMAT
+[number of files], [file name], ...
+.br
+[blocking constant, 0 = non-blocking, 1 = blocking]
+.br
+[left channel percent, float from 0 to 1] [right channel percent] [+f or -f for fade, leave blank for no fading]
+
+.SH CONFIG FILE EXAMPLE
+3, wav/Z001.wav, wav/Z002.wav, wav/Z003.wav, 
+.br
+1
+.br
+0.650000 0.350000 +f
+
+
+.SH SEE ALSO
+hev-playAudioFiles
+
+.SH AUTHOR
+Yusuf Van Gieson, yusuf.vangieson@nist.gov
+
+\"  LocalWords:  playAudioFiles NIST HEV hev soundFile stdin cd HEVROOT br wav
+\"  LocalWords:  IP

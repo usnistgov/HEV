@@ -1,0 +1,43 @@
+
+
+#
+# This script executes an approximation of the tutorial at:
+#     http://teem.sourceforge.net/bane/intro/index.html
+# It is only an approximation because interfaces to
+# some of the programs have (apparently) changed since the
+# tutorial was written.
+#
+#
+# Everything is done by executing the programs that were
+# built with Teem.
+
+# Here's where to find the executables:
+BINDIR=$HEVROOT/external/teem/teem-1.6.0-src/linux.64/bin
+
+
+$BINDIR/vprobe     \
+    -k scalar \
+    -q gm \
+    -i set9559.nhdr \
+    -o set9559.gradMag.nrrd
+
+# $BINDIR/unu save -f nrrd -e ascii -i set9559.gradMag.nrrd \
+#   -o set9559.gradMag.asc.nrrd
+
+$BINDIR/unu minmax set9559.gradMag.nrrd
+$BINDIR/unu data set9559.gradMag.nrrd > set9559.gradMag.bin.raw
+
+hev-convertDataArray --nDim 3 --dim 512 512 119 --inType float32 --inFmt bin --outFmt bin set9559.gradMag.bin.raw set9559.gradMag.mha
+# hev-convertDataArray --outFmt asc set9559.gradMag.mha set9559.gradMag.asc.mha
+#
+#
+#
+#
+#
+# $BINDIR/unu save -f nrrd -e ascii -i set9559-opac.2D.1.nrrd -o tmp.nrrd
+
+
+
+$BINDIR/unu data set9559-opac.2D.1.nrrd > set9559.opac.2D.def.bin.raw
+hev-convertDataArray --nDim 2 --dim 256 256 --inType float32 --inFmt bin --outFmt bin set9559.opac.2D.def.bin.raw set9559.opac.2D.def.mha
+

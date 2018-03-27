@@ -1,0 +1,55 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-playAudioFiles 1 "February 2016" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-playAudioFiles
+- Play a series of specified audio files.
+
+
+.SH SYNOPSIS
+.B hev-playAudioFiles
+soundFile ...
+
+.SH DESCRIPTION
+.PP
+.I hev-playAudioFiles
+is a utility to play audio files. The files are specified on the
+command line. Integers, 0 to n-1, are read on stdin and the
+corresponding audio file is played.
+
+.PP
+The typical use case is this command is executed on the end of a pipe
+allowing the controlling program to randomly select the file to be
+played.
+
+.PP
+The current implementation plays each file in the background so each
+bit of audio will overlap if integers are feed to stdin quickly. This
+behavior can be both good and bad. Perhaps a future enhancement would
+implement a synchronous option.
+
+
+
+.SH EXAMPLE
+.IP
+cd ${HEVROOT}/idea/src/hev-playAudioFiles
+.br
+hev-playAudioFiles wav/*.wav
+.br
+0
+.br
+5
+.br
+3
+
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov, adapted the code to the HEV environment.
+.br
+See the source code for the actual author
+
+
+
+
+\"  LocalWords:  playAudioFiles NIST HEV hev soundFile stdin cd HEVROOT br wav
+\"  LocalWords:  IP

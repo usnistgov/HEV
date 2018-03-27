@@ -1,0 +1,46 @@
+.TH hev-testAnts(1)/hev-checkAnts 1 "01 Apr 2015"
+.SH NAME
+hev-testAnts - Run hev-findAnts with each of it's options to find possilbe bug.
+.br
+hev-checkAnts - Compare details of HEV installation to the previous check.
+
+.SH SYNOPSIS
+.B hev-testAnts
+.br
+.B hev-checkAnts
+
+
+.SH DESCRIPTION
+.PP
+.I
+hev-testAnts 
+Runs hev-findAnts with each of it's options to find 
+possible bug. It takes no arguments. Output goes to 
+sdtout and may be redirected.
+
+.I
+hev-checkAnts 
+Compare details of HEV installation to the previous check.
+It outputs the environment vars 
+.B HEVROOT
+,
+.B PATH
+ and
+.B SHELL
+followed by a list of commands with full paths to a log file.
+Next, The contents of that log file are compared to the most
+recent previous log file. If they are the same, the previous
+log file is deleted and the new one takes it's place. If they
+are not the same, a message is output, followed by a report 
+that lists the differences. Neither log file is deleted to 
+help find the cause. Output goes to sdtout and may be 
+reirected.
+
+
+
+.SH OPTIONS
+Neither hev-checkAnts or hev-testAnts take any command line options
+
+.SH AUTHOR
+.PP
+Terence Griffin, NIST/ITL/ACMD/HPCVG

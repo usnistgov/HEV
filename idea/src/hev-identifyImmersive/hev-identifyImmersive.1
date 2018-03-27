@@ -1,0 +1,61 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-identifyImmersive 1 "February 20, 2009" "NIST/MCSD/HPCVG" "HPCVG HEV"
+
+.SH NAME
+
+ hev-identifyImmersive - Return a string that identifies immersive capabilities
+
+.SH SYNOPSIS
+
+\fBhev-identifyImmersive\fR 
+
+.SH DESCRIPTION
+
+\fBhev-identifyImmersive\fR is a utility to identify the immersive
+capabilities of the system.  It prints one of the following three strings to
+standard output:
+
+"rave" if the system supports the NIST RAVE
+
+"powerwall" if the system supports the NIST PowerWall
+
+"desktop" for all other systems
+
+It is typically used in application scripts to setup for the
+appropriate environment. Very often used in conjunction with \fBirisfly\fR.
+
+.SH EXAMPLE
+
+This example is from irisfly:
+
+identifyimmersive=\`hev-identifyImmersive\`
+.br
+if [ "$identifyimmersive" = "rave" ] ;then
+.br
+    default_immersive_display="nistRaveDisplay"
+.br
+elif  [ "$identifyimmersive" = "powerwall" ] ;then
+.br
+    default_immersive_display="nistPowerwallDisplay"
+.br
+else 
+.br
+    default_immersive_display="nistRaveSimDisplay"
+.br
+fi
+.P
+
+.SH SEE ALSO
+.PP
+hev-testImmersive(1), irisfly(1)
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST Scientific Applications & Visualization Group
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

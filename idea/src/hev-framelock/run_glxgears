@@ -1,0 +1,8 @@
+#! /bin/bash
+
+for i in 0 1 2 3
+do
+
+   env DISPLAY=:0.${i} glxgears -stereo -geometry 600x600 > /dev/null &
+   sleep 1
+done

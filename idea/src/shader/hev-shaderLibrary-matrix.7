@@ -1,0 +1,28 @@
+.TH HEV-SHADERLIBRARY-MATRIX 7 "May 2013" "NIST/ACMD" "HCPVG HEV"
+
+.SH NAME
+hev-shaderLibrary-matrix
+- common matrix math functions, includeable in other shaders.
+
+.SH SYNOPSIS
+\fB#include <matrix.glsl>\fR
+.PP
+\fBmat2 adjoint(mat2\fR \fIM\fR\fB);\fR
+.br
+\fBmat3 adjoint(mat3\fR \fIM\fR\fB);\fR
+.br
+\fBmat4 adjoint(mat4\fR \fIM\fR\fB);\fR
+
+.SH DESCRIPTION
+
+The function
+.BR adjoint ()
+computes the adjoint of either a 2x2 matrix, 3x3 matrix, or 4x4 matrix.
+
+.SH AUTHOR
+Marc Olano
+
+.SH SEE ALSO
+.BR hev-shaders (7),
+.BR hev-shaderLibrary (7).
+

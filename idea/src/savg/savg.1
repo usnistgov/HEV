@@ -1,0 +1,47 @@
+.TH savg 1 "November 2009"
+
+.SH NAME
+
+savg
+
+.SH SYNOPSIS
+
+The \fBsavg\fR file loader
+
+.SH DESCRIPTION
+
+\fIsavg\fR is an OSG file loader which reads \fIsavg\fR commands.  The file's
+suffix needs to be ".savg".
+
+
+.SH NOTES
+
+\fIsavg\fR is currently a work in progress, and commands will be added,
+deleted and/or modified as needed to support HEV application.  The current
+\fIsavg\fR command format can be found in the file:
+
+\fB$HEVROOT/idea/src/savg/README\fR
+
+.SH EXAMPLE
+
+\fBcd $HEVROOT/idea/src/savg
+
+irisfly --scene tape.osg --examine test.savg\fR
+
+This file is an example of passing vertex data to vertex and fragment shaders.
+
+\fBirisfly --ex wfcube.savg\fR
+
+This file is an example of loading a geometry shader.
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST Scientific Applications & Visualization Group
+.br
+November 2009
+.br
+\fBhttp://www.nist.gov/acmd/hpcvg/\fR
+

@@ -1,0 +1,31 @@
+.TH hev-doUntilTrue 1 "February 2011"
+
+.SH NAME
+hev-doUntilTrue
+
+.SH SYNOPSIS 
+.B hev-doUntilTrue
+
+.SH DESCRIPTION
+
+\fB hev-doUntilTrue\fR reads commands from standard input, executing each
+one until a successful status is returned.
+
+.SH EXAMPLE
+
+.IP
+echo -e "hev-showWindow xeyes\\nxeyes&" | env DTK_SPEW=info hev-doUntilTrue
+
+.P
+will try to raise the window named xeyes, and if this wasn't successful,
+will run xeyes in the background.  For a good time, run this command twice.
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

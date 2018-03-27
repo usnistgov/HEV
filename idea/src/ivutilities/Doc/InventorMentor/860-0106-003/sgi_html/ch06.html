@@ -1,0 +1,353 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 6. Text</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch05.html" title="Chapter 5. Shapes, Properties, and Binding"><link rel="next" href="ch07.html" title="Chapter 7. Textures"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 6. Text</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch05.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch07.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5460029"></a>Chapter 6. <a name="id34138"></a>Text</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Add 2D text annotations to a scene</p>
+</li>
+<li><p>Add 3D text to a scene, using a variety of customized profiles and fonts</p>
+</li>
+</ul></div><p>This chapter describes the use of 2D and 3D text. Inventor's 2D text provides you with a simple, quick method for annotating your graphics. For greater embellishment and flexibility, use 3D text, which offers you a wide range of possibilities for shaping the profiles of 3D fonts. Key concepts introduced in this chapter include <a name="idch061"></a><i>justification, spacing, font type</i> and<i> size, </i>and <i>profiles</i>. Although the topic of NURBS curves and surfaces is mentioned, that subject is explained fully in <a href="ch08.html#id16021">Chapter 8</a>.</p>
+<p>The first part of this chapter focuses on 2D text and introduces certain concepts common to both 2D and 3D text, such as justification, spacing, and font type and size. The second part of the chapter describes the use of 3D text. The main additional concept in the use of 3D text is defining the cross-sectional <a name="idch062"></a><i>profile</i> for the text. You can create profiles that are straight, curved, or a combination of the two.</p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5460174"></a>Two-Dimensional Text<a name="idch063"></a></h2></div></div>
+<p>The text node, <a name="idch064"></a><span class="bold"><b>SoText2</b></span>, defines text strings that are rendered as 2D screen-aligned text. Just as other shape nodes cause their shape to be drawn when encountered during rendering traversal, an <span class="bold"><b>SoText2</b></span> node causes text to be drawn, using the current values for font and color. Text attributes used by <span class="bold"><b>SoText2</b></span> are specified in the <a name="idch065"></a><span class="bold"><b>SoFont</b></span> node. These attributes include font type and point size. Two-dimensional text does not scale in size according to changes in distance from the camera.<a name="idch066"></a></p>
+<p><span class="bold"><b>SoText2</b></span> has the following fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>string </b></span>(SoMFString)</span></td><td width="10"> </td><td><p><br>
+the text string or strings to display. You can specify multiple strings.<a name="idch067"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>spacing </b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+the  spacing between lines of text. The default interval is 1.0. For a multiple-string field, the vertical distance from the top of one line to the top of the next line is equal to <a name="idch068"></a><span class="bold"><b>spacing</b></span> times the font size.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>justification</b></span> (SoSFEnum)</span></td><td width="10"> </td><td><p><br>
+alignment of the text strings relative to the text origin. Justification can be LEFT (the default), RIGHT, or CENTER. <a name="idch069"></a></p>
+
+</td></tr></table></div><p>The <a name="idch0610"></a><i>text origin</i> is positioned at (0, 0, 0), transformed by the current geometric transformation. Text is drawn relative to the text origin, according to the specified justification. For example, if you specify RIGHT justification, the right side of the text aligns with the text origin.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5460367"></a>Font Type and Size</h3></div></div>
+<p>Use the <span class="bold"><b>SoFont</b></span> node to specify a font type and size for subsequent text nodes (both 2D and 3D) in the scene graph. This node contains the following fields:<a name="idch0611"></a></p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>name </b></span>(SoSFName)</span></td><td width="10"> </td><td><p><br>
+font name. Check your release documentation for a list of font types that are supported on your system.<a name="idch0612"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>size </b></span>(SoSFFloat)<span class="bold"><b></b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+<br>
+<a name="idch0613"></a></b></span>for <span class="bold"><b>SoText2</b></span>, the point size in printer's points. For <span class="bold"><b>SoText3</b></span>, the size in object space units (default = 10.0).</p>
+
+</td></tr></table></div><p>For example, to specify 140-point Courier bold italic:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoFont *font = new SoFont;
+font-&gt;name.setValue(&quot;Courier-BoldOblique&quot;);
+font-&gt;size.setValue(140);
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5460538"></a>Using 2D Text<a name="idch0614"></a></h3></div></div>
+<p><a href="ch06.html#id20268">Example 6-1</a> renders a globe and uses 2D text to label the continents Africa and Asia.  The <span class="bold"><b>SoFont</b></span> node specifies 24-point Times Roman as the current font. <a href="ch06.html#id25708">Figure 6-1</a> shows the scene graph for this example.  <a href="ch06.html#id59659">&#8220;Simple Text&#8221;</a> shows the image produced by this program.</p>
+<p><div class="figure"><p><a name="id5460589"></a><b>Figure 6-1. <a name="id25708"></a>2D Text Example</b></p>
+<div class="mediaobject"><img src="figures/6-1.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5460628"></a><b>Example 6-1. <a name="id20268"></a>Using 2D Text</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/nodes/SoFont.h&gt;
+#include &lt;Inventor/nodes/SoGroup.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoSphere.h&gt;
+#include &lt;Inventor/nodes/SoText2.h&gt;
+#include &lt;Inventor/nodes/SoTexture2.h&gt;
+#include &lt;Inventor/nodes/SoTranslation.h&gt;
+
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+
+main(int argc, char **argv)
+{
+   Widget myWindow = SoXt::init(argv[0]);
+   if(myWindow == NULL) exit(1);
+
+   SoGroup *root = new SoGroup;
+   root-&gt;ref();
+
+   // Choose a font.
+   SoFont *myFont = new SoFont;
+   myFont-&gt;name.setValue(&quot;Times-Roman&quot;);
+   myFont-&gt;size.setValue(24.0);
+   root-&gt;addChild(myFont);
+
+   // Add the globe, a sphere with a texture map.
+   // Put it within a separator.
+   SoSeparator *sphereSep = new SoSeparator;
+   SoTexture2  *myTexture2 = new SoTexture2;
+   root-&gt;addChild(sphereSep);
+   sphereSep-&gt;addChild(myTexture2);
+   sphereSep-&gt;addChild(new SoSphere);
+   myTexture2-&gt;filename = &quot;globe.rgb&quot;;
+
+   // Add Text2 for AFRICA, translated to proper location.
+   SoSeparator *africaSep = new SoSeparator;
+   SoTranslation *africaTranslate = new SoTranslation;
+   SoText2 *africaText = new SoText2;
+   africaTranslate-&gt;translation.setValue(.25,.0,1.25);
+   africaText-&gt;string = &quot;AFRICA&quot;;
+   root-&gt;addChild(africaSep);
+   africaSep-&gt;addChild(africaTranslate);
+   africaSep-&gt;addChild(africaText);
+</pre></td></tr></table><p><a name="id59659"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/06.2.Text.iv.RIKK"><div class="caption"><p>Simple Text</p>
+</div></a></blockquote></div>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+
+   // Add Text2 for ASIA, translated to proper location.
+   SoSeparator *asiaSep = new SoSeparator;
+   SoTranslation *asiaTranslate = new SoTranslation;
+   SoText2 *asiaText = new SoText2;
+   asiaTranslate-&gt;translation.setValue(.8,.8,0);
+   asiaText-&gt;string = &quot;ASIA&quot;;
+   root-&gt;addChild(asiaSep);
+   asiaSep-&gt;addChild(asiaTranslate);
+   asiaSep-&gt;addChild(asiaText);
+
+   SoXtExaminerViewer *myViewer = 
+            new SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;2D Text&quot;);
+   myViewer-&gt;setBackgroundColor(SbColor(0.35, 0.35, 0.35));
+   myViewer-&gt;show();
+   myViewer-&gt;viewAll();
+   
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5460752"></a>Three-Dimensional Text<a name="idch0615"></a></h2></div></div>
+<p>In contrast to 2D text, 3D text scales in size according to changes in distance from the camera and does not always stay parallel to the screen. Three-dimensional text has depth. The face of a 3D letter can join its sides at right angles (the default). Or you can bevel the edges of the letter by specifying your own text profile, as shown at the right of <a name="idch0616"></a><a href="ch06.html#id24795">Figure 6-3</a>, which  shows a beveled letter A. </p>
+<p>The chief advantages of 2D text are that it is faster than 3D text and, because it remains parallel to the screen, is always readable. Advantages of 3D text are that it can be scaled and is generally prettier than 2D text.<a name="idch0617"></a><a name="idch0618"></a></p>
+<p><div class="figure"><p><a name="id5460831"></a><b>Figure 6-2. <a name="id24795"></a>Defining a Customized Profile for 3D Text</b></p>
+<div class="mediaobject"><img src="figures/6-3.gif"></div></div><br>
+</p>
+<p><span class="bold"><b>SoText3</b></span> has the following fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>string </b></span>(SoMFString)</span></td><td width="10"> </td><td><p><br>
+the text string or strings to display. You can specify multiple strings.<a name="idch0619"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>spacing </b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+the spacing between lines of text. The default interval is 1.0. For a multiple-string field, the vertical distance from the top of one line to the top of the next line is equal to <a name="idch0620"></a><span class="bold"><b>spacing</b></span> times the font size.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>justification</b></span> (SoSFEnum)</span></td><td width="10"> </td><td><p><br>
+alignment of the text strings relative to the text origin. Justification can be LEFT (the default), RIGHT, or CENTER. LEFT means that the bottom-left front of the first character in the first line is at (0.0, 0.0, 0.0). Successive lines start under the first character. RIGHT means that the bottom-right of the last character is at (0.0, 0.0, 0.0). Successive lines end under the last character of the first line. CENTER means that the center of each line is at (0.0, 0.0, 0.0).<a name="idch0621"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>parts </b></span>(SoSFBitMask)</span></td><td width="10"> </td><td><p><br>
+visible parts of the text (FRONT, SIDES, BACK, or ALL).  The default is FRONT.<a name="idch0622"></a></p>
+
+</td></tr></table></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5461001"></a>Parts of 3D Text</h3></div></div>
+<p>Three-dimensional text has three parts:  front, sides, and back. Text uses the current material. If material binding is specified as PER_PART, the front uses the first material, the sides use the second material, and the back uses the third material. <a name="idch0623"></a></p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Be aware that when you turn on SIDES and BACK of 3D text, you draw three times more polygons than with FRONT only, so performance is slower.<a name="idch0624"></a>
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5461052"></a>Profile</h3></div></div>
+<p>The profile describes the cross-section of the letter, as shown in <a name="idch0625"></a><a href="ch06.html#id24795">Figure 6-3</a>. The profile is drawn in its own 2D plane. This plane is perpendicular to the face of the text, as shown in <a href="ch06.html#id28696">Figure 6-4</a>. The origin of this plane is at the edge of the letter. In this coordinate system, capital letters are one unit high. The profile coordinates thus need to be in the range of 0.0 to about 0.3 or 0.4 times the size of the font.</p>
+<p><div class="figure"><p><a name="id5461121"></a><b>Figure 6-3. <a name="id28696"></a>2D Plane for Drawing a Text Profile</b></p>
+<div class="mediaobject"><img src="figures/6-4.gif"></div></div><br>
+</p>
+<div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5461141"></a>Linear Profiles</h4></div></div>
+<p>Profiles are constructed from the current <a name="idch0626"></a><i>profile coordinates</i>. If the profile is a collection of connected straight-line segments, use the <a name="idch0627"></a><span class="bold"><b>SoLinearProfile</b></span> node to specify how the coordinates are connected. The profile coordinates are specified in an <a name="idch0628"></a><span class="bold"><b>SoProfileCoordinate2</b></span> node, which precedes the <span class="bold"><b>SoLinearProfile</b></span> node in the scene graph (see <a href="ch06.html#id28473">Example 6-3</a>). </p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5461219"></a>Curved Profiles<a name="idch0629"></a></h4></div></div>
+<p>If the profile is curved, use the <span class="bold"><b>SoNurbsProfile</b></span> node to specify how the coordinates are used. If you are interested in creating curved profiles, first read <a href="ch08.html#id16021">Chapter 8</a> for detailed conceptual information on NURBS curves. The coordinates themselves are specified in the <a name="idch0630"></a><span class="bold"><b>SoProfileCoordinate2</b></span> node or the <span class="bold"><b>SoProfileCoordinate3</b></span> node, depending on whether the curve is nonrational or rational. (The terms <i>nonrational</i> and <i>rational</i> are also explained in <a href="ch08.html#id16021">Chapter 8</a>.) </p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5461288"></a>Linking Profiles <a name="idch0631"></a><i>(Advanced)</i></h4></div></div>
+<p>If your text profile is a combination of linear and curved lines, you can join the linear profile to the curved profile. The base profile class, <span class="bold"><b>SoProfile</b></span>, includes a <span class="bold"><b>linkage</b></span> field that is inherited by both <span class="bold"><b>SoLinearProfile</b></span> and <span class="bold"><b>SoNurbsProfile</b></span>. This field indicates whether the profile is START_FIRST (begin the first profile for the text), START_NEW (begin a new profile; for NURBS trimming only), or ADD_TO_CURRENT (append this profile to the previous one).<a name="idch0632"></a></p>
+</div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5461414"></a>Simple Use of 3D Text<a name="idch0633"></a></h3></div></div>
+<p><a href="ch06.html#id38209">Example 6-2</a>  illustrates a simple use of 3D text.  It renders a globe and then uses 3D text to label the continents Africa and Asia.  The <span class="bold"><b>SoFont</b></span> node specifies Times Roman as the current font. <a href="ch06.html#id21031">Figure 6-5</a> shows the scene graph for this example.  <a href="ch06.html#id22571">&#8220;Simple 3D Text Example&#8221;</a> shows the image produced by this program.</p>
+<p><div class="figure"><p><a name="id5461487"></a><b>Figure 6-4. <a name="id21031"></a>Scene Graph for Simple 3D Text Example</b></p>
+<div class="mediaobject"><img src="figures/6-5.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5461507"></a><b>Example 6-2. <a name="id38209"></a>Using 3D Text</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+#include &lt;Inventor/nodes/SoFont.h&gt;
+#include &lt;Inventor/nodes/SoGroup.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoMaterialBinding.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoSphere.h&gt;
+#include &lt;Inventor/nodes/SoText3.h&gt;
+#include &lt;Inventor/nodes/SoTexture2.h&gt;
+#include &lt;Inventor/nodes/SoTransform.h&gt;
+
+
+main(int, char **argv)
+{
+   Widget myWindow = SoXt::init(argv[0]);
+   if(myWindow == NULL) exit(1);
+
+   SoGroup *root = new SoGroup;
+   root-&gt;ref();
+</pre></td></tr></table><p><a name="id22571"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/06.6.Simple3DText.iv"><div class="caption"><p>Simple 3D Text Example</p>
+</div></a></blockquote></div>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   
+   // Choose a font.
+   SoFont *myFont = new SoFont;
+   myFont-&gt;name.setValue(&quot;Times-Roman&quot;);
+   myFont-&gt;size.setValue(.2);
+   root-&gt;addChild(myFont);
+
+   // We'll color the front of the text white, and the sides 
+   // dark grey. So use a materialBinding of PER_PART and
+   // two diffuseColor values in the material node.
+   SoMaterial        *myMaterial = new SoMaterial;
+   SoMaterialBinding *myBinding = new SoMaterialBinding;
+   myMaterial-&gt;diffuseColor.set1Value(0,SbColor(1,1,1));
+   myMaterial-&gt;diffuseColor.set1Value(1,SbColor(.1,.1,.1));
+   myBinding-&gt;value = SoMaterialBinding::PER_PART;
+   root-&gt;addChild(myMaterial);
+   root-&gt;addChild(myBinding);
+
+   // Create the globe.
+   SoSeparator *sphereSep = new SoSeparator;
+   SoTexture2  *myTexture2 = new SoTexture2;
+   root-&gt;addChild(sphereSep);
+   sphereSep-&gt;addChild(myTexture2);
+   sphereSep-&gt;addChild(new SoSphere);
+   myTexture2-&gt;filename = &quot;globe.rgb&quot;;
+   // Add Text3 for AFRICA, transformed to proper location.
+   SoSeparator *africaSep = new SoSeparator;
+   SoTransform *africaTransform = new SoTransform;
+   SoText3 *africaText = new SoText3;
+   africaTransform-&gt;rotation.setValue(SbVec3f(0,1,0),.4);
+   africaTransform-&gt;translation.setValue(.25,.0,1.25);
+   africaText-&gt;parts = SoText3::ALL;
+   africaText-&gt;string = &quot;AFRICA&quot;;
+   root-&gt;addChild(africaSep);
+   africaSep-&gt;addChild(africaTransform);
+   africaSep-&gt;addChild(africaText);
+
+   // Add Text3 for ASIA, transformed to proper location.
+   SoSeparator *asiaSep = new SoSeparator;
+   SoTransform *asiaTransform = new SoTransform;
+   SoText3 *asiaText = new SoText3;
+   asiaTransform-&gt;rotation.setValue(SbVec3f(0,1,0),1.5);
+   asiaTransform-&gt;translation.setValue(.8,.6,.5);
+   asiaText-&gt;parts = SoText3::ALL;
+   asiaText-&gt;string = &quot;ASIA&quot;;
+   root-&gt;addChild(asiaSep);
+   asiaSep-&gt;addChild(asiaTransform);
+   asiaSep-&gt;addChild(asiaText);
+
+   SoXtExaminerViewer *myViewer = 
+            new SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;3D Text&quot;);
+   myViewer-&gt;setBackgroundColor(SbColor(0.35, 0.35, 0.35));
+   myViewer-&gt;show();
+   myViewer-&gt;viewAll();
+   
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5461647"></a>Advanced Use of 3D Text <i>(Advanced)</i><a name="idch0634"></a></h3></div></div>
+<p><a href="ch06.html#id28473">Example 6-3</a> illustrates additional features available with 3D text. It specifies a beveled cross-section for the text using the  <a name="idch0635"></a><span class="bold"><b>SoProfile-Coordinate2</b></span> and <span class="bold"><b>SoLinearProfile</b></span> nodes. The text uses two different materials&#8212; one for the front of the text, and one for the back and sides. The font node specifies the Times Roman font. <a href="ch06.html#id28060">Figure 6-7</a> shows the scene graph for this figure.  <a href="ch06.html#id15417">&#8220;Advanced 3D Text Example&#8221;</a> shows the rendered image.</p>
+<p><div class="figure"><p><a name="id5461768"></a><b>Figure 6-5. <a name="id28060"></a>Scene Graph for Advanced 3D Text Example</b></p>
+<div class="mediaobject"><img src="figures/6-7.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5461789"></a><b>Example 6-3. <a name="id28473"></a>Creating Beveled 3D Text</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+#include &lt;Inventor/nodes/SoFont.h&gt;
+#include &lt;Inventor/nodes/SoGroup.h&gt;
+#include &lt;Inventor/nodes/SoLinearProfile.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoMaterialBinding.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoProfileCoordinate2.h&gt;
+#include &lt;Inventor/nodes/SoText3.h&gt;
+
+main(int argc, char **argv)
+{
+
+   Widget myWindow = SoXt::init(argv[0]);
+   if(myWindow == NULL) exit(1);
+
+   SoGroup *root = new SoGroup;
+   root-&gt;ref();
+
+   // Set up camera. 
+   SoPerspectiveCamera	*myCamera = new SoPerspectiveCamera;
+   myCamera-&gt;position.setValue(0, -(argc - 1) / 2, 10);
+   myCamera-&gt;nearDistance.setValue(5.0);
+   myCamera-&gt;farDistance.setValue(15.0);
+   root-&gt;addChild(myCamera);
+
+</pre></td></tr></table><p><a name="id15417"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/06.8.Complex3DText.iv"><div class="caption"><p>Advanced 3D Text Example</p>
+</div></a></blockquote></div>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   // Let's make the front of the text white, 
+   // and the sides and back yellow.
+   SoMaterial *myMaterial = new SoMaterial;
+   SbColor colors[3];
+   // diffuse
+   colors[0].setValue(1, 1, 1);
+   colors[1].setValue(1, 1, 0);
+   colors[2].setValue(1, 1, 0);
+   myMaterial-&gt;diffuseColor.setValues(0, 3, colors);
+   // specular
+   colors[0].setValue(1, 1, 1);
+   colors[1].setValue(1, 1, 0);
+   colors[2].setValue(1, 1, 0);
+   myMaterial-&gt;specularColor.setValues(0, 3, colors);
+   myMaterial-&gt;shininess.setValue(.1);
+   root-&gt;addChild(myMaterial);
+
+   // Choose a font.
+   SoFont *myFont = new SoFont;
+   myFont-&gt;name.setValue(&quot;Times-Roman&quot;);
+   root-&gt;addChild(myFont);
+
+   // Specify a beveled cross-section for the text.
+   SoProfileCoordinate2 *myProfileCoords = 
+            new SoProfileCoordinate2;
+   SbVec2f coords[4];
+   coords[0].setValue(.00, .00);
+   coords[1].setValue(.25, .25);
+   coords[2].setValue(1.25, .25);
+   coords[3].setValue(1.50, .00);
+   myProfileCoords-&gt;point.setValues(0, 4, coords);
+   root-&gt;addChild(myProfileCoords);
+
+   SoLinearProfile *myLinearProfile = new SoLinearProfile;
+   long	   index[4] ;
+   index[0] = 0;
+   index[1] = 1;
+   index[2] = 2;
+   index[3] = 3;
+   myLinearProfile-&gt;index.setValues(0, 4, index);
+   root-&gt;addChild(myLinearProfile);
+
+   // Set the material binding to PER_PART.
+   SoMaterialBinding *myMaterialBinding = new SoMaterialBinding;
+   myMaterialBinding-&gt;
+            value.setValue(SoMaterialBinding::PER_PART);
+   root-&gt;addChild(myMaterialBinding);
+
+   // Add the text.
+   SoText3 *myText3 = new SoText3;
+   myText3-&gt;string.setValue(&quot;Beveled Text&quot;);
+   myText3-&gt;justification.setValue(SoText3::CENTER);
+   myText3-&gt;parts.setValue(SoText3::ALL);
+   root-&gt;addChild(myText3);
+
+   SoXtExaminerViewer *myViewer = 
+            new SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;Complex 3D Text&quot;);
+   myViewer-&gt;show();
+   myViewer-&gt;viewAll();
+   
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+
+</pre></td></tr></table><br></div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch07.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 5. Shapes, Properties, and Binding </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 7. Textures </td></tr></table></div></body></html>

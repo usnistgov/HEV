@@ -1,0 +1,58 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-frameGrabberControl 1 "June, 2011" "NIST/MCSD" "MCSD HEV"
+.SH NAME
+hev-frameGrabberControl
+- a control panel that sends control commands to the frameGrabber DSO
+
+.SH SYNOPSIS
+.B "hev-frameGrabberControl"
+.I [ --noescape ]
+
+.SH PARAMETERS
+
+.IP noescape
+if supplied, specifies that the GUI can't be killed by pressing the window
+manager's close button, or by pressing escape in the GUI window.
+
+.SH DESCRIPTION
+.PP
+.I \fBhev-frameGrabberControl\fR
+displays a GUI that sends control commands to the frameGrabber DSO. The
+buttons are:
+
+.IP RECORD
+starts and stops frame grabbing
+
+.IP SNAP
+grabs one frame
+
+.IP "WRITE ALL"
+pops up a sub-menu, and if the line labeled "if so, click here" is selected,
+each grabbed frame will be written to a file. 
+
+NOTE: The frameGrabber DSO automatically writes all grabbed frames when iris exits.
+
+.IP "ERASE ALL"
+pops up a sub-menu, and if the line labeled "if so, click here" is selected,
+all grabbed frames will be discarded.
+
+.IP PANES
+pops up a sub-menu with a check-box next to every loaded pane. This menu can be
+used to specify one or more panes to be grabbed by checking their pane name. If the
+perspective pane is loaded it is automatically checked. 
+
+.IP RATE
+specifies the number of frames per second to grab when recording. The value
+can be changed by clicking the mouse on the rate and moving left and right,
+or by typing in the rate window.
+
+.SH EXAMPLE
+
+irisfly --ex tape.osg grab.mcp
+
+.SH AUTHOR
+
+John Kelso, kelso@nist.gov,  NIST/ITL/MCSD
+
+

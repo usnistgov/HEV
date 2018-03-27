@@ -1,0 +1,68 @@
+.TH hev-vtkAddNormals
+.SH NAME
+hev-vtkAddNormals - add normals to a set of polygons
+
+.SH SYNOPSIS
+.B hev-vtkAddNormals [ options ] inFName outFName
+
+.SH DESCRIPTION
+.B hev-vtkAddNormals
+Adds or replaces normal vectors on polygons in a VTK format file;
+the output is written in VTK format.
+
+.PP
+
+.SH OPTIONS
+.TP
+.B --fangle or --fa ANGLE
+Feature angle in degrees. Normals will be averaged at common
+polygon vertices when the angle between the polygons is less
+than this angle.
+Default is 30.00.
+
+.TP
+.B --auto or -a
+If specified, attempt to orient the normal vectors so that they point
+"outward" is turned OFF. This is only likely to work for closed surfaces.
+Default is AutoOrientNormals ON.
+
+.TP
+.B --flip or -f
+If specified, reverse the orientation of the calculated normals.
+Default is FlipNormals OFF.
+
+.SH PARAMETERS
+.TP
+.B inFName
+Location/filename of input file with poly data format.
+
+.TP
+.B outFName
+Location/filename of output file.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+  hev-vtkAddNormals --fangle 35 -a -f polyfile.vtk polyfile_n.vtk
+
+Adds normals to polyfile.vtk with a feature angle of 35.00, FlipNormals
+turned ON, AutoOrientNormals turned OFF, result stored in polyfile_n.vtk.
+
+
+
+.SH SEE ALSO
+
+vtkUtilities, hev-vtkReverse
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+June 18th 2012

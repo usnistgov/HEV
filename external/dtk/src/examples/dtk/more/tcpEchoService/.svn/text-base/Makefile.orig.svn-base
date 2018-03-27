@@ -1,0 +1,37 @@
+#!gmake
+
+
+CXX = $(shell dtk-config --compiler)
+CXXFLAGS += $(shell dtk-config --cxxflags) $(shell dtk-config --include)
+LIBS =   $(shell dtk-config --libs)
+
+
+DSO = tcpEcho.so
+
+build: test $(DSO) $(BIN)
+
+
+install: test  $(DSO) $(BIN)
+	mkdir -p $(shell dtk-config --server-dso-dir)
+	cp $(DSO) $(shell dtk-config --server-dso-dir)
+
+test:
+	@if ! dtk-config --test ; \
+          then echo; \
+          echo "You must put \`dtk-config' in your path" ;\
+          exit 1; fi
+
+.SUFFIXES: .cpp
+
+$(DSO): %.so: %.cpp
+	$(CXX) $(CXXFLAGS) -elf -shared -Wl,-soname,$@ -o $@ $^
+
+
+clean:
+	-rm -f $(DSO) $(BIN) so_locations
+
+cleaner distclean: clean
+	-rm -f *~ core
+
+depend:
+#

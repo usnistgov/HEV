@@ -1,0 +1,143 @@
+#! /bin/sh
+
+# hev-checkPerm - check for proper permissions of installed HEV software
+
+# steve@nist.gov
+# October 25, 2008
+# Updated and installed December 22, 2008
+# Updated and installed January 22, 2008
+# Converted to hev32 and hev64 March 26, 2009
+# Bug fix, not checking directories June 11, 2009
+# Add g=s check June 24, 2009
+# Add check in case HEV-archive does not exist, January  26, 2010
+# Add savg/dgl/doc
+# Add a check for files not world readable, January 19, 2011
+# Add IRIS directories, January 24, 2011
+# Removed reference to hev32, January 25, 2011
+# Add $HEVROOT/{demos,internal}, February 23, 2011
+# Add $HEVROOT/{idea}, May 4, 2011
+# Add $HEVROOT/{apps,external}, Septt 9, 2011
+# Add check for gid on files, March 22, 2012
+# Add $HEVROOT/.git, December 23, 2014
+
+function runFind {
+     # need the sed command in case imbedded spaces in the found name
+     find $f \( \( -type f -o -type d \) -a  \! -perm -g=w,o=r \)  -o \
+             \( \( -type f            \) -a     -perm -g=s     \)  -o \
+             \( \(            -type d \) -a  \! -perm -g=s,o=r \) | sed "s/ /\\\ /g"
+}
+
+
+# Only execute this command on the hev server
+SERVER="hev64.cam.nist.gov"
+
+h=0
+me=`hostname -i`
+serv=$(nslookup ${SERVER} | grep "Address:" | sed -e "1d" -e "s/Address: //")
+#echo me= ${me} serv=  ${serv}
+if [ "${me}" == "${serv}" ]
+then
+     h=1
+fi
+
+if [ "$h" == "0" ]
+then
+    echo "This command must be run only on ${SERVER}"
+    exit 1
+fi
+
+
+# Now do the work
+
+temp="/tmp/checkPermGroup.$$"
+
+trap "rm -f $temp" 0
+
+echo
+echo "##########" `hostname` "##########"
+echo
+
+# Do savg except dgl and vtk
+
+for H in HEV-beta HEV
+do
+   HDIR=/usr/local/${H}/savg
+   cd ${HDIR}
+   echo 
+   echo "*****" ${HDIR}/ "*****"
+   echo
+   for f in apps bin data doc dtk etc include lib man osg scripts src
+   do
+     runFind
+   done > $temp
+   if [ -s  $temp ]
+   then
+      cat $temp | xargs ls -ld
+   fi
+done
+
+# Now do parts of savg/dgl
+
+for H in HEV-beta HEV
+do
+   HDIR=/usr/local/${H}/savg/dgl
+   cd ${HDIR}
+   echo 
+   echo "*****" ${HDIR}/ "*****"
+   echo
+   for f in bin data doc etc include lib man scripts src
+   do
+     runFind
+   done > $temp
+   if [ -s  $temp ]
+   then
+      cat $temp | xargs ls -ld
+   fi
+done
+
+# Do other parts of HEVROOT
+
+for H in HEV-beta/iris HEV/iris \
+         HEV-beta/demos HEV/demos \
+         HEV-beta/doc HEV/doc \
+         HEV-beta/idea HEV/idea \
+         HEV-beta/internal HEV/internal \
+         HEV-beta/external HEV/external \
+         HEV-beta/apps HEV/apps \
+         HEV-beta/.git HEV/.git
+do
+   HDIR=/usr/local/${H}
+   cd ${HDIR}
+   echo 
+   echo "*****" ${HDIR}/ "*****"
+   echo
+   f="."
+   runFind > $temp
+   if [ -s  $temp ]
+   then
+      cat $temp | xargs ls -ld
+   fi
+done
+
+# Do HEV-archive
+
+for H in HEV-archive
+do
+   HDIR=/usr/local/${H}
+   if [ ! -e $HDIR ]
+   then
+       continue
+   fi
+   cd ${HDIR}
+   echo 
+   echo "*****" ${HDIR}/ "*****"
+   echo
+   for f in .
+   do
+     runFind
+   done > $temp
+   if [ -s  $temp ]
+   then
+      cat $temp | sed "s/\.\\///" | xargs ls -ld
+   fi
+done

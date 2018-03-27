@@ -1,0 +1,48 @@
+.TH SAVG\-TRANSPARENCY 1 "26 May 2009"
+.SH NAME
+savg-transparency \- SAVG ToolBox: transparency
+.SH SYNOPSIS
+.B savg-transparency on/off/auto/default
+.SH DESCRIPTION
+.I savg-transparency
+specifies the transparency mode for \fIsavg\fP files (\fISAVG ToolBox\fP).  It 
+accepts input from
+.I stdin
+and outputs to
+.I stdout.
+If invalid arguments or no arguments are given, 
+then 
+.I savg-transparency
+prints usage information and terminates.
+.SH OPTIONS
+.TP
+.B \   savg-transparency on/off/auto//default
+.SH EXAMPLES
+.TP
+.B savg-transparency off < in.savg > out.savg
+Reads from 
+.I in.savg
+and sets the transparency to off.  Then outputs to 
+.I out.savg.
+.SH BUGS
+(none)
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+March 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

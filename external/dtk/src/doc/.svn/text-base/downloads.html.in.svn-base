@@ -1,0 +1,52 @@
+<HTML>
+<head>
+<title>DTK download</title>
+</head>
+<body>
+
+
+<a href="installation.html"><h1>DTK depends on other software see the
+requirements in this link</h1></a>
+
+
+<ul>
+<li>
+<b><a href="~~homepage~~releases/"><font size=+2>Releases</font></a> are tested
+prereleases.</b>
+
+<p>
+
+<li>
+<b><font size=+2><a href="~~homepage~~prereleases/">Prerelease</a></font> are
+unstable and are not fully tested.</b>
+
+<li>
+<p>
+See <b><a href="http://www.cc.gatech.edu/~cwingrav/cwdiverse/">Chad
+Wingrave's Additions to DIVERSE</a></b> for more DTK code for a fastrak
+driver, a cyberglove driver and a pinchglove driver.  Additionally, Chad
+is working on another layer on top of diverse and GUIs for controlling
+drivers.
+
+</ul>
+<p>
+
+A particular version of a DTK release is the same as that version of a
+prerelease.  Some prereleases do not become releases.  The contents of
+the lastest version of a prerelease may change.  The contents of the
+lastest version of a prerelease will not change after it is made into
+a release.
+
+<p>
+
+We model the state of DTK software as evolving continuously in time.
+Prereleases are just numbered (version) snapshots (copies) of this
+state.  We often throw away many of these snapshots (prereleases) by
+recycling the number (version) to label the next snapshot
+(prerelease).  We keep doing this until we like what we see.  We keep
+snapshots that we like as stable releases and don't recycle that
+version number.  The stable release is then the same as the
+prerelease, and a new number (version) is used for the next
+prerelease.
+
+

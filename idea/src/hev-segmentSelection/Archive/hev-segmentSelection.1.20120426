@@ -1,0 +1,416 @@
+.TH hev-segmentSelection 1
+
+\# This is a comment
+\" This is also a comment.
+\# Use .br for a line break
+
+
+.SH NAME
+.B hev-segmentSelection 
+- Interactive specification and modification of line segments.
+
+.SH SYNOPSIS
+
+.B hev-segmentSelection  
+[ options ]
+
+
+.SH DESCRIPTION
+
+.B hev-segmentSelection 
+enables the interactive specification and modification of
+line segments.
+
+.TP
+Creating a line segment:
+Click left button at first point; you get a
+rubberband line, then click at the second point.
+Note that on the desktop, a "click" is a press/release
+cycle of the virtual button.
+
+.TP
+Editing a line segment:
+When the 3D cursor is close to an end point or
+the segment center point, you see highlighting.
+When an object is highlighted, you can press and hold the
+left button, then drag the selected segment end point. 
+The line will stretch as you move the endpoint.
+
+.TP
+Deleting a line segment:
+When the 3D cursor is close to a line segment and
+the highlighting is visible, you can click with
+the right button to delete the entire segment.
+A second click with the right button is needed to
+confirm the delection.
+Again, please note that 
+on the desktop, a "click" is a press/release
+cycle of the virtual button.
+
+.PP
+There is no control panel GUI for this program; it can
+be controlled by sending text commands either to stdin
+or through a fifo.  This is described below.
+
+This program writes IRIS control commands to
+standard output, so it is expected that this output 
+will be redirected to $IRIS_CONTROL_FIFO or used in
+some equivalent way.
+
+It is important to note that coordinate systems for input
+and outputs must be consistent.  See options --inCoordShm,
+--ptShm, and --outNode.
+
+
+.SH OPTIONS
+
+There are appropriate defaults so that
+the program can be run without any command line options
+under some circumstances.
+
+.TP
+--verbose
+.br
+Turn on verbose mode.
+
+.TP
+--help                     
+.br
+Show usage message and exit.
+
+.TP
+--active
+.br
+Make the program active on startup.
+Default is inactive.
+
+.TP
+--ptShm  outgoingPointsShmName
+.br
+Name of the shared memory file where segment
+geometry is written.  Default is
+\fBhev-segmentSelection/segmentData\fR.
+
+.TP
+--buttons  editButShmName delButShmName
+.br
+Shared memory files for the edit and delete buttons.
+Defaults are
+\fBidea/buttons/left idea/buttons/right\fR.
+
+
+
+
+
+
+.TP
+--fifo
+.br
+Receive commands via a fifo named
+/dev/shm/hev-segSelCmd-$USER with line
+length of 200.  If this is not specified,
+then commands are received on stdin.
+
+
+.TP
+--selectorShm  shmName
+.br
+Specifies the name of a shared memory file that can be used
+to activate and deactivate the operation of this program.
+If this is specified, the program monitors the contents of
+the indicated shared memory file.  When the string contained
+in that file changes so that it matches the
+\fBselectorStr\fR (see below), the program is activated.
+When it changes so that they do not match, the program is deactivated.
+Default is \fBidea/selector\fR.
+
+
+.TP
+--selectorStr  string
+.br
+Specifies the string that will activate this program when
+present in the shared memory file specified by the
+\fBselectorShm\fR
+option (see above).
+The default is \fBhev-segmentSelection\fR.
+
+
+
+
+
+
+.TP
+--inCoordShm  trackShmName
+.br
+Name of the the shared memory segment
+from which to receive the coordinates
+used for determining segment positions;
+Default is \fBidea/worldOffsetWand\fR.  
+
+
+
+
+.TP
+--outNode   nodeName
+.br
+Specifies the node in the scene graph under which
+all of the segment glyphs are placed.
+Default is \fBworld\fR.
+
+
+.TP
+--maxSegments n
+.br
+Maximum number of line segments to allow.
+Must be less than or equal to 200. Default is 200.
+
+.TP
+--lenLabels [fmt]
+.br
+Turns on the display of the segment
+length in the virtual world; default is off
+If \fBfmt\fR is present, it specifies how the length label is 
+formatted; default is \fB%g\fR.
+
+.TP
+--coordScale scale
+.br
+Scale factor for calculated segment coordinates.
+Default is 1.0.
+
+
+.TP
+--usleep t
+.br
+Specifies  how  many  microseconds  to  sleep at the end of each
+loop.  If not specified, iris::GetUsleep() is used.
+
+.br
+.br
+
+
+.PP
+The following options specify the glyphs used at the end
+points of the the segment, the middle of the segment, and
+the object for the line segment itself.  If not specified,
+there will be default objects that are created on the fly.
+One unhighlighted form and three highlighted forms are required
+for each type of glyph.
+
+.TP
+--ptMarkerFN ptFN  hl1PtFN hl2PtFN hl3PtFN
+.br
+The glyphs used for marking the end points
+of line segments.  These should be centered at
+the origin. The default glyphs are about 0.04
+units across.
+
+.TP
+--lnFN  lineFN hl1LineFN  hl2LineFN  hl3LineFN
+.br
+The glyphs used for depicting the line segments.
+These should display a line segment with one
+end at the (0,0,0) and one end at (1,0,0).
+The default glyphs are simple cylinders that
+are about 0.004 units in diameter.
+
+.TP
+--lnHandleFN handleFN hl1HandleFN hl2HandleFN hl3HandleFN
+.br
+The glyphs placed at the center of each line
+segment.  These should be centered at the origin.
+The default glyphs are about 0.012 units across.
+
+.TP
+--glyphScale factor
+.br
+Scale the glyphs by the indicated factor. This scaling
+is applied to the default glyphs as well as to the glyphs
+provided by the options above. Default is 1.0.
+
+
+.PP
+Distances for highlighting and interactive selection of end points
+and line segments:
+
+.TP
+--ptDist distance
+.br
+Distance used for grabbing and highlighting
+segment end points. Default is 0.02.
+
+.TP
+--lnDist distance
+.br
+Distance from the line segment center handle that
+is used for grabbing and highlighting the segment.
+Default is 0.02.
+
+.PP
+The line segments produced by this program are written to the
+shared memory file hev-segmentSelection/segmentData or as
+specified by the command line option --ptShm.  Currently, the
+best documentation of the format of this shared memory file
+is the code itself.
+
+
+.SH COMMAND INPUT
+
+Commands can be sent to the this program either through its
+standard input or through a fifo. (See the --fifo option.)
+These commands can take the following form:
+
+.TP
+ACTIVATE      
+.br
+Enable the program to create and edit
+line segments.
+
+.TP
+DEACTIVATE    
+.br
+Disable the program; all user interactions
+are ignored.
+
+.TP
+QUIT          
+.br
+Terminate the program.
+
+.TP
+READ file     
+.br
+Read segment data from file and display.
+
+.TP
+WRITE file     
+.br
+Write segment data from file and display.
+
+.TP
+USERHL segID ON|OFF
+.br
+Turn on and off "user highlighting" for the
+indicated segment.  "segID" is either the
+index of an existing segment or the keyword "ALL".
+
+
+.PP
+Note that there are two mechanisms for activating and deactivating this program:
+through the commands described in this section or through the 
+shared memory method specified by the command line options
+\fB--selectorShm\fR   and \fB--selectorStr\fR.
+It is recommended that you do not mix these two methods.
+
+
+.SH FUTURE DEVELOPMENT
+
+Currently, all future development is anticipated to be
+accomplished by adding new commands rather than adding new
+options.  The biggest area of future development is the
+implementation of methods that enable the user to specify
+geometric constraints on the line segments.
+
+Future Commands:
+
+.RS
+
+.TP
+HIDE          
+.br
+Hide all line segments and deactivate
+
+.TP
+SHOW          
+.br
+Show all line segments
+
+.TP
+SCALE_DRAG factor
+.br
+Scale motion during drag operations.
+
+
+.TP
+LEN_LABEL  ON|OFF
+.br
+Turn on and off the display off segment lengths
+
+.TP
+RESET         
+.br
+Remove all existing line segments.
+
+.TP
+LIMIT  xmin ymin zmin   xmax ymax zmax
+.br
+Limit interactions to a box.
+
+.TP
+UNLIMIT       
+.br
+Remove limits
+
+.TP
+CONSTRAIN PARA x y z
+.br
+Constrain segments to be parallel to vector.
+
+.TP
+CONSTRAIN PERP x y z
+.br
+Constrain segments to be perpendicular to vector.
+
+.TP
+CONSTRAIN LENGTH l
+.br
+Constrain segments to be of specified length.
+
+.TP
+CONSTRAIN ONLINE  x1 y1 z1  x2 y2 z2
+.br
+Constrain segments to be on the specified line.
+
+.TP
+CONSTRAIN ONPLANE a b c d
+.br
+Constrain segments to be on the specified plane.
+
+.TP
+UNCONSTRAIN
+.br
+Remove constraints.
+
+.TP
+RECONSTRAIN
+.br
+Apply current constraints to all existing segments.
+
+.PP
+Note that CONSTRAIN commands affect future segment specification and
+modification; RECONSTRAIN will alter all existing
+segments to conform to the current constraints.
+
+We will need to deal with how multiple constraints either
+override or co-exist with one another.
+
+.RE
+
+
+
+
+
+
+.SH OTHER NOTES
+
+Temporary files are written to a directory named
+.br
+     /var/tmp/hev-segmentSelection-$USER
+.br
+where the value of the environment variable USER is
+substituted for "$USER".
+
+.SH SEE ALSO
+irisfly-select, irisfly-deselect
+
+

@@ -1,0 +1,76 @@
+#! /bin/bash
+
+SRCH='!$1*'                               # Search for: $1 at begining, followed by anything else
+FOUND=" "                                 # '*' = Found, ' ' = Not found
+BIG_LST=""                                # List of full files specs for man pages
+MAN_NAMES=""                              # BIG_LST w/ paths and extentions removed
+CMD_LST=""                                # List of possible command named
+FINAL_LST=""                              # Combination of NAMES, and CMD lists
+OUT_LST=""                                # List that is bound for output w/ found flag
+NA="nothing appropriate"
+
+CMD_LST=`compgen -c $1`                   # Find possible command names and narrow. Remove unwanted finds.
+
+#echo CMD_LST: $CMD_LST
+
+KCMD_LST=""
+
+FIRST="T"
+#DEBUG echo KSTR .$KSTR.
+if [ ! -z ${KSTR} ];                       # If $KSTR is not zero length
+then
+  for CMD in ${CMD_LST};                   # Filter for commands that contain the apropos string
+  do
+    OIFS=${IFS}                            # Save original IFS
+    IFS=$'\n'                              # Set IFS to strictly newline
+    #CMD_KSTR=${CMD}*${KSTR}
+    #echo CMD_KSTR: ${CMD_KSTR}
+    # For each command, check if the synopsis has the apropos string
+    for LINE in `man -k ${CMD} | grep -i ${KSTR} | column -s \ -t`; 
+    do
+      if [[ "$LINE" != *$NA* || $CMD == *$KSTR* ]];           # $LINE does not contain "nothing appropiate" or $CMD contains the apropos string
+      then 
+        #echo LINE: ${LINE}
+        KCMD=${LINE%% *};                  # Save just the command name...
+        #echo KCMD: ${KCMD}; 
+        KCMD_LST=${KCMD_LST}' '${KCMD%%:*} # ...and add to list, remove ':'
+      fi
+    done;
+    IFS=${OIFS}
+    unset${OIFS}
+    #echo KCMD_LST: ${KCMD_LST}
+  done
+  CMD_LST=${KCMD_LST}
+fi
+
+#echo CMD_LST: ${CMD_LST}
+  
+
+for CMD in ${CMD_LST}; #                  # Check each command in list
+do                                        # for a man page.
+  #echo `man -w ${CMD}`
+  if man -w ${CMD} > /dev/null 2>&1       # If found, put an * next to
+  then                                    # the name.
+    FOUND="*"
+  else                                    # Otherwise, put a carrot. Bash handles leading 
+    FOUND="^"                             # blanks in a way that makes this a bit ugly. 
+                                         # The ^ will be replaces with a space at output.
+  fi
+
+  if [ "${FIRST}" == "T" ]                # It it's the first item...
+  then
+    OUT_LST=${FOUND}${CMD}                # ...initialize list with it. 
+    FIRST="F"
+  else  
+    OUT_LST=${OUT_LST}'\n'${FOUND}${CMD}  # Otherwise, add with newline w/ 
+  fi
+done
+
+if [ "$TERM" != "dumb" ]
+then
+  WIDTH=`tput cols`                       # Get width (# of char columns) for display
+else
+  WIDTH=100                               # Otherwise default to 100
+fi
+
+echo -e ${OUT_LST} | sort | uniq | tr ^ " " | pr -Tw ${WIDTH} -${COLS} #| grep -v "^&"  # skip blank lines

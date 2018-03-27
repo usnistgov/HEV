@@ -1,0 +1,127 @@
+explog.asc.mha ../../archive/save1.hev-convertDataArray/test/explog.asc.mha differ: byte 30, line 3
+compareZ.dump ../../archive/save1.hev-convertDataArray/test/compareZ.dump differ: byte 31, line 6
+explog.asc.raw ../../archive/save1.hev-convertDataArray/test/explog.asc.raw differ: byte 1, line 1
+
+
+
+noStruct.asc.mha ../../archive/save1.hev-convertDataArray/test/noStruct.asc.mha differ: byte 30, line 3
+
+
+
+noStruct.bin.mha ../../archive/save1.hev-convertDataArray/test/noStruct.bin.mha differ: byte 30, line 3
+
+
+
+
+int.norm.mha.mha ../../archive/save1.hev-convertDataArray/test/int.norm.mha.mha differ: byte 30, line 3
+
+
+
+log.clamp.asc.mha ../../archive/save1.hev-convertDataArray/test/log.clamp.asc.mha differ: byte 30, line 3
+
+
+
+
+log.norm.asc.mha.mha ../../archive/save1.hev-convertDataArray/test/log.norm.asc.mha.mha differ: byte 30, line 3
+
+
+
+correct to here
+
+
+
+int.clamp.mha ../../archive/save1.hev-convertDataArray/test/int.clamp.mha differ: byte 30, line 3
+
+
+
+int.norm.mha ../../archive/save1.hev-convertDataArray/test/int.norm.mha differ: byte 30, line 3
+
+
+
+correct to here
+
+
+
+
+log.norm.asc.mha ../../archive/save1.hev-convertDataArray/test/log.norm.asc.mha differ: byte 30, line 3
+
+
+
+
+correct to here
+
+asc_5_2_11_3_4_int.asc.mha ../../archive/save1.hev-convertDataArray/test/asc_5_2_11_3_4_int.asc.mha differ: byte 30, line 3
+
+
+
+
+
+
+exp10.asc.mha ../../archive/save1.hev-convertDataArray/test/exp10.asc.mha differ: byte 30, line 3
+
+
+
+
+
+
+
+log.asc.mha ../../archive/save1.hev-convertDataArray/test/log.asc.mha differ: byte 30, line 3
+
+
+
+
+
+
+asc_10_11_int.asc.mha ../../archive/save1.hev-convertDataArray/test/asc_10_11_int.asc.mha differ: byte 30, line 3
+
+
+
+
+
+asc_5_2_11_12_int.asc.mha ../../archive/save1.hev-convertDataArray/test/asc_5_2_11_12_int.asc.mha differ: byte 30, line 3
+
+
+
+
+
+
+
+
+asc_10_int.asc.mha ../../archive/save1.hev-convertDataArray/test/asc_10_int.asc.mha differ: byte 30, line 3
+
+
+
+bin_10_11_12_flt2uch.asc.mha ../../archive/save1.hev-convertDataArray/test/bin_10_11_12_flt2uch.asc.mha differ: byte 30, line 3
+
+
+
+
+
+
+
+bin_10_11_12_uch2flt.asc.mha ../../archive/save1.hev-convertDataArray/test/bin_10_11_12_uch2flt.asc.mha differ: byte 30, line 3
+
+correct to here
+
+
+bin_10_11_12_flt.raw.asc.mha ../../archive/save1.hev-convertDataArray/test/bin_10_11_12_flt.raw.asc.mha differ: byte 30, line 3
+
+
+correct to here
+
+
+
+bin_10_11_12_int_neg.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/bin_10_11_12_int_neg.raw.bin.mha differ: byte 30, line 3
+bin_10_11_12_uch.raw.asc.mha ../../archive/save1.hev-convertDataArray/test/bin_10_11_12_uch.raw.asc.mha differ: byte 30, line 3
+bin_10_11_12_dbl_neg.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/bin_10_11_12_dbl_neg.raw.bin.mha differ: byte 30, line 3
+bin_10_11_12_flt_neg.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/bin_10_11_12_flt_neg.raw.bin.mha differ: byte 30, line 3
+bin_10_11_12_uch.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/bin_10_11_12_uch.raw.bin.mha differ: byte 30, line 3
+bin_10_11_12_flt.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/bin_10_11_12_flt.raw.bin.mha differ: byte 30, line 3
+bin_10_11_12_int.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/bin_10_11_12_int.raw.bin.mha differ: byte 30, line 3
+asc_10_11_12_int_neg.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/asc_10_11_12_int_neg.raw.bin.mha differ: byte 30, line 3
+asc_10_11_12_int.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/asc_10_11_12_int.raw.bin.mha differ: byte 30, line 3
+bin_10_11_12_dbl.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/bin_10_11_12_dbl.raw.bin.mha differ: byte 30, line 3
+asc_10_11_12_flt_neg_n3.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/asc_10_11_12_flt_neg_n3.raw.bin.mha differ: byte 30, line 3
+asc_10_11_12_flt_neg_n4.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/asc_10_11_12_flt_neg_n4.raw.bin.mha differ: byte 30, line 3
+asc_10_11_12_flt_neg_n5.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/asc_10_11_12_flt_neg_n5.raw.bin.mha differ: byte 30, line 3
+asc_10_11_12_flt_neg_n2.raw.bin.mha ../../archive/save1.hev-convertDataArray/test/asc_10_11_12_flt_neg_n2.raw.bin.mha differ: byte 30, line 3

@@ -1,0 +1,118 @@
+.TH hev-navigationToTimeline 1 "November 2011"
+
+.SH NAME
+hev-navigationToTimeline
+
+.SH SYNOPSIS 
+.B hev-navigationToTimeline [ --frameRate f ] [ --deltaTrans t ] [ --deltaRot a ] [ --deltaScale s ]
+
+.SH OPTIONS
+
+.IP "--frameRate \fIf\fR"
+specifies the number of times per second \fBhev-navigationToTimeline\fR will check to
+see if the transformation matrix in the navigation node has changed enough
+to warrant writing a timeline command.
+
+If \fIframeRate\fR is not specified, \fBhev-navigationToTimeline\fR will use twice the value
+in the shared memory file iris/state/frameRate; this shared memory file is
+set by a running IRIS process to store the current frame rate. If this
+shared memory file doesn't exist, a value of 192, twice the frame rate of
+the RAVE, will be used.
+
+.IP "--deltaTrans \fIt\fR"
+specifies the amount that the navigation node's translation value needs to
+change before a timeline command is written. The amount is the distance from the
+last written timeline translation.
+
+If \fIdeltaTrans\fR is not specified, it defaults to .05.
+
+If \fIdeltaTrans\fR is set to zero a timeline command containing a translation
+value will be written \fIframeRate\fR times a second.
+
+If \fIdeltaTrans\fR is set to a negative number translation will be ignored
+when determining if a timeline command should be written.
+
+.IP "--deltaRot \fIa\fR"
+specifies the amount that the navigation node's rotation value needs to
+change before a timeline command is written. The amount is the angle in degrees
+from the last written timeline rotation.
+
+If \fIdeltaRot\fR is not specified, it defaults to 5 degrees.
+
+If \fIdeltaRot\fR is set to zero a timeline command containing a rotation
+value will be written \fIframeRate\fR times a second.
+
+If \fIdeltaRot\fR is set to a negative number rotation will be ignored
+when determining if a timeline command should be written.
+
+.IP "--deltaScale \fIs\fR"
+specifies the amount that the navigation node's scale value needs to change
+before a timeline command is written. The amount is the geometric difference from the last
+written timeline scale, or its inverse, whichever is largest.
+
+If \fIdeltaScale\fR is not specified, it defaults to 1.05.
+
+If \fIdeltaScale\fR is set to zero a timeline command containing a scale
+value will be written \fIframeRate\fR times a second.
+
+If \fIdeltaScale\fR is set to a negative number scale will be ignored
+when determining if a timeline command should be written.
+
+.SH DESCRIPTION
+
+\fBhev-navigationToTimeline\fR loops, and every loop it reads the IRIS
+navigation node's matrix. It captures the navigation of a running IRIS
+process into a timeline file.
+
+See hev-timeline(5) for a description of the timeline file.
+
+To convert the timeline file to an iris file use the hev-timelineToIris(1) command.
+
+If the navigation node's matrix has changed more than the specified amount
+of translation, rotation or scale, a timeline command will be recorded.
+
+On exit, the timeline commands will be written to standard output.
+
+\fBhev-navigationToTimeline\fR is designed to help automate the creation of timeline files,
+but there isn't any reason a timeline file can't be created from scratch, or
+modified after creation, using any text editor.
+
+The timeline file is read by the \fBhev-timelineToIris\fR(1) command, which creates
+linearly interpolated IRIS control commands to implement the timeline. These
+IRIS commands can be saved to an IRIS file, or written directly to
+$IRIS_CONTROL_FIFO, the running IRIS process' fifo.
+
+\fBhev-navigationToTimeline\fR liberally comments the timeline file it creates.
+
+.SH EXAMPLE
+
+.IP "1) start a IRIS process:"
+irisfly --ex tape.osg &
+
+.IP "2) use the wand or trackball to navigate to the beginning of the desired path."
+
+.IP "3) start recording the navigation:"
+hev-navigationToTimeline > myPath
+
+.IP "4) use the wand or trackball to navigate to the end of the desired path."
+
+.IP "5) stop recording the navigation:"
+Press ^C to terminate \fBhev-navigationToTimeline\fR
+
+.IP "6) replay the navigation:"
+hev-timelineToIris < myPath > $IRIS_CONTROL_FIFO
+
+.SH SEE ALSO
+
+hev-timelineToIris, hev-timeline, hev-interpolateRotation, hev-interpolateScale,
+hev-interpolateTranslation
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+November 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

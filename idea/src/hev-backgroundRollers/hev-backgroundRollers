@@ -1,0 +1,80 @@
+#!/bin/bash
+
+
+########################################################################
+usage() {
+    cat<<EOF
+Usage: hev-backgroundRollers [--rgb [r g b] ]
+          or
+       hev-backgroundRollers [greyLevel]
+       Output should redirected to \$IRIS_CONTROL_FIFO.
+EOF
+
+}
+########################################################################
+
+
+
+# Default: not RGB, init rgb is (0, 0, 0)
+RGB=0
+initR=0
+initG=0
+initB=0
+
+
+# parse command line args
+if [ $# == 1 ]
+then
+    if [ "$1" == "-rgb"  -o  "$1" == "--rgb" ] 
+    then
+        # rgb mode, no initial RGB
+        RGB=1
+    else
+        # grey mode with initial grey level
+        initR=$1
+        initG=$1
+        initB=$1
+    fi
+elif [ $# == 4 ]
+then
+    if [ "$1" == "-rgb"  -o  "$1" == "--rgb" ] 
+    then
+        # rgb mode with initial RGB
+        RGB=1
+        initR=$2
+        initG=$3
+        initB=$4
+    else
+        # error
+        usage
+        exit
+    fi
+elif [ $# != 0 ]
+then
+    # error
+    usage
+    exit
+fi
+
+echo BACKGROUND $initR $initG $initB
+
+# Note: In the dtk-floatRollers command line, the -l option must appear after
+#       the -s options.
+
+if [ $RGB == 1 ]
+then
+  dtk-floatRollers -ti "Background" -N 3 -s 0 0 1 $initR -s 1 0 1 $initG -s 2 0 1 $initB -l R G B | while read r g b
+  do echo BACKGROUND $r $g $b
+  done &
+else
+  dtk-floatRollers -ti "Background" -N 1 -s 0 0 1 $initR -l Level | while read a
+  do echo BACKGROUND $a $a $a
+  done  &
+fi
+
+trap "kill $(jobs -p)" exit
+
+wait
+
+# The End
+

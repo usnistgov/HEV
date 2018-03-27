@@ -1,0 +1,39 @@
+GROUP flipbook
+
+SCS flipbook-001-DCS 0 0 0 0 0 0
+ADDCHILD flipbook-001-DCS flipbook
+NODEMASK flipbook-001-DCS ON
+LOAD flipbook-001 001.osg  
+ADDCHILD flipbook-001 flipbook-001-DCS
+
+SCS flipbook-110-DCS 0 0 0 0 0 60
+ADDCHILD flipbook-110-DCS flipbook
+NODEMASK flipbook-110-DCS OFF
+LOAD flipbook-110 110.osg  
+ADDCHILD flipbook-110 flipbook-110-DCS
+
+SCS flipbook-010-DCS 0 0 0 0 0 120
+ADDCHILD flipbook-010-DCS flipbook
+NODEMASK flipbook-010-DCS OFF
+LOAD flipbook-010 010.osg  
+ADDCHILD flipbook-010 flipbook-010-DCS
+
+SCS flipbook-101-DCS 0 0 0 0 0 180
+ADDCHILD flipbook-101-DCS flipbook
+NODEMASK flipbook-101-DCS OFF
+LOAD flipbook-101 101.osg  
+ADDCHILD flipbook-101 flipbook-101-DCS
+
+SCS flipbook-100-DCS 0 0 0 0 0 240
+ADDCHILD flipbook-100-DCS flipbook
+NODEMASK flipbook-100-DCS OFF
+LOAD flipbook-100 100.osg  
+ADDCHILD flipbook-100 flipbook-100-DCS
+
+SCS flipbook-011-DCS 0 0 0 0 0 300
+ADDCHILD flipbook-011-DCS flipbook
+NODEMASK flipbook-011-DCS OFF
+LOAD flipbook-011 011.osg  
+ADDCHILD flipbook-011 flipbook-011-DCS
+
+RETURN flipbook

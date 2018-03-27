@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+
+import sys
+import vtk
+
+def showHelp():
+    sys.stderr.write('\nUsage:\nhev-vtkGridSubset xmin xmax ymin ymax zmin zmax inFName outFName\n')
+    sys.exit(1)
+
+
+#SET INPUT AND OUTPUT FILE
+if len(sys.argv) == 9:
+    xmin = int(sys.argv[-8])
+    xmax = int(sys.argv[-7])
+    ymin = int(sys.argv[-6])
+    ymax = int(sys.argv[-5])
+    zmin = int(sys.argv[-4])
+    zmax = int(sys.argv[-3])
+    inputdatafile = sys.argv[-2]
+    outputdatafile = sys.argv[-1]
+else:
+    showHelp()
+
+#INITIAL READER
+read1 = vtk.vtkGenericDataObjectReader()
+read1.SetFileName(inputdatafile)
+
+#DETERMINE INPUT TYPE - SETUP EXTRACTION METHOD AND DATA READER
+if read1.IsFileStructuredPoints():
+    read2 = vtk.vtkStructuredPointsReader()
+    read2.SetFileName(inputdatafile)
+    extract = vtk.vtkExtractVOI()
+    extract.SetInput(read2.GetOutput())
+
+elif read1.IsFileStructuredGrid():
+    read2 = vtk.vtkStructuredGridReader()
+    read2.SetFileName(inputdatafile)
+    extract = vtk.vtkExtractGrid()
+    extract.SetInput(read2.GetOutput())
+
+elif read1.IsFileRectilinearGrid():
+    read2 = vtk.vtkRectilinearGridReader()
+    read2.SetFileName(inputdatafile)
+    extract = vtk.vtkExtractRectilinearGrid()
+    extract.SetInput(read2.GetOutput())
+
+#PROCESS
+extract.SetVOI(xmin, xmax, ymin, ymax, zmin, zmax)
+
+#FILEWRITER
+write = vtk.vtkGenericDataObjectWriter()
+write.SetFileTypeToASCII()
+write.SetInput(extract.GetOutput())
+write.SetFileName(outputdatafile)
+write.Write()
+write.Update()

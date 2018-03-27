@@ -1,0 +1,88 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hyv-selection 1 "May 5, 2011" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hyv-selection
+- select a sub-set of img files from an input directory
+
+.SH SYNOPSIS
+.B "hyv-selection"
+[-s] [nStart nStop nStep] inDir outDir
+
+.SH DESCRIPTION
+.PP
+.I
+hyv-selection
+is a utility to assist with making selection a sub-set of the
+.B img
+files from the specified input directory and copy (or symlink) to the
+output directory
+It specially useful for picking a few
+. img
+files for testing from a large
+collection in a source directory
+
+
+.SH OPTIONS
+.IP "\fB-s\fR"
+if specified will cause the files to be sym links instead of copies
+
+.IP "\fBnStart nStop nStep\fR"
+if specified is similar to C \fIfor loop\fR. The
+.B *.img
+files are implicitly
+numbered. Files 
+.I nStart
+to
+.I nStop
+with increment
+.I nStep
+are specified.
+
+.IP "\fBinDir\fR"
+source directory containing
+.B *.img
+files.
+Compressed (.gz) files in the source directory are uncompressed
+when copied. Compressed files are always copied.
+
+
+.IP "\fBoutDir\fR"
+destination directory. it is typically a sub-directory of the current
+working directory.
+.B outDir
+is assumed to exist. The user is responsible for deleting any
+old files that my not get updated. Many of the hyv-utilities work
+as
+.I *.img,
+so unexpected files can cause problems.
+
+
+
+.SH EXAMPLE
+
+.PP
+
+
+.IP
+mkdir C3Ssmall
+.br
+hyv-selection 61 124 7 ~/C3Ssmall_20071109 C3Ssmall
+
+
+
+
+
+
+.SH SEE ALSO
+.I
+hyv-utilities(3)
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,
+.br
+NIST/ITL/MCSD/SAVG
+

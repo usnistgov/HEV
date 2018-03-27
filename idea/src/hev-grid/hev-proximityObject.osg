@@ -1,0 +1,1167 @@
+Group {
+  DataVariance UNSPECIFIED
+  name "/var/tmp/osgOptimizeB.28913.osg"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  StateSet {
+    DataVariance UNSPECIFIED
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+    GL_LIGHTING PROTECTED|OFF
+  }
+  num_children 1
+  Group {
+    DataVariance STATIC
+    name "bar.savg"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    num_children 1
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 375
+        {
+          DrawArrays LINE_STRIP 0 2
+          DrawArrays LINE_STRIP 2 2
+          DrawArrays LINE_STRIP 4 2
+          DrawArrays LINE_STRIP 6 2
+          DrawArrays LINE_STRIP 8 2
+          DrawArrays LINE_STRIP 10 2
+          DrawArrays LINE_STRIP 12 2
+          DrawArrays LINE_STRIP 14 2
+          DrawArrays LINE_STRIP 16 2
+          DrawArrays LINE_STRIP 18 2
+          DrawArrays LINE_STRIP 20 2
+          DrawArrays LINE_STRIP 22 2
+          DrawArrays LINE_STRIP 24 2
+          DrawArrays LINE_STRIP 26 2
+          DrawArrays LINE_STRIP 28 2
+          DrawArrays LINE_STRIP 30 2
+          DrawArrays LINE_STRIP 32 2
+          DrawArrays LINE_STRIP 34 2
+          DrawArrays LINE_STRIP 36 2
+          DrawArrays LINE_STRIP 38 2
+          DrawArrays LINE_STRIP 40 2
+          DrawArrays LINE_STRIP 42 2
+          DrawArrays LINE_STRIP 44 2
+          DrawArrays LINE_STRIP 46 2
+          DrawArrays LINE_STRIP 48 2
+          DrawArrays LINE_STRIP 50 2
+          DrawArrays LINE_STRIP 52 2
+          DrawArrays LINE_STRIP 54 2
+          DrawArrays LINE_STRIP 56 2
+          DrawArrays LINE_STRIP 58 2
+          DrawArrays LINE_STRIP 60 2
+          DrawArrays LINE_STRIP 62 2
+          DrawArrays LINE_STRIP 64 2
+          DrawArrays LINE_STRIP 66 2
+          DrawArrays LINE_STRIP 68 2
+          DrawArrays LINE_STRIP 70 2
+          DrawArrays LINE_STRIP 72 2
+          DrawArrays LINE_STRIP 74 2
+          DrawArrays LINE_STRIP 76 2
+          DrawArrays LINE_STRIP 78 2
+          DrawArrays LINE_STRIP 80 2
+          DrawArrays LINE_STRIP 82 2
+          DrawArrays LINE_STRIP 84 2
+          DrawArrays LINE_STRIP 86 2
+          DrawArrays LINE_STRIP 88 2
+          DrawArrays LINE_STRIP 90 2
+          DrawArrays LINE_STRIP 92 2
+          DrawArrays LINE_STRIP 94 2
+          DrawArrays LINE_STRIP 96 2
+          DrawArrays LINE_STRIP 98 2
+          DrawArrays LINE_STRIP 100 2
+          DrawArrays LINE_STRIP 102 2
+          DrawArrays LINE_STRIP 104 2
+          DrawArrays LINE_STRIP 106 2
+          DrawArrays LINE_STRIP 108 2
+          DrawArrays LINE_STRIP 110 2
+          DrawArrays LINE_STRIP 112 2
+          DrawArrays LINE_STRIP 114 2
+          DrawArrays LINE_STRIP 116 2
+          DrawArrays LINE_STRIP 118 2
+          DrawArrays LINE_STRIP 120 2
+          DrawArrays LINE_STRIP 122 2
+          DrawArrays LINE_STRIP 124 2
+          DrawArrays LINE_STRIP 126 2
+          DrawArrays LINE_STRIP 128 2
+          DrawArrays LINE_STRIP 130 2
+          DrawArrays LINE_STRIP 132 2
+          DrawArrays LINE_STRIP 134 2
+          DrawArrays LINE_STRIP 136 2
+          DrawArrays LINE_STRIP 138 2
+          DrawArrays LINE_STRIP 140 2
+          DrawArrays LINE_STRIP 142 2
+          DrawArrays LINE_STRIP 144 2
+          DrawArrays LINE_STRIP 146 2
+          DrawArrays LINE_STRIP 148 2
+          DrawArrays LINE_STRIP 150 2
+          DrawArrays LINE_STRIP 152 2
+          DrawArrays LINE_STRIP 154 2
+          DrawArrays LINE_STRIP 156 2
+          DrawArrays LINE_STRIP 158 2
+          DrawArrays LINE_STRIP 160 2
+          DrawArrays LINE_STRIP 162 2
+          DrawArrays LINE_STRIP 164 2
+          DrawArrays LINE_STRIP 166 2
+          DrawArrays LINE_STRIP 168 2
+          DrawArrays LINE_STRIP 170 2
+          DrawArrays LINE_STRIP 172 2
+          DrawArrays LINE_STRIP 174 2
+          DrawArrays LINE_STRIP 176 2
+          DrawArrays LINE_STRIP 178 2
+          DrawArrays LINE_STRIP 180 2
+          DrawArrays LINE_STRIP 182 2
+          DrawArrays LINE_STRIP 184 2
+          DrawArrays LINE_STRIP 186 2
+          DrawArrays LINE_STRIP 188 2
+          DrawArrays LINE_STRIP 190 2
+          DrawArrays LINE_STRIP 192 2
+          DrawArrays LINE_STRIP 194 2
+          DrawArrays LINE_STRIP 196 2
+          DrawArrays LINE_STRIP 198 2
+          DrawArrays LINE_STRIP 200 2
+          DrawArrays LINE_STRIP 202 2
+          DrawArrays LINE_STRIP 204 2
+          DrawArrays LINE_STRIP 206 2
+          DrawArrays LINE_STRIP 208 2
+          DrawArrays LINE_STRIP 210 2
+          DrawArrays LINE_STRIP 212 2
+          DrawArrays LINE_STRIP 214 2
+          DrawArrays LINE_STRIP 216 2
+          DrawArrays LINE_STRIP 218 2
+          DrawArrays LINE_STRIP 220 2
+          DrawArrays LINE_STRIP 222 2
+          DrawArrays LINE_STRIP 224 2
+          DrawArrays LINE_STRIP 226 2
+          DrawArrays LINE_STRIP 228 2
+          DrawArrays LINE_STRIP 230 2
+          DrawArrays LINE_STRIP 232 2
+          DrawArrays LINE_STRIP 234 2
+          DrawArrays LINE_STRIP 236 2
+          DrawArrays LINE_STRIP 238 2
+          DrawArrays LINE_STRIP 240 2
+          DrawArrays LINE_STRIP 242 2
+          DrawArrays LINE_STRIP 244 2
+          DrawArrays LINE_STRIP 246 2
+          DrawArrays LINE_STRIP 248 2
+          DrawArrays LINE_STRIP 250 2
+          DrawArrays LINE_STRIP 252 2
+          DrawArrays LINE_STRIP 254 2
+          DrawArrays LINE_STRIP 256 2
+          DrawArrays LINE_STRIP 258 2
+          DrawArrays LINE_STRIP 260 2
+          DrawArrays LINE_STRIP 262 2
+          DrawArrays LINE_STRIP 264 2
+          DrawArrays LINE_STRIP 266 2
+          DrawArrays LINE_STRIP 268 2
+          DrawArrays LINE_STRIP 270 2
+          DrawArrays LINE_STRIP 272 2
+          DrawArrays LINE_STRIP 274 2
+          DrawArrays LINE_STRIP 276 2
+          DrawArrays LINE_STRIP 278 2
+          DrawArrays LINE_STRIP 280 2
+          DrawArrays LINE_STRIP 282 2
+          DrawArrays LINE_STRIP 284 2
+          DrawArrays LINE_STRIP 286 2
+          DrawArrays LINE_STRIP 288 2
+          DrawArrays LINE_STRIP 290 2
+          DrawArrays LINE_STRIP 292 2
+          DrawArrays LINE_STRIP 294 2
+          DrawArrays LINE_STRIP 296 2
+          DrawArrays LINE_STRIP 298 2
+          DrawArrays LINE_STRIP 300 2
+          DrawArrays LINE_STRIP 302 2
+          DrawArrays LINE_STRIP 304 2
+          DrawArrays LINE_STRIP 306 2
+          DrawArrays LINE_STRIP 308 2
+          DrawArrays LINE_STRIP 310 2
+          DrawArrays LINE_STRIP 312 2
+          DrawArrays LINE_STRIP 314 2
+          DrawArrays LINE_STRIP 316 2
+          DrawArrays LINE_STRIP 318 2
+          DrawArrays LINE_STRIP 320 2
+          DrawArrays LINE_STRIP 322 2
+          DrawArrays LINE_STRIP 324 2
+          DrawArrays LINE_STRIP 326 2
+          DrawArrays LINE_STRIP 328 2
+          DrawArrays LINE_STRIP 330 2
+          DrawArrays LINE_STRIP 332 2
+          DrawArrays LINE_STRIP 334 2
+          DrawArrays LINE_STRIP 336 2
+          DrawArrays LINE_STRIP 338 2
+          DrawArrays LINE_STRIP 340 2
+          DrawArrays LINE_STRIP 342 2
+          DrawArrays LINE_STRIP 344 2
+          DrawArrays LINE_STRIP 346 2
+          DrawArrays LINE_STRIP 348 2
+          DrawArrays LINE_STRIP 350 2
+          DrawArrays LINE_STRIP 352 2
+          DrawArrays LINE_STRIP 354 2
+          DrawArrays LINE_STRIP 356 2
+          DrawArrays LINE_STRIP 358 2
+          DrawArrays LINE_STRIP 360 2
+          DrawArrays LINE_STRIP 362 2
+          DrawArrays LINE_STRIP 364 2
+          DrawArrays LINE_STRIP 366 2
+          DrawArrays LINE_STRIP 368 2
+          DrawArrays LINE_STRIP 370 2
+          DrawArrays LINE_STRIP 372 2
+          DrawArrays LINE_STRIP 374 2
+          DrawArrays LINE_STRIP 376 2
+          DrawArrays LINE_STRIP 378 2
+          DrawArrays LINE_STRIP 380 2
+          DrawArrays LINE_STRIP 382 2
+          DrawArrays LINE_STRIP 384 2
+          DrawArrays LINE_STRIP 386 2
+          DrawArrays LINE_STRIP 388 2
+          DrawArrays LINE_STRIP 390 2
+          DrawArrays LINE_STRIP 392 2
+          DrawArrays LINE_STRIP 394 2
+          DrawArrays LINE_STRIP 396 2
+          DrawArrays LINE_STRIP 398 2
+          DrawArrays LINE_STRIP 400 2
+          DrawArrays LINE_STRIP 402 2
+          DrawArrays LINE_STRIP 404 2
+          DrawArrays LINE_STRIP 406 2
+          DrawArrays LINE_STRIP 408 2
+          DrawArrays LINE_STRIP 410 2
+          DrawArrays LINE_STRIP 412 2
+          DrawArrays LINE_STRIP 414 2
+          DrawArrays LINE_STRIP 416 2
+          DrawArrays LINE_STRIP 418 2
+          DrawArrays LINE_STRIP 420 2
+          DrawArrays LINE_STRIP 422 2
+          DrawArrays LINE_STRIP 424 2
+          DrawArrays LINE_STRIP 426 2
+          DrawArrays LINE_STRIP 428 2
+          DrawArrays LINE_STRIP 430 2
+          DrawArrays LINE_STRIP 432 2
+          DrawArrays LINE_STRIP 434 2
+          DrawArrays LINE_STRIP 436 2
+          DrawArrays LINE_STRIP 438 2
+          DrawArrays LINE_STRIP 440 2
+          DrawArrays LINE_STRIP 442 2
+          DrawArrays LINE_STRIP 444 2
+          DrawArrays LINE_STRIP 446 2
+          DrawArrays LINE_STRIP 448 2
+          DrawArrays LINE_STRIP 450 2
+          DrawArrays LINE_STRIP 452 2
+          DrawArrays LINE_STRIP 454 2
+          DrawArrays LINE_STRIP 456 2
+          DrawArrays LINE_STRIP 458 2
+          DrawArrays LINE_STRIP 460 2
+          DrawArrays LINE_STRIP 462 2
+          DrawArrays LINE_STRIP 464 2
+          DrawArrays LINE_STRIP 466 2
+          DrawArrays LINE_STRIP 468 2
+          DrawArrays LINE_STRIP 470 2
+          DrawArrays LINE_STRIP 472 2
+          DrawArrays LINE_STRIP 474 2
+          DrawArrays LINE_STRIP 476 2
+          DrawArrays LINE_STRIP 478 2
+          DrawArrays LINE_STRIP 480 2
+          DrawArrays LINE_STRIP 482 2
+          DrawArrays LINE_STRIP 484 2
+          DrawArrays LINE_STRIP 486 2
+          DrawArrays LINE_STRIP 488 2
+          DrawArrays LINE_STRIP 490 2
+          DrawArrays LINE_STRIP 492 2
+          DrawArrays LINE_STRIP 494 2
+          DrawArrays LINE_STRIP 496 2
+          DrawArrays LINE_STRIP 498 2
+          DrawArrays LINE_STRIP 500 2
+          DrawArrays LINE_STRIP 502 2
+          DrawArrays LINE_STRIP 504 2
+          DrawArrays LINE_STRIP 506 2
+          DrawArrays LINE_STRIP 508 2
+          DrawArrays LINE_STRIP 510 2
+          DrawArrays LINE_STRIP 512 2
+          DrawArrays LINE_STRIP 514 2
+          DrawArrays LINE_STRIP 516 2
+          DrawArrays LINE_STRIP 518 2
+          DrawArrays LINE_STRIP 520 2
+          DrawArrays LINE_STRIP 522 2
+          DrawArrays LINE_STRIP 524 2
+          DrawArrays LINE_STRIP 526 2
+          DrawArrays LINE_STRIP 528 2
+          DrawArrays LINE_STRIP 530 2
+          DrawArrays LINE_STRIP 532 2
+          DrawArrays LINE_STRIP 534 2
+          DrawArrays LINE_STRIP 536 2
+          DrawArrays LINE_STRIP 538 2
+          DrawArrays LINE_STRIP 540 2
+          DrawArrays LINE_STRIP 542 2
+          DrawArrays LINE_STRIP 544 2
+          DrawArrays LINE_STRIP 546 2
+          DrawArrays LINE_STRIP 548 2
+          DrawArrays LINE_STRIP 550 2
+          DrawArrays LINE_STRIP 552 2
+          DrawArrays LINE_STRIP 554 2
+          DrawArrays LINE_STRIP 556 2
+          DrawArrays LINE_STRIP 558 2
+          DrawArrays LINE_STRIP 560 2
+          DrawArrays LINE_STRIP 562 2
+          DrawArrays LINE_STRIP 564 2
+          DrawArrays LINE_STRIP 566 2
+          DrawArrays LINE_STRIP 568 2
+          DrawArrays LINE_STRIP 570 2
+          DrawArrays LINE_STRIP 572 2
+          DrawArrays LINE_STRIP 574 2
+          DrawArrays LINE_STRIP 576 2
+          DrawArrays LINE_STRIP 578 2
+          DrawArrays LINE_STRIP 580 2
+          DrawArrays LINE_STRIP 582 2
+          DrawArrays LINE_STRIP 584 2
+          DrawArrays LINE_STRIP 586 2
+          DrawArrays LINE_STRIP 588 2
+          DrawArrays LINE_STRIP 590 2
+          DrawArrays LINE_STRIP 592 2
+          DrawArrays LINE_STRIP 594 2
+          DrawArrays LINE_STRIP 596 2
+          DrawArrays LINE_STRIP 598 2
+          DrawArrays LINE_STRIP 600 2
+          DrawArrays LINE_STRIP 602 2
+          DrawArrays LINE_STRIP 604 2
+          DrawArrays LINE_STRIP 606 2
+          DrawArrays LINE_STRIP 608 2
+          DrawArrays LINE_STRIP 610 2
+          DrawArrays LINE_STRIP 612 2
+          DrawArrays LINE_STRIP 614 2
+          DrawArrays LINE_STRIP 616 2
+          DrawArrays LINE_STRIP 618 2
+          DrawArrays LINE_STRIP 620 2
+          DrawArrays LINE_STRIP 622 2
+          DrawArrays LINE_STRIP 624 2
+          DrawArrays LINE_STRIP 626 2
+          DrawArrays LINE_STRIP 628 2
+          DrawArrays LINE_STRIP 630 2
+          DrawArrays LINE_STRIP 632 2
+          DrawArrays LINE_STRIP 634 2
+          DrawArrays LINE_STRIP 636 2
+          DrawArrays LINE_STRIP 638 2
+          DrawArrays LINE_STRIP 640 2
+          DrawArrays LINE_STRIP 642 2
+          DrawArrays LINE_STRIP 644 2
+          DrawArrays LINE_STRIP 646 2
+          DrawArrays LINE_STRIP 648 2
+          DrawArrays LINE_STRIP 650 2
+          DrawArrays LINE_STRIP 652 2
+          DrawArrays LINE_STRIP 654 2
+          DrawArrays LINE_STRIP 656 2
+          DrawArrays LINE_STRIP 658 2
+          DrawArrays LINE_STRIP 660 2
+          DrawArrays LINE_STRIP 662 2
+          DrawArrays LINE_STRIP 664 2
+          DrawArrays LINE_STRIP 666 2
+          DrawArrays LINE_STRIP 668 2
+          DrawArrays LINE_STRIP 670 2
+          DrawArrays LINE_STRIP 672 2
+          DrawArrays LINE_STRIP 674 2
+          DrawArrays LINE_STRIP 676 2
+          DrawArrays LINE_STRIP 678 2
+          DrawArrays LINE_STRIP 680 2
+          DrawArrays LINE_STRIP 682 2
+          DrawArrays LINE_STRIP 684 2
+          DrawArrays LINE_STRIP 686 2
+          DrawArrays LINE_STRIP 688 2
+          DrawArrays LINE_STRIP 690 2
+          DrawArrays LINE_STRIP 692 2
+          DrawArrays LINE_STRIP 694 2
+          DrawArrays LINE_STRIP 696 2
+          DrawArrays LINE_STRIP 698 2
+          DrawArrays LINE_STRIP 700 2
+          DrawArrays LINE_STRIP 702 2
+          DrawArrays LINE_STRIP 704 2
+          DrawArrays LINE_STRIP 706 2
+          DrawArrays LINE_STRIP 708 2
+          DrawArrays LINE_STRIP 710 2
+          DrawArrays LINE_STRIP 712 2
+          DrawArrays LINE_STRIP 714 2
+          DrawArrays LINE_STRIP 716 2
+          DrawArrays LINE_STRIP 718 2
+          DrawArrays LINE_STRIP 720 2
+          DrawArrays LINE_STRIP 722 2
+          DrawArrays LINE_STRIP 724 2
+          DrawArrays LINE_STRIP 726 2
+          DrawArrays LINE_STRIP 728 2
+          DrawArrays LINE_STRIP 730 2
+          DrawArrays LINE_STRIP 732 2
+          DrawArrays LINE_STRIP 734 2
+          DrawArrays LINE_STRIP 736 2
+          DrawArrays LINE_STRIP 738 2
+          DrawArrays LINE_STRIP 740 2
+          DrawArrays LINE_STRIP 742 2
+          DrawArrays LINE_STRIP 744 2
+          DrawArrays LINE_STRIP 746 2
+          DrawArrays LINE_STRIP 748 2
+        }
+        VertexArray Vec3Array 750
+        {
+          0.1 0 -0.22
+          0.1 0 -0.18
+          0.1 -0.02 -0.2
+          0.1 0.02 -0.2
+          0.08 0 -0.2
+          0.12 0 -0.2
+          0.1 -0.1 0.18
+          0.1 -0.1 0.22
+          0.1 -0.12 0.2
+          0.1 -0.08 0.2
+          0.08 -0.1 0.2
+          0.12 -0.1 0.2
+          0.1 -0.1 0.08
+          0.1 -0.1 0.12
+          0.1 -0.12 0.1
+          0.1 -0.08 0.1
+          0.08 -0.1 0.1
+          0.12 -0.1 0.1
+          0.1 -0.1 -0.02
+          0.1 -0.1 0.02
+          0.1 -0.12 0
+          0.1 -0.08 0
+          0.08 -0.1 0
+          0.12 -0.1 0
+          0.1 -0.1 -0.12
+          0.1 -0.1 -0.08
+          0.1 -0.12 -0.1
+          0.1 -0.08 -0.1
+          0.08 -0.1 -0.1
+          0.12 -0.1 -0.1
+          0.1 -0.1 -0.22
+          0.1 -0.1 -0.18
+          0.1 -0.12 -0.2
+          0.1 -0.08 -0.2
+          0.08 -0.1 -0.2
+          0.12 -0.1 -0.2
+          0.1 -0.2 0.18
+          0.1 -0.2 0.22
+          0.1 -0.22 0.2
+          0.1 -0.18 0.2
+          0.08 -0.2 0.2
+          0.12 -0.2 0.2
+          0.1 -0.2 0.08
+          0.1 -0.2 0.12
+          0.1 -0.22 0.1
+          0.1 -0.18 0.1
+          0.1 0.08 0.1
+          0.1 0.12 0.1
+          0.08 0.1 0.1
+          0.12 0.1 0.1
+          0.1 0.1 -0.02
+          0.1 0.1 0.02
+          0.1 0.08 0
+          0.1 0.12 0
+          0.08 0.1 0
+          0.12 0.1 0
+          0.1 0.1 -0.12
+          0.1 0.1 -0.08
+          0.1 0.08 -0.1
+          0.1 0.12 -0.1
+          0.08 0.1 -0.1
+          0.12 0.1 -0.1
+          0.1 0.1 -0.22
+          0.1 0.1 -0.18
+          0.1 0.08 -0.2
+          0.1 0.12 -0.2
+          0.08 0.1 -0.2
+          0.12 0.1 -0.2
+          0.1 0 0.18
+          0.1 0 0.22
+          0.1 -0.02 0.2
+          0.1 0.02 0.2
+          0.08 0 0.2
+          0.12 0 0.2
+          0.1 0 0.08
+          0.1 0 0.12
+          0.1 -0.02 0.1
+          0.1 0.02 0.1
+          0.08 0 0.1
+          0.12 0 0.1
+          0.1 0 -0.02
+          0.1 0 0.02
+          0.1 -0.02 0
+          0.1 0.02 0
+          0.08 0 0
+          0.12 0 0
+          0.1 0 -0.12
+          0.1 0 -0.08
+          0.1 -0.02 -0.1
+          0.1 0.02 -0.1
+          0.08 0 -0.1
+          0.12 0 -0.1
+          -0.02 0.2 -0.2
+          0.02 0.2 -0.2
+          0 0.1 0.18
+          0 0.1 0.22
+          0 0.08 0.2
+          0 0.12 0.2
+          -0.02 0.1 0.2
+          0.02 0.1 0.2
+          0 0.1 0.08
+          0 0.1 0.12
+          0 0.08 0.1
+          0 0.12 0.1
+          -0.02 0.1 0.1
+          0.02 0.1 0.1
+          0 0.1 -0.02
+          0 0.1 0.02
+          0 0.08 0
+          0 0.12 0
+          -0.02 0.1 0
+          0.02 0.1 0
+          0 0.1 -0.12
+          0 0.1 -0.08
+          0 0.08 -0.1
+          0 0.12 -0.1
+          -0.02 0.1 -0.1
+          0.02 0.1 -0.1
+          0 0.1 -0.22
+          0 0.1 -0.18
+          0 0.08 -0.2
+          0 0.12 -0.2
+          -0.02 0.1 -0.2
+          0.02 0.1 -0.2
+          0 0 0.18
+          0 0 0.22
+          0 -0.02 0.2
+          0 0.02 0.2
+          -0.02 0 0.2
+          0.02 0 0.2
+          0 0 0.08
+          0 0 0.12
+          0 -0.02 0.1
+          0 0.02 0.1
+          -0.02 0 0.1
+          0.02 0 0.1
+          0 0 -0.02
+          0 0 0.02
+          0.08 -0.2 0.1
+          0.12 -0.2 0.1
+          0.1 -0.2 -0.02
+          0.1 -0.2 0.02
+          0.1 -0.22 0
+          0.1 -0.18 0
+          0.08 -0.2 0
+          0.12 -0.2 0
+          0.1 -0.2 -0.12
+          0.1 -0.2 -0.08
+          0.1 -0.22 -0.1
+          0.1 -0.18 -0.1
+          0.08 -0.2 -0.1
+          0.12 -0.2 -0.1
+          0.1 -0.2 -0.22
+          0.1 -0.2 -0.18
+          0.1 -0.22 -0.2
+          0.1 -0.18 -0.2
+          0.08 -0.2 -0.2
+          0.12 -0.2 -0.2
+          0 0.2 0.18
+          0 0.2 0.22
+          0 0.18 0.2
+          0 0.22 0.2
+          -0.02 0.2 0.2
+          0.02 0.2 0.2
+          0 0.2 0.08
+          0 0.2 0.12
+          0 0.18 0.1
+          0 0.22 0.1
+          -0.02 0.2 0.1
+          0.02 0.2 0.1
+          0 0.2 -0.02
+          0 0.2 0.02
+          0 0.18 0
+          0 0.22 0
+          -0.02 0.2 0
+          0.02 0.2 0
+          0 0.2 -0.12
+          0 0.2 -0.08
+          0 0.18 -0.1
+          0 0.22 -0.1
+          -0.02 0.2 -0.1
+          0.02 0.2 -0.1
+          0 0.2 -0.22
+          0 0.2 -0.18
+          0 0.18 -0.2
+          0 0.22 -0.2
+          0.2 0.1 -0.12
+          0.2 0.1 -0.08
+          0.2 0.08 -0.1
+          0.2 0.12 -0.1
+          0.18 0.1 -0.1
+          0.22 0.1 -0.1
+          0.2 0.1 -0.22
+          0.2 0.1 -0.18
+          0.2 0.08 -0.2
+          0.2 0.12 -0.2
+          0.18 0.1 -0.2
+          0.22 0.1 -0.2
+          0.2 0 0.18
+          0.2 0 0.22
+          0.2 -0.02 0.2
+          0.2 0.02 0.2
+          0.18 0 0.2
+          0.22 0 0.2
+          0.2 0 0.08
+          0.2 0 0.12
+          0.2 -0.02 0.1
+          0.2 0.02 0.1
+          0.18 0 0.1
+          0.22 0 0.1
+          0.2 0 -0.02
+          0.2 0 0.02
+          0.2 -0.02 0
+          0.2 0.02 0
+          0.18 0 0
+          0.22 0 0
+          0.2 0 -0.12
+          0.2 0 -0.08
+          0.2 -0.02 -0.1
+          0.2 0.02 -0.1
+          0.18 0 -0.1
+          0.22 0 -0.1
+          0.2 0 -0.22
+          0.2 0 -0.18
+          0.2 -0.02 -0.2
+          0.2 0.02 -0.2
+          0.18 0 -0.2
+          0.22 0 -0.2
+          0.2 -0.1 0.18
+          0.2 -0.1 0.22
+          0.2 -0.12 0.2
+          0.2 -0.08 0.2
+          0.2 0.2 0.18
+          0.2 0.2 0.22
+          0.2 0.18 0.2
+          0.2 0.22 0.2
+          0.18 0.2 0.2
+          0.22 0.2 0.2
+          0.2 0.2 0.08
+          0.2 0.2 0.12
+          0.2 0.18 0.1
+          0.2 0.22 0.1
+          0.18 0.2 0.1
+          0.22 0.2 0.1
+          0.2 0.2 -0.02
+          0.2 0.2 0.02
+          0.2 0.18 0
+          0.2 0.22 0
+          0.18 0.2 0
+          0.22 0.2 0
+          0.2 0.2 -0.12
+          0.2 0.2 -0.08
+          0.2 0.18 -0.1
+          0.2 0.22 -0.1
+          0.18 0.2 -0.1
+          0.22 0.2 -0.1
+          0.2 0.2 -0.22
+          0.2 0.2 -0.18
+          0.2 0.18 -0.2
+          0.2 0.22 -0.2
+          0.18 0.2 -0.2
+          0.22 0.2 -0.2
+          0.2 0.1 0.18
+          0.2 0.1 0.22
+          0.2 0.08 0.2
+          0.2 0.12 0.2
+          0.18 0.1 0.2
+          0.22 0.1 0.2
+          0.2 0.1 0.08
+          0.2 0.1 0.12
+          0.2 0.08 0.1
+          0.2 0.12 0.1
+          0.18 0.1 0.1
+          0.22 0.1 0.1
+          0.2 0.1 -0.02
+          0.2 0.1 0.02
+          0.2 0.08 0
+          0.2 0.12 0
+          0.18 0.1 0
+          0.22 0.1 0
+          0.18 -0.2 -0.1
+          0.22 -0.2 -0.1
+          0.2 -0.2 -0.22
+          0.2 -0.2 -0.18
+          0.2 -0.22 -0.2
+          0.2 -0.18 -0.2
+          0.18 -0.2 -0.2
+          0.22 -0.2 -0.2
+          0.1 0.2 0.18
+          0.1 0.2 0.22
+          0.1 0.18 0.2
+          0.1 0.22 0.2
+          0.08 0.2 0.2
+          0.12 0.2 0.2
+          0.1 0.2 0.08
+          0.1 0.2 0.12
+          0.1 0.18 0.1
+          0.1 0.22 0.1
+          0.08 0.2 0.1
+          0.12 0.2 0.1
+          0.1 0.2 -0.02
+          0.1 0.2 0.02
+          0.1 0.18 0
+          0.1 0.22 0
+          0.08 0.2 0
+          0.12 0.2 0
+          0.1 0.2 -0.12
+          0.1 0.2 -0.08
+          0.1 0.18 -0.1
+          0.1 0.22 -0.1
+          0.08 0.2 -0.1
+          0.12 0.2 -0.1
+          0.1 0.2 -0.22
+          0.1 0.2 -0.18
+          0.1 0.18 -0.2
+          0.1 0.22 -0.2
+          0.08 0.2 -0.2
+          0.12 0.2 -0.2
+          0.1 0.1 0.18
+          0.1 0.1 0.22
+          0.1 0.08 0.2
+          0.1 0.12 0.2
+          0.08 0.1 0.2
+          0.12 0.1 0.2
+          0.1 0.1 0.08
+          0.1 0.1 0.12
+          0.18 -0.1 0.2
+          0.22 -0.1 0.2
+          0.2 -0.1 0.08
+          0.2 -0.1 0.12
+          0.2 -0.12 0.1
+          0.2 -0.08 0.1
+          0.18 -0.1 0.1
+          0.22 -0.1 0.1
+          0.2 -0.1 -0.02
+          0.2 -0.1 0.02
+          0.2 -0.12 0
+          0.2 -0.08 0
+          0.18 -0.1 0
+          0.22 -0.1 0
+          0.2 -0.1 -0.12
+          0.2 -0.1 -0.08
+          0.2 -0.12 -0.1
+          0.2 -0.08 -0.1
+          0.18 -0.1 -0.1
+          0.22 -0.1 -0.1
+          0.2 -0.1 -0.22
+          0.2 -0.1 -0.18
+          0.2 -0.12 -0.2
+          0.2 -0.08 -0.2
+          0.18 -0.1 -0.2
+          0.22 -0.1 -0.2
+          0.2 -0.2 0.18
+          0.2 -0.2 0.22
+          0.2 -0.22 0.2
+          0.2 -0.18 0.2
+          0.18 -0.2 0.2
+          0.22 -0.2 0.2
+          0.2 -0.2 0.08
+          0.2 -0.2 0.12
+          0.2 -0.22 0.1
+          0.2 -0.18 0.1
+          0.18 -0.2 0.1
+          0.22 -0.2 0.1
+          0.2 -0.2 -0.02
+          0.2 -0.2 0.02
+          0.2 -0.22 0
+          0.2 -0.18 0
+          0.18 -0.2 0
+          0.22 -0.2 0
+          0.2 -0.2 -0.12
+          0.2 -0.2 -0.08
+          0.2 -0.22 -0.1
+          0.2 -0.18 -0.1
+          -0.22 0.2 0.1
+          -0.18 0.2 0.1
+          -0.2 0.2 -0.02
+          -0.2 0.2 0.02
+          -0.2 0.18 0
+          -0.2 0.22 0
+          -0.22 0.2 0
+          -0.18 0.2 0
+          -0.2 0.2 -0.12
+          -0.2 0.2 -0.08
+          -0.2 0.18 -0.1
+          -0.2 0.22 -0.1
+          -0.22 0.2 -0.1
+          -0.18 0.2 -0.1
+          -0.2 0.2 -0.22
+          -0.2 0.2 -0.18
+          -0.2 0.18 -0.2
+          -0.2 0.22 -0.2
+          -0.22 0.2 -0.2
+          -0.18 0.2 -0.2
+          -0.2 0.1 0.18
+          -0.2 0.1 0.22
+          -0.2 0.08 0.2
+          -0.2 0.12 0.2
+          -0.22 0.1 0.2
+          -0.18 0.1 0.2
+          -0.2 0.1 0.08
+          -0.2 0.1 0.12
+          -0.2 0.08 0.1
+          -0.2 0.12 0.1
+          -0.22 0.1 0.1
+          -0.18 0.1 0.1
+          -0.2 0.1 -0.02
+          -0.2 0.1 0.02
+          -0.2 0.08 0
+          -0.2 0.12 0
+          -0.22 0.1 0
+          -0.18 0.1 0
+          -0.2 0.1 -0.12
+          -0.2 0.1 -0.08
+          -0.2 0.08 -0.1
+          -0.2 0.12 -0.1
+          -0.22 0.1 -0.1
+          -0.18 0.1 -0.1
+          -0.2 0.1 -0.22
+          -0.2 0.1 -0.18
+          -0.12 -0.1 -0.1
+          -0.08 -0.1 -0.1
+          -0.1 -0.1 -0.22
+          -0.1 -0.1 -0.18
+          -0.1 -0.12 -0.2
+          -0.1 -0.08 -0.2
+          -0.12 -0.1 -0.2
+          -0.08 -0.1 -0.2
+          -0.1 -0.2 0.18
+          -0.1 -0.2 0.22
+          -0.1 -0.22 0.2
+          -0.1 -0.18 0.2
+          -0.12 -0.2 0.2
+          -0.08 -0.2 0.2
+          -0.1 -0.2 0.08
+          -0.1 -0.2 0.12
+          -0.1 -0.22 0.1
+          -0.1 -0.18 0.1
+          -0.12 -0.2 0.1
+          -0.08 -0.2 0.1
+          -0.1 -0.2 -0.02
+          -0.1 -0.2 0.02
+          -0.1 -0.22 0
+          -0.1 -0.18 0
+          -0.12 -0.2 0
+          -0.08 -0.2 0
+          -0.1 -0.2 -0.12
+          -0.1 -0.2 -0.08
+          -0.1 -0.22 -0.1
+          -0.1 -0.18 -0.1
+          -0.12 -0.2 -0.1
+          -0.08 -0.2 -0.1
+          -0.1 -0.2 -0.22
+          -0.1 -0.2 -0.18
+          -0.1 -0.22 -0.2
+          -0.1 -0.18 -0.2
+          -0.12 -0.2 -0.2
+          -0.08 -0.2 -0.2
+          -0.2 0.2 0.18
+          -0.2 0.2 0.22
+          -0.2 0.18 0.2
+          -0.2 0.22 0.2
+          -0.22 0.2 0.2
+          -0.18 0.2 0.2
+          -0.2 0.2 0.08
+          -0.2 0.2 0.12
+          -0.2 0.18 0.1
+          -0.2 0.22 0.1
+          -0.2 -0.12 0
+          -0.2 -0.08 0
+          -0.22 -0.1 0
+          -0.18 -0.1 0
+          -0.2 -0.1 -0.12
+          -0.2 -0.1 -0.08
+          -0.2 -0.12 -0.1
+          -0.2 -0.08 -0.1
+          -0.22 -0.1 -0.1
+          -0.18 -0.1 -0.1
+          -0.2 -0.1 -0.22
+          -0.2 -0.1 -0.18
+          -0.2 -0.12 -0.2
+          -0.2 -0.08 -0.2
+          -0.22 -0.1 -0.2
+          -0.18 -0.1 -0.2
+          -0.2 -0.2 0.18
+          -0.2 -0.2 0.22
+          -0.2 -0.22 0.2
+          -0.2 -0.18 0.2
+          -0.22 -0.2 0.2
+          -0.18 -0.2 0.2
+          -0.2 -0.2 0.08
+          -0.2 -0.2 0.12
+          -0.2 -0.22 0.1
+          -0.2 -0.18 0.1
+          -0.22 -0.2 0.1
+          -0.18 -0.2 0.1
+          -0.2 -0.2 -0.02
+          -0.2 -0.2 0.02
+          -0.2 -0.22 0
+          -0.2 -0.18 0
+          -0.22 -0.2 0
+          -0.18 -0.2 0
+          -0.2 -0.2 -0.12
+          -0.2 -0.2 -0.08
+          -0.2 -0.22 -0.1
+          -0.2 -0.18 -0.1
+          -0.22 -0.2 -0.1
+          -0.18 -0.2 -0.1
+          -0.2 -0.2 -0.22
+          -0.2 -0.2 -0.18
+          -0.2 -0.22 -0.2
+          -0.2 -0.18 -0.2
+          -0.22 -0.2 -0.2
+          -0.18 -0.2 -0.2
+          -0.2 0.08 -0.2
+          -0.2 0.12 -0.2
+          -0.22 0.1 -0.2
+          -0.18 0.1 -0.2
+          -0.2 0 0.18
+          -0.2 0 0.22
+          -0.2 -0.02 0.2
+          -0.2 0.02 0.2
+          -0.22 0 0.2
+          -0.18 0 0.2
+          -0.2 0 0.08
+          -0.2 0 0.12
+          -0.2 -0.02 0.1
+          -0.2 0.02 0.1
+          -0.22 0 0.1
+          -0.18 0 0.1
+          -0.2 0 -0.02
+          -0.2 0 0.02
+          -0.2 -0.02 0
+          -0.2 0.02 0
+          -0.22 0 0
+          -0.18 0 0
+          -0.2 0 -0.12
+          -0.2 0 -0.08
+          -0.2 -0.02 -0.1
+          -0.2 0.02 -0.1
+          -0.22 0 -0.1
+          -0.18 0 -0.1
+          -0.2 0 -0.22
+          -0.2 0 -0.18
+          -0.2 -0.02 -0.2
+          -0.2 0.02 -0.2
+          -0.22 0 -0.2
+          -0.18 0 -0.2
+          -0.2 -0.1 0.18
+          -0.2 -0.1 0.22
+          -0.2 -0.12 0.2
+          -0.2 -0.08 0.2
+          -0.22 -0.1 0.2
+          -0.18 -0.1 0.2
+          -0.2 -0.1 0.08
+          -0.2 -0.1 0.12
+          -0.2 -0.12 0.1
+          -0.2 -0.08 0.1
+          -0.22 -0.1 0.1
+          -0.18 -0.1 0.1
+          -0.2 -0.1 -0.02
+          -0.2 -0.1 0.02
+          0 -0.22 0.2
+          0 -0.18 0.2
+          -0.02 -0.2 0.2
+          0.02 -0.2 0.2
+          0 -0.2 0.08
+          0 -0.2 0.12
+          0 -0.22 0.1
+          0 -0.18 0.1
+          -0.02 -0.2 0.1
+          0.02 -0.2 0.1
+          0 -0.2 -0.02
+          0 -0.2 0.02
+          0 -0.22 0
+          0 -0.18 0
+          -0.02 -0.2 0
+          0.02 -0.2 0
+          0 -0.2 -0.12
+          0 -0.2 -0.08
+          0 -0.22 -0.1
+          0 -0.18 -0.1
+          -0.02 -0.2 -0.1
+          0.02 -0.2 -0.1
+          0 -0.2 -0.22
+          0 -0.2 -0.18
+          0 -0.22 -0.2
+          0 -0.18 -0.2
+          -0.02 -0.2 -0.2
+          0.02 -0.2 -0.2
+          -0.1 0.2 0.18
+          -0.1 0.2 0.22
+          -0.1 0.18 0.2
+          -0.1 0.22 0.2
+          -0.12 0.2 0.2
+          -0.08 0.2 0.2
+          -0.1 0.2 0.08
+          -0.1 0.2 0.12
+          -0.1 0.18 0.1
+          -0.1 0.22 0.1
+          -0.12 0.2 0.1
+          -0.08 0.2 0.1
+          -0.1 0.2 -0.02
+          -0.1 0.2 0.02
+          -0.1 0.18 0
+          -0.1 0.22 0
+          -0.12 0.2 0
+          -0.08 0.2 0
+          0 -0.02 0
+          0 0.02 0
+          -0.02 0 0
+          0.02 0 0
+          0 0 -0.12
+          0 0 -0.08
+          0 -0.02 -0.1
+          0 0.02 -0.1
+          -0.02 0 -0.1
+          0.02 0 -0.1
+          0 0 -0.22
+          0 0 -0.18
+          0 -0.02 -0.2
+          0 0.02 -0.2
+          -0.02 0 -0.2
+          0.02 0 -0.2
+          0 -0.1 0.18
+          0 -0.1 0.22
+          0 -0.12 0.2
+          0 -0.08 0.2
+          -0.02 -0.1 0.2
+          0.02 -0.1 0.2
+          0 -0.1 0.08
+          0 -0.1 0.12
+          0 -0.12 0.1
+          0 -0.08 0.1
+          -0.02 -0.1 0.1
+          0.02 -0.1 0.1
+          0 -0.1 -0.02
+          0 -0.1 0.02
+          0 -0.12 0
+          0 -0.08 0
+          -0.02 -0.1 0
+          0.02 -0.1 0
+          0 -0.1 -0.12
+          0 -0.1 -0.08
+          0 -0.12 -0.1
+          0 -0.08 -0.1
+          -0.02 -0.1 -0.1
+          0.02 -0.1 -0.1
+          0 -0.1 -0.22
+          0 -0.1 -0.18
+          0 -0.12 -0.2
+          0 -0.08 -0.2
+          -0.02 -0.1 -0.2
+          0.02 -0.1 -0.2
+          0 -0.2 0.18
+          0 -0.2 0.22
+          -0.1 0 0.08
+          -0.1 0 0.12
+          -0.1 -0.02 0.1
+          -0.1 0.02 0.1
+          -0.12 0 0.1
+          -0.08 0 0.1
+          -0.1 0 -0.02
+          -0.1 0 0.02
+          -0.1 -0.02 0
+          -0.1 0.02 0
+          -0.12 0 0
+          -0.08 0 0
+          -0.1 0 -0.12
+          -0.1 0 -0.08
+          -0.1 -0.02 -0.1
+          -0.1 0.02 -0.1
+          -0.12 0 -0.1
+          -0.08 0 -0.1
+          -0.1 0 -0.22
+          -0.1 0 -0.18
+          -0.1 -0.02 -0.2
+          -0.1 0.02 -0.2
+          -0.12 0 -0.2
+          -0.08 0 -0.2
+          -0.1 -0.1 0.18
+          -0.1 -0.1 0.22
+          -0.1 -0.12 0.2
+          -0.1 -0.08 0.2
+          -0.12 -0.1 0.2
+          -0.08 -0.1 0.2
+          -0.1 -0.1 0.08
+          -0.1 -0.1 0.12
+          -0.1 -0.12 0.1
+          -0.1 -0.08 0.1
+          -0.12 -0.1 0.1
+          -0.08 -0.1 0.1
+          -0.1 -0.1 -0.02
+          -0.1 -0.1 0.02
+          -0.1 -0.12 0
+          -0.1 -0.08 0
+          -0.12 -0.1 0
+          -0.08 -0.1 0
+          -0.1 -0.1 -0.12
+          -0.1 -0.1 -0.08
+          -0.1 -0.12 -0.1
+          -0.1 -0.08 -0.1
+          -0.1 0.2 -0.12
+          -0.1 0.2 -0.08
+          -0.1 0.18 -0.1
+          -0.1 0.22 -0.1
+          -0.12 0.2 -0.1
+          -0.08 0.2 -0.1
+          -0.1 0.2 -0.22
+          -0.1 0.2 -0.18
+          -0.1 0.18 -0.2
+          -0.1 0.22 -0.2
+          -0.12 0.2 -0.2
+          -0.08 0.2 -0.2
+          -0.1 0.1 0.18
+          -0.1 0.1 0.22
+          -0.1 0.08 0.2
+          -0.1 0.12 0.2
+          -0.12 0.1 0.2
+          -0.08 0.1 0.2
+          -0.1 0.1 0.08
+          -0.1 0.1 0.12
+          -0.1 0.08 0.1
+          -0.1 0.12 0.1
+          -0.12 0.1 0.1
+          -0.08 0.1 0.1
+          -0.1 0.1 -0.02
+          -0.1 0.1 0.02
+          -0.1 0.08 0
+          -0.1 0.12 0
+          -0.12 0.1 0
+          -0.08 0.1 0
+          -0.1 0.1 -0.12
+          -0.1 0.1 -0.08
+          -0.1 0.08 -0.1
+          -0.1 0.12 -0.1
+          -0.12 0.1 -0.1
+          -0.08 0.1 -0.1
+          -0.1 0.1 -0.22
+          -0.1 0.1 -0.18
+          -0.1 0.08 -0.2
+          -0.1 0.12 -0.2
+          -0.12 0.1 -0.2
+          -0.08 0.1 -0.2
+          -0.1 0 0.18
+          -0.1 0 0.22
+          -0.1 -0.02 0.2
+          -0.1 0.02 0.2
+          -0.12 0 0.2
+          -0.08 0 0.2
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0.666 0.666 0.666 1
+        }
+      }
+    }
+  }
+}

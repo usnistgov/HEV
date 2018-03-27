@@ -1,0 +1,11 @@
+April 18, 013
+
+  This is a kludgy tes of the 6 blade rheometer to produce 12 colors.
+
+  Its based on ../rabExample
+
+  ./getData.sh  # to get data
+
+  ./runallgpu   # to build
+  		# no need to keep the data
+

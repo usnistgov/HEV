@@ -1,0 +1,36 @@
+set up iris environment, then:
+
+# set up a new link if a new version number
+cd $HEVROOT/iris
+rm iris-v1.x
+ln -s iris-v1.3 iris-v1.x # (or as appropriate)
+
+#
+# NOTE that the subdirectories of iris-v1.x are all "source" except
+# for the subdirectory named 'install'.
+#
+# All of the other subdirectories contain "source" in the sense
+# that they contain files that are used to create a useable installation
+# of IRIS.
+#
+
+
+# set prefixes 
+export IRIS_HOME=$HEVROOT/iris/iris-v1.3
+export IRIS_PREFIX=$IRIS_HOME/installed # installation destination
+
+cd $IRIS_HOME
+# might need to do a "make distclean" first if OSG or DTK has changed
+make  -j `getconf _NPROCESSORS_ONLN` install
+
+========================================================================
+if testing a version out of HEVROOT:
+
+export IRIS_HOME="/home/kelso/projects/iris-v1.3"
+export IRIS_PREFIX="$IRIS_HOME/installed"
+
+export OSG_FILE_PATH="$IRIS_PREFIX/data:$OSG_FILE_PATH"
+export LD_LIBRARY_PATH="$IRIS_PREFIX/lib:$LD_LIBRARY_PATH"
+export PATH="$IRIS_PREFIX/bin:$PATH"
+export PKG_CONFIG_PATH="$IRIS_PREFIX:$IRIS_HOME:$PKG_CONFIG_PATH"
+

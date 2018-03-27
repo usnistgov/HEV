@@ -1,0 +1,58 @@
+10
+
+dir
+995
+https://diverse.svn.sourceforge.net/svnroot/diverse/trunk/dtk/programs
+https://diverse.svn.sourceforge.net/svnroot/diverse
+
+
+
+2012-08-09T21:26:59.050819Z
+995
+pshinpaugh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+507ea766-9cfe-0310-9089-a533cff91c67
+
+fltk
+dir
+
+xwand
+dir
+
+clientServer
+dir
+
+sharedMemUtils
+dir
+
+augmentManager
+dir
+
+CMakeLists.txt
+file
+
+
+
+
+2011-01-24T20:43:30.000000Z
+cc43819c407937ea7eb8a88edb0ac6b1
+2009-03-05T06:32:23.610166Z
+915
+pshinpaugh
+
+generalUtils
+dir
+

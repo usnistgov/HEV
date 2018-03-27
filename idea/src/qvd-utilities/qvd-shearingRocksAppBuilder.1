@@ -1,0 +1,74 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH qvd-shearingRocksAppBuilder 1 "December 2013" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+qvd-shearingRocksAppBuilder
+- Shearing Rocks Application Builder
+
+.SH SYNOPSIS
+.B "qvd-shearingRocksAppBuilder"
+[--verbose] [--tim|--iris] [--box x y z] rocksDir rocksTemplate file.qvisdat
+
+.SH DESCRIPTION
+.PP
+.I
+qvd-shearingRocksAppBuilder
+builds an application for suspension flow of shearing rocks based on
+an input set of rocks and a qvisdat file.
+
+.PP
+The application will be self contained in the \fBshearingRocksVis\fR
+subdirectory.  The subdirectory will be created, so it must not exist
+prior to executing this command.
+
+
+.SH OPTIONS
+.TP
+.B "--tim"
+Use \fBqvd-toTIM\fR for the underlying animation.
+This is the default.
+
+.TP
+.B "--iris"
+Use \fBqvd-toIRIS\fR for the underlying animation.
+
+
+.TP
+.B "--box x y z"
+Specify the data size. The default 
+data size is 30x30x30, ranging -15 to +15 in each axis.
+Example: --box 90 90 90
+
+
+.TP
+.B "--verbose"
+Output mildly amusing activity and debugging messages to \fIstdout\fR.
+Otherwise, the command runs quietly.
+
+.SH REQUIRED PARAMETERS
+Three required positional parameters:
+.TP
+.B rocksDir
+is a subdirectory containing \fB.savg\fR format files of the rocks (inclusions).
+
+.TP
+.B rockTemplate
+is a string which forms a printf-style template for
+existing polygonal rock shape files.
+
+.TP
+.B file.qvisdat
+is the single input \fB.qvisdat\fR file.
+
+.SH EXAMPLE
+.PP
+An example using this command can be found in $HEVROOT/idea/src/qvd-utilities/srabExample
+
+.SH SEE ALSO
+.I
+qvd-utilities(1), irisfly(1), hev-tim(1)
+
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov,  NIST/ITL/ACMD/HPCVG
+

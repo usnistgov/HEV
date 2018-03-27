@@ -1,0 +1,90 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-tubify 1 "August 2008" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hev-tubify
+- Create 3D extruded tubes from 3D paths.
+
+.SH SYNOPSIS
+.B "hev-tubify" 
+[ options ]
+
+.SH DESCRIPTION
+.PP
+.B
+hev-tubify 
+generates a 3D extruded tube based on 3D paths.
+
+The 3D paths are read from standard input and can be either in the 
+form of an SAVG file or a file containing a series of 3D coordinates.  
+
+If an SAVG file is used as input, each 'line' or 'polygon' primitive 
+is extruded as a separate path.  Point primitives are ignored.
+
+If a file containing just a sequence of 3D coordinates is used 
+as input, these coordinates will be used as a single extrusion
+path. Each 3D point must be on a separate line.
+
+Ouput is written either as an SAVG or OSG polygon file.
+
+.SH EXAMPLE
+
+   hev-tubify --join ROUND --radius 0.04  <  path.savg  >  extrusion.osg
+
+.SH OPTIONS
+
+   -j joinType
+   --join joinType       Method for joining tubes.
+                         joinType can be RAW, ANGLE, CUT, or ROUND.
+                         Default is ANGLE.
+
+   -c YES|NO
+   --cap YES|NO          Put caps at the beginning and end of
+                         the tubes.
+                         Default is NO.
+
+   -n  normalType
+   --normals normalType  Type of normals that are generated.
+                         normalType can be FACET or SMOOTH.
+                         Default is SMOOTH.
+
+   -d nDiv
+   --divisions nDiv      Number of divisions in tube circumference.
+                         nDiv is an integer greater than 2.
+                         Default is 8.
+
+   -r rad
+   --radius rad          Radius of tubes.
+                         rad is a floating point number.
+                         Default is 0.01
+
+   -f outFormat
+   --format outFormat    Output file format.
+                         outFormat can be SAVG or OSG.
+                         Default is OSG.
+
+   -h
+   --help                Display this usage message and exit.
+
+Option keywords such as RAW, EDGE, and YES are case-insensitive.
+They may be abbreviated to the shortest unique string.
+
+.SH NOTES
+       Color information from input .savg files is not used in the
+       output.  No color information at all appears in the output
+       files.
+
+       Some bugs have been observed in the polygonization of the
+       tubes when using the CUT join method.
+
+       When using round joins to extrude along the length of a closed
+       polygon in an input .savg file, the final join between the last
+       point of the polygon and the first point of the polygon is not
+       provided.
+
+       This program uses GLE, a package for creating extruded
+       surfaces that was originally developed by Linas Vepstas.
+       We have slightly modified the code for use in this program.
+       We are using this code under the GNU General Public License.
+
+

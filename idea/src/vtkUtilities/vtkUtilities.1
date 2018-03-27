@@ -1,0 +1,219 @@
+.TH vtkUtilities 1
+
+
+.SH Overview
+
+.P
+
+This page describes a set of HEV utilities for accessing portions of
+the Visualization Toolkit (VTK). 
+These utilities encapsulate individual VTK algorithms into standalone
+HEV programs. These HEV programs can then
+be strung together to provide complicated processing scenarios.
+In addition, there are some tools for converting data into and
+out of VTK file formats.
+
+Note: We have implemented many of these VTK tools and there are others
+that may be added in the future.
+
+VTK is a large system and these tools
+do not provide access to every component of VTK.
+These utilities cover a limited number of important and basic functions.
+If you need VTK capabilities beyond these or if you need
+a relatively complicated scenario of VTK processing, 
+you should consider writing custom VTK programs.
+The source code for the tools described here might be useful models for
+writing such programs in either Python or C++.
+
+For full documentation of VTK and its capabilities see:
+
+.RS
+\fIThe Visualization Toolkit: An Object Oriented Approach to 3D Graphics\fR, 
+by Schroeder, Martin and Lorensen.
+
+\fIThe VTK User's Guide\fR, by Kitware, Inc.
+
+http://www.vtk.org
+.RE
+
+
+.SH VTK File and Data Formats
+
+
+Most of these HEV utilities read and write files in VTK format.
+Specifically, they are designed to use the VTK \fBSimple Legacy Formats\fR
+as described in the VTK User's Guide. 
+As of this writing, a description of these formats can also be found here:
+.P
+.RS
+http://www.vtk.org/VTK/img/file-formats.pdf
+.RE
+.P
+Note that these HEV tools do \fBNOT\fR handle 
+VTK \fIfield\fR data or the VTK XML file formats.
+
+
+There are several tools for converting data into and out of 
+the VTK file format.  These are described below.
+
+There are five types of VTK data objects that are produced and
+processed by these utilities:
+
+.RS
+* vtkPolyData (geometry: points, lines, and polygons)
+.br
+* vtkStructuredPoints (the simplest grid format; this is also sometimes referred to as the VTK image format)
+.br
+* vtkStructuredGrid
+.br
+* vtkUnstructuredGrid
+.br
+* vtkRectilinearGrid
+.RE
+
+All of these data objects can be represented in the VTK file format.
+For more information on these types of data, see the VTK documentation.
+
+By convention, all VTK files have the extension \fI.vtk\fR.
+
+
+.SH HEV VTK Tools
+
+
+The HEV VTK utilities fall into four categories:
+
+.RS
+* Data Format Conversions
+.br
+* Grid to Grid Transformations
+.br
+* Grid to Geometry Transformations
+.br
+* Geometry to Geometry Transformations
+.RE
+
+
+Here is a list of utilities that have been implemented for each of these categories:
+
+\fIData Format Conversions\fR:
+.RS
+.HP
+hev-gridToVtkImage         raw data to structured points
+.HP
+hev-gridToVtkRectGrid      raw data to rectilinear grid
+.HP
+hev-gridToVtkStructGrid    raw data to structured grid
+.HP
+osgdb_vtk.so               VTK file loader for OSG 
+.RE
+
+
+\fIGrid to Grid Transformations\fR:
+.RS
+.HP
+hev-vtkGaussianSmooth      apply smoothing to grid data
+.HP
+hev-vtkGridResample        resample grid at specified points
+.HP
+hev-vtkGridSubset          extract a spatial subset of a grid
+.HP
+hev-vtkGradient            gradient vectors from scalar grid
+.HP
+hev-vtkVectorMagnitude     magnitude of a vector field
+.RE
+
+\fIGrid to Geometry Transformations\fR:
+.RS
+.HP
+hev-vtkContour             iso-lines or iso-surfaces
+.HP
+hev-vtkGridToGeom          generate simple geometry for a grid
+.HP
+hev-vtkStreamLine          stream lines from vectors or tensors
+.HP
+hev-vtkVectorGlyph         glyphs for vector data
+.RE
+
+\fIGeometry to Geometry Transformations\fR:
+.RS
+.HP
+hev-vtkPolyDecimate        reduce number of triangles in a mesh
+.HP
+hev-vtkSmoothMesh          smooth a polygonal mesh
+.HP
+hev-vtkAddNormals          add normals to a set of polygons
+.HP
+hev-vtkReverse             reverse normal vectors / cell order
+.HP
+hev-vtkCleanPolyData       clean up polygonal data
+.HP
+hev-vtkBoundingHull        generate a convex hull
+.RE
+
+For information on an individual tool, see its man page.
+
+All of these utilities are invoked from the command line with the exception
+of the VTK file loader for OSG: \fIosgdb_vtk.so\fR. 
+The file loader is a shared object library and is not invoked directly
+by the user.  
+It enables OSG applications to load VTK files directly,  
+so programs such as irisfly, iris-convert, and osgviewer can load
+and process VTK files without prior conversion.  See the man page
+for osgdb_vtk for more information.
+
+
+Here is a list of additional utilities that may be implemented in the future:
+
+
+\fIGrid to Grid Transformations\fR:
+.RS
+.HP
+hev-vtkGridCoordTransform  transform coordinates of grid pts
+.RE
+
+\fIGrid to Geometry Transformations\fR:
+.RS
+.HP
+hev-vtkTensorGlyph         glyphs for tensor data
+.RE
+
+\fIGeometry to Geometry Transformations\fR:
+.RS
+.HP
+hev-vtkConvertToStrips     convert to tristrips and polylines
+.HP
+hev-vtkConvertToTriangles  convert all polygons to triangles
+.HP
+hev-vtkPolyCoordTransform  transform polygon coords and normals
+.HP
+hev-vtkDelaunay            generate Delaunay triangulation
+.HP
+hev-vtkConnectedComponents split/count # of connected components
+.HP
+hev-vtkExtractBoundary     extract boundary for set of polygons
+.HP
+hev-vtkClipGeom            clip polygon data
+.RE
+
+
+
+.SH See Also
+
+VTK Documentation:
+
+.RS
+\fIThe Visualization Toolkit: An Object Oriented Approach to 3D Graphics\fR, 
+by Schroeder, Martin and Lorensen.
+
+\fIThe VTK User's Guide\fR, by Kitware, Inc.
+
+http://www.vtk.org
+.RE
+
+Details for each tool are provided on its man page.
+
+
+
+
+
+

@@ -1,0 +1,334 @@
+.TH ivUtilities 3 "June 2011"
+.SH NAME
+ivarrow,
+ivaxis,
+ivcone,
+ivcomment,
+ivcomplexity,
+ivcube,
+ivcylinder,
+ivdef,
+ivdeg2rad,
+ivdirectionallight,
+ivlightmodel,
+ivline,
+ivmaterial,
+ivmatrixtransform,
+ivpfivfix,
+ivpointlight,
+ivrgba,
+ivrotate,
+ivscale,
+ivshape,
+ivsphere,
+ivspotlight,
+ivstick,
+ivtext,
+ivtext3,
+ivtexture,
+ivtranslate,
+ivufix,
+ivuse,
+ivutext,
+ivutext3,
+ivwirecube
+.SH SYNOPSIS
+.B "ivarrow"
+[ratio]
+.br
+.B "ivaxis"
+[-rgb]
+.br
+.B "ivcone"  
+[radius height]
+.br
+.B "ivcomment"  
+string
+.br
+.B "ivcomplexity"  
+[type] value
+.br
+.B "ivcube"
+[width height depth]
+.br
+.B "ivcylinder"
+[radius height]
+.br
+.B "ivdef"
+name
+.br
+.B "ivdeg2rad"
+degrees
+.br
+.B "ivdirectionallight"
+[-intensity i] [-color r g b] [-direction x y z]
+.br
+.B "ivlightmodel"
+BASE_COLOR | PHONG
+.br
+.B "ivline"
+x1 y1 z1 x2 y2 z2
+.br
+.B "ivmaterial"
+[-ambientcolor r g b] [-diffusecolor r g b] [-specularcolor r g b] [-emmissivecolor r g b] [-shininess s] [-transparency t]
+.br
+.B "ivmatrixtransform"
+[a b c d   e f g h   i j h l   m n o p]
+.br
+.B "ivpfivfix"
+.br
+.B "ivpointlight"
+[-intensity i] [-color r g b] [-location x y z]
+.br
+.B "ivrgba"
+[r g b a]
+.br
+.B "ivrotate"
+[i j k angle]
+.br
+.B "ivscale"
+[x y z]
+.br
+.B "ivsphere"
+[radius]
+.br
+.B "ivspotlight"
+[-intensity i] [-color r g b] [-location x y z]
+.br
+.B "ivstick"
+x1 y1 z1 x2 y2 z2 [radius]
+.br
+.B "ivtext"
+string
+.br
+.B "ivtext3" 
+string [spacing justification] [parts]
+.br
+.B "ivtexture"
+[-n count] file.rgb
+.br
+.B "ivtranslate"
+[x y z]
+.br
+.B "ivufix
+.br
+.B "ivuse"
+name
+.br
+.B "ivutext"
+string
+.br
+.B "ivtext3" 
+string [spacing justification] [parts]
+.br
+.B "ivwirecube"
+[x y]
+
+.SH DESCRIPTION
+.PP
+.I
+ivUtilities
+is a collection of commands for quickly creating short snippets of
+.I
+Inventor
+ASCII files.
+The commands can be combined through UNIX pipes to form
+Inventor based visualizations.
+The idea is to follow the traditional UNIX philosophy of small tools that
+combine to form a result greater then the sum of the parts.
+Think of these commands as
+.I
+Shell Script Visualization.
+
+.PP
+\fINote: This man page still retains references to to Performer and
+the version of HEV prior to converting to IRIS/IDEA. As time permits,
+this page will be updated. The basic information here on how the
+commands work is correct. -Steve\fR
+
+.PP
+.I
+ivUtilities
+might be useful for rapid prototyping, quick experiments,
+creating simple demos or any purpose where getting things displayed easily is
+important.
+The commands are intended to be easy to learn and leverage off of already known
+command line practices. Each command is small with a minimal number of command
+line options.
+.PP
+The typical usage is to create small to moderate shell script of commands to build a series of
+.B
+iv
+files which when displayed produce the desired visualization.
+
+Thinking in terms of objects, translation, scaling, rotation, etc, separates
+the building of the scene from the specific display program.
+Inventor files are viewable by a number of display programs such as
+.B
+savgfly
+(DIVERSE/Dgl/Dpf) for desktop and immersive displays,
+.B
+ivview
+(Inventor Utility) and
+.B
+perfly
+(OpenGL Performer).
+.PP
+Another style of usage is with a language of your choice and programmatically
+create a sequence of commands.
+This program can individually execute the
+.B
+ivUtilities,
+for example with the C language 
+.I
+system()
+or similar functions.
+It can also write the command sequence to
+.I
+stdout
+which can be piped to /bin/sh or other appropriate shell (csh, bash).
+Further, by saving the commands into a file and enabling the execute
+permission on the file, new meta-commands can be easily created.
+.PP
+In general, these commands come directly from the corresponding Inventor nodes
+which hopefully means that their use is obvious or information can be found
+from the appropriate Inventor documentation. There are a few utility commands
+not part of Inventor.
+
+.SH  OPTIONS
+.PP
+
+For the time being, the command line options listed in the SYNOPSIS are
+.I hopefully
+self explanatory.
+Options enclosed in brackets are optional and a default
+value is used. However, when options are given, all the options much be
+supplied. 
+In many cased, entering a
+.I
+-help
+as a command line parameter will produce a usage message.
+
+.SH EXAMPLE
+.TP
+.B "ivdemo"
+will produce and example script
+.B
+ivUtilities
+commands.
+.TP
+.B "ivdemo | /bin/sh"
+will actually execute the demo. A variety of Inventor files will be created,
+so its best to do this command in an empty directory.
+
+.SH  OpenScene Graph(OSG), DIVERSE, Performer
+.PP
+The original coordinate system used by Inventor orients
+.I
+UP
+as along the
+.I
+Y
+axis. On the other hand, OSG and DIVERSE define
+.I
+UP
+along the
+.I
+Z
+axis. To make it easier to combine Inventor style files and OSG files, these
+routines produce files compatible with the
+.B
+ivu
+file loader.
+This loader flips the necessary axis to make the files compatible with the OSG/DIVERSE
+coordinate system.
+.PP
+Thus, when using these commands for OSG/DIVERSE direct the output
+to a file the a
+.B
+ivu
+extension. For example:
+.I
+ivsphere > sphere.ivu
+
+The
+.B ivu
+extension (and loader) generally solves the coordinate system problem, but for
+certain commands, there is still the issue of what is considered up. This
+situation is more prevalent with regard to text. By default, Inventor text is
+oriented with
+.I up
+as along the Y axis. Thus, the
+.B ivtext
+command when used with the .ivu loader will produce test that appears to be
+laying flat. To create test as might more typically be expected, use the
+.B ivutext
+and
+.B ivutext3
+commands with the
+.B ivu
+loader.
+
+.PP
+There may be other situations were it is necessary to compensate for the
+coordinate system. An example is
+.B ivcone
+which is similar text problem.
+To compensate for this situation, use the
+.B ivufix command.
+For example:
+.I
+ivcone | ivufix > cone.ivu
+
+
+.PP
+The
+.B ivpfivfix
+command is a legacy from the the use with OpenGL Performer.  The OpenGL
+Performer loader for reading reading Inventor files tries to be helpful and
+applies a X rotation to apparently compensate for the difference in coordinate
+system between the two systems. In many cases, this helpfulness is not
+appropriate.  This command reverses this effect.  In fact, OSG continues this
+.I helpful
+legacy. Use of the
+.B ivu
+file extension is the preferred way to deal with the coordinate system
+difference.
+
+
+
+
+.SH  BUGS
+.PP
+Not all the commands have a usage message. They should all have a
+.B
+-h
+or
+.B
+-help
+option to print out their parameters definitions.
+
+It would be nice to fill in more details on the options or perhaps have individual man pages.
+
+
+
+.SH SEE ALSO
+.I
+savgfly(1),
+.I
+Inventor(1),
+.I
+ivview(1),
+.I
+osgviewer(1),
+.I
+perfly(1),
+.I
+http://diverse.sourceforge.net/ 
+
+
+.SH AUTHOR
+
+.PP
+Steven G. Satterfield, steve@nist.gov,  NIST/ITL/MCSD/SAVG
+Original implementation April 2004.

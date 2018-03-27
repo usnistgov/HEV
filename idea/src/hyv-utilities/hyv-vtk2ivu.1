@@ -1,0 +1,105 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hyv-vtk2ivu 1 "June 10, 2010" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hyv-vtk2ivu
+- convert  *.vtk files for a specifed phaseNumber to *.ivu (isosurface).
+
+.SH SYNOPSIS
+.B "hyv-vtk2ivu"
+[--parallel n] [--ivmaterial string] phaseNumber [r g b]   dataDir | vtkFile
+
+.SH DESCRIPTION
+.PP
+.I
+hyv-vtk2ivu
+will convert all
+.B *.vtk
+files to
+isosurfaces, i.e
+.B *.ivu
+files.
+The color of the resulting isosurface is specified.
+The required iso surface value is taken from the corresponding
+.B *.iso
+file.
+
+Since each isosurface phase is typically a different color, this command is
+invoked separatley for each phase.
+
+.SH OPTIONS
+.IP "\fB--parallel n\fR"
+specifies how many concurrent processes to be used convert
+in parallel. On a 2 CPU machine, n of 2 is a good number.
+
+
+.IP "\fBphaseNumber\fR"
+is an integer used to identify the phase being created.
+
+.IP "\fBr g b\fR"
+
+is the color (optional) to be applied to the resulting isosurface. These
+values are specified in the range 0.0 to 1.0 These values are used for difuse
+color, but are ignored if \fB--ivmaterial is specified\fR.
+
+
+.IP "\fBdataDir\fR"
+is an existing directory containing the 
+.B img
+file.
+The resulting
+.B ivu
+files are written to
+.B dataDir
+with names in the form of 
+.B *_{P}.ivu
+where
+.B {P}
+is the specified
+.B phaseNumber.
+
+.IP "\fBvtkFile\fR"
+if an
+.B vtk
+file is specified rather than a directory name,
+then the single specified
+.B vtk
+file is converted to an
+.B ivu
+isosurface file in the current directory.
+
+.IP "\fBivmaterial string\fR"
+when specified, this string is passed to the ivmaterial command
+internally to add material values to the create ivu. This
+string over rides the r g b parameters, so be sure to include
+the desired diffuse r g b color as part of the string.
+Refer to \fIivmaterial\fR man page.
+
+
+
+.SH EXAMPLE
+
+.PP
+Run with 2 parallel processes converting the vtk file of  phase 3
+to the ivu isosurface file. The isosurface color will be "0.8 1.0 0.5".
+
+.IP
+hyv-vtk2ivu --parallel 2  3   0.8 1.0 0.5  C3Ssmall
+
+
+
+
+
+
+.SH SEE ALSO
+.I
+hyv-utilities(3)
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,
+.br
+NIST/ITL/MCSD/SAVG
+

@@ -1,0 +1,45 @@
+# /bin/sh
+#
+# raveSafety  - display RAVE safety announcement
+#
+# steve@nist.gov
+# June 4, 2010
+# March 25, 2011
+# 
+
+if [ "$HEVROOT" == "" ]
+then
+	echo "HEVROOT not defined"
+	exit
+fi
+
+case $# in
+1)
+	f=$1
+	;;
+*)
+	f=$HEV_IDEA_DIR/etc/hev-raveSafety/data/raveSafety.png
+	;;
+esac	
+
+if [ ! -f $1 ]
+then
+	echo "File: $f not found"
+	exit
+fi
+
+#echo "Using:" $f
+
+case `hev-identifyImmersive` in
+rave|powerwall)
+        D=":0.1"
+	;;
+*)
+	D=":0.0"
+	;;
+esac
+
+env DISPLAY=$D hev-imageDisplay -title Safety -geometry -150-150 $f
+
+
+	

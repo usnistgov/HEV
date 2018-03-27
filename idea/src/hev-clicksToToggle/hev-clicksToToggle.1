@@ -1,0 +1,42 @@
+.TH hev-clicksToToggle 1 "April 2011"
+
+.SH NAME
+hev-clicksToToggle
+
+.SH SYNOPSIS 
+.B hev-clicksToToggle [--usleep t] clickShm toggleShm
+
+.SH DESCRIPTION
+
+\fBhev-clicksToToggle\fR converts a button that clicks, i.e. goes off-on-off
+to a button that toggles, i.e. goes from off to on.  Two clicks of the input
+button toggle the state of the output button.
+
+\fB hev-clicksToToggle\fR opens an existing shared memory file namd
+\fIclickShm\fR and opens, creating if needed, a shared memory file named
+\fItoggleShm\fR which is the same size as \fIclickShm\fR.
+
+In a loop, \fIclickShm\fR is read, queued, and when it changes value twice,
+such as off-on-off, the previous value (on) is written to \fItoggleShm\fR.
+When \fIclickShm\fR changes vale two more times, the most recent value (off)
+is written to \fItoggleShm\fR.
+
+.SH OPTIONS
+
+.IP "--usleep t"
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.SH EXAMPLE
+
+See $HEVROOT/idea/data/common.iris for an example.
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+April 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

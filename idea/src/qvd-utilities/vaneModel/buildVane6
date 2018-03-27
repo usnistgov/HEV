@@ -1,0 +1,95 @@
+#! /usr/bin/env perl
+#
+# build the 4 blade vane part of the rheometer model
+
+# steve@nist.gov
+
+#$version="20100909";
+$version="20130318";
+
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+sub out {
+#    print STDERR "$cmd\n";
+    system("$cmd");
+
+}
+
+# output a header string
+$cmd="echo '# Vane 6 blade model created:' `date`";
+out;
+
+
+$overallHeight=50;
+
+$paddleWidth=22;
+$paddleHeight=15.94;
+$paddleThickness=1;
+
+# Shaft
+
+$shaftHeight=$overallHeight-$paddleHeight;
+$shaftHeight2=$shaftHeight/2;
+$shaftRadius=2.77;
+
+# shift into position
+$z=$shaftHeight/2.0+$paddleHeight;
+$z2=$shaftHeight+$paddleHeight-1;
+
+$cmd="hev-savgCylinder |\ 
+      hev-savgTransformation --scale $shaftRadius $shaftRadius $shaftHeight2 |\
+      hev-savgTransformation --translate 0 0 $z";
+out;
+
+# Shaft internal
+
+$sx=1;
+$sy=.2;
+$sz=$shaftHeight2*.95;
+$cmd="hev-savgCube |\
+      hev-savgTransformation --scale $sx $sy $sz |\
+      hev-savgTransformation --xyz 0 0 $z";
+out;
+$cmd="hev-savgCube |\
+      hev-savgTransformation --scale $sx $sy $sz |\
+      hev-savgTransformation --hpr 90 0 0 |\
+      hev-savgTransformation --xyz 0 0 $z";
+out;
+
+
+# Paddle
+
+$z=$paddleHeight/2;
+$sx=$paddleWidth/2;
+$sy=$paddleThickness/2;
+$sz=$paddleHeight/2;
+$cmd="hev-savgCube |\
+      hev-savgTransformation --scale $sx $sy $sz |\
+      hev-savgTransformation --xyz 0 0 $z";
+out;
+
+$cmd="hev-savgCube |\
+      hev-savgTransformation --scale $sx $sy $sz |\
+      hev-savgTransformation --hpr 60 0 0 |\
+      hev-savgTransformation --xyz 0 0 $z";
+out;
+
+$cmd="hev-savgCube |\
+      hev-savgTransformation --scale $sx $sy $sz |\
+      hev-savgTransformation --hpr 120 0 0 |\
+      hev-savgTransformation --xyz 0 0 $z";
+out;
+
+# Shaft marker
+
+$cmd="hev-savgCube |\
+      hev-savgTransformation --scale 1 .25 1 |\
+      hev-savgTransformation --xyz $shaftRadius 0 $z2";
+out;
+
+
+
+
+

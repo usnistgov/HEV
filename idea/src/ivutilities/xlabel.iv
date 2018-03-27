@@ -1,0 +1,22 @@
+#Inventor V2.0 ascii
+Separator {
+Translation { translation .9 -.1 0 }
+Separator {
+Scale { scaleFactor .04 .06 .01 }
+Separator {
+Material {
+diffuseColor 1 0 0
+transparency 0
+}
+Separator {
+ Font {
+  name  "Times-Roman"
+  size 2
+ }
+ Text3 {
+   string ["1,0,0"]
+ }
+}
+}
+}
+}

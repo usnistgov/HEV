@@ -1,0 +1,10 @@
+Data can be triangulated with the following commands:
+
+hev-triangulation flat_color.savg flat_color_surface.savg
+
+or
+
+hev-constrainedTriangulation color.savg boundary.savg color_surface.savg
+
+
+In these cases, flat_color_surface.savg and color_surface.savg are the ouput files.

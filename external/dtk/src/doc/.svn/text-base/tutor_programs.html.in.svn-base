@@ -1,0 +1,552 @@
+<html>
+<header>
+<title>DTK Tutorial - Beginning Programs</title>
+</header>
+
+<a href="tutor_programming.html">next</a> |
+<a href="tutor_toc.html">toc</a> |
+<a href="tutor_intro.html">prev</a>
+<hr>
+
+
+<h2>Beginning Programs</h2>
+
+<p> We start this tutorial by running small programs that are useful
+distributed simulation debugging tools, that are also instructive.&nbsp;
+
+<p>
+All programs that come with the DTK package support the '--help' (or
+'-h') option.&nbsp; All DTK programs begin with the four characters
+"dtk-".&nbsp; Any time you meet a new DTK program try the '--help'
+option.&nbsp; This tutorial will make more sense if it is done in the
+order that it is written.&nbsp; You can leave all of the programs
+running as you go through this tutorial.&nbsp; You can exit programs
+by keying Ctrl-c (control with c) or using another method to send the
+INT (SIGINT or interrupt) signal to the program, or use the quit button
+if there is one.
+
+<p> We first give a brief introduction to an important
+administrative program, dtk-config.
+
+<hr>
+
+<a name="dtk-config">
+<h3>dtk-config</h3>
+
+
+The first thing to do after installing DTK is to put the DTK
+installation directory bin in your shell's PATH environment
+variable.&nbsp; The DTK installation bin is the DTK installation
+(prefix) directory with /bin prep-ended.&nbsp; We'll test this next,
+by running a DTK program.
+
+<p>
+
+<b>dtk-config</b> is a program that just prints text to standard
+output.&nbsp; <b>dtk-config</b> prints information about your DTK
+installation, like DTK compile options and where DTK files are
+installed.
+
+<p>
+
+In your shell try running the following command:
+
+<blockquote>
+<pre>
+% <font color=green>dtk-config</font> &nbsp;
+</pre>
+</blockquote>
+
+<p> If this failed to run you may need to fix your PATH environment
+variable.&nbsp; Here's an example result running on the authors Gentoo
+GNU/Linux PC using a Gnome Terminal:
+
+<p>
+
+<img src="dtk-config_term.png">
+
+<p>
+
+Run <b>dtk-config</b> with some of the listed option flags.&nbsp; 
+Come on! - at least try '<font color=green>dtk-config --about</font>'.
+   
+<p>
+
+<b>dtk-config</b> can be your friend when you want information
+about the DTK installation that you're using.
+
+<p>
+<hr>
+
+<a name="dtk-floatSliders">
+<h3>dtk-floatSliders</h3>
+
+
+In your shell try running the following two commands:
+<p>
+<blockquote>
+<pre>
+% <font color=green>dtk-floatSliders foo --number 6 --scale 3 -180 180 0 --scale 4 -180 180 0 --scale 5 -180 180 0 --labels x y z h p r &</font><p> &nbsp;
+% <font color=green>dtk-readFloats foo --queue --count</font> &nbsp;
+</pre>
+   <p>
+   <img src="sliders1.png">
+</blockquote>
+
+<p>
+
+These two programs both have the DTK shared memory file "foo"
+open.&nbsp; The dtk-floatSliders programs writes to the shared memory
+file "foo", when you move a slider.&nbsp; The program dtk-readFloats
+reads from the file "foo".&nbsp; All DTK shared memory has an
+associated file.  If you look you'll see there is a file
+"/tmp/dtkSharedMem/foo" on your computer:
+
+<blockquote>
+<pre>
+% <font color=green>ls -l /tmp/dtkSharedMem/foo</font> &nbsp;
+-rw-rw-rw-    1 lanceman lanceman     1208 May 14 14:18 /tmp/dtkSharedMem/foo
+</pre>
+
+</blockquote>
+
+You see the file "foo" is much larger than 6xsizeof(float)=24
+bytes.&nbsp; This size reflects the fact that the shared memory is queued in
+addition to the required DTK memory overhead.&nbsp; The thing to note is
+the DTK shared memory is a regular file in the file system for each
+piece of DTK shared memory.&nbsp; So we refer to them as DTK shared
+memory files.
+
+<p>
+
+DTK shared memory files are a regular data file type.&nbsp; This file
+contains values of the users data in addition to information associated
+with queuing, counting, time-stamping and network connectivity.&nbsp;
+Since it is a regular file you can build a structured name space
+with directories and symlinks with DTK shared memory files.
+
+<p>
+
+<h4>More</h4>
+
+While leaving the above two programs running run more of the same and
+with other command line options.&nbsp; With two copies of
+dtk-floatSliders connected to DTK shared memory "foo", click (set) the
+"update continuous" button on one and move the slider on the other
+one.&nbsp; What is happening?&nbsp;
+
+<p>
+
+<hr>
+
+<a name="dtk-floatScope">
+<h3>dtk-floatScope</h3>
+
+Leave all the above programs running, or re-run them, and run in addition:
+<p>
+
+<blockquote>
+<pre>
+% <font color=green>dtk-floatScope foo --scale foo 3 -180 180 --scale foo 4 -180 180 --scale foo 5 -180 180 &</font> &nbsp
+</pre>
+<p>
+  <img src=scope0.png>
+
+</blockquote>
+
+<p>
+
+Reminder: run this program (dtk-floatScope) with the '--help' option too.&nbsp;
+
+<p> Move some of the sliders.&nbsp; Though the dtk-floatSliders
+programs can only write one float at a time, the dtk-floatScope reads
+all 6 floats at each little X that is plotted.&nbsp; The
+dtk-floatScope program can read multiple DTK shared memory files so
+the '--scale' option requires the additional shared memory file name
+("foo") argument to tell it which shared memory file to scale.
+
+<p> If you have never used an oscilloscope before the utility of this
+program may pass you by, but if you have you may notice that this
+program crys out for more options and controls.&nbsp; dtk-floatScope
+will be a growing program for some time to come.&nbsp;
+dtk-floatScope in it's current implementation is useful for
+debugging interactive input devices and interactive dynamics programs.
+
+<p> Now try running another copy of the dtk-floatScope.&nbsp; Notice
+the two dtk-floatScope programs do not interfere with each other in
+any observable way.
+
+<p>
+<hr>
+
+<a name="dtk-gnomonDisplay">
+<h3>dtk-gnomonDisplay</h3>
+
+dtk-gnomonDisplay is an Open GL graphics program that is used to display
+rigid body position in real-time.  Run:
+
+<p>
+<blockquote>
+<pre>
+% <font color=green>dtk-gnomonDisplay foo &</font> &nbsp;
+</pre>
+<p>
+<img src=gnomon0.png>
+</blockquote>
+
+<p>
+
+Move some of the sliders.&nbsp; dtk-gnomonDisplay is just another
+float array displayer, like dtk-floatScope, but is very specific in how
+it interprets the float data.&nbsp; dtk-gnomonDisplay interprets the
+float data array as displacement positions x, y, and z, and rotations
+about z (heading, H), rotations about x (pitch, P), and rotations
+about y (roll, R).&nbsp; It's a quick and easy way to see if something
+is moving like you hoped it was.
+
+<p>
+<hr>
+
+<a name="dtk-server">
+<h3>dtk-server</h3>
+
+The program dtk-server is an interrupt driven server, like most
+servers.  This means that it sleeps most of the time waiting for
+requests, like for example an X windows server or a web server.&nbsp;
+For the DTK server, dtk-server, the requests (interrupts) can come from
+any kind of open file, like: an Internet socket, UNIX domain socket,
+serial or parallel device port, a fifo pipe, or terminal (tty)
+input port (like standard input).&nbsp;
+
+<p>
+
+dtk-server runs to provide services.&nbsp; These service provide the
+needed open files to get interrupts from.&nbsp; Most DTK services come
+in the form of run-time loadable dynamics shared objects (DSOs), we
+call DTK DSO services.&nbsp; Most DTK services tend to be very
+hardware specific, like for example a 6 degree-of-freedom tracker
+service.&nbsp; The hello DTK DSO service is a very simple example
+service that reads from standard input and then writes to DTK shared
+memory.
+
+<p>
+
+In one shell run:
+<p>
+<blockquote>
+<pre>
+% <font color=green>dtk-server hello</font> &nbsp;
+</pre>
+</blockquote>
+<p>
+
+
+In another shell run:
+<p>
+<blockquote>
+<pre>
+% <font color=green>dtk-readStrings hello</font> &nbsp;
+</pre>
+</blockquote>
+<p>
+
+Type in the first shell and hit enter.&nbsp; Your text is read in by the
+dtk-server and then written to DTK shared memory file "hello".&nbsp; The second
+program reads the shared memory and then prints to standard output.&nbsp;
+The connection between these two programs is DTK shared memory.
+
+<p>
+
+In yet another shell run:
+<p>
+<blockquote>
+<pre>
+% <font color=green>dtk-readStrings hello --queue</font> &nbsp;
+</pre>
+</blockquote>
+<p>
+
+Type into the dtk-server window again.&nbsp; The difference between
+the two dtk-readStrings programs is that one is reading from queued
+shared memory and the other is periodically polling and writing to
+standard output the last thing written in the shared memory.&nbsp; The
+second "queue reading" dtk-readStrings is not synchronized with the
+shared memory writing program dtk-server, but it gives that appearance
+because it is checking the queue at a high rate.&nbsp; 
+
+<p>
+
+In one more shell run:
+<p>
+<blockquote>
+<pre>
+% <font color=green>dtk-readStrings hello --queue --time-stamp</font> &nbsp;
+</pre>
+</blockquote>
+<p>
+
+Type into the dtk-server window some more.&nbsp; This version of
+dtk-readStrings reads from a time stamped, and queued DTK shared
+memory file called "hello".&nbsp;  It's the same "hello" shared memory file,
+but it just got a little larger when you ran this recent
+dtk-readString.&nbsp; Programs that write to DTK shared memory don't
+need to know if the shared memory is queued or not, time stamped or
+not, and count stamped or not.&nbsp; Typically it's the data reading
+programs choose to decide if shared memory data is queued, time
+stamped, or count stamped.&nbsp; Shared memory queuing and time
+stamping are used by dtk-floatScope to give the apparence of
+synchronous data plotting, in the example above.
+
+<p>
+<hr>
+
+<a name="DTK Remote Shared Memory">
+<h3>DTK Remote Shared Memory</h3>
+
+<p>
+<center>
+<hr width=60%>
+</center>
+
+<h4>If you have two or more networked computers connecting them is easy.</h4>
+
+<blockquote>
+
+Leave all the "hello" reading and writing programs running, dtk-server
+and dtk-readStrings.&nbsp; On your computer you should already have
+two windows open (if not run the following commands on your
+computer).&nbsp; On another computer networked to the one you are
+currently using run:
+
+<pre>
+<blockquote>
+% <font color=green>dtk-server hello </font>
+% <font color=green>dtk-readStrings --queue hello </font>
+</blockquote>
+</pre>
+
+<p>
+
+Now you should have two windows open on both machines.&nbsp; One
+window with "type here ==>" and one that is blank (unless you already
+typed something in).
+
+<p>
+
+Now you can connect them.&nbsp; On the one of the machines run:
+
+<blockquote>
+<pre>
+% <font color=green>dtk-connectRemoteSharedMem hello "name of other machine on network" </font>
+example % dtk-connectRemoteSharedMem hello rabbit.vt.edu
+</pre>
+</blockquote>
+
+<p>
+Voila!  The two machines are connected.
+ Try typing something in either of the "type here ==>" windows.
+
+</blockquote>
+
+
+<p>
+<center>
+<hr width=60%>
+</center>
+
+<h4>If want to simulate a connecting computers on a network on one
+machine. </h4>
+
+<blockquote>
+
+
+We'll use them as the local shared memory users and we'll make them
+share the "hello" string across the loop-back network.&nbsp; The
+loop-back network is kind of like a pretend IP network that has end
+points (ports) that are both on the same machine and does not use
+networking hardware.&nbsp; Among other things, it's can be used to
+let IP networked programs run on one machine that is not on a network.
+
+<p>
+If your using the bash or ksh shell do not run the programs with the
+tcsh% prompt, or if your running a tcsh or csh shell do not run the
+programs with the bash% prompt.&nbsp;
+
+<p>
+Fire up two more shell windows.&nbsp; We call these the "remote shells".&nbsp;
+First we need to set some DTK environment variables.&nbsp;
+In <b>both</b> remote shells run:
+
+<p>
+<blockquote>
+<pre>
+bash% <font color=green>export DTK_PORT=2345</font> &nbsp;
+bash% <font color=green>export DTK_CONNECTION=localhost:2345</font> &nbsp;
+bash% <font color=green>export DTK_SHAREDMEM_DIR=/tmp/dtkSharedMem2345</font> &nbsp;
+</pre>
+  or
+<pre>
+tcsh% <font color=green>setenv DTK_PORT 2345</font> &nbsp;
+tcsh% <font color=green>setenv DTK_CONNECTION localhost:2345</font> &nbsp;
+tcsh% <font color=green>setenv DTK_SHAREDMEM_DIR /tmp/dtkSharedMem2345</font> &nbsp;
+</pre>
+</blockquote>
+
+<p>
+
+Now run in <b>one</b> of the shells:
+
+
+<blockquote>
+<pre>
+% <font color=green>dtk-config --env</font> &nbsp;
+</pre>
+  <p>looky then<p>
+<pre>
+% <font color=green>dtk-printEnv</font> &nbsp;
+</pre>
+</blockquote>
+
+<p>
+
+The 'dtk-config --env' tells you all about DTK environment variables.&nbsp;
+'dtk-config --env' lists all environment variables used by the DTK API and DTK
+programs.&nbsp; dtk-printEnv just prints the current DTK environment variables
+(as you knew by running 'dtk-printEnv --help', right!).
+
+<p>
+
+Run one in each shell the following:
+
+<p>
+
+<blockquote>
+<pre>
+% <font color=green>dtk-server hello</font> &nbsp;
+% <font color=green>dtk-readStrings --queue hello</font> &nbsp;
+</pre>
+</blockquote>
+
+<p>
+
+As before type into the first shell.&nbsp; Nothing new here, but
+these two programs are not connected to all the other programs that
+you ran before.
+
+<p>
+
+Now in yet another shell run:
+
+<blockquote>
+<pre>
+% <font color=green>dtk-connectRemoteSharedMem hello localhost:2345</font> &nbsp;
+</pre>
+</blockquote>
+
+<p>
+
+Now you should be able to type in any of the dtk-server program
+windows and see all the running dtk-readStrings programs reading the
+same text.
+
+</blockquote>
+
+<p>
+<center>
+<hr width=60%>
+</center>
+
+<p>
+<br>
+<p>
+
+Now Ctrl-c one of the dtk-server programs.&nbsp; The other set of "hello"
+readers and writer run as before they connected.
+<p>
+
+Can you connect the two sets of "hello" again?
+
+<p>
+<hr>
+
+<a name="Cleaning Up DTK Shared Memory">
+<h3>Cleaning Up DTK Shared Memory</h3>
+
+In the "remote shells" kill (Cntl-c) the programs.&nbsp;
+Now run:
+
+<p>
+
+<blockquote>
+<pre>
+% <font color=green>ls -l $DTK_SHAREDMEM_DIR</font>
+total 8
+-rw-rw-rw-    1 lanceman lanceman     6624 May 14 14:25 hello
+
+% <font color=green>dtk-destroySharedMem hello</font> &nbsp;
+% <font color=green>ls -l $DTK_SHAREDMEM_DIR</font> &nbsp;
+ls: /tmp/dtkSharedMem: No such file or directory
+</pre>
+</blockquote>
+
+<p>
+
+Reminder: run <font color=green>dtk-destroySharedMem --help</font>
+
+<p>
+
+The dtk-destroySharedMem program is used to remove all system
+resources associated with a DTK shared memory file.&nbsp; On GNU/Linux
+systems this includes a system V semaphore array and the DTK shared
+memory file.&nbsp; The DTK shared memory file keeps in it the
+information about the system V semaphore array.&nbsp; So if you delete
+this file you will not have a record as to what system V semaphore
+array to remove.&nbsp; On IRIX systems pthreads read/write locks are
+used in place of the system V semaphore array, so deleting the DTK
+shared memory file will work fine, but we recommend using the
+dtk-destroySharedMem program to keep your codes portable.&nbsp; If you
+call dtk-destroySharedMem on DTK shared memory files that are being
+used, the programs using them will get unhappy.
+
+<p>
+
+Now kill all the other programs and run:
+
+<p>
+<blockquote>
+<pre>
+% <font color=green>ls -l /tmp/dtkSharedMem</font>  &nbsp;
+total 8
+-rw-rw-rw-    1 lanceman lanceman     1208 May 14 14:18 foo
+-rw-rw-rw-    1 lanceman lanceman     6776 May 14 14:26 hello
+% <font color=green>dtk-destroySharedMem --recursive</font> &nbsp;
+% <font color=green>ls -l /tmp/dtkSharedMem</font>  &nbsp;
+ls: /tmp/dtkSharedMem: No such file or directory
+</pre>
+</blockquote>
+
+<p>
+
+Keep in mind that most of the programs (except dtk-server and
+dtk-floatScope) have little source code.&nbsp; Most of the
+code for these programs is in the DTK API, so tweaking a DTK
+program is not a big task.
+
+<p>
+
+Another good thing to know about is the system V IPC resources, though
+in some installations DTK can be configured to use other semaphore
+methods.&nbsp; DTK shared memory can use system V semaphore arrays,
+which can be listed with <font color=green>ipcs</font>, and removed
+with <font color=green>ipcrm</font>.&nbsp; It may be handy to note
+that DTK shared memory always uses system V semaphore arrays with 3
+semaphores, so if there is a system V semaphore array that is not 3 in
+size (nsems!=3) then it is not from DTK shared memory.
+
+<hr>
+
+<a href="tutor_programming.html">next</a> |
+<a href="tutor_toc.html">toc</a> |
+<a href="tutor_intro.html">prev</a>
+
+

@@ -1,0 +1,12 @@
+TODO:
+  - Implement plane from BAN
+  - Allow property toggling from list of generated isosurfaces
+  - Clipping plane manipulation from Qt
+    - Reasonably good; only works in X-Y plane
+  - Background color
+  - Alpha compositing
+
+BUGS:
+  - creating new isosurface of same column replaces existing isosurface
+    but doesn't update the list of isosurfaces in qt
+  - V toggle doesn't toggle off all timesteps

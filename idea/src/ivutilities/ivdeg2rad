@@ -1,0 +1,13 @@
+#! /bin/sh
+
+# ivdeg2rad - convert degrees to radians
+
+case $# in
+1)
+	echo $1 | awk '{print $1*0.01745329;}'
+	;;
+*)
+	echo "Usage: ivdeg2rad degrees"
+	echo "  convert degrees to radians"
+	;;
+esac

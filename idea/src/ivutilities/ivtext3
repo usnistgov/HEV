@@ -1,0 +1,72 @@
+#! /bin/sh
+
+# ivtext3, ivutext3 - output an iv file of 3D text
+
+b=${0##*/}
+
+usage()
+{
+  echo "Usage: $b string [spacing justification] [parts]"
+  echo
+  echo "   $b is a special case. ivtext3 fully implements Text3"
+  echo
+  echo "   string        test string"
+  echo "   spacing       float; default is 1.0"
+  echo "   justification 'LEFT','RIGHT','CENTER'; default is 'CENTER'"
+  echo "   parts         'SIDES','FRONT','BACK','ALL'; defualt is 'FRONT'"
+  echo
+  exit
+}
+
+string=""
+spacing="1"
+justification="LEFT"
+parts="FRONT"
+
+case $# in
+1)
+   string="$1"
+   ;;
+
+2)
+   string="$1"
+   parts="$2"
+   ;;
+3)
+   string="$1"
+   spacing="$2"
+   justification="$3"
+   ;;
+4)
+   string="$1"
+   spacing="$2"
+   justification="$3"
+   parts="$4"
+   ;;
+*)
+   usage
+   ;;
+esac
+
+
+echo "#Inventor V2.0 ascii"
+
+if [ "$b" == "ivutext3" ]
+then
+    echo "Rotation { rotation 1 0 0 1.57079632679}"
+fi
+
+/bin/cat <<!end
+Separator {
+# Font {
+#  name  "Times-Roman"
+#  size 2
+# }
+ Text3 {
+   string ["$string"]
+   spacing ${spacing}
+   justification ${justification}
+   parts ${parts}
+ }
+}
+!end

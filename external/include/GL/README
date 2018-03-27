@@ -1,0 +1,5 @@
+There are no files to be built or installed, just copy the OpenGL header
+files from http://www.opengl.org/registry/#headers into this directory.
+
+These header files were copied by Kelso on 4/23/12 and seem to work with
+OpenGL 3.3.0

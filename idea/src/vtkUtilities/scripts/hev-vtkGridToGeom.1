@@ -1,0 +1,55 @@
+.TH hev-vtkGridToGeom
+.SH NAME
+hev-vtkGridToGeom - basic geometric representation of grid
+
+.SH SYNOPSIS
+.B hev-vtkGridToGeom [ options ] inFName outFName
+
+.SH DESCRIPTION
+.B hev-vtkGridToGeom
+Takes a grid in vtk format as input. Outputs geometry in
+vtk format (a vtk poly data object).
+
+.PP
+
+.SH OPTIONS
+.TP
+.B --noNormals or -n
+Turns off calculation of Normals.
+
+.SH PARAMETERS
+.TP
+.B inFName
+Location/filename of input file.
+This file has to be in vtk format.
+.TP
+.B outFName
+Location/filename of output file. 
+This file is written as a polyData object.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+  hev-GridToGeom co2.iso5.vtk c02.iso5.gtg.vtk
+
+Convert the vtk grid data in co2.iso5.vtk to geometric form and
+write the result to the vtk formatted file co2.iso5.gtg.vtk.
+
+
+
+.SH SEE ALSO
+
+vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+June 6th 2012

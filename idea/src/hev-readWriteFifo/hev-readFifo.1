@@ -1,0 +1,66 @@
+.TH hev-readFifo 1 "January 2009" "NIST/MCSD/HPCVG" "HPCVG HEV"
+.SH NAME
+.B hev-readFifo
+- Read string(s) from a FIFO.
+
+.SH SYNOPSIS
+.B hev-readFifo    
+msgLen fifoName
+
+.SH DESCRIPTION
+.PP
+.B
+hev-readFifo
+reads messages from the indicated FIFO and writes 
+each message as a line to standard output (stdout).
+
+
+.SH ARGUMENTS
+
+.TP
+.B msgLen
+The length of each message read from the FIFO.
+
+.TP
+.B fifoName
+The name of the FIFO.
+
+
+.SH EXAMPLES
+
+.B hev-readFifo 200 /tmp/segSelData-fifo > segSel.dat
+
+Read 200 byte messages from a FIFO with the output redirected
+to another file.
+
+
+.SH NOTES
+
+Each message is read as a group of bytes of length
+.B msgLen
+and each is assumed to be a null terminated ascii string.
+The null byte must be included in the block of bytes read from the FIFO.  
+In a given message block, all data after the first null byte is discarded.
+
+
+We could modify this program to use variable length messages.  
+In this scenario, messages read from the FIFO could be any
+length and they would be terminated by a null byte.
+(This, of course, assumes that our messages are ascii.)
+If we implement this, the 
+.B msgLen
+command line argument would be optional.  
+If 
+.B msgLen
+were not specified, then variable length messages would be used.
+The use of variable length messages imposes a somewhat greater burden on
+any software that reads the FIFO, but it avoids the problems of
+mis-matched message lengths in the reader and writer.
+
+For varying length messages see the iris::FifoReader class and the
+iris-readFifo command.
+
+
+.SH SEE ALSO
+
+hev-writeFifo, iris-readFifo

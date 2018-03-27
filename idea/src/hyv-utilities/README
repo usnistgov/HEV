@@ -1,0 +1,13 @@
+This directory is the collection of HydratiCA Visualization commands used to
+create visualizations of the HydratiCA data.
+
+This version is converthere to HEV/IDEA
+
+See Also: 
+http://snippet.cam.nist.gov:8000/rave/wiki/HydratiCaVisProject
+
+
+man hyv-utilities
+or
+man ./hyv-utilities.3
+

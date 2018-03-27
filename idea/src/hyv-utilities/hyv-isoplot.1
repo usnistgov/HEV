@@ -1,0 +1,102 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hyv-isoplot 1 "October 2, 2008" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hyv-isoplot
+- Generate and display the Isovalues Plot
+
+.SH SYNOPSIS
+.B "hyv-isoplot"
+[--nodisplay] [config.prgb]  dataDir
+
+.SH DESCRIPTION
+.PP
+.I
+hyv-isoplot
+will generate and display a isovalues plot using the
+.B *.iso
+files found in the data directory.
+
+
+
+
+.SH OPTIONS
+.IP "\fB--nodisplay n\fR"
+generate but don't display the plot. Normally, the plot is
+displayed when it is generated.
+
+.IP "\fBconfig.prgb\fR"
+is a config file of the phases to be plotted and the RGB color of the plotted
+curves. See below for the format.  If not specified, then is is assumed a plot
+has been previously generated and is in the specified dataDir with the name
+"isovalues.png" which is simply displayed.
+
+.IP
+\fBconfig.prgb format\fR:
+    
+This file is typically in the current directory, not
+.I dataDir.
+It contains
+lines of the form: "phase red green blue name"
+where the color are floats in the range 0.0 to 1.0.
+Phase is a integer, typically, 1,2,3,etc.
+Name is string used as a name in the legend of the plot.
+Only the specified phases will be plotted.
+
+For example:
+
+     1 1.0   0.498 0.941  C3S
+     2 1.0   0.757 0.498  Ca(OH)2
+     3 0.867 1.0   0.498  CSH
+     4 0.498 0.741 1.0    CSH(m)
+
+
+
+
+.IP "\fBdataDir\fR"
+is an existing directory that contains
+the appropriate
+.B *.iso
+files
+exist to match what is requested in config.prgb.
+The
+.B *.iso
+files are created by previously executing
+.B hyv-phase2iso.
+
+
+
+
+.SH EXAMPLE
+
+.PP
+Using a
+.I config.prgb
+as described above, the isovalues plot will be generated and
+displayed.
+
+.IP
+hyv-isoplot config.prgb C3Ssmall
+
+.PP
+To display a previously computed plot:
+
+.IP
+hyv-isoplot  C3Ssmall
+
+
+
+
+
+
+.SH SEE ALSO
+.I
+hyv-utilities(3)
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,
+.br
+NIST/ITL/MCSD/SAVG

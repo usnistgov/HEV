@@ -1,0 +1,356 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 4. Cameras and Lights</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch03.html" title="Chapter 3. Nodes and Groups"><link rel="next" href="ch05.html" title="Chapter 5. Shapes, Properties, and Binding"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 4. Cameras and Lights</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch05.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5449515"></a>Chapter 4. <a name="id13751"></a>Cameras and Lights</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Add different types of cameras to a scene, experimenting with a variety of camera positions, orientations, and viewport mappings</p>
+</li>
+<li><p>Add different types of lights to a scene, experimenting with a variety of light types, intensities, and colors</p>
+</li>
+</ul></div><p>Chapters 4 through 8 focus on several different classes of nodes. Cameras and lights are discussed first because the objects you create are not visible without them. Then, in the following chapters, you learn more about other kinds of nodes in the scene database, including shapes, properties, bindings, text, textures, and NURBS curves and surfaces. Feel free to read selectively in this group of chapters, according to your interests and requirements.</p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5449589"></a>Using Lights and Cameras</h2></div></div>
+<p>The previous chapters introduced you to group, property, and shape nodes and showed you how to create a scene graph using these nodes. Now you'll move on to two classes of nodes that affect how the 3D scene appears: <i>lights</i> and <i>cameras</i>. In Inventor, as in the real world, lights provide illumination so that you can view objects. If a scene graph does not contain any lights and you're using the default lighting model (Phong lighting), the objects are in darkness and cannot be seen. Just as the real world provides a variety of illumination types&#8212;light bulbs, the sun, theatrical spotlights&#8212;Inventor provides different classes of lights for you to use in your scene.<a name="idch041"></a><a name="idch042"></a></p>
+<p>Cameras are our &#8220;eyes&#8221; for viewing the scene. Inventor provides a class of camera with a lens that functions just as the lens of a human eye does, and it also provides additional cameras that create a 2D &#8220;snapshot&#8221; of the scene with other kinds of lenses. This chapter discusses cameras first and assumes that the scene has at least one light at the top of the scene graph.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Viewer components create their own camera and light automatically. See <a name="idch043"></a><a href="ch16.html#id37269">Chapter 16</a> for more information on viewers.
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5449662"></a><a name="id22331"></a>Cameras<a name="idch044"></a></h2></div></div>
+<p>A camera node generates a picture of everything after it in the scene graph. Typically, you put the camera near the top left of the scene graph, since it must <a name="idch045"></a><i>precede</i> the objects you want to view. A scene graph should contain only one active camera, and its <i>position</i> in space is affected by the current geometric transformation.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	A switch node can be used to make one of several cameras active.<a name="idch046"></a>
+</td></tr></table><hr noshade="noshade"></div><br><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5449767"></a>SoCamera</h3></div></div>
+<p>Camera nodes are derived from the abstract base class <a name="idch047"></a><span class="bold"><b>SoCamera <br>
+</b></span>(see <a href="ch04.html#id10922">Figure 4-1</a>).</p>
+<p><div class="figure"><p><a name="id5449799"></a><b>Figure 4-1. <a name="id10922"></a><a name="idch048"></a>Camera-Node Classes</b></p>
+<div class="mediaobject"><img src="figures/fig4.1.gif"></div></div><br>
+</p>
+<p><span class="bold"><b>SoCamera</b></span> has the following fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><a name="idch049"></a><span class="bold"><b>viewportMapping</b></span> (SoSFEnum)</span></td><td width="10"> </td><td><p><br>
+treatment when the camera's aspect ratio is different from the viewport's aspect ratio. (See <a href="ch04.html#id34931">&#8220;Mapping the Camera Aspect Ratio to the Viewport&#8221;.</a>)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0410"></a><span class="bold"><b>position</b></span> (SoSFVec3f)</span></td><td width="10"> </td><td><p><br>
+location of the camera viewpoint. This location is modified by the current geometric transformation.<a name="idch0411"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0412"></a><span class="bold"><b>orientation</b></span> (SoSFRotation<span class="bold"><b>)</b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+<br>
+</b></span>orientation of the camera's viewing direction. This field describes how the camera is rotated with respect to the default. The default camera looks from (0.0, 0.0, 1.0) toward the origin, and the up direction is (0.0, 1.0, 0.0). This field, along with the current geometric transformation, specifies the orientation of the camera in world space.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0413"></a><span class="bold"><b>aspectRatio </b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+ratio of the camera viewing width to height. The value must be greater than 0.0. A few of the predefined camera aspect ratios included in<i> SoCamera.h </i>are</p>
+<p>SO_ASPECT_SQUARE (1/1)<br>
+SO_ASPECT_VIDEO (4/3)<br>
+SO_ASPECT_HDTV (16/9)<a name="idch0414"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0415"></a><span class="bold"><b>nearDistance </b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+distance from the camera viewpoint to the near clipping plane.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0416"></a><span class="bold"><b>farDistance </b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+distance from the camera viewpoint to the far clipping plane.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0417"></a><span class="bold"><b>focalDistance</b></span> (SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+distance from the camera viewpoint to the point of focus (used by the examiner viewer).<a name="idch0418"></a></p>
+
+</td></tr></table></div><p><a href="ch04.html#id37273">Figure 4-2</a> and <a href="ch04.html#id30986">Figure 4-3</a>, later in this chapter, show the relationship between the camera position, orientation, near and far clipping planes, and aspect ratio. </p>
+<p>When a camera node is encountered during rendering traversal, Inventor performs the following steps:</p>
+<div class="orderedlist"><ol type="1"><li><p>During a rendering action, the camera is positioned in the scene (based on its specified position and orientation, which are modified by the current transformation). </p>
+</li>
+<li><p>The camera creates a <a name="idch0419"></a><i>view volume</i>, based on the near and far clipping planes, the aspect ratio, and the height or height angle (depending on the camera type). A view volume, also referred to as a <a name="idch0420"></a><i>viewing frustum<a name="idch0421"></a></i>, is a six-sided volume that contains the geometry to be seen (refer to sections on each camera type, later in this chapter, for diagrams showing how the view volume is created). Objects outside of the view volume are <a name="idch0422"></a><i>clipped</i>, or thrown away.</p>
+</li>
+<li><p>The next step is to compress this 3D view volume into a 2D image, similar to the photographic snapshot a camera makes from a real-world scene. This 2D &#8220;projection&#8221; is now easily mapped to a 2D window on the screen. (<a name="idch0423"></a><a href="ch04.html#id34931">See &#8220;Mapping the Camera Aspect Ratio to the Viewport&#8221;.</a>)</p>
+</li>
+<li><p>Next, the rest of the scene graph is rendered using the projection created by the camera.</p>
+</li>
+</ol></div><p>You can also use the <a name="idch0424"></a><span class="bold"><b>pointAt()</b></span> method to replace the value in a camera's <a name="idch0425"></a><span class="bold"><b>orientation</b></span> field. This method sets the camera's orientation to point toward the specified target point. If possible, it keeps the up direction of the camera parallel to the positive <i>y</i>-axis. Otherwise, it makes the up direction of the camera parallel to the positive <i>z</i>-axis.</p>
+<p>The syntax for the <span class="bold"><b>pointAt()</b></span> method is as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+void		<span class="bold"><b>     pointAt</b></span>(const  SbVec3f  <i>&amp;targetPoint</i>)
+</pre></td></tr></table><p>Two additional methods for <span class="bold"><b>SoCamera</b></span> are <span class="bold"><b>viewAll()</b></span> and <span class="bold"><b>getViewVolume()</b></span>. The <a name="idch0426"></a><span class="bold"><b>viewAll()</b></span> method is an easy way to set the camera to view an entire scene graph using the current orientation of the camera. You provide the root node of the scene to be viewed (which usually contains the camera) and a reference to the viewport region used by the render action. The <a name="idch0427"></a><i>slack</i> parameter is used to position the near and far clipping planes.  A <i>slack</i> value of 1.0 (the default) positions the planes for the &#8220;tightest fit&#8221; around the scene. The syntax for <span class="bold"><b>viewAll()</b></span> is as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+void <span class="bold"><b>viewAll</b></span>(SoNode <i>*sceneRoot</i>, const SbViewportRegion <i>&amp;vpRegion</i>,	
+	float <i>slack</i> = 1.0)
+</pre></td></tr></table><p>The <span class="bold"><b>viewAll()</b></span> method modifies the camera <span class="bold"><b>position</b></span>, <span class="bold"><b>nearDistance</b></span>, and <span class="bold"><b>farDistance</b></span> fields. It does not affect the camera orientation. An example showing the use of <span class="bold"><b>viewAll()</b></span> appears in <a href="ch04.html#id21874">&#8220;Viewing a Scene with Different Cameras&#8221;</a>.</p>
+<p>The <a name="idch0428"></a><span class="bold"><b>getViewVolume()</b></span> method returns the camera's view volume and is usually used in relation to picking.<a name="idch0429"></a></p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5450618"></a>Subclasses of SoCamera</h3></div></div>
+<p>The <span class="bold"><b>SoCamera</b></span> class contains two subclasses, as shown in <a href="ch04.html#id10922">Figure 4-1</a>:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>SoPerspectiveCamera</p>
+</li>
+<li><p>SoOrthographicCamera</p>
+</li>
+</ul></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5450659"></a>SoPerspectiveCamera</h3></div></div>
+<p>A camera of class <a name="idch0430"></a><a name="idch0431"></a><span class="bold"><b>SoPerspectiveCamera</b></span> emulates the human eye: objects farther away appear smaller in size. Perspective camera projections are natural in situations where you want to imitate how objects appear to a human observer.</p>
+<p>An <span class="bold"><b>SoPerspectiveCamera</b></span> node has one field in addition to those defined in <span class="bold"><b>SoCamera</b></span>:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><a name="idch0432"></a><span class="bold"><b>heightAngle </b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+specifies the vertical angle in radians of the camera view volume.</p>
+
+</td></tr></table></div><p>The view volume formed by an <a name="idch0433"></a><span class="bold"><b>SoPerspectiveCamera</b></span> node is a truncated pyramid, as shown in <a href="ch04.html#id37273">Figure 4-2</a>. The height angle and the aspect ratio determine the width angle as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+
+widthAngle = heightAngle * aspectRatio
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5450786"></a>SoOrthographicCamera</h3></div></div>
+<p>In contrast to perspective cameras, cameras of class <span class="bold"><b>SoOrthographic-<br>
+Camera</b></span> produce <i>parallel</i> projections, with no distortions for distance.  Orthographic cameras are useful for precise design work, where visual distortions would interfere with exact measurement.<a name="idch0434"></a></p>
+<p>An <a name="idch0435"></a><span class="bold"><b>SoOrthographicCamera</b></span> node has one field in addition to those defined in <span class="bold"><b>SoCamera</b></span>:</p>
+<p><a name="idch0436"></a><span class="bold"><b>height</b></span> (SoSFFloat) specifies the height of the camera view volume.</p>
+<p>The view volume formed by an <span class="bold"><b>SoOrthographicCamera</b></span> node is a rectangular box, as shown in <a href="ch04.html#id30986">Figure 4-3</a>. The height and aspect ratio determine the width of the rectangle:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+width = height * aspectRatio
+
+</pre></td></tr></table><p><div class="figure"><p><a name="id5450974"></a><b>Figure 4-2. <a name="id37273"></a><a name="idch0437"></a>View Volume and Viewing Projection for an SoPerspectiveCamera Node</b></p>
+<div class="mediaobject"><img src="figures/4-2.gif"></div></div><br>
+<div class="figure"><p><a name="id5450998"></a><b>Figure 4-3. <a name="id30986"></a><a name="idch0438"></a>View Volume and Viewing Projection for an SoOrthographicCamera Node</b></p>
+<div class="mediaobject"><img src="figures/4-3.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5451024"></a><a name="id34931"></a>Mapping the Camera Aspect Ratio to the Viewport<a name="idch0439"></a></h3></div></div>
+<p>A <a name="idch0440"></a><i>viewport</i> is the rectangular area where a scene is rendered. By default, the viewport has the same dimensions as the window (<a name="idch0441"></a><span class="bold"><b>SoXtRenderArea</b></span>). The viewport is specified when the <a name="idch0442"></a><span class="bold"><b>SoGLRenderAction</b></span> is constructed (see <a href="ch09.html#id14375">Chapter 9</a>).</p>
+<p>The <span class="bold"><b>viewportMapping</b></span> field of <span class="bold"><b>SoCamera</b></span> allows you to specify how to map the camera projection into the viewport when the aspect ratios of the camera and viewport differ. The first three choices crop the viewport to fit the camera projection. The advantage to these settings is that the camera aspect ratio remains unchanged. (The disadvantage is that there is dead space in the viewport.)<a name="idch0443"></a><a name="idch0444"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>CROP_VIEWPORT_FILL_FRAME adjusts the viewport to fit the camera (see <a href="ch04.html#id37609">Figure 4-4</a>). It draws the viewport with the appropriate aspect ratio and fills in the unused space with gray.<a name="idch0445"></a></p>
+</li>
+<li><p>CROP_VIEWPORT_LINE_FRAME adjusts the viewport to fit the camera. It draws the border of the viewport as a line.</p>
+</li>
+<li><p>CROP_VIEWPORT_NO_FRAME adjusts the viewport to fit the camera. It does not indicate the viewport boundaries.</p>
+</li>
+</ul></div><p>These two choices adjust the camera projection to fit the viewport:<a name="idch0446"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>ADJUST_CAMERA adjusts the camera to fit the viewport (see <a href="ch04.html#id37609">Figure 4-4</a>). The projected image is not distorted. (The actual values stored in the <span class="bold"><b>aspectRatio</b></span> and <span class="bold"><b>height</b></span>/<span class="bold"><b>heightAngle</b></span> fields are not changed. These values are temporarily overridden if required by the viewport mapping.) This is the default setting.</p>
+</li>
+<li><p>LEAVE_ALONE does not modify anything. The camera image is resized <br>
+to fit the viewport. A distorted image is produced (see <a href="ch04.html#id37609">Figure 4-4</a>).</p>
+</li>
+</ul></div><p><a href="ch04.html#id37609">Figure 4-4</a> shows the different types of viewport mapping. In this example, the camera aspect ratio is 3 to 1 and the viewport aspect ratio is 1.5 to 1. The top camera uses CROP_VIEWPORT_FILL_FRAME viewport mapping. The center camera uses ADJUST_CAMERA. The bottom camera uses LEAVE_ALONE. <a href="ch04.html#id37609">Figure 4-4</a> also shows three stages of mapping. At the left is the initial viewport mapping. The center column of drawings shows how the mapping changes if the viewport is compressed horizontally. The right-hand column shows how the mapping changes if the viewport is compressed vertically.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5451333"></a><a name="id21874"></a>Viewing a Scene with Different Cameras</h3></div></div>
+<p><a href="ch04.html#id90275">Example 4-1</a> shows a scene viewed by an orthographic camera and two perspective cameras in different positions. It uses a blinker node  (described in <a name="idch0447"></a><a name="idch0448"></a><a href="ch13.html#id11499">Chapter 13</a>) to switch among the three cameras. The scene (a park bench) is read from a file. <a name="idch0449"></a><a href="ch04.html#id25542">Figure 4-5</a> shows the scene graph created by this example. <a href="ch04.html#id23199">Figure 4-6</a> shows the image created by this example.</p>
+<p><div class="figure"><p><a name="id5451401"></a><b>Figure 4-4. <a name="id37609"></a><a name="idch0450"></a>Mapping the Camera Aspect Ratio to the Viewport</b></p>
+<div class="mediaobject"><img src="figures/fig4.4.gif"></div></div><br>
+<div class="figure"><p><a name="id5451473"></a><b>Figure 4-5. <a name="id25542"></a>Scene Graph for Camera Example</b></p>
+<div class="mediaobject"><img src="figures/4-5.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5451493"></a><b>Example 4-1. <a name="id90275"></a>Switching among Multiple Cameras</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SbLinear.h&gt;
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/SoInput.h&gt;
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt;
+#include &lt;Inventor/nodes/SoBlinker.h&gt;
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoOrthographicCamera.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoTransform.h&gt;
+
+main(int, char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) 
+      exit(1);
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+
+
+</pre></td></tr></table><p><div class="figure"><p><a name="id5451539"></a><b>Figure 4-6. <a name="id23199"></a>Camera Example</b></p>
+<div class="mediaobject"><img src="figures/ch04-9.gif"></div></div><br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   
+   // Create a blinker node and put it in the scene. A blinker
+   // switches between its children at timed intervals.
+   SoBlinker *myBlinker = new SoBlinker;
+   root-&gt;addChild(myBlinker);
+
+   // Create three cameras. Their positions will be set later.
+   // This is because the viewAll method depends on the size
+   // of the render area, which has not been created yet.
+   SoOrthographicCamera *orthoViewAll = new SoOrthographicCamera;
+   SoPerspectiveCamera *perspViewAll = new SoPerspectiveCamera;
+   SoPerspectiveCamera *perspOffCenter = new SoPerspectiveCamera;
+   myBlinker-&gt;addChild(orthoViewAll);
+   myBlinker-&gt;addChild(perspViewAll);
+   myBlinker-&gt;addChild(perspOffCenter);
+
+   // Create a light
+   root-&gt;addChild(new SoDirectionalLight);
+
+   // Read the object from a file and add to the scene
+   SoInput myInput;
+   if (! myInput.openFile(&quot;parkbench.iv&quot;)) 
+      return 1;
+   SoSeparator *fileContents = SoDB::readAll(&amp;myInput);
+   if (fileContents == NULL) 
+      return 1;
+
+   SoMaterial *myMaterial = new SoMaterial;
+   myMaterial-&gt;diffuseColor.setValue(0.8, 0.23, 0.03); 
+   root-&gt;addChild(myMaterial);
+   root-&gt;addChild(fileContents);
+
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+
+
+   // Establish camera positions. 
+   // First do a viewAll() on all three cameras.  
+   // Then modify the position of the off-center camera.
+   SbViewportRegion myRegion(myRenderArea-&gt;getSize());
+   orthoViewAll-&gt;viewAll(root, myRegion);
+   perspViewAll-&gt;viewAll(root, myRegion);
+   perspOffCenter-&gt;viewAll(root, myRegion);
+   SbVec3f initialPos; 
+   initialPos = perspOffCenter-&gt;position.getValue();
+   float x, y, z;
+   initialPos.getValue(x,y,z);
+   perspOffCenter-&gt;position.setValue(x+x/2., y+y/2., z+z/4.);
+
+   myRenderArea-&gt;setSceneGraph(root);
+   myRenderArea-&gt;setTitle(&quot;Cameras&quot;);
+   myRenderArea-&gt;show();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><p>After you view this example, experiment by modifying the fields in each camera node to see how changes in camera position, orientation, aspect ratio, location of clipping planes, and camera height (or height angle) affect the images on your screen. Then try using the <a name="idch0451"></a><span class="bold"><b>pointAt()</b></span> method to modify the orientation of the camera node. Remember that a scene graph includes only <a name="idch0452"></a><i>one</i> active camera at a time, and it must be placed <i>before</i> the objects to be viewed.</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5451665"></a>Lights</h2></div></div>
+<p>With the default lighting model (Phong), a scene graph also needs at least one light before you can view its objects. During a rendering action, traversing a light node in the scene graph turns that light on. The position of the light node in the scene graph determines two things:<a name="idch0453"></a><a name="idch0454"></a><a name="idch0455"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p><i>What the light illuminates&#8212;</i>a light illuminates everything that follows it in the scene graph. (The light is part of the traversal state, described in <a href="ch03.html#id18184">Chapter 3</a>. Use an <span class="bold"><b>SoSeparator<a name="idch0456"></a></b></span> node to isolate the effects of a particular light from the rest of the scene graph.)</p>
+</li>
+<li><p><i>Where the light is located in 3D space&#8212;</i>certain light-source nodes (for example, <span class="bold"><b>SoPointLight</b></span>) have a <span class="bold"><b>location</b></span> field. This light location is affected by the current geometric transformation. Other light-source nodes have a specified <a name="idch0457"></a><span class="bold"><b>direction</b></span> (for example, <span class="bold"><b>SoDirectionalLight</b></span>), which is also affected by the current geometric transformation.</p>
+</li>
+</ul></div><p>Another important fact about all light-source nodes is that lights accumulate. Each time you add a light to the scene graph, the scene appears brighter. The maximum number of active lights is dependent on the OpenGL implementation.<a name="idch0458"></a></p>
+<p><i>(Advanced)<br>
+</i>In some cases, you may want to separate the position of the light in the scene graph from what it illuminates.  Example 4-2 uses the <span class="bold"><b>SoTransformSeparator<a name="idch0459"></a></b></span> node to move only the position of the light. Sensors and engines are also a useful way to affect a light's behavior. For example, you can attach a sensor to a sphere object; when the sphere position changes, the sensor can change the light position as well.  Or, you can use an engine that finds the path to a given object to affect the location of the light that illuminates that object (see <a name="idch0460"></a><a name="idch0461"></a><a name="idch0462"></a><a name="idch0463"></a><span class="bold"><b>SoComputeBoundingBox</b></span> in the <i>Open Inventor C++ Reference Manual</i>).</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5451891"></a>SoLight</h3></div></div>
+<p>All lights are derived from the abstract base class <a name="idch0464"></a><span class="bold"><b>SoLight</b></span>. This class adds no new methods to <span class="bold"><b>SoNode</b></span>. Its fields are as follows:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>on <a name="idch0465"></a></b></span>(SoSFBool)</span></td><td width="10"> </td><td><p>whether the light is on.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0466"></a><span class="bold"><b>intensity </b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+brightness of the light. Values range from 0.0 (no illumination) to 1.0 (maximum illumination).</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0467"></a><span class="bold"><b>color</b></span> (SoSFColor)</span></td><td width="10"> </td><td><p>color of the light.</p>
+
+</td></tr></table></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5452079"></a>Subclasses of SoLight</h3></div></div>
+<p>The <span class="bold"><b>SoLight</b></span> class contains three subclasses, as shown in <a href="ch04.html#id26150">Figure 4-7</a>:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>SoPointLight</p>
+</li>
+<li><p>SoDirectionalLight</p>
+</li>
+<li><p>SoSpotLight</p>
+<p><div class="figure"><p><a name="id5452123"></a><b>Figure 4-7. <a name="id26150"></a><a name="idch0468"></a>Light-Node Classes</b></p>
+<div class="mediaobject"><img src="figures/fig4.7.gif"></div></div><br>
+</p>
+</li>
+</ul></div><p><a href="ch04.html#id16167">Figure 4-8</a> shows the effects of each of these light types. The left side of the figure shows the direction of the light rays, and the right side shows the same scene rendered with each light type. <a href="pr02.html#id86827">Figure In-2</a>, <a href="pr02.html#id58744">Figure In-3</a> and <a href="pr02.html#id53628">Figure In-4</a> show additional use of these light types.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Directional lights are typically faster than point lights for rendering.  Both are typically faster than spotlights.  To increase rendering speed, use fewer and simpler lights.<a name="idch0469"></a>
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5452226"></a>SoPointLight</h3></div></div>
+<p>A light of class <span class="bold"><b>SoPointLight<a name="idch0470"></a></b></span>, like a star, radiates light equally in all directions from a given location in 3D space. An <a name="idch0471"></a><span class="bold"><b>SoPointLight</b></span> node has one additional field:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>location<a name="idch0472"></a></b></span> (SoSFVec3f)</span></td><td width="10"> </td><td><p><br>
+3D location of a point light source. (This location is affected by the current geometric transformation.)</p>
+
+</td></tr></table></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5452336"></a>SoDirectionalLight</h3></div></div>
+<p>A light of class <a name="idch0473"></a><span class="bold"><b>SoDirectionalLight</b></span> illuminates uniformly along a particular direction. Since it is infinitely far away, it has no location in 3D space. An <a name="idch0474"></a><span class="bold"><b>SoDirectionalLight</b></span> node has one additional field:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>direction<a name="idch0475"></a></b></span> (SoSFVec3f)</span></td><td width="10"> </td><td><p><br>
+specifies the direction of the rays from a directional light source. (This direction is affected by the current geometric transformation.)</p>
+<p><div class="figure"><p><a name="id5452394"></a><b>Figure 4-8. <a name="id16167"></a><a name="idch0476"></a>Light Types</b></p>
+<div class="mediaobject"><img src="figures/4-8.gif"></div></div><br>
+</p>
+
+</td></tr></table></div><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>A surface composed of a single polygon (such as a large rectangle) with one normal at each corner will not show the effects of a point light source, since lighting is computed (by OpenGL) only at vertices. Use a more complex surface to show this effect. 
+</td></tr></table><hr noshade="noshade"></div><p>With an <span class="bold"><b>SoDirectionalLight</b></span> source node, all rays of incident light are parallel. They are reflected equally from all points on a flat polygon, resulting in flat lighting of equal intensity, as shown in <a href="ch04.html#id16167">Figure 4-8</a>. In contrast, the intensity of light from an <span class="bold"><b>SoPointLight</b></span> source on a flat surface would vary, because the angle between the surface normal and the incident ray of light is different at different points of the surface.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5452467"></a>SoSpotLight</h3></div></div>
+<p>A light of class <a name="idch0477"></a><span class="bold"><b>SoSpotLight</b></span> illuminates from a point in space along a primary direction. Like a theatrical spotlight, its illumination is a cone of light diverging from the light's position. An <a name="idch0478"></a><span class="bold"><b>SoSpotLight</b></span> node has four additional fields (see <a href="ch04.html#id33040">Figure 4-9</a>):</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>location <a name="idch0479"></a></b></span>(SoSFVec3f)</span></td><td width="10"> </td><td><p><br>
+3D location of a spotlight source. (This location is affected by the current geometric transformation.)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>direction <a name="idch0480"></a></b></span>(SoSFVec3f)</span></td><td width="10"> </td><td><p><br>
+primary direction of the illumination.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>dropOffRate <a name="idch0481"></a></b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+rate at which the light intensity drops off from the primary direction (0.0 = constant intensity, <br>
+1.0 = sharpest drop-off).</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>cutOffAngle<a name="idch0482"></a></b></span> (SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+angle, in radians, outside of which the light intensity is 0.0. This angle is measured from one edge of the cone to the other.</p>
+
+</td></tr></table></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5452665"></a>Using Multiple Lights</h3></div></div>
+<p>You can now experiment by adding different lights to a scene. <a href="ch04.html#id67033">Example 4-2</a> contains two light sources: a stationary red directional light and a green point light that is moved back and forth by an <a name="idch0483"></a><a name="idch0484"></a><span class="bold"><b>SoShuttle</b></span> node (see <a href="ch13.html#id11499">Chapter 13</a>). <a href="ch04.html#id19430">Figure 4-10</a> shows the scene graph created by this example.</p>
+<p><div class="figure"><p><a name="id5452741"></a><b>Figure 4-9. <a name="id33040"></a>Fields for SoSpotLight Node</b></p>
+<div class="mediaobject"><img src="figures/4-9.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5452790"></a><b>Example 4-2. <a name="id67033"></a>Using Different Types of Lights</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+#include &lt;Inventor/nodes/SoCone.h&gt;
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoPointLight.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoShuttle.h&gt;
+#include &lt;Inventor/nodes/SoTransformSeparator.h&gt;
+
+main(int , char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) 
+      exit(1);
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+
+   // Add a directional light
+   SoDirectionalLight *myDirLight = new SoDirectionalLight;
+   myDirLight-&gt;direction.setValue(0, -1, -1);
+   myDirLight-&gt;color.setValue(1, 0, 0);
+   root-&gt;addChild(myDirLight);
+
+   // Put the shuttle and the light below a transform separator.
+   // A transform separator pushes and pops the transformation 
+   // just like a separator node, but other aspects of the state 
+   // are not pushed and popped. So the shuttle's translation 
+   // will affect only the light. But the light will shine on 
+   // the rest of the scene.
+   SoTransformSeparator *myTransformSeparator =
+       new SoTransformSeparator;
+   root-&gt;addChild(myTransformSeparator);
+
+   // A shuttle node translates back and forth between the two
+   // fields translation0 and translation1.  
+   // This moves the light.
+   SoShuttle *myShuttle = new SoShuttle;
+   myTransformSeparator-&gt;addChild(myShuttle);
+   myShuttle-&gt;translation0.setValue(-2, -1, 3);
+   myShuttle-&gt;translation1.setValue( 1,  2, -3);
+
+   // Add the point light below the transformSeparator
+   SoPointLight *myPointLight = new SoPointLight;
+   myTransformSeparator-&gt;addChild(myPointLight);
+   myPointLight-&gt;color.setValue(0, 1, 0);
+
+<a name="idch0485"></a></pre></td></tr></table><p><div class="figure"><p><a name="id5452877"></a><b>Figure 4-10. <a name="id19430"></a>Scene Graph for Light Example</b></p>
+<div class="mediaobject"><img src="figures/4-10.gif"></div></div><br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+    root-&gt;addChild(new SoCone);
+
+   SoXtExaminerViewer *myViewer = 
+            new SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;Lights&quot;);
+   myViewer-&gt;setHeadlight(FALSE);
+   myViewer-&gt;show();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+
+</pre></td></tr></table><p>
+</p>
+</div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch05.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 3. Nodes and Groups </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 5. Shapes, Properties, and Binding </td></tr></table></div></body></html>

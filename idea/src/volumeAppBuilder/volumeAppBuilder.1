@@ -1,0 +1,250 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH volumeAppBuilder 1 "July 2012" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+volumeAppBuilder - Build a volume visualization application
+
+
+
+.SH SYNOPSIS
+.B "volumeAppBuilder"
+[options] --lut file.lut --dim i j k file.ab [...]
+
+
+.SH DESCRIPTION
+.PP
+.I
+volumeAppBuilder
+will build a volume visualization application based on minimal input
+consisting of a
+look up table, \fBfile.lut\fR;
+the volume dimensions, \fB-dim i j k\fR;
+.I "ASCII brick"
+(numbers for each voxel), \fBfile.ab\fR.
+A single or multiple input files can be specified.
+With multiple input files, a
+.I flip-book
+style animation application will be created and include the 
+.I VCR
+control panel.
+
+.SH "REQUIRED PARAMETERS"
+.TP
+.B --dim i j k
+is the dimensions of the volume
+
+.TP
+.B --lut file.lut
+is a color look up table. See  \fBhev-createLUT(1)\fR.
+Also refer to the \fBGLOWING EXAMPLE\fR below.
+
+.TP
+.B file.ab
+is the "ASCII Brick" - volume data represented as an ASCII
+list of i*j*k float numbers in the range of 0.0 to 1.0.
+
+
+.TP
+.B [...]
+when multiple files are specified, then a flip-book animation
+application is created.
+
+
+.SH "OPTIONAL PARAMETERS"
+.TP
+.B --subdir name
+is the name of an existing sub-directory (typically
+empty) to place the application files. 
+If not specified, "volVisApp" is used. If it does not
+exist, it will be created.
+		   
+
+.TP
+.B --elementType uchar | ushort | float
+specifies the element type used when generating the
+underlying .mha file. The current implementation
+allows \fIuchar\fR (8bits),
+\fIushort\fR (16 bits) or \fIfloat\fR (16 bits) to be specified.
+
+If this option is not used, the default
+elementType is uchar (8 bits).
+
+.TP
+.B --transfer preint | emit | lit
+Used to specify a transfer function type to pass to
+\fBhev-voltrace\fR.  The default is 'preint'.  See the man page
+\fBhev-voltrace(1)\fR for details
+
+
+.TP
+.B --scale float
+Used to specify a scale value to be passed to \fBhev-preintegrate\fR.
+
+The default of 1.0 is typically a good choice, so normally this option
+need not be specified. It is provided as a convenience to pass to
+\fBhev-preintegrate\fR. Refer to the \fBhev-preintegrate(1)\fR.
+
+NOTE: This default changed April 4, 2011. If you notice a difference
+when using data that previously worked, this change may be the
+cause. Try specifying a scale value of 100.
+
+.TP
+.B --objects
+When specified, the --objects parameter is passed to
+hev-voltrace. The parameter is here primarily for the
+use of qvd-rheometerVolAppBuilder. Otherwise, use with
+caution.
+
+
+.SH "SPECIAL CASE PARAMETERS"
+
+.TP
+.B --applyLUT file.lut
+
+is a special case invocation that can be used
+at run time to apply a new look up table to the
+running application. 
+
+\fBfile.lut\fR is the look up table to use.
+
+Other options are ignored, except if a --scale is specified, it will
+be passed to \fBhev-preintegrate\fB execution prior to
+\fBhev-applyState\fR.
+			
+
+
+
+.SH EXAMPLE
+.PP
+Example files are located in
+$HEVROOT/idea/src/volumeAppBuilder/testme Sample images produced
+with the following examples are in the \fIsampleImages\fR
+sub-directory. There in an \fIindex.html\fR allowing the images to be
+viewed with a web browser.
+
+
+.PP
+  # Build the application
+  cp -a $HEVROOT/idea/src/volumeAppBuilder/testme .
+.br
+  cd testme
+.br
+  volumeAppBuilder --lut ctable_1.0.lut --dim 79 79 79 scaled_3Dcolorfield.ab
+.PP
+  # Run the application:
+.br
+  cd volVisApp
+.br
+  ./runvol &
+.PP
+  # View the current LUT as an image and RGBA plot
+.br
+  display transferLUT.png &
+.br
+  display transferPlot.png &
+.PP
+  # Change LUT of running application:
+.br
+  volumeAppBuilder --applyLUT ../ctable_.9.lut
+.PP
+  # View the second LUT as an image and RGBA plot
+.br
+  display transferLUT.png &
+.br
+  display transferPlot.png &
+
+
+.SH GLOWING EXAMPLE
+.PP
+The underlying volume renderer and \fBhev-preintegrate\fR and 
+\fBhev-LUT2mhd\fR utilities allow transfer functions with colors bigger 
+than 1. By setting opacities less than 1 (even .9), but some transfer 
+values bigger than 1 (2-10ish is probably good) for important stuff to 
+see in the volume, that important stuff will show through the 
+intervening darker volume. It won't punch through anything that's 
+completely opaque, so an opacity of 1 still stops everything behind it.
+
+.PP
+Using this feature, a \fIglowing\fR effect can be achieved.  Here is
+an example based upon the previous example and the files in
+\fItestme\fR directory. Here are two examples:
+
+.PP
+  # Current directory should be volVisApp
+  cd volVisApp
+.br
+  cp ../glowing.dat .
+.br
+  hev-createLUT < glowing.dat > glowing.lut
+.PP
+  ./runvol &
+.br
+  volumeAppBuilder --applyLUT glowing.lut
+
+
+.PP
+Using data prior to April 2011, the -fB--scale 100\fR is needed.
+
+.PP
+  # Current directory should be volVisApp
+  cd volVisApp
+.br
+  cp ../bright.dat .
+.br
+  hev-createLUT < bright.dat > bright.lut
+.PP
+  ./runvol &
+.br
+  volumeAppBuilder --scale 100 --applyLUT bright.lut
+
+
+
+.SH "DATA"
+.PP
+The order of the data in the input files with respect to the coordinate system
+in "for loop order" is
+.IP
+Z slowest
+.br
+  Y middle
+.br
+    X fastest
+
+.PP
+Remember that DIVERSE coordinates is
+.IP
++X is to the right
+.br
++Y is straight ahead
+.br
++Z is up
+
+
+
+
+.SH "SEE ALSO"
+display(1),
+hev-createLUT(1),
+hev-dataRange(1),
+hev-preintegrate(1),
+hev-voltrace(1),
+hev-animator(1),
+mha(5),
+irisfly(1),
+
+
+
+.SH AUTHOR
+.PP
+Steven G. Satterfield
+.br
+steve@nist.gov
+.br
+NIST/ITL/ACMD/HPCVG
+.PP
+This command is based on the commands, hev-voltrace(1), hev-preintegrate(1)
+and other infrastructure by Marc Olano, olano@nist.gov.
+.PP
+Example data and LUT supplied by Nick Martys, martys@nist.gov.
+Additional glowing LUT supplied by Marc Olano
+

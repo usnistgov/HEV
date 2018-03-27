@@ -1,0 +1,55 @@
+.TH iris-DCStoMatrix 1 "March 2011"
+
+.SH NAME
+iris-DCStoMatrix
+
+.SH SYNOPSIS 
+.B iris-DCStoMatrix
+[ --translate x y z ] [ --euler h p r ] [ --quat x y z w ] [ -- scale x [ y z ] ]
+
+.SH DESCRIPTION
+\fBiris-DCStoMatrix\fR prints to standard output the elements of the matrix
+that have the given transformation.  This can be used to manipulate a
+osg::MatrixTransform node via the IRIS "MATRIX" control command.
+
+.SH OPTIONS
+
+.TP
+--translate \fIx y z\fR
+.br
+Translates by \fIx y z\fR
+
+.TP
+--euler \fIh p r\fR
+.br
+Rotates by the Euler angle \fIh p r\fR
+
+.TP
+--quat \fIx y z w\fR
+.br
+Rotates by the quaternion angle \fIx y z w\fR
+
+.TP
+--scale \fIx\fR [ \fIy z\fR ]
+.br
+Scale by \fIx y z\fR.  If \fIy z\fR omitted a uniform scale is applied
+
+.SH EXAMPLE
+
+This command, if executed while iris-viewer is running, would modify the
+osg::MatrixTransform node named foo, or create it if it doesn't exist.
+
+echo MATRIX foo \`iris-DCStoMatrix --tr -.1 0 0 --euler 90 0 0 --scale .2\` > $IRIS_CONTROL_FIFO
+
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+ 

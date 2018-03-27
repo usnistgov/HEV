@@ -1,0 +1,100 @@
+.TH iris-viewer 1 "February 20101"
+
+.SH NAME
+iris-viewer
+
+.SH SYNOPSIS 
+.B iris-viewer
+[--examine] [ --setname ] [--background r g b] [ --scene file ... ] [ --nav
+file ... ] [ --ether file ... ] [ --world file ... ] [ --log ] [ --logfile
+filename ] [file ...]
+
+.SH DESCRIPTION
+
+\fBiris-viewer\fR is the basic IRIS file viewer. It loads models under IRIS scenegraph nodes, plus has a few more options to implement commonly used commands, such as the examine and window background color commands.
+
+.SH OPTIONS
+
+.TP
+--examine
+.br
+Specifies that the nodes under the world node will be scaled to have a
+bounding sphere with radius 1, and translated to have a bounding sphere
+center of 0 0 0.
+
+.TP
+--setName
+.br
+Specifies that the nodes loaded by each input file will have their node name
+set to the name of the name of their input file if their node name is blank. 
+
+.TP
+--background \fIr g b\fR
+.br
+Specifies the window background color; \fIr g b\fR are between 0 and 1.
+
+.TP
+--scene \fIfile ...\fR
+.br
+Specifies a list of files to be loaded under the scene node.
+
+.TP
+--ether \fIfile ...\fR
+.br
+Specifies a list of files to be loaded under the ether node.
+
+.TP
+--nav \fIfile ...\fR
+.br
+Specifies a list of files to be loaded under the nav node.
+
+.TP
+--world \fIfile ...\fR
+.br
+Specifies a list of files to be loaded under the world node.
+
+.TP
+--log
+.br
+Specifies that logging should be enabled at startup.
+
+.TP
+--logfile \fIfile\fR
+.br
+Specifies the name of the log file. If not given a default file name will be used.
+
+.TP
+file ...
+.br
+Specifies a list of files to be loaded under the world node.
+
+.SH LOG FILE FORMAT
+A log file contains details about the internal operations of an IRIS
+process. It can be useful for evaluating performance problems, debugging crashes, etc.
+
+Each file of the log contains:
+
+.IP \[bu] 2
+elapsed time
+.IP \[bu]
+delta time since last log entry
+.IP \[bu]
+frame number
+.IP \[bu]
+description of what happened
+
+.P
+If the frame number is 0 or 1 the times are zero, as the OSG timers are
+reset when windows are realized at frame 1.
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

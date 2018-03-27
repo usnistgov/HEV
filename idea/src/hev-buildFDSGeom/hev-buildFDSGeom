@@ -1,0 +1,2536 @@
+#!/usr/bin/env python3
+
+'''Joseph Owen
+   NIST Scientific Applications and Visualization Group
+   July 2009
+   http://www.nist.gov/mcsd/savg/
+'''
+
+import sys
+import os
+import math
+
+wireFrame = False
+snapToGrid = False
+displayMeshOutline = False
+displayMeshSides = False
+displayMeshFull = False
+displayHoles = False
+wireFrameVents = False
+solidVents = False
+devicesOn = False
+osgFormat = False
+osgSolid = False
+osgWireframes = False
+osgTextures = False
+separate = False
+filepath = ""
+userfile = ""
+mainfile = ""
+usedfiles = []
+
+osgFilesParams = {} #file ==>  0,"",0,0,"",0,"",0,"",  0,"",0,0,"",0,"",0,"",  [],[],[],[],[],[],[],[],[]
+
+'''
+osgFilesParams[currentFile][index]
+
+0: PrimitiveSetsNumber
+1: PrimitiveSetsInfo
+2: currentPrimitiveSet
+3: VertexArrayNumber
+4: VertexArrayInfo
+5: NormalArrayNumber
+6: NormalArrayInfo
+7: ColorArrayNumber
+8: ColorArrayInfo
+
+9: LinesPrimitiveSetsNumber
+10: LinesPrimitiveSetsInfo
+11: LinescurrentPrimitiveSet
+12: LinesVertexArrayNumber
+13: LinesVertexArrayInfo
+14: LinesNormalArrayNumber
+15: LinesNormalArrayInfo
+16: LinesColorArrayNumber
+17: LinesColorArrayInfo
+
+18: TexPrimitiveSetsNumber
+19: TexPrimitiveSetsInfo
+20: TexcurrentPrimitiveSet
+21: TexVertexArrayNumber
+22: TexVertexArrayInfo
+23: TexNormalArrayNumber
+24: TexNormalArrayInfo
+25: TexCoordsArrayNumber
+26: TexCoordsArrayInfo
+'''
+
+defaultSurface = 'IVORY'
+fallbackDefaultSurface = 'IVORY'
+
+xtexcenter = 0
+ytexcenter = 0
+ztexcenter = 0
+
+def showHelp():
+    sys.stderr.write('\nUsage:\n\nhev-buildFDSGeom infile.fds mainoutfile.(savg/osg) [-wireframe -w] [-snaptogrid -s] [-displaymeshoutline -o] [-displaymeshsides -ms] [-displaymeshfull -mf] [-displayholes -holes] [-wireframevents -vw] [-solidvents -vs] [-devices -d] [-osgformat -osg] [-separate directory] [-help -h] \n\n')
+    sys.exit(1)
+
+flag = 1
+for arg in sys.argv:
+    if '.fds' in arg:
+        file = arg
+        flag += 1
+        break
+else:
+    showHelp()
+
+for arg in sys.argv:
+    if '.osg' in arg or '.savg' in arg:
+        userfile = arg
+        flag += 1
+        break
+
+if "-wireframe" in sys.argv or "-w" in sys.argv:
+    wireFrame = True
+    flag += 1
+if "-snaptogrid" in sys.argv or "-s" in sys.argv:
+    snapToGrid = True
+    flag += 1
+if "-displaymeshoutline" in sys.argv or "-o" in sys.argv:
+    displayMeshOutline = True
+    flag += 1
+if "-displaymeshsides" in sys.argv or "-ms" in sys.argv:
+    displayMeshSides = True
+    flag += 1
+if "-displaymeshfull" in sys.argv or "-mf" in sys.argv:
+    displayMeshFull = True
+    flag += 1
+if "-displayholes" in sys.argv or "-holes" in sys.argv:
+    displayHoles = True
+    flag += 1
+if "-wireframevents" in sys.argv or "-vw" in sys.argv:
+    wireFrameVents = True
+    flag += 1
+if "-solidvents" in sys.argv or "-vs" in sys.argv:
+    solidVents = True
+    flag += 1
+if "-devices" in sys.argv or "-d" in sys.argv:
+    devicesOn = True
+    flag += 1
+if "-osgformat" in sys.argv or "-osg" in sys.argv:
+    osgFormat = True
+    flag += 1
+if "-separate" in sys.argv:
+    separate = True
+    if len(sys.argv) > sys.argv.index("-separate"):
+        filepath = sys.argv[sys.argv.index("-separate")+1]
+        if filepath[-1] != '/':
+            filepath = filepath + '/'
+        flag += 2
+    else:
+        showHelp()
+if "-h" in sys.argv or "-help" in sys.argv:
+    flag += 1
+    showHelp()
+if flag != len(sys.argv) or flag == 1:
+    showHelp()
+
+
+def createFace(x1,y1,z1,x2,y2,z2,r,g,b,a):
+    stringToPrint = "polygon\n"
+    if x1 == x2:
+        stringToPrint += str(x1) + " " + str(y1) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(1) + " " + str(0) + " " + str(0) + "\n"
+        stringToPrint += str(x1) + " " + str(y2) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(1) + " " + str(0) + " " + str(0) + "\n"
+        stringToPrint += str(x1) + " " + str(y2) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(1) + " " + str(0) + " " + str(0) + "\n"
+        stringToPrint += str(x1) + " " + str(y1) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(1) + " " + str(0) + " " + str(0) + "\n"
+    elif y1 == y2:
+        stringToPrint += str(x1) + " " + str(y1) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(0) + " " + str(-1) + " " + str(0) + "\n"
+        stringToPrint += str(x2) + " " + str(y1) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(0) + " " + str(-1) + " " + str(0) + "\n"
+        stringToPrint += str(x2) + " " + str(y1) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(0) + " " + str(-1) + " " + str(0) + "\n"
+        stringToPrint += str(x1) + " " + str(y1) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(0) + " " + str(-1) + " " + str(0) + "\n"
+    elif z1 == z2:
+        stringToPrint += str(x1) + " " + str(y1) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(0) + " " + str(0) + " " + str(1) + "\n"
+        stringToPrint += str(x2) + " " + str(y1) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(0) + " " + str(0) + " " + str(1) + "\n"
+        stringToPrint += str(x2) + " " + str(y2) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(0) + " " + str(0) + " " + str(1) + "\n"
+        stringToPrint += str(x1) + " " + str(y2) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(a) + " " + str(0) + " " + str(0) + " " + str(1) + "\n"
+    return stringToPrint
+
+#*********function to make a cube*****************
+def makeCube(item):
+    x1 = float(item[0])
+    x2 = float(item[1])
+    if x1 > x2:
+        x1, x2 = x2, x1
+    y1 = float(item[2])
+    y2 = float(item[3])
+    if y1 > y2:
+       y1, y2 = y2, y1
+    z1 = float(item[4])
+    z2 = float(item[5])
+    if z1 > z2:
+        z1, z2 = z2, z1
+    colors = item[7]
+    if item[6] == 1:
+        makeCubeNormal(x1,x2,y1,y2,z1,z2,colors,item[-2],item[-1])
+    elif item[6] == 6:
+        makeCubeSix(x1,x2,y1,y2,z1,z2,colors,item[-2],item[-1])
+    elif item[6] == 3:
+        makeCubeThree(x1,x2,y1,y2,z1,z2,colors,item[-2],item[-1])
+
+#*********function to make a normal cube*****************
+def makeCubeNormal(x1,x2,y1,y2,z1,z2,colors,myfile,a):
+    thisfile = open(myfile,'a')
+    r = float(colors[0][0])/255
+    g = float(colors[0][1])/255
+    b = float(colors[0][2])/255
+    if r == -1:
+        return None
+    #smallx
+    thisfile.write(createFace(x1,y1,z1,x1,y2,z2,r,g,b,a))
+    #bigx
+    thisfile.write(createFace(x2,y1,z1,x2,y2,z2,r,g,b,a))
+    #smally
+    thisfile.write(createFace(x1,y1,z1,x2,y1,z2,r,g,b,a))
+    #bigy
+    thisfile.write(createFace(x1,y2,z1,x2,y2,z2,r,g,b,a))
+    #smallz
+    thisfile.write(createFace(x1,y1,z1,x2,y2,z1,r,g,b,a))
+    #bigz
+    thisfile.write(createFace(x1,y1,z2,x2,y2,z2,r,g,b,a))
+
+#*********function to make a cube with 6 different materials*****************
+def makeCubeSix(x1,x2,y1,y2,z1,z2,colors,myfile,a):
+    thisfile = open(myfile,'a')
+    r = float(colors[0][0])/255
+    g = float(colors[0][1])/255
+    b = float(colors[0][2])/255
+    if r != -1:
+        #smallx
+         thisfile.write(createFace(x1,y1,z1,x1,y2,z2,r,g,b,a))
+    r = float(colors[1][0])/255
+    g = float(colors[1][1])/255
+    b = float(colors[1][2])/255
+    if r != -1:
+        #bigx
+         thisfile.write(createFace(x2,y1,z1,x2,y2,z2,r,g,b,a))
+    r = float(colors[2][0])/255
+    g = float(colors[2][1])/255
+    b = float(colors[2][2])/255
+    if r != -1:
+        #smally
+         thisfile.write(createFace(x1,y1,z1,x2,y1,z2,r,g,b,a))
+    r = float(colors[3][0])/255
+    g = float(colors[3][1])/255
+    b = float(colors[3][2])/255
+    if r != -1:
+        #bigy
+        thisfile.write(createFace(x1,y2,z1,x2,y2,z2,r,g,b,a))
+    r = float(colors[4][0])/255
+    g = float(colors[4][1])/255
+    b = float(colors[4][2])/255
+    if r != -1:
+        #smallz
+        thisfile.write(createFace(x1,y1,z1,x2,y2,z1,r,g,b,a))
+    r = float(colors[5][0])/255
+    g = float(colors[5][1])/255
+    b = float(colors[5][2])/255
+    if r != -1:
+        #bigz
+        thisfile.write(createFace(x1,y1,z2,x2,y2,z2,r,g,b,a))
+
+#*********function to make a cube with 3 different materials*****************
+def makeCubeThree(x1,x2,y1,y2,z1,z2,colors,myfile,a):
+    thisfile = open(myfile,'a')
+    r = float(colors[1][0])/255
+    g = float(colors[1][1])/255
+    b = float(colors[1][2])/255
+    if r != -1:
+        #smallx
+        thisfile.write(createFace(x1,y1,z1,x1,y2,z2,r,g,b,a))
+        #bigx
+        thisfile.write(createFace(x2,y1,z1,x2,y2,z2,r,g,b,a))
+        #smally
+        thisfile.write(createFace(x1,y1,z1,x2,y1,z2,r,g,b,a))
+        #bigy
+        thisfile.write(createFace(x1,y2,z1,x2,y2,z2,r,g,b,a))
+    r = float(colors[2][0])/255
+    g = float(colors[2][1])/255
+    b = float(colors[2][2])/255
+    if r != -1:
+        #smallz
+        thisfile.write(createFace(x1,y1,z1,x2,y2,z1,r,g,b,a))
+    r = float(colors[0][0])/255
+    g = float(colors[0][1])/255
+    b = float(colors[0][2])/255
+    if r != -1:
+        #bigz
+        thisfile.write(createFace(x1,y1,z2,x2,y2,z2,r,g,b,a))
+
+
+#*********function to make a wireframe cube*****************
+def makeWireCube(item):
+    thisfile = open(item[-2],'a')
+    x1 = float(item[0])
+    x2 = float(item[1])
+    if x1 > x2:
+        x1, x2 = x2, x1
+    y1 = float(item[2])
+    y2 = float(item[3])
+    if y1 > y2:
+       y1, y2 = y2, y1
+    z1 = float(item[4])
+    z2 = float(item[5])
+    if z1 > z2:
+        z1, z2 = z2, z1
+    r = float(item[7][0][0])/255
+    g = float(item[7][0][1])/255
+    b = float(item[7][0][2])/255
+    
+    if r != -1:
+        #top
+        thisfile.write("line\n")
+        thisfile.write(str(x1) + " " + str(y1) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write(str(x2) + " " + str(y1) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write("line\n")
+        thisfile.write(str(x1) + " " + str(y2) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write(str(x2) + " " + str(y2) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write("line\n")
+        thisfile.write(str(x1) + " " + str(y1) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write(str(x1) + " " + str(y2) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write("line\n")
+        thisfile.write(str(x2) + " " + str(y1) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write(str(x2) + " " + str(y2) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+    if item[6] == 3:
+        r = float(item[7][2][0])/255
+        g = float(item[7][2][1])/255
+        b = float(item[7][2][2])/255
+    if r != -1:
+        #bottom
+        thisfile.write("line\n")
+        thisfile.write(str(x1) + " " + str(y1) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write(str(x2) + " " + str(y1) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write("line\n")
+        thisfile.write(str(x1) + " " + str(y2) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write(str(x2) + " " + str(y2) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write("line\n")
+        thisfile.write(str(x1) + " " + str(y1) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write(str(x1) + " " + str(y2) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write("line\n")
+        thisfile.write(str(x2) + " " + str(y1) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+        thisfile.write(str(x2) + " " + str(y2) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(1) + "\n")
+    if item[6] == 3:
+        r = float(item[7][1][0])/255
+        g = float(item[7][1][1])/255
+        b = float(item[7][1][2])/255
+    if r != -1:
+        #left
+        thisfile.write("line\n")
+        thisfile.write(str(x1) + " " + str(y2) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+        thisfile.write(str(x1) + " " + str(y2) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+        thisfile.write("line\n")
+        thisfile.write(str(x2) + " " + str(y2) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+        thisfile.write(str(x2) + " " + str(y2) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+        #right
+        thisfile.write("line\n")
+        thisfile.write(str(x1) + " " + str(y1) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+        thisfile.write(str(x1) + " " + str(y1) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+        thisfile.write("line\n")
+        thisfile.write(str(x2) + " " + str(y1) + " " + str(z1) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+        thisfile.write(str(x2) + " " + str(y1) + " " + str(z2) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+
+
+#*********function to make a sphere*****************
+def printPoly(myfile,x,y,z,xp, yp, zp, r, n1, n2, n3):
+    thisfile = open(myfile,'a')
+    currentFile = myfile
+    global osgFormat
+    if osgFormat:
+        global osgFilesParams
+        osgFilesParams[currentFile][0] += 1
+        osgFilesParams[currentFile][1] += '        DrawArrays TRIANGLES ' + str(osgFilesParams[currentFile][2]) + ' ' + str(3) + '\n'
+        osgFilesParams[currentFile][3] += 3
+        osgFilesParams[currentFile][5] += 3
+        osgFilesParams[currentFile][7] += 3
+        osgFilesParams[currentFile][4] += '        ' + str(r*xp[n1-1]+x) + ' ' + str(r*yp[n1-1]+y) + ' ' + str(r*zp[n1-1]+z) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(r*xp[n2-1]+x) + ' ' + str(r*yp[n2-1]+y) + ' ' + str(r*zp[n2-1]+z) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(r*xp[n3-1]+x) + ' ' + str(r*yp[n3-1]+y) + ' ' + str(r*zp[n3-1]+z) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(xp[n1-1]) + ' ' + str(yp[n1-1]) + ' ' + str(zp[n1-1]) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(xp[n2-1]) + ' ' + str(yp[n2-1]) + ' ' + str(zp[n2-1]) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(xp[n3-1]) + ' ' + str(yp[n3-1]) + ' ' + str(zp[n3-1]) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][2] += 3
+    else:
+        thisfile.write("polygon\n")
+        thisfile.write(str(r*xp[n1-1]+x) + " " + str(r*yp[n1-1]+y) + " " + str(r*zp[n1-1]+z) + " " + str(0) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(xp[n1-1]) + " " + str(yp[n1-1]) + " " + str(zp[n1-1]) + "\n")
+        thisfile.write(str(r*xp[n2-1]+x) + " " + str(r*yp[n2-1]+y) + " " + str(r*zp[n2-1]+z) + " " + str(0) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(xp[n2-1]) + " " + str(yp[n2-1]) + " " + str(zp[n2-1]) + "\n")
+        thisfile.write(str(r*xp[n3-1]+x) + " " + str(r*yp[n3-1]+y) + " " + str(r*zp[n3-1]+z) + " " + str(0) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(xp[n3-1]) + " " + str(yp[n3-1]) + " " + str(zp[n3-1]) + "\n")
+
+def findRows(poly):
+    max = 20
+    rows = 4
+    current_pol = 8
+    if poly != 128:
+        rows = 1
+    while current_pol < poly:
+        rows += 1
+        current_pol = 8 * rows * rows
+    if current_pol > poly:
+        rows = rows - 1
+    if rows == 0:
+        rows = 1
+    nVerts = 1;
+    for i in range (1,rows):
+        nVerts += (i+1)
+    return [rows,nVerts]
+
+def makeSphere(item,size):
+    x = float(item[0])
+    y = float(item[1])
+    z = float(item[2])
+    poly = 128 #128
+    r = size
+    pts = 100 #6
+    rows = 100 #2
+    rowsandnverts = findRows(rows)
+    rows = rowsandnverts[0]
+    nVerts = rowsandnverts[1]
+    tris = 8 * rows * rows
+    nVerts = nVerts * 8
+    pts = 0;
+    for i in range(1,rows+2):
+        pts = pts + 1+ 4*(i-1)
+    rows = rows + 1
+    delta_phi = (math.pi/2.0)/(rows-1)
+    theta = 0.0
+    phi = 0.0
+    xp = []
+    yp = []
+    zp = []
+    xp.append(math.sin(phi)*math.cos(theta))
+    yp.append(math.sin(phi)*math.sin(theta))
+    zp.append(math.cos(phi))
+    delta_phi = (math.pi/2.0)/(rows-1)
+    for i in range(2,rows+1):
+        phi = (i-1)*delta_phi
+        delta_theta = (math.pi/2.0)/(i-1)
+        for j in range(0,1+(4*(i-1))):
+            theta = j*delta_theta
+            xp.append(math.sin(phi)*math.cos(theta))
+            yp.append(math.sin(phi)*math.sin(theta))
+            zp.append(math.cos(phi))
+    delta_phi = (math.pi/2.0)/(rows-1)
+    theta = 0.0
+    phi = math.pi
+    xp.append(math.sin(phi)*math.cos(theta))
+    yp.append(math.sin(phi)*math.sin(theta))
+    zp.append(math.cos(phi))
+    delta_phi = (math.pi/2.0)/(rows-1);
+    for i in range(2,rows+1):
+        phi = math.pi-(i-1)*delta_phi;
+        delta_theta = (math.pi/2.0)/(i-1);
+        for j in range(0,1+(4*(i-1))):
+            theta = j*delta_theta
+            xp.append(math.sin(phi)*math.cos(theta))
+            yp.append(math.sin(phi)*math.sin(theta))
+            zp.append(math.cos(phi))
+    first = 1
+    first2 = 1
+    first3 = 1
+    first4 = 1
+    for i in range(1,rows):
+        last = first
+        first = first+1+4*(i-1)
+        printPoly(item[-1],x,y,z,xp, yp, zp, r, first, first+1, last)
+        sets = i-1
+        for j in range(0,sets):
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last+j,first+1+j,last+1+j)
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, first+1+j,first+2+j,last+1+j)
+        last2 = first2
+        first2 = first2+2+4*(i-1)
+        printPoly(item[-1],x,y,z,xp, yp, zp, r, first2,first2+1,last2)
+        for j in range(0,sets):
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last2+j,first2+1+j,last2+1+j)
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, first2+1+j,first2+2+j,last2+1+j)
+        last3 = first3
+        first3 = first3+3+4*(i-1)
+        printPoly(item[-1],x,y,z,xp, yp, zp, r, first3,first3+1,last3)
+        for j in range(0,sets):
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last3+j,first3+1+j,last3+1+j)
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, first3+1+j,first3+2+j,last3+1+j)
+        last4 = first4
+        first4 = first4+4+4*(i-1)
+        printPoly(item[-1],x,y,z,xp, yp, zp, r, first4,first4+1,last4)
+        for j in range(0,sets):
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last4+j,first4+1+j,last4+1+j)
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, first4+1+j,first4+2+j,last4+1+j)
+    first = pts+1
+    first2 = pts+1
+    first3 = pts+1
+    first4 = pts+1
+    for i in range(1,rows):
+        last = first
+        first = first+1+4*(i-1)
+        printPoly(item[-1],x,y,z,xp, yp, zp, r, last,first+1,first)
+        sets = i-1
+        for j in range(0,sets):
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last+1+j,first+1+j,last+j)
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last+1+j,first+2+j,first+1+j)
+        last2 = first2
+        first2 = first2+2+4*(i-1)
+        printPoly(item[-1],x,y,z,xp, yp, zp, r, last2,first2+1,first2)
+        for j in range(0,sets):
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last2+1+j,first2+1+j,last2+j)
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last2+1+j,first2+2+j,first2+1+j)
+        last3 = first3
+        first3 = first3+3+4*(i-1)
+        printPoly(item[-1],x,y,z,xp, yp, zp, r, last3,first3+1,first3)
+        for j in range(0,sets):
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last3+1+j,first3+1+j,last3+j)
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last3+1+j,first3+2+j,first3+1+j)
+        last4 = first4
+        first4 = first4+4+4*(i-1)
+        printPoly(item[-1],x,y,z,xp, yp, zp, r, last4,first4+1,first4)
+        for j in range(0,sets):
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last4+1+j,first4+1+j,last4+j)
+            printPoly(item[-1],x,y,z,xp, yp, zp, r, last4+1+j,first4+2+j,first4+1+j)
+
+
+#*********function to make the outline of the mesh*****************
+def makeMeshOutline():
+    thisfile = open(mainfile,'a')
+    r = 1
+    g = 1
+    b = 1
+    thisfile.write("line\n")
+    thisfile.write(str(xmin) + " " + str(ymin) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    thisfile.write(str(xmin) + " " + str(ymax) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    thisfile.write(str(xmax) + " " + str(ymax) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    thisfile.write(str(xmax) + " " + str(ymin) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    thisfile.write(str(xmin) + " " + str(ymin) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    thisfile.write("line\n")
+    thisfile.write(str(xmin) + " " + str(ymin) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    thisfile.write(str(xmin) + " " + str(ymax) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    thisfile.write(str(xmax) + " " + str(ymax) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    thisfile.write(str(xmax) + " " + str(ymin) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    thisfile.write(str(xmin) + " " + str(ymin) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    thisfile.write("line\n")
+    thisfile.write(str(xmin) + " " + str(ymin) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+    thisfile.write(str(xmin) + " " + str(ymin) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+    thisfile.write("line\n")
+    thisfile.write(str(xmax) + " " + str(ymin) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+    thisfile.write(str(xmax) + " " + str(ymin) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(1) + " " + str(0) + "\n")
+    thisfile.write("line\n")
+    thisfile.write(str(xmin) + " " + str(ymax) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(-1) + " " + str(0) + "\n")
+    thisfile.write(str(xmin) + " " + str(ymax) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(-1) + " " + str(0) + "\n")
+    thisfile.write("line\n")
+    thisfile.write(str(xmax) + " " + str(ymax) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(-1) + " " + str(0) + "\n")
+    thisfile.write(str(xmax) + " " + str(ymax) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(-1) + " " + str(0) + "\n")
+
+
+#*********function to make the sides of the mesh*****************
+def makeMeshSides(xnum,ynum,znum,xmin,xmax,ymin,ymax,zmin,zmax):
+    thisfile = open(mainfile,'a')
+    r = 1
+    g = 1
+    b = 1
+    for xcur in range(0,xnum+1):
+        thisfile.write("line\n")
+        thisfile.write(str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + " " + str(ymin) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + " " + str(ymin) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + " " + str(ymax) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + " " + str(ymax) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + " " + str(ymin) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    for ycur in range(0,ynum+1):
+        thisfile.write("line\n")
+        thisfile.write(str(xmin) + " " + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmin) + " " + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmax) + " " + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmax) + " " + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmin) + " " + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    for zcur in range(1,znum):
+        thisfile.write("line\n")
+        thisfile.write(str(xmin) + " " + str(ymin) + " " + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmin) + " " + str(ymax) + " " + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmax) + " " + str(ymax) + " " + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmax) + " " + str(ymin) + " " + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+        thisfile.write(str(xmin) + " " + str(ymin) + " " + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+
+
+#*********function to make the full mesh*****************
+def makeMeshFull(xnum,ynum,znum,xmin,xmax,ymin,ymax,zmin,zmax):
+    #xmin = float(xmin)
+    #xmax = float(xmax)
+    #ymin = float(xmax)
+    #ymax = float(xmax)
+    #zmin = float(xmax)
+    #zmax = float(xmax)
+    thisfile = open(mainfile,'a')
+    r = 1
+    g = 1
+    b = 1
+    for xcur in range(0,xnum+1):
+        for ycur in range(0,ynum+1):
+            thisfile.write("line\n")
+            thisfile.write(str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + " " + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + " " + str(zmin) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+            thisfile.write(str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + " " + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + " " + str(zmax) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    for xcur in range(0,xnum+1):
+        for zcur in range(0,znum+1):
+            thisfile.write("line\n")
+            thisfile.write(str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + " " + str(ymin) + " " + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+            thisfile.write(str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + " " + str(ymax) + " " + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+    for ycur in range(0,ynum+1):
+        for zcur in range(0,znum+1):
+            thisfile.write("line\n")
+            thisfile.write(str(xmin) + " " + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + " " + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+            thisfile.write(str(xmax) + " " + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + " " + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + " " + str(r) + " " + str(g) + " " + str(b) + " " + str(1) + " " + str(0) + " " + str(0) + " " + str(-1) + "\n")
+
+
+#*********functions to check if a point is between two other points*****************
+def between(p1, p2, p3):
+    if p2 > p3:
+        p2,p3 = p3,p2
+    return p1 >= p2 and p1 <= p3
+
+def between2(p1, p2, p3):
+    if p2 > p3:
+        p2,p3 = p3,p2
+    return p1 > p2 and p1 < p3
+
+
+#*********function to check if a hole and object are touching*****************
+def checkcollision(part1,part2): #hole, object
+    p1x1 = float(part1[0])
+    p1x2 = float(part1[1])
+    p1y1 = float(part1[2])
+    p1y2 = float(part1[3])
+    p1z1 = float(part1[4])
+    p1z2 = float(part1[5])
+    p2x1 = float(part2[0])
+    p2x2 = float(part2[1])
+    p2y1 = float(part2[2])
+    p2y2 = float(part2[3])
+    p2z1 = float(part2[4])
+    p2z2 = float(part2[5])
+    if between(p1x1,p2x1,p2x2) or between(p1x2,p2x1,p2x2) or between(p2x1,p1x1,p1x2) or between(p2x2,p1x1,p1x2):
+        if between(p1y1,p2y1,p2y2) or between(p1y2,p2y1,p2y2) or between(p2y1,p1y1,p1y2) or between(p2y2,p1y1,p1y2):
+            if between(p1z1,p2z1,p2z2) or between(p1z2,p2z1,p2z2) or between(p2z1,p1z1,p1z2) or between(p2z2,p1z1,p1z2):
+                geometry.remove(part2)
+                return makehole(part1,part2,p1x1,p1x2,p1y1,p1y2,p1z1,p1z2,p2x1,p2x2,p2y1,p2y2,p2z1,p2z2,part2[6],part2[7])
+
+
+#*********function to make a hole in an object*****************
+def makehole(hole,geom,hx1,hx2,hy1,hy2,hz1,hz2,gx1,gx2,gy1,gy2,gz1,gz2,nummat,mats):
+    newsections = []
+    if between2(hx1,gx1,gx2):
+        newsections.extend([[gx1,hx1,gy1,gy2,gz1,gz2,nummat,mats,geom[-2],geom[-1]],[hx1,gx2,gy1,gy2,gz1,gz2,nummat,mats,geom[-2],geom[-1]]])
+    else:
+        newsections.append([gx1,gx2,gy1,gy2,gz1,gz2,nummat,mats,geom[-2],geom[-1]])
+    for g in newsections[:]:
+        if between2(hx2,g[0],g[1]):
+            newsections.remove(g)
+            newsections.extend([[g[0],hx2,g[2],g[3],g[4],g[5],nummat,mats,geom[-2],geom[-1]],[hx2,g[1],g[2],g[3],g[4],g[5],nummat,mats,geom[-2],geom[-1]]])
+    for g in newsections[:]:
+        if between2(hy1,g[2],g[3]):
+            newsections.remove(g)
+            newsections.extend([[g[0],g[1],g[2],hy1,g[4],g[5],nummat,mats,geom[-2],geom[-1]],[g[0],g[1],hy1,g[3],g[4],g[5],nummat,mats,geom[-2],geom[-1]]])
+    for g in newsections[:]:
+        if between2(hy2,g[2],g[3]):
+            newsections.remove(g)
+            newsections.extend([[g[0],g[1],g[2],hy2,g[4],g[5],nummat,mats,geom[-2],geom[-1]],[g[0],g[1],hy2,g[3],g[4],g[5],nummat,mats,geom[-2],geom[-1]]])
+    for g in newsections[:]:
+        if between2(hz1,g[4],g[5]):
+            newsections.remove(g)
+            newsections.extend([[g[0],g[1],g[2],g[3],g[4],hz1,nummat,mats,geom[-2],geom[-1]],[g[0],g[1],g[2],g[3],hz1,g[5],nummat,mats,geom[-2],geom[-1]]])
+    for g in newsections[:]:
+        if between2(hz2,g[4],g[5]):
+            newsections.remove(g)
+            newsections.extend([[g[0],g[1],g[2],g[3],g[4],hz2,nummat,mats,geom[-2],geom[-1]],[g[0],g[1],g[2],g[3],hz2,g[5],nummat,mats,geom[-2],geom[-1]]])
+    for g in newsections[:]:
+        midx = (g[0]+g[1])/2
+        midy = (g[2]+g[3])/2
+        midz = (g[4]+g[5])/2
+        if between(midx,hx1,hx2) and between(midy,hy1,hy2) and between(midz,hz1,hz2):
+            newsections.remove(g)
+    return newsections
+
+
+#*********************************OSG**********************
+#********************************STUFF*********************
+def printToOsgFile():
+    global osgFilesParams
+
+    global osgTextures
+
+    for printfilename in list(osgFilesParams.keys()):
+        printfile = open(printfilename,'a')
+        printfile.write('Group {\n')
+        printfile.write('  DataVariance STATIC\n')
+        #printfile.write('  name "room.savg"\n')
+        printfile.write('  nodeMask 0xffffffff\n')
+        printfile.write('  cullingActive TRUE\n')
+        printfile.write('  num_children 1\n')
+        if osgSolid and osgFilesParams[printfilename][0] > 0:
+            printfile.write('  Geode {\n')
+            printfile.write('    DataVariance STATIC\n')
+            printfile.write('    nodeMask 0xffffffff\n')
+            printfile.write('    cullingActive TRUE\n')
+            printfile.write('    num_drawables 1\n')
+            printfile.write('    Geometry {\n')
+            printfile.write('      DataVariance STATIC\n')
+            printfile.write('      StateSet {\n')
+            printfile.write('        UniqueID StateSet_0\n')
+            printfile.write('        DataVariance STATIC\n')
+            printfile.write('        rendering_hint TRANSPARENT_BIN\n')
+            printfile.write('        renderBinMode USE\n')
+            printfile.write('        binNumber 10\n')
+            printfile.write('        binName DepthSortedBin\n')
+            printfile.write('        GL_DEPTH_TEST PROTECTED|ON\n')
+            printfile.write('        GL_BLEND PROTECTED|OFF\n')
+            printfile.write('      }\n')
+            printfile.write('      useDisplayList TRUE\n')
+            printfile.write('      useVertexBufferObjects FALSE\n')
+            printfile.write('      PrimitiveSets ' + str(osgFilesParams[printfilename][0]) + '\n')
+            printfile.write('      {\n')
+            printfile.write(osgFilesParams[printfilename][1])
+            printfile.write('      }\n')
+            printfile.write('      VertexArray Vec3Array ' + str(osgFilesParams[printfilename][3]) + '\n')
+            printfile.write('      {\n')
+            printfile.write(osgFilesParams[printfilename][4])
+            printfile.write('      }\n')
+            printfile.write('      NormalBinding PER_VERTEX\n')
+            printfile.write('      NormalArray Vec3Array ' + str(osgFilesParams[printfilename][5]) + '\n')
+            printfile.write('      {\n')
+            printfile.write(osgFilesParams[printfilename][6])
+            printfile.write('      }\n')
+            printfile.write('      ColorBinding PER_VERTEX\n')
+            printfile.write('      ColorArray Vec4Array ' + str(osgFilesParams[printfilename][7]) +'\n')
+            printfile.write('      {\n')
+            printfile.write(osgFilesParams[printfilename][8])
+            printfile.write('      }\n')
+            printfile.write('    }\n')
+            printfile.write('  }\n')
+        if osgWireframes and osgFilesParams[printfilename][9] > 0:
+            printfile.write('  Geode {\n')
+            printfile.write('    DataVariance STATIC\n')
+            printfile.write('    nodeMask 0xffffffff\n')
+            printfile.write('    cullingActive TRUE\n')
+            printfile.write('    num_drawables 1\n')
+            printfile.write('    Geometry {\n')
+            printfile.write('      DataVariance STATIC\n')
+            printfile.write('      StateSet {\n')
+            printfile.write('        UniqueID StateSet_1\n')
+            printfile.write('        DataVariance STATIC\n')
+            printfile.write('        rendering_hint TRANSPARENT_BIN\n')
+            printfile.write('        renderBinMode USE\n')
+            printfile.write('        binNumber 10\n')
+            printfile.write('        binName DepthSortedBin\n')
+            printfile.write('        GL_LIGHTING PROTECTED|OFF\n')
+            printfile.write('        GL_DEPTH_TEST PROTECTED|ON\n')
+            printfile.write('        GL_BLEND PROTECTED|OFF\n')
+            printfile.write('      }\n')
+            printfile.write('      useDisplayList TRUE\n')
+            printfile.write('      useVertexBufferObjects FALSE\n')
+            printfile.write('      PrimitiveSets ' + str(osgFilesParams[printfilename][9]) + '\n')
+            printfile.write('      {\n')
+            printfile.write(osgFilesParams[printfilename][10])
+            printfile.write('      }\n')
+            printfile.write('      VertexArray Vec3Array ' + str(osgFilesParams[printfilename][12]) + '\n')
+            printfile.write('      {\n')
+            printfile.write(osgFilesParams[printfilename][13])
+            printfile.write('      }\n')
+            printfile.write('      NormalBinding PER_VERTEX\n')
+            printfile.write('      NormalArray Vec3Array ' + str(osgFilesParams[printfilename][14]) +'\n')
+            printfile.write('      {\n')
+            printfile.write(osgFilesParams[printfilename][15])
+            printfile.write('      }\n')
+            printfile.write('      ColorBinding PER_VERTEX\n')
+            printfile.write('      ColorArray Vec4Array ' + str(osgFilesParams[printfilename][16]) +'\n')
+            printfile.write('      {\n')
+            printfile.write(osgFilesParams[printfilename][17])
+            printfile.write('      }\n')
+            printfile.write('    }\n')
+            printfile.write('  }\n')
+        if osgTextures:
+            for index, currentTex in enumerate(textureFaces):
+                if osgFilesParams[printfilename][18][index] > 0:
+                    printfile.write('  Geode {\n')
+                    printfile.write('    DataVariance DYNAMIC\n')
+                    printfile.write('    nodeMask 0xffffffff\n')
+                    printfile.write('    cullingActive TRUE\n')
+                    printfile.write('    num_drawables 1\n')
+                    printfile.write('    Geometry {\n')
+                    printfile.write('      DataVariance DYNAMIC\n')
+                    printfile.write('      StateSet {\n')
+                    printfile.write('        UniqueID StateSet_2\n')
+                    printfile.write('        DataVariance STATIC\n')
+                    printfile.write('        rendering_hint DEFAULT_BIN\n')
+                    printfile.write('        renderBinMode INHERIT\n')
+                    printfile.write('        binNumber 10\n')
+                    printfile.write('        binName DepthSortedBin\n')
+                    printfile.write('        GL_DEPTH_TEST PROTECTED|ON\n')
+                    printfile.write('        GL_BLEND PROTECTED|OFF\n')
+                    printfile.write('        textureUnit 0 {\n')
+                    printfile.write('          GL_TEXTURE_2D ON\n')
+                    printfile.write('          DataVariance STATIC\n')
+                    printfile.write('          Texture2D {\n')
+                    printfile.write('            DataVariance STATIC\n')
+                    printfile.write('            file "' + localTextures[currentTex][0] +'"\n')
+                    printfile.write('            wrap_s REPEAT\n')
+                    printfile.write('            wrap_t REPEAT\n')
+                    printfile.write('            min_filter LINEAR_MIPMAP_LINEAR\n')
+                    printfile.write('            mag_filter LINEAR\n')
+                    printfile.write('            maxAnisotropy 1\n')
+                    printfile.write('            borderColor 0 0 0 0\n')
+                    printfile.write('            borderWidth 0\n')
+                    printfile.write('            useHardwareMipMapGeneration TRUE\n')
+                    printfile.write('            unRefImageDataAfterApply FALSE\n')
+                    printfile.write('            internalFormatMode USE_IMAGE_DATA_FORMAT\n')
+                    printfile.write('          }\n')
+                    printfile.write('          TexGen {\n')
+                    printfile.write('            DataVariance STATIC\n')
+                    printfile.write('            mode LINEAR_MAP\n')
+                    printfile.write('          }\n')
+                    printfile.write('        }\n')
+                    printfile.write('      }\n')
+                    printfile.write('      useDisplayList TRUE\n')
+                    printfile.write('      useVertexBufferObjects FALSE\n')
+                    printfile.write('      PrimitiveSets ' + str(osgFilesParams[printfilename][18][index]) + '\n')
+                    printfile.write('      {\n')
+                    printfile.write(osgFilesParams[printfilename][19][index])
+                    printfile.write('      }\n')
+                    printfile.write('      VertexArray Vec3Array ' + str(osgFilesParams[printfilename][21][index]) +'\n')
+                    printfile.write('      {\n')
+                    printfile.write(osgFilesParams[printfilename][22][index])
+                    printfile.write('      }\n')
+                    printfile.write('      NormalBinding PER_VERTEX\n')
+                    printfile.write('      NormalArray Vec3Array ' + str(osgFilesParams[printfilename][23][index]) +'\n')
+                    printfile.write('      {\n')
+                    printfile.write(osgFilesParams[printfilename][24][index])
+                    printfile.write('      }\n')
+                    printfile.write('      TexCoordArray 0 Vec2Array ' + str(osgFilesParams[printfilename][25][index]) + '\n')
+                    printfile.write('      {\n')
+                    printfile.write(osgFilesParams[printfilename][26][index])
+                    printfile.write('      }\n')
+                    printfile.write('    }\n')
+                    printfile.write('  }\n')
+        printfile.write('}\n')
+
+#*********function to make an OSG cube*****************
+def makeOsgCube(item):
+    x1 = float(item[0])
+    x2 = float(item[1])
+    if x1 > x2:
+        x1, x2 = x2, x1
+    y1 = float(item[2])
+    y2 = float(item[3])
+    if y1 > y2:
+       y1, y2 = y2, y1
+    z1 = float(item[4])
+    z2 = float(item[5])
+    if z1 > z2:
+        z1, z2 = z2, z1
+    colors = item[7]
+    if item[6] == 1:
+        makeOsgCubeNormal(x1,x2,y1,y2,z1,z2,colors,item[-2])
+    elif item[6] == 6:
+        makeOsgCubeSix(x1,x2,y1,y2,z1,z2,colors,item[-2])
+    elif item[6] == 3:
+        makeOsgCubeThree(x1,x2,y1,y2,z1,z2,colors,item[-2])
+
+
+#*********function to make a normal OSG cube*****************
+def makeOsgCubeNormal(x1,x2,y1,y2,z1,z2,colors,currentFile):
+    global osgFilesParams
+    
+    global osgTextures
+
+    if not isinstance(colors[0][0],str) or not colors[0][0] in localTextures:
+        r = float(colors[0][0])/255
+        g = float(colors[0][1])/255
+        b = float(colors[0][2])/255
+        if r == -1:
+            return None
+
+        #smallx
+        osgFilesParams[currentFile][0] += 1
+        osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][3] += 4
+        osgFilesParams[currentFile][5] += 4
+        osgFilesParams[currentFile][7] += 4
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][2] += 4
+
+        #bigx
+        osgFilesParams[currentFile][0] += 1
+        osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][3] += 4
+        osgFilesParams[currentFile][5] += 4
+        osgFilesParams[currentFile][7] += 4
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][2] += 4
+
+        #smally
+        osgFilesParams[currentFile][0] += 1
+        osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][3] += 4
+        osgFilesParams[currentFile][5] += 4
+        osgFilesParams[currentFile][7] += 4
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][2] += 4
+
+        #bigy
+        osgFilesParams[currentFile][0] += 1
+        osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][3] += 4
+        osgFilesParams[currentFile][5] += 4
+        osgFilesParams[currentFile][7] += 4
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][2] += 4
+
+        #smallz
+        osgFilesParams[currentFile][0] += 1
+        osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][3] += 4
+        osgFilesParams[currentFile][5] += 4
+        osgFilesParams[currentFile][7] += 4
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][2] += 4
+
+        #bigz
+        osgFilesParams[currentFile][0] += 1
+        osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][3] += 4
+        osgFilesParams[currentFile][5] += 4
+        osgFilesParams[currentFile][7] += 4
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][2] += 4
+
+    else:
+        osgTextures = True
+        place = list(textureFaces).index(colors[0][0])
+        w = float(localTextures[colors[0][0]][1])
+        h = float(localTextures[colors[0][0]][2])
+        #smallx
+        w1 = (y1 - colors[0][2])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (y2 - colors[0][2])/w
+        h2 = (z2 - colors[0][3])/h
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        #(distance from vertex to texcenter)/texsize(width or height)
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+        #bigx
+        w1 = (y1 - colors[0][2])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (y2 - colors[0][2])/w
+        h2 = (z2 - colors[0][3])/h
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+        #smally
+        w1 = (x1 - colors[0][1])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (z2 - colors[0][3])/h
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+        #bigy
+        w1 = (x1 - colors[0][1])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (z2 - colors[0][3])/h
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+        #smallz
+        w1 = (x1 - colors[0][1])/w
+        h1 = (y1 - colors[0][2])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (y2 - colors[0][3])/h
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+        #bigz
+        w1 = (x1 - colors[0][1])/w
+        h1 = (y1 - colors[0][2])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (y2 - colors[0][2])/h
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+        
+
+#*********function to make an OSG cube with 6 different materials*****************
+def makeOsgCubeSix(x1,x2,y1,y2,z1,z2,colors,currentFile):
+    global osgFilesParams
+    
+    global osgTextures
+
+    if not isinstance(colors[0][0],str) or not colors[0][0] in localTextures:
+        #smallx
+        r = float(colors[0][0])/255
+        g = float(colors[0][1])/255
+        b = float(colors[0][2])/255
+        if r != -1:
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+    else:
+        w = float(localTextures[colors[0][0]][1])
+        h = float(localTextures[colors[0][0]][2])
+        w1 = (y1 - colors[0][2])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (y2 - colors[0][2])/w
+        h2 = (z2 - colors[0][3])/h
+        osgTextures = True
+        place = list(textureFaces).index(colors[0][0])
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+    if not isinstance(colors[1][0],str) or not colors[1][0] in localTextures:
+        #bigx
+        r = float(colors[1][0])/255
+        g = float(colors[1][1])/255
+        b = float(colors[1][2])/255
+        if r != -1:
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+    else:
+        w = float(localTextures[colors[1][0]][1])
+        h = float(localTextures[colors[1][0]][2])
+        w1 = (y1 - colors[0][2])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (y2 - colors[0][2])/w
+        h2 = (z2 - colors[0][3])/h
+        osgTextures = True
+        place = list(textureFaces).index(colors[1][0])
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+    if not isinstance(colors[2][0],str) or not colors[2][0] in localTextures:
+        #smally
+        r = float(colors[2][0])/255
+        g = float(colors[2][1])/255
+        b = float(colors[2][2])/255
+        if r != -1:
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+    else:
+        w = float(localTextures[colors[2][0]][1])
+        h = float(localTextures[colors[2][0]][2])
+        w1 = (x1 - colors[0][1])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (z2 - colors[0][3])/h
+        osgTextures = True
+        place = list(textureFaces).index(colors[2][0])
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+    if not isinstance(colors[3][0],str) or not colors[3][0] in localTextures:
+        #bigy
+        r = float(colors[3][0])/255
+        g = float(colors[3][1])/255
+        b = float(colors[3][2])/255
+        if r != -1:
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+    else:
+        w = float(localTextures[colors[3][0]][1])
+        h = float(localTextures[colors[3][0]][2])
+        w1 = (x1 - colors[0][1])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (z2 - colors[0][3])/h
+        osgTextures = True
+        place = list(textureFaces).index(colors[3][0])
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+    if not isinstance(colors[4][0],str) or not colors[4][0] in localTextures:
+        #smallz
+        r = float(colors[4][0])/255
+        g = float(colors[4][1])/255
+        b = float(colors[4][2])/255
+        if r != -1:
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+    else:
+        w = float(localTextures[colors[4][0]][1])
+        h = float(localTextures[colors[4][0]][2])
+        w1 = (x1 - colors[0][1])/w
+        h1 = (y1 - colors[0][2])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (y2 - colors[0][2])/h
+        osgTextures = True
+        place = list(textureFaces).index(colors[4][0])
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+    if not isinstance(colors[5][0],str) or not colors[5][0] in localTextures:
+        #bigz
+        r = float(colors[5][0])/255
+        g = float(colors[5][1])/255
+        b = float(colors[5][2])/255
+        if r != -1:
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+    else:
+        w = float(localTextures[colors[5][0]][1])
+        h = float(localTextures[colors[5][0]][2])
+        w1 = (x1 - colors[0][1])/w
+        h1 = (y1 - colors[0][2])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (y2 - colors[0][2])/h
+        osgTextures = True
+        place = list(textureFaces).index(colors[5][0])
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+
+#*********function to make an OSG cube with 3 different materials*****************
+def makeOsgCubeThree(x1,x2,y1,y2,z1,z2,colors,currentFile):
+    global osgFilesParams
+    
+    global osgTextures
+
+    if not isinstance(colors[1][0],str) or not colors[1][0] in localTextures:
+        #smallx
+        r = float(colors[1][0])/255
+        g = float(colors[1][1])/255
+        b = float(colors[1][2])/255
+        if r != -1:
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+
+            #bigx
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+
+            #smally
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+
+            #bigy
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+    else:
+        w = float(localTextures[colors[1][0]][1])
+        h = float(localTextures[colors[1][0]][2])
+        w1 = (y1 - colors[0][2])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (y2 - colors[0][2])/w
+        h2 = (z2 - colors[0][3])/h
+        osgTextures = True
+        place = list(textureFaces).index(colors[1][0])
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+        #bigx
+        w1 = (y1 - colors[0][2])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (y2 - colors[0][2])/w
+        h2 = (z2 - colors[0][3])/h
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+        #smally
+        w1 = (x1 - colors[0][1])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (z2 - colors[0][3])/h
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0)+ ' ' + str(-1)+ ' ' + str(0)+ '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+        #bigy
+        w1 = (x1 - colors[0][1])/w
+        h1 = (z1 - colors[0][3])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (z2 - colors[0][3])/h
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+    if not isinstance(colors[2][0],str) or not colors[2][0] in localTextures:
+        #smallz
+        r = float(colors[2][0])/255
+        g = float(colors[2][1])/255
+        b = float(colors[2][2])/255
+        if r != -1:
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+    else:
+        w = float(localTextures[colors[2][0]][1])
+        h = float(localTextures[colors[2][0]][2])
+        w1 = (x1 - colors[0][1])/w
+        h1 = (y1 - colors[0][2])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (y2 - colors[0][2])/h
+        osgTextures = True
+        place = list(textureFaces).index(colors[2][0])
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+    if not isinstance(colors[0][0],str) or not colors[0][0] in localTextures:
+        #bigz
+        r = float(colors[0][0])/255
+        g = float(colors[0][1])/255
+        b = float(colors[0][2])/255
+        if r != -1:
+            osgFilesParams[currentFile][0] += 1
+            osgFilesParams[currentFile][1] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][2]) + ' ' + str(4) + '\n'
+            osgFilesParams[currentFile][3] += 4
+            osgFilesParams[currentFile][5] += 4
+            osgFilesParams[currentFile][7] += 4
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][4] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][6] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][8] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][2] += 4
+    else:
+        w = float(localTextures[colors[0][0]][1])
+        h = float(localTextures[colors[0][0]][2])
+        w1 = (x1 - colors[0][1])/w
+        h1 = (y1 - colors[0][2])/h
+        w2 = (x2 - colors[0][1])/w
+        h2 = (y2 - colors[0][2])/h
+        osgTextures = True
+        place = list(textureFaces).index(colors[0][0])
+        osgFilesParams[currentFile][18][place] += 1
+        osgFilesParams[currentFile][19][place] += '        DrawArrays QUADS ' + str(osgFilesParams[currentFile][20][place]) + ' ' + str(4) + '\n'
+        osgFilesParams[currentFile][21][place] += 4
+        osgFilesParams[currentFile][23][place] += 4
+        osgFilesParams[currentFile][25][place] += 4
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][22][place] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][24][place] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h1) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w2) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][26][place] += '        ' + str(w1) + ' ' + str(h2) + '\n'
+        osgFilesParams[currentFile][20][place] += 4
+
+
+#*********function to make a wireframe cube in OSG format*****************
+def makeOsgWireCube(item):
+    global osgFilesParams
+    currentFile = item[-2]
+    x1 = float(item[0])
+    x2 = float(item[1])
+    if x1 > x2:
+        x1, x2 = x2, x1
+    y1 = float(item[2])
+    y2 = float(item[3])
+    if y1 > y2:
+       y1, y2 = y2, y1
+    z1 = float(item[4])
+    z2 = float(item[5])
+    if z1 > z2:
+        z1, z2 = z2, z1
+
+    if isinstance(item[7][0][0],str) and item[7][0][0] in localTextures:
+        r = float(localcolors[defaultSurface][0])/255
+        g = float(localcolors[defaultSurface][1])/255
+        b = float(localcolors[defaultSurface][2])/255
+    else:
+        r = float(item[7][0][0])/255
+        g = float(item[7][0][1])/255
+        b = float(item[7][0][2])/255
+    if r != -1:
+        #top
+        osgFilesParams[currentFile][9] += 1
+        osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(5) + '\n'
+        osgFilesParams[currentFile][12] += 5
+        osgFilesParams[currentFile][14] += 5
+        osgFilesParams[currentFile][16] += 5
+        osgFilesParams[currentFile][13] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(-1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][11] += 5
+    
+    if item[6] == 3:
+        if isinstance(item[7][2],str) and item[7][2] in localTextures:
+            r = float(localcolors[defaultSurface][0])/255
+            g = float(localcolors[defaultSurface][1])/255
+            b = float(localcolors[defaultSurface][2])/255
+        else:
+            r = float(item[7][2][0])/255
+            g = float(item[7][2][1])/255
+            b = float(item[7][2][2])/255
+    if r != -1:
+        #bottom
+        osgFilesParams[currentFile][9] += 1
+        osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(5) + '\n'
+        osgFilesParams[currentFile][12] += 5
+        osgFilesParams[currentFile][14] += 5
+        osgFilesParams[currentFile][16] += 5
+        osgFilesParams[currentFile][13] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(-1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][11] += 5
+    
+    if item[6] == 3:
+        if isinstance(item[7][2],str) and item[7][2] in localTextures:
+            r = float(localcolors[defaultSurface][0])/255
+            g = float(localcolors[defaultSurface][1])/255
+            b = float(localcolors[defaultSurface][2])/255
+        else:
+            r = float(item[7][1][0])/255
+            g = float(item[7][1][1])/255
+            b = float(item[7][1][2])/255
+    if r != -1:
+        #left
+        osgFilesParams[currentFile][9] += 1
+        osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(2) + '\n'
+        osgFilesParams[currentFile][12] += 2
+        osgFilesParams[currentFile][14] += 2
+        osgFilesParams[currentFile][16] += 2
+        osgFilesParams[currentFile][13] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x1) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(-1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][11] += 2
+    
+        osgFilesParams[currentFile][9] += 1
+        osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(2) + '\n'
+        osgFilesParams[currentFile][12] += 2
+        osgFilesParams[currentFile][14] += 2
+        osgFilesParams[currentFile][16] += 2
+        osgFilesParams[currentFile][13] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x2) + ' ' + str(y2) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(-1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][11] += 2
+    
+        #right
+        osgFilesParams[currentFile][9] += 1
+        osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(2) + '\n'
+        osgFilesParams[currentFile][12] += 2
+        osgFilesParams[currentFile][14] += 2
+        osgFilesParams[currentFile][16] += 2
+        osgFilesParams[currentFile][13] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x1) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(-1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][11] += 2
+    
+        osgFilesParams[currentFile][9] += 1
+        osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(2) + '\n'
+        osgFilesParams[currentFile][12] += 2
+        osgFilesParams[currentFile][14] += 2
+        osgFilesParams[currentFile][16] += 2
+        osgFilesParams[currentFile][13] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z1) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(x2) + ' ' + str(y1) + ' ' + str(z2) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(-1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][11] += 2
+
+
+#*********function to make the outline of the mesh in OSG format*****************
+def makeOsgMeshOutline():
+    r = 1
+    g = 1
+    b = 1
+    global osgFilesParams
+    currentFile = mainfile
+    osgFilesParams[currentFile][9] += 1
+    osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(5) + '\n'
+    osgFilesParams[currentFile][12] += 5
+    osgFilesParams[currentFile][14] += 5
+    osgFilesParams[currentFile][16] += 5
+    osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin) + ' ' + str(zmin) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymax) + ' ' + str(zmin) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymax) + ' ' + str(zmin) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymin) + ' ' + str(zmin) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin) + ' ' + str(zmin) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(-1) + ' ' + str(0) + ' ' + str(0) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][11] += 5
+
+
+    osgFilesParams[currentFile][9] += 1
+    osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(5) + '\n'
+    osgFilesParams[currentFile][12] += 5
+    osgFilesParams[currentFile][14] += 5
+    osgFilesParams[currentFile][16] += 5
+    osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin) + ' ' + str(zmax) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymax) + ' ' + str(zmax) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymax) + ' ' + str(zmax) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymin) + ' ' + str(zmax) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin) + ' ' + str(zmax) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(-1) + ' ' + str(0) + ' ' + str(0) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][11] += 5
+
+    osgFilesParams[currentFile][9] += 1
+    osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(2) + '\n'
+    osgFilesParams[currentFile][12] += 2
+    osgFilesParams[currentFile][14] += 2
+    osgFilesParams[currentFile][16] += 2
+    osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin) + ' ' + str(zmin) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin) + ' ' + str(zmax) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(-1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][11] += 2
+
+    osgFilesParams[currentFile][9] += 1
+    osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(2) + '\n'
+    osgFilesParams[currentFile][12] += 2
+    osgFilesParams[currentFile][14] += 2
+    osgFilesParams[currentFile][16] += 2
+    osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymin) + ' ' + str(zmin) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymin) + ' ' + str(zmax) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(-1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][11] += 2
+
+    osgFilesParams[currentFile][9] += 1
+    osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(2) + '\n'
+    osgFilesParams[currentFile][12] += 2
+    osgFilesParams[currentFile][14] += 2
+    osgFilesParams[currentFile][16] += 2
+    osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymax) + ' ' + str(zmin) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymax) + ' ' + str(zmax) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(-1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][11] += 2
+
+    osgFilesParams[currentFile][9] += 1
+    osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(2) + '\n'
+    osgFilesParams[currentFile][12] += 2
+    osgFilesParams[currentFile][14] += 2
+    osgFilesParams[currentFile][16] += 2
+    osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymax) + ' ' + str(zmin) + '\n'
+    osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymax) + ' ' + str(zmax) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(-1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+    osgFilesParams[currentFile][11] += 2
+
+
+#*********function to make the sides of the mesh in OSG format*****************
+def makeOsgMeshSides(xnum,ynum,znum,xmin,xmax,ymin,ymax,zmin,zmax):
+    r = 1
+    g = 1
+    b = 1
+    global osgFilesParams
+    currentFile = mainfile
+    for xcur in range(0,xnum+1):
+        osgFilesParams[currentFile][9] += 1
+        osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(5) + '\n'
+        osgFilesParams[currentFile][12] += 5
+        osgFilesParams[currentFile][14] += 5
+        osgFilesParams[currentFile][16] += 5
+        osgFilesParams[currentFile][13] += '        ' + str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + ' ' + str(ymin) + ' ' + str(zmin) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + ' ' + str(ymin) + ' ' + str(zmax) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + ' ' + str(ymax) + ' ' + str(zmax) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + ' ' + str(ymax) + ' ' + str(zmin) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + ' ' + str(ymin) + ' ' + str(zmin) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(-1) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][11] += 5
+
+    for ycur in range(0,ynum+1):
+        osgFilesParams[currentFile][9] += 1
+        osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(5) + '\n'
+        osgFilesParams[currentFile][12] += 5
+        osgFilesParams[currentFile][14] += 5
+        osgFilesParams[currentFile][16] += 5
+        osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + ' ' + str(zmin) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + ' ' + str(zmax) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + ' ' + str(zmax) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + ' ' + str(zmin) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + ' ' + str(zmin) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(-1) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(-1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][11] += 5
+        
+    for zcur in range(1,znum):
+        osgFilesParams[currentFile][9] += 1
+        osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(5) + '\n'
+        osgFilesParams[currentFile][12] += 5
+        osgFilesParams[currentFile][14] += 5
+        osgFilesParams[currentFile][16] += 5
+        osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin) + ' ' + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymax) + ' ' + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymax) + ' ' + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymin) + ' ' + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + '\n'
+        osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin) + ' ' + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(-1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][15] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+        osgFilesParams[currentFile][11] += 5
+
+
+#*********function to make the full mesh in OSG format*****************
+def makeOsgMeshFull(xnum,ynum,znum,xmin,xmax,ymin,ymax,zmin,zmax):
+    r = 1
+    g = 1
+    b = 1
+    global osgFilesParams
+    currentFile = mainfile
+    for xcur in range(0,xnum+1):
+        for ycur in range(0,ynum+1):
+            osgFilesParams[currentFile][9] += 1
+            osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(2) + '\n'
+            osgFilesParams[currentFile][12] += 2
+            osgFilesParams[currentFile][14] += 2
+            osgFilesParams[currentFile][16] += 2
+            osgFilesParams[currentFile][13] += '        ' + str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + ' ' + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + ' ' + str(zmin) + '\n'
+            osgFilesParams[currentFile][13] += '        ' + str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + ' ' + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + ' ' + str(zmax) + '\n'
+            osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(0) + ' ' + str(-1) + '\n'
+            osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][11] += 2
+    for xcur in range(0,xnum+1):
+        for zcur in range(0,znum+1):
+            osgFilesParams[currentFile][9] += 1
+            osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(2) + '\n'
+            osgFilesParams[currentFile][12] += 2
+            osgFilesParams[currentFile][14] += 2
+            osgFilesParams[currentFile][16] += 2
+            osgFilesParams[currentFile][13] += '        ' + str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + ' ' + str(ymin) + ' ' + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + '\n'
+            osgFilesParams[currentFile][13] += '        ' + str(xmin+float(xcur)/float(xnum)*(xmax-xmin)) + ' ' + str(ymax) + ' ' + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + '\n'
+            osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(1) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][15] += '        ' + str(0) + ' ' + str(-1) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][11] += 2
+    for ycur in range(0,ynum+1):
+        for zcur in range(0,znum+1):
+            osgFilesParams[currentFile][9] += 1
+            osgFilesParams[currentFile][10] += '        DrawArrays LINE_STRIP ' + str(osgFilesParams[currentFile][11]) + ' ' + str(2) + '\n'
+            osgFilesParams[currentFile][12] += 2
+            osgFilesParams[currentFile][14] += 2
+            osgFilesParams[currentFile][16] += 2
+            osgFilesParams[currentFile][13] += '        ' + str(xmin) + ' ' + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + ' ' + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + '\n'
+            osgFilesParams[currentFile][13] += '        ' + str(xmax) + ' ' + str(ymin+float(ycur)/float(ynum)*(ymax-ymin)) + ' ' + str(zmin+float(zcur)/float(znum)*(zmax-zmin)) + '\n'
+            osgFilesParams[currentFile][15] += '        ' + str(1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][15] += '        ' + str(-1) + ' ' + str(0) + ' ' + str(0) + '\n'
+            osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][17] += '        ' + str(r) + ' ' + str(g) + ' ' + str(b) + ' ' + str(1) + '\n'
+            osgFilesParams[currentFile][11] += 2
+
+
+
+#**********get color lookup table*************
+#c = open('colorLookup','r')
+# The following line should be changed to use $HEVROOT
+myhevroot = os.getenv('HEVROOT')
+c = open(myhevroot + '/idea/etc/hev-buildFDSGeom/data/colorLookup','r')
+#
+colorlinestemp = c.readlines()
+colorlinestemp2 = []
+for line in colorlinestemp:
+    colorlinestemp2.extend(line.split('\t'))
+colorlines = []
+for line in colorlinestemp2:
+    line = line.strip()
+    if len(line) > 0:
+        colorlines.append(line)
+colordict = {}
+i = 0
+while i < len(colorlines):
+    col = colorlines[i]
+    r = colorlines[i+1]
+    g = colorlines[i+2]
+    b = colorlines[i+3]
+    colordict[col]=[r,g,b]
+    i+=4
+
+#********get info from fds file*****************
+f = open(file, 'r')
+linestemp = f.readlines()
+linestemp2 = []
+for line in linestemp:
+    linestemp2.extend(line.split(','))
+linestemp3 = []
+for line in linestemp2:
+    linestemp3.extend(line.split('='))
+linestemp4 = []
+for line in linestemp3:
+    if not '\'' in line:
+        linestemp4.extend(line.split())
+    else:
+        if ' /' in line:
+            linestemp4.extend([line[:line.index('/')],'/',line[line.index('/')+1:]])
+        else:
+            linestemp4.append(line)
+linestemp5 = []
+for line in linestemp4:
+    linestemp5.append(line.strip().strip('\''))
+lines = []
+for line in linestemp5:
+    lines.append(line.strip().strip('\''))
+
+
+#**********look for &OBST, &SURF, &HOLE, and &MESH*************
+if userfile != "":
+    mainfile = userfile
+else:
+    if osgFormat:
+        mainfile = "room.osg"
+    else:
+        mainfile = "room.savg"
+
+usedfiles.append(mainfile)
+osgFilesParams[mainfile] = [0,"",0,0,"",0,"",0,"", 0,"",0,0,"",0,"",0,"", [],[],[],[],[],[],[],[],[]]
+
+whichfile = mainfile
+
+geometry = [] #x1, x2, y1, y2, z1, z2, numberofmaterials, [material1, ...], file, transparency
+vents = [] #x1, x2, y1, y2, z1, z2, material
+devices = [] #x, y, z
+localcolors = {} #name, [r, g, b]
+localTextures = {} #name, [file,width,height]
+holes = [] #x1, x2, y1, y2, z1, z1, r, g, b
+for index, item in enumerate(lines):
+    current = 0
+    numcolors = 0
+    materials = [] #material1, material2, ...
+    transparency = "1"
+    if item == '&SURF':
+        current = index
+        while lines[current] != 'RGB' and lines[current] != 'COLOR' and lines[current] != 'TEXTURE_MAP' and lines[current] != '/':
+            current += 1
+        if lines[current] == 'RGB':
+            localcolors[lines[index+2]] = [lines[current+1],lines[current+2],lines[current+3]]
+        elif lines[current] == 'COLOR':
+            localcolors[lines[index+2]] = colordict[lines[current+1]]
+        elif lines[current] == 'TEXTURE_MAP':
+            index2 = current
+            tex = ''
+            wid = 1
+            hei = 1
+            while lines[index2] != '/':
+                if lines[index2] == 'TEXTURE_MAP':
+                    tex = lines[index2+1]
+                elif lines[index2] == 'TEXTURE_WIDTH':
+                    wid = lines[index2+1]
+                elif lines[index2] == 'TEXTURE_HEIGHT':
+                    hei = lines[index2+1]
+                index2 += 1
+            localTextures[lines[index+2]] = [tex,wid,hei]
+        elif lines[current] == '/': # We did not find any color to define this surface so we put GREY by default
+            localcolors[lines[index+2]] = colordict['GRAY']
+    elif item == '&HOLE':
+        holes.append([lines[index+2],lines[index+3],lines[index+4],lines[index+5],lines[index+6],lines[index+7],1,[[0,255,0]],mainfile,transparency])
+    elif item == '&MESH':
+        xnum = int(lines[index+2])
+        ynum = int(lines[index+3])
+        znum = int(lines[index+4])
+        xmin = float(lines[index+6])
+        xmax = float(lines[index+7])
+        ymin = float(lines[index+8])
+        ymax = float(lines[index+9])
+        zmin = float(lines[index+10])
+        zmax = float(lines[index+11])
+    elif item == '&DEVC':
+        current = index
+        while lines[current] != 'XYZ':
+            current += 1
+        if lines[current] == 'XYZ':
+            devices.append([lines[current+1],lines[current+2],lines[current+3],mainfile])
+    elif item == '&MISC':
+        current = index
+        while lines[current] != '/':
+            current += 1
+            if lines[current] == 'SURF_DEFAULT':
+                defaultSurface = lines[current+1]
+            if lines[current] == 'TEXTURE_ORIGIN':
+                xtexcenter = float(lines[current+1])
+                ytexcenter = float(lines[current+2])
+                ztexcenter = float(lines[current+3])
+
+
+for index, item in enumerate(lines):
+    current = 0
+    numcolors = 0
+    materials = [] #material1, material2, ...
+    transparency = "1"
+    if item == '&OBST':
+        xtexcenterlocal = xtexcenter
+        ytexcenterlocal = ytexcenter
+        ztexcenterlocal = ztexcenter
+        current = index
+        choice = 'SURF_ID'
+        while lines[current] != '/':
+            current += 1
+            if lines[current] == 'TEXTURE_ORIGIN':
+                xtexcenterlocal = float(lines[current+1])
+                ytexcenterlocal = float(lines[current+2])
+                ztexcenterlocal = float(lines[current+2])
+            if lines[current] == 'TRANSPARENCY':
+                transparency = lines[current+1]
+            if lines[current] == 'COLOR':
+                choice = lines[current]
+        current = index
+
+        while lines[current] != choice and lines[current] != 'SURF_ID6' and lines[current] != 'SURF_IDS' and lines[current] != '/':
+            current += 1
+        if lines[current] == 'SURF_ID':
+            if not lines[current+1] in localTextures:
+                materials.append(lines[current+1])
+            else:
+                materials.append([lines[current+1],xtexcenterlocal,ytexcenterlocal,ztexcenterlocal])
+            numcolors = 1
+        elif lines[current] == 'COLOR':
+            materials.append(lines[current+1])
+            numcolors = 1
+        elif lines[current] == 'SURF_ID6':
+            if not lines[current+1] in localTextures:
+                materials.append(lines[current+1])
+            else:
+                materials.append([lines[current+1],xtexcenterlocal,ytexcenterlocal,ztexcenterlocal])
+            if not lines[current+2] in localTextures:
+                materials.append(lines[current+2])
+            else:
+                materials.append([lines[current+2],xtexcenterlocal,ytexcenterlocal,ztexcenterlocal])
+            if not lines[current+3] in localTextures:
+                materials.append(lines[current+3])
+            else:
+                materials.append([lines[current+3],xtexcenterlocal,ytexcenterlocal,ztexcenterlocal])
+            if not lines[current+4] in localTextures:
+                materials.append(lines[current+4])
+            else:
+                materials.append([lines[current+4],xtexcenterlocal,ytexcenterlocal,ztexcenterlocal])
+            if not lines[current+5] in localTextures:
+                materials.append(lines[current+5])
+            else:
+                materials.append([lines[current+5],xtexcenterlocal,ytexcenterlocal,ztexcenterlocal])
+            if not lines[current+6] in localTextures:
+                materials.append(lines[current+6])
+            else:
+                materials.append([lines[current+6],xtexcenterlocal,ytexcenterlocal,ztexcenterlocal])
+            numcolors = 6
+        elif lines[current] == 'SURF_IDS':
+            if not lines[current+1] in localTextures:
+                materials.append(lines[current+1])
+            else:
+                materials.append([lines[current+1],xtexcenterlocal,ytexcenterlocal,ztexcenterlocal])
+            if not lines[current+2] in localTextures:
+                materials.append(lines[current+2])
+            else:
+                materials.append([lines[current+2],xtexcenterlocal,ytexcenterlocal,ztexcenterlocal])
+            if not lines[current+3] in localTextures:
+                materials.append(lines[current+3])
+            else:
+                materials.append([lines[current+3],xtexcenterlocal,ytexcenterlocal,ztexcenterlocal])
+            numcolors = 3
+        else:
+            materials.append(defaultSurface)
+            numcolors = 1
+        geometry.append([lines[index+2],lines[index+3],lines[index+4],lines[index+5],lines[index+6],lines[index+7],numcolors,materials,whichfile,transparency])
+    elif item == '&VENT':
+        current = index
+        while lines[current] != 'SURF_ID' and lines[current] != 'COLOR' and lines[current] != 'SURF_ID6' and lines[current] != 'SURF_IDS' and lines[current] != '/':
+            current += 1
+        if lines[current] == 'SURF_ID':
+            materials.append(lines[current+1])
+            numcolors = 1
+        elif lines[current] == 'COLOR':
+            materials.append(lines[current+1])
+            numcolors = 1
+        elif lines[current] == 'SURF_ID6':
+            materials.extend([lines[current+1],lines[current+2],lines[current+3],lines[current+4],lines[current+5],lines[current+6]])
+            numcolors = 6
+        elif lines[current] == 'SURF_IDS':
+            materials.extend([lines[current+1],lines[current+2],lines[current+3]])
+            numcolors = 3
+        else:
+            materials.append(defaultSurface)
+            numcolors = 1
+        if lines[index+2] == 'XMAX':
+            vents.append([xmin,xmax,ymin,ymax,zmin,zmax,numcolors,materials,mainfile])
+        else:
+            vents.append([lines[index+2],lines[index+3],lines[index+4],lines[index+5],lines[index+6],lines[index+7],numcolors,materials,mainfile])
+    elif separate and item == '!object_begin':
+        if osgFormat:
+            whichfile = filepath + lines[index+1] + ".osg"
+            usedfiles.append(filepath + lines[index+1] + ".osg")
+            osgFilesParams[filepath + lines[index+1] + ".osg"] = [0,"",0,0,"",0,"",0,"", 0,"",0,0,"",0,"",0,"", [],[],[],[],[],[],[],[],[]]
+        else:
+            whichfile = filepath + lines[index+1] + ".savg"
+            usedfiles.append(filepath + lines[index+1] + ".savg")
+            osgFilesParams[filepath + lines[index+1] + ".savg"] = [0,"",0,0,"",0,"",0,"", 0,"",0,0,"",0,"",0,"", [],[],[],[],[],[],[],[],[]]
+
+#MAKE LIST OF TEXTURES
+if len(localTextures) > 0:
+    textureFaces = localTextures.keys()
+    for placeholder in range(0,len(textureFaces)):
+        for currentFile in list(osgFilesParams.keys()):
+            osgFilesParams[currentFile][18].append(0)
+            osgFilesParams[currentFile][19].append("")
+            osgFilesParams[currentFile][20].append(0)
+            osgFilesParams[currentFile][21].append(0)
+            osgFilesParams[currentFile][22].append("")
+            osgFilesParams[currentFile][23].append(0)
+            osgFilesParams[currentFile][24].append("")
+            osgFilesParams[currentFile][25].append(0)
+            osgFilesParams[currentFile][26].append("")
+
+
+if defaultSurface in localTextures:
+    if (not osgFormat) or wireFrame:
+        defaultSurface = fallbackDefaultSurface
+        whatToPrint = colordict[defaultSurface]
+    else:
+        whatToPrint = [defaultSurface,xtexcenter,ytexcenter,ztexcenter]
+else:
+    if defaultSurface in localcolors:
+        whatToPrint = localcolors[defaultSurface]
+    else:
+        whatToPrint = colordict[defaultSurface]
+
+#SET COLOR NAMES FROM GEOMETRY MATERIAL NAMES
+for item in geometry:
+    for index,material in enumerate(item[-3]):
+        if material[0] in localTextures:
+            if (not osgFormat) or wireFrame:
+                item[-3][index] = whatToPrint
+        elif not material in colordict:
+            if material == 'INVISIBLE':
+                item[-3][index] = [-255,0,0]
+            elif material in localcolors:
+                item[-3][index] = localcolors[material]
+            else:
+                item[-3][index] = whatToPrint
+        else:
+            item[-3][index] = colordict[material]
+
+
+#SET COLOR NAMES FROM VENT MATERIAL NAMES
+for item in vents:
+    for index,material in enumerate(item[-2]):
+        if not material in colordict:
+            if material == 'INVISIBLE':
+                item[-2][index] = [-255,0,0]
+            elif material in localcolors:
+                item[-2][index] = localcolors[material]
+            else:
+                item[-2][index] = whatToPrint
+        else:
+            item[-2][index] = colordict[material]
+
+parts = []
+for hole in holes:
+    
+    newparts = []
+    for geom in geometry[:]:
+        parts = checkcollision(hole,geom)
+        
+        if parts != None:
+            newparts.extend(parts)
+    
+    geometry.extend(newparts)
+
+if snapToGrid:
+    xsnap = (xmax-xmin)/float(xnum)
+    ysnap = (ymax-ymin)/float(ynum)
+    zsnap = (zmax-zmin)/float(znum)
+    for item in geometry:
+        item[0] = round(float(item[0])/xsnap)*xsnap
+        item[1] = round(float(item[1])/xsnap)*xsnap
+        item[2] = round(float(item[2])/ysnap)*ysnap
+        item[3] = round(float(item[3])/ysnap)*ysnap
+        item[4] = round(float(item[4])/zsnap)*zsnap
+        item[5] = round(float(item[5])/zsnap)*zsnap
+    for item in vents:
+        item[0] = round(float(item[0])/xsnap)*xsnap
+        item[1] = round(float(item[1])/xsnap)*xsnap
+        item[2] = round(float(item[2])/ysnap)*ysnap
+        item[3] = round(float(item[3])/ysnap)*ysnap
+        item[4] = round(float(item[4])/zsnap)*zsnap
+        item[5] = round(float(item[5])/zsnap)*zsnap
+
+if separate:
+    for usedfilename in usedfiles:
+        usedfile = open(usedfilename,"w")
+        usedfile.write("")
+    for printfilename in list(osgFilesParams.keys()):
+        printfile = open(printfilename,'w')
+        printfile.write('')
+else:
+        usedfile = open(mainfile,"w")
+        usedfile.write("")
+
+if osgFormat:
+    if wireFrame:
+        for item in geometry:
+            makeOsgWireCube(item)
+        osgWireframes = True
+    else:
+        for item in geometry:
+            makeOsgCube(item)
+        osgSolid = True
+
+    if displayMeshOutline:
+        makeOsgMeshOutline()
+        osgWireframes = True
+
+    if displayMeshSides:
+        makeOsgMeshSides(xnum,ynum,znum,xmin,xmax,ymin,ymax,zmin,zmax)
+        osgWireframes = True
+
+    if displayMeshFull:
+        makeOsgMeshFull(xnum,ynum,znum,xmin,xmax,ymin,ymax,zmin,zmax)
+        osgWireframes = True
+
+    if displayHoles:
+        for item in holes:
+            makeOsgWireCube(item)
+        osgWireframes = True
+
+    if solidVents:
+        for item in vents:
+            makeOsgCube(item)
+        osgSolid = True
+    elif wireFrameVents:
+        for item in vents:
+            makeOsgWireCube(item)
+        osgWireframes = True
+
+    if devicesOn:
+        for item in devices:
+            makeSphere(item,0.1)
+
+    if osgSolid or osgWireframes:
+        printToOsgFile()
+
+else:
+    for item in geometry:
+        if wireFrame:
+            makeWireCube(item)
+        else:
+            makeCube(item)
+
+    if wireFrameVents or solidVents:
+        for item in vents:
+            if solidVents:
+                makeCube(item)
+            elif wireFrameVents:
+                makeWireCube(item)
+
+    if devicesOn:
+        for item in devices:
+            makeSphere(item,0.1)
+
+    if displayHoles:
+        for item in holes:
+            makeWireCube(item)
+
+    if displayMeshOutline:
+        makeMeshOutline()
+
+    if displayMeshSides:
+        makeMeshSides(xnum,ynum,znum,xmin,xmax,ymin,ymax,zmin,zmax)
+
+    if displayMeshFull:
+        makeMeshFull(xnum,ynum,znum,xmin,xmax,ymin,ymax,zmin,zmax)

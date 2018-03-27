@@ -1,0 +1,18 @@
+# modular sphere test using geometry shader
+# version with sphere clipping
+
+# load point data set with culling off
+LOAD points points.osg
+CULLING points OFF
+ADDCHILD points world
+
+# add sphere shader
+SHADERPROG points V dummy.vert G P TS 4 sphere-clip.geom F sphere-clip.frag
+UNIFORM points fatpointSize 5
+
+# choose a background different from all spheres, and center them
+BACKGROUND .5 .7 .9
+EXAMINE
+
+# load clip tools
+LOAD clip.mcp

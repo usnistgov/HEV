@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# simple gnomon using IRIS commands
+
+if [ $# -ne 2 -a $# -ne 0 ] ; then
+    echo "Usage: hev-gnomon [x z]"
+fi
+
+if [ $# -eq 2 ] ; then
+    x=$1; z=$2
+else
+    identifyimmersive=`hev-identifyImmersive`
+    if [ "$identifyimmersive" = "rave" ] ;then
+	x=.135; z=-.131
+    elif  [ "$identifyimmersive" = "powerwall" ] ;then
+	x=.165; z=-.135
+    else 
+	x=.07; z=-.07
+    fi
+fi
+
+echo load myLittleOleGnomon gnomon.osg
+echo dcs myLittleOleGnomonDCS $x .15 $z  0 0 0 .04
+echo addchild myLittleOleGnomonDCS scene
+echo addchild myLittleOleGnomon myLittleOleGnomonDCS
+
+# this is the only way  can get hev-matrixToCoord to be killed when hev-gomon is killed. feel free to do it right!
+# and how do you keep the sheel from spewing a message when the process is killed?
+fifo="/tmp/hev-gnomon-$USER"
+mkfifo $fifo
+hev-matrixToCoord --loop iris/state/nav > $fifo &
+bp=$!
+trap "kill $bp ; rm $fifo" EXIT
+
+awk "{printf(\"dcs myLittleOleGnomonDCS $x .15 $z %f %f %f .04\n\", \$4, \$5, \$6) ; fflush() }" < $fifo 
+
+

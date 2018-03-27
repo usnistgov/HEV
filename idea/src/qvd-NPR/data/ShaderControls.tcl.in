@@ -1,0 +1,37 @@
+#! /usr/bin/env wish
+
+# GUI for controlling shader parameters
+
+# get shader parameter functions
+source paramTools.tcl
+
+# window title
+wm title . "Controls"
+paramHeader .header @seqnode@
+
+# on/off buttons
+set p::showspots 1
+set p::showcolor 1
+set p::showtext 0
+frame .buttons
+label .buttons.label -text "Show: "
+checkbutton .buttons.showspots -variable p::showspots \
+    -text "closest point spots" -command "shaderParam showspots"
+checkbutton .buttons.showcolor -variable p::showcolor \
+    -text "stress colors" -command "shaderParam showcolor"
+checkbutton .buttons.showtext -variable p::showtext \
+    -text "stress values" -command "shaderParam showtext"
+pack .buttons.label .buttons.showspots .buttons.showcolor .buttons.showtext \
+    -side left -fill x
+
+# frame numbers
+set frames [list @framelist@]
+
+# create sliders
+paramFloat .stressCutoff "Solid rocks with stress values above:" \
+	@stressCutoff@ 0 @maxstress@
+paramFrame .keyframe "Show solid rocks from" $frames @keyframe@ @frames@ \
+	"plot.gif" 42 381 4 373
+
+# pack into GUI
+pack .header .buttons .stressCutoff .keyframe -fill x

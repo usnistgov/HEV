@@ -1,0 +1,383 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1">
+<link href="dtk.css" rel="stylesheet" type="text/css">
+<title>Pictures of DTK GUI programs</title>
+</header>
+<body background="blueDeskTop0.png">
+
+<center>
+<h1>Pictures of DTK GUI programs</h1>
+
+These programs come with the DTK package.&nbsp;
+They are written using the Fast Light Toolkit <a
+href="http://www.fltk.org/">FLTK</a> and the DTK API.
+
+<br />
+<hr width="90%">
+
+<center>
+<h3>DTK Shared Memory Input GUIs</h3>
+</center>
+
+<table width=666>
+<tr>
+<td>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<img src="sliders0.png">
+
+</td>
+</tr>
+<tr>
+<td>
+
+<center>
+<font size=-3>1/2 scale</font>
+</center>
+
+<p>
+
+<b>dtk-floatAdjusters</b>
+<b>dtk-floatCounters</b>
+<b>dtk-floatRollers</b>
+<b>dtk-floatSliders</b>
+<b>dtk-floatValueInputs</b>
+
+<b>dtk-doubleAdjusters</b>
+<b>dtk-doubleCounters</b>
+<b>dtk-doubleRollers</b>
+<b>dtk-doubleSliders</b>
+<b>dtk-doubleValueInputs</b>
+</p>
+
+
+<p>These GUI's can be used
+to write float or double arrays to DTK shared memory.&nbsp;
+
+They also can be used to continuously monitor (read) the values in DTK
+shared memory.&nbsp;
+
+They have command line options to set scales, array sizes, and
+widget labels.&nbsp;
+
+They are indispensable for debugging your interactive distributed
+dynamics code.</p>
+
+</td>
+</tr>
+</table>
+<br /><hr width="90%">
+
+<center>
+<h3>DTK Shared Memory Scope GUI</h3>
+</center>
+
+<table width=666>
+<tr>
+<td>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<img src="scope0.png">
+
+</td>
+</tr>
+<tr>
+<td>
+
+<center>
+<font size=-3>full scale</font>
+</center>
+
+<p> <b>dtk-floatScope</b> and <b>dtk-doubleScope</b> read and display
+floating point arrays from DTK shared memory in a way similar to an
+oscilloscope.&nbsp; Command line options and interactive controls are
+available.&nbsp; The plots change with time.&nbsp; Time is in the
+horizontal direction, and the value of a float (double) is in the
+vertical direction.</p>
+
+</td>
+</tr>
+</table>
+<br /><hr width="90%">
+
+
+<center>
+<h3>DTK CAVE devices simulator GUI</h3>
+</center>
+
+<table cellpadding=8>
+<tr>
+<td colspan=2>
+
+</td>
+</tr>
+<tr valign=top>
+<td>
+
+<img src="townCaveEmu0.png"><br>
+<center>
+<font size=-3>1/2 scale</font>
+</center>
+
+</td>
+<td>
+
+<b>dtk-caveDeviceSimulator</b> simulates data from the head and wand
+trackers, wand joystick, and wand buttons.&nbsp; The <a
+href="http://www.diverse.vt.edu/DPF/">DPF</a> Performer town
+fly-through program does not know the difference between this
+simulated data or real data.&nbsp; <b>dtk-caveDeviceSimulator</b> can
+also simulate <a href="http://www.vrco.com/">VRCO's</a> system V
+shared memory Trackd data to run with old CAVELib apps.
+
+<p> The Performer graphics window shows a jump view (out of your body)
+fly-through that is simulating the users tracked head (teapot) and
+tracked wand (yellow wand) in a six wall CAVE cube VR simulator.&nbsp;
+The head, wand, and CAVE cube can be toggled visible and
+invisible.</p>
+
+</td>
+</tr>
+</table>
+<br /><hr width="90%">
+
+
+<center>
+<h3>DTK 6 DOF Gnomon Viewer</h3>
+</center>
+
+<table cellpadding=8>
+<tr colspan=2>
+<td>
+
+</td>
+</tr>
+<tr valign=top>
+<td>
+
+<img src="gnomon0.png"><br>
+<center>
+<font size=-3>full scale</font>
+</center>
+
+</td>
+<td>
+
+
+<b>dtk-gnomonDisplay</b>
+The DTK Gnomon Graphical Display visually interprets
+data in DTK shared memory float arrays as x, y, z coordinates and
+heading (H), pitch (P), roll (R), in degrees.
+
+<p> <b>dtk-gnomonDisplay</b> is pretty handy for setting up and
+debugging tracking devices and simulations that have rigid body
+dynamics.</p>
+
+</td>
+</tr>
+</table>
+<br /><hr width="90%">
+
+
+<center>
+<h3>DTK Shared Time Controller</h3>
+</center>
+
+<table cellpadding=8>
+<tr>
+<td colspan=2>
+
+</td>
+</tr>
+<tr valign=top>
+<td>
+
+<img src="timeControl0.png"><br>
+<center>
+<font size=-3>full scale</font>
+</center>
+
+</td>
+<td>
+
+<b>dtk-timeControl</b> controls a timer that may be used by any
+process.  
+
+<p> The intent is to provide a way to stop, start, and reset a timer
+that is used by many parts of a distributed interactive dynamical
+simulation.&nbsp; The functionality is gotten by using DTK shared
+memory.&nbsp; A shared time class is provided in the DTK API to
+interface your simulation programs to this "shared time".</p>
+
+</td>
+</tr>
+</table>
+<br /><hr width="90%">
+
+
+<center>
+<h3>DTK program launcher</h3>
+</center>
+
+<table cellpadding=8>
+<tr>
+<td colspan=2>
+
+</td>
+</tr>
+<tr valign=top>
+<td>
+
+<img src="launcher0.png"><br>
+<center>
+<font size=-3>70% scale</font>
+</center>
+
+</td>
+<td>
+
+<b>dtk-launcher</b> lets you launch and kill your simulation
+programs.
+
+<p> Most interactive simulators today run with many programs and
+controlling them from a console shell may not be quick enough when
+your required to change scenarios on the fly.&nbsp;
+<b>dtk-launcher</b> makes inter-changing running programs easy.</p>
+
+<p> When you don't give it list of programs to run,
+<b>dtk-launcher</b> acts like a GUI shell running and controlling any
+executables in the file system.</p>
+
+</td>
+</tr>
+</table>
+<br /><hr width="90%">
+
+
+<center>
+<h3>DTK Demo Runner</h3>
+</center>
+
+<table cellpadding=5 width=600>
+<tr>
+<td colspan=2>
+
+</td>
+</tr>
+<tr valign=top>
+<td>
+
+<img src="demoRunner0.png"><br>
+<center>
+<font size=-3>70% scale</font>
+</center>
+
+</td>
+<td>
+
+<img src="demoRunnerKill.png"><br>
+<center>
+<font size=-3>70% scale</font>
+</center>
+
+</td>
+</tr>
+<tr>
+<td colspan=2>
+
+<b>dtk-demoRunner</b> lets you launch and then kill your simulation
+program.&nbsp; It's like dtk-launcher but only runs one program at a
+time.  <b>dtk-demoRunner</b> is a dumber version of dtk-launcher that
+lets dummies run your simulator.&nbsp; It functionally like SGI's
+buttonfly with kill control, but not as showy.
+
+</td>
+</tr>
+</table>
+<br /><hr width="90%">
+
+
+<center>
+<h3>DTK Shared Button Input</h3>
+</center>
+
+<table cellpadding=8>
+<tr>
+<td colspan=2>
+
+</td>
+</tr>
+<tr valign=top>
+<td>
+
+<img src="dtk-buttons.png"><br>
+<center>
+<font size=-3>full scale</font>
+</center>
+
+</td>
+<td>
+
+<b>dtk-buttons</b> provides a interface to buttons (bits) in DTK
+shared memory.&nbsp; You can use it to simulate buttons that may be
+coming from "real-hardware" on the "real-simulator", so that you can
+develop simulators on the desktop computer without button-like
+hardware.
+
+<p> <b>dtk-buttons</b> has command line options for setting the number
+of buttons and labeling the buttons.</p>
+
+</td>
+</tr>
+</table>
+<br /><hr width="90%">
+
+
+<center>
+<h3>DTK - Probe USB Input</h3>
+</center>
+
+<center>
+<table cellpadding=8 width=600>
+<tr>
+<td colspan=2>
+
+</td>
+</tr>
+<tr valign=top>
+<td>
+
+<center>
+<img src="usbInput_probe.png"><br>
+<font size=-3>80% scale</font>
+</center>
+
+</td>
+</tr>
+<tr valign=top>
+<td>
+
+<b>dtk-usbProbe</b> provides GUI to that checks all input USB devices
+files for hardware devices and lets you prints events from each one
+found.
+
+<p> This program is based on Vojtech Pavlik's USB Event device test
+program `evtest'.</p>
+
+</td>
+</tr>
+</table>
+</center>
+<br />
+
+

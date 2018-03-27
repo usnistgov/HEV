@@ -1,0 +1,4 @@
+CMD=$0
+CMD_DIR=`dirname $CMD`
+CMD_NAME=`basename $CMD`
+$CMD_DIR/@CUR_TARGET@.app/Contents/MacOS/@CUR_TARGET@ $@

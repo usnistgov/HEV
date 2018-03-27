@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+
+import sys
+import vtk
+from optparse import OptionParser
+
+def showHelp():
+    sys.stderr.write('\nUsage:\nhev-vtkBoundingHull [options] inFName outFName\n')
+    sys.exit(1)
+
+use = "Usage: %prog [options] inFName outFName"
+
+# PARSE COMMAND LINE
+parser = OptionParser(usage = use)
+
+# ASSIGN VALUES
+parser.add_option("--subDiv", "--s", dest="level", type="int", default="1")
+
+options, args = parser.parse_args()
+
+#SET INPUT AND OUTPUT FILE
+if len(args) == 2:
+    inputdatafile = args[-2]
+    outputdatafile = args[-1]
+else:
+    showHelp()
+
+#READER
+reader = vtk.vtkPolyDataReader()
+reader.SetFileName(inputdatafile)
+
+#PROCESS
+hull = vtk.vtkHull()
+hull.SetInput(reader.GetOutput())
+hull.AddRecursiveSpherePlanes(options.level)
+
+#FILEWRITER
+write = vtk.vtkPolyDataWriter()
+write.SetInput(hull.GetOutput())
+write.SetFileName(outputdatafile)
+write.Write()
+write.Update()

@@ -1,0 +1,51 @@
+.TH hev-stitch 1 "September, 2016" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+hev-stitch
+- stitches a set of cube map images together into a single image
+
+.SH SYNOPSIS
+.B hev-stitch
+.I -O output -W width -H height <left> <right> <up> <down> <front> <back>
+
+.SH PARAMETERS
+
+.TP
+.B -O \fIoutput\fR
+the output image filename.
+
+.TP
+.B -W \fIwidth\fR
+the output image width
+
+.TP
+.B -H \fIheight\fR
+the output image height
+
+.TP
+.B <left>
+the left cube map image
+
+.TP
+.B <right>
+the right cube map image
+
+.TP
+.B <up>
+the up cube map image
+
+.TP
+.B <down>
+the down cube map image
+
+.TP
+.B <front>
+the front cube map image
+
+.TP
+.B <back>
+the back cube map image
+
+.SH AUTHOR
+Wesley Griffin, <wesley.griffin@nist.gov>
+

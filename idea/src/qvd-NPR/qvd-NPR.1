@@ -1,0 +1,178 @@
+.TH QVD-NPR 1 "June 2008, March 2013"
+
+
+.SH NAME
+
+qvd-NPR
+
+
+.SH SYNOPSIS
+
+.B qvd-NPR
+.I [ options ] file.qvisdat rock-template ID
+
+
+.SH DESCRIPTION
+
+\fBqvd-NPR\fR processes a \fIQDPD\fR visualization data
+(\fIQVISDAT\fR) file, and rock geometry files into a
+\*(lqnon-photorealistic\*(rq visualization, which shows high-stress
+rocks in the flow visualization as solid objects, and low-stress rocks
+in a sketch-like outline style.
+
+.TP 
+.B file.qvisdat
+is a QVISDAT format data file. This is a text file format, documented
+in comments in the file header.
+
+.TP 
+.B rock-template 
+is a \fIprintf\fR style template for the path and file names of the
+rock geometry files. A single \fI%d\fR in the template is replaced by
+the rock numbers from 1 to the number of unique rocks in the
+simulation, as given by the \fIshape\fR lines in the qvisdat file. The
+%d may include leading 0 or field width options as allowed by the C
+printf function to introduce 0 padding in the file names (see EXAMPLES
+below)
+
+.TP 
+.B ID 
+is a short unique identifier (no spaces or '/' characters) used as
+an internal identifier, and as the name of a directory created for the
+\fBqvd-NPR\fR output files. In addition, \fBqvd-NPR\fR creates
+a script \fBrun\fIID\fR which will run the visualization. The command
+line used to generate the visualization is written into the top of the
+\fBrun\fIID\fR script.
+
+.P
+
+.SH OPTIONS
+
+All options listed below can be abbreviated by the shortest unique
+part of the name (\fB--p\fR, \fB--sc\fR, \fB--st\fR, etc.). The
+following options are available:
+
+.TP
+.B --points \fIN\fR
+Number of closest points to store per rock. The \fIN\fR highest-stress
+points per rock will be stored. Default is 8 points per rock.
+
+.TP
+.B --scale '\fIsc\fB'
+Uniform scale factor to apply to each rock shape. Useful when shape
+files are not at the same geometric scale as the qvisdat file. Defaults
+to no scaling (\fIsc\fR=1.0)
+
+.TP
+.B --copy '\fIoffset\fB'
+Include a second copy of the rocks offset by the given amount (an
+offset of 0 results in just one copy). This may make it easier to see
+the interactions between rocks where the system wraps around. Defaults
+to showing just a single copy.
+
+.TP
+.B --refresh
+Recreate cached copies of rock object files.
+
+.TP
+.B --sab \fIfile\fB
+Additional graphics files (.sge, .ive, .osg, ...) to add to the
+SelectionAppBuilder On/Off control panel. Teh file is added to the
+control panel, but not copied into place. The --sab file (and any
+files it needs to load) will need to be copied into the <id> directory
+after qvd-NPR is run. --sab can be repeated multiple times to add
+additional files.
+
+.TP
+.B --stress '\fIexpr\fB'
+Alternate function to use to compute per-closest point stress
+scalar. \fIexpr\fR can use the components of the 3x3 stress tensor,
+\fBxx\fR,\fBxy\fR,\fBxz\fR, \fByx\fR,\fByy\fR,\fByz\fR,
+\fBzx\fR,\fBzy\fR,\fBzz\fR, as well as positions of the closest
+points involved on each rock \fBx1\fR,\fBy1\fR,\fBz1\fR, and
+\fBx2\fR,\fBy2\fR,\fBz2\fR.
+
+Defaults to using shear stress \fB'abs(xy)'\fR.
+
+.TP
+.B --localsum '\fIexpr\fB', --framesum '\fIexpr\fB'
+Alternate function to use to compute sums of stress values. Given two
+stress values \fBa\fR and \fBb\fR, \fIexpr\fR says how to compute a
+single value combining both. \fB--localsum\fR is the expression to
+combine per-point stresses, and \fB--framesum\fR is the expression to
+combine per-rock stresses.
+
+Defaults to \fB'a+b'\fR for both.
+
+.P
+All expression options are evaluated by a \fBperl\fR script (with a $
+added to the front of the special variables listed above to turn them
+into perl variables, which is only important if you know perl and
+wonder where the $'s went). The expression can be any legal perl math
+expression, including use of functions \fBabs\fR, \fBexp\fR,
+\fBlog\fR, and \fBsqrt\fR, as well as math operators \fB+\fR, \fB-\fR,
+\fB/\fR, \fB*\fR, and \fB**\fR. To avoid having your shell interpret
+portions of the expression, be sure to enclose it in quotes.
+
+.SH EXAMPLES
+
+.B qvd-NPR file.qvisdat rocks/rock.%d.savg Test1
+
+Reads file.qvisdat, geometry files rocks/rock.1.savg to
+rocks/rock.\fIN\fR.savg, and creates a new \fBTest1\fR directory
+containing the visualization support files and a \fBrunTest1\fR script
+to run it.
+
+.B qvd-NPR --p 10 --st 'abs(xx-yy)' file.qvisdat rock.%04d.savg \\
+Test2
+
+Reads file.qvisdat, geometry files rock.0001.savg to
+rock.\fIN\fR.savg (padded with leading 0's to 4 digits). Stores
+10 closest points per rock instead of the normal 8. Also, computes
+normal stress (xx-yy) rather than the default shear stress. Creates a
+new \fBTest2\fR directory containing the visualization support files
+and a \fBrunTest2\fR script to run it.
+
+.B qvd-NPR --stress '1/sqrt((x1-x2)**2+(y1-y2)**2+(z1-z2)**2)' \\
+file.qvisdat r%d.osg Test3
+
+Reads file.qvisdat, geometry files r1.osg to r\fIN\fR.osg. Uses the
+reciprocoal of the distance between closest points as a measure of
+\*(lqstress\*(rq. Creates a new \fBTest3\fR directory containing the
+visualization support files and a \fBrunTest3\fR script to run it.
+
+.B qvd-NPR --sc .707 --st 'log(abs(xy))' --l 'log(exp(a)+exp(b))' \\
+--f 'log(exp(a)+exp(b)' file.qvisdat r%d.savg Test4 
+
+Reads file.qvisdat and scales geometry files r1.savg to r\fIN\fR.savg
+by .707. Uses the log of the shear stress as the stress metric, but
+sums in non-log space for both local and frame sums. Creates a new
+\fBTest4\fR directory containing the visualization support files and a
+\fBrunTest4\fR script to run it.
+
+
+.SH BUGS
+
+.PP
+This is a quick and dirty converstion to HEV/IRIS by Steve Satterfield,
+March 2013, there is lots of HEV/Classic cruft that should be cleaned
+up.
+
+.SH SEE ALSO
+
+\fBprintf(1)\fR, \fBperl(1)\fR
+
+.SH AUTHOR
+Marc Olano
+.PP
+June 2008
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+

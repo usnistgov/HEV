@@ -1,0 +1,138 @@
+.TH HEV-TIM 1 "January 2013" "NIST/ACMD" "HPCVG HEV"
+
+.SH NAME
+hev-tim
+- build an OpenSceneGraph file for Things In Motion
+
+.SH SYNOPSIS
+.B hev-tim
+.I [options] objects.timo frames.timf id
+
+.SH PARAMETERS
+
+.TP 
+.B objects.timo
+Contains a list of N object files, one per line. Objects can be any
+format readable by OpenSceneGraph. \fIIf objects are listed that
+contain shader programs, hev-tim assumes the vertex shader will perform
+the appropriate TIM computations.\fR Convention is to use \fB.timo\fR as
+the objectFile extension.
+
+.TP
+.B frames.timf
+The \fBframeFile\fR contains lines specifying the position and orientation of
+each object in each frame. For N objects and M frames, this file will have a
+total of N*M lines. N lines giving the position of each of the N objects in
+frame 0, followed by N lines giving the position in frame 1, continuing through
+to frame M-1, for a total of M frames. Details on the contents of the
+\fBframeFile\fR are given below in \fBFRAMEFILE\fR. Convention is to use
+\fB.timf\fR as the \fBframeFile\fR extension.
+
+.TP
+.B id
+The name of the resulting file will be id.osg, with a root node
+(containing the shaders, textures, and uniform variables) named "id".
+
+.SH OPTIONS
+
+.TP
+.B --vert \fIshader.vert\fR
+Override the default vertex shader used on the objects
+(\fB$HEVROOT/idea/shader/tim.vert\fR). If a custom vertex shader is
+used, it is responsible for positioning and orienting the objects,
+following the example in \fBtim.vert\fR. May be abbreviated to \fB-v\fR.
+
+.TP
+.B --frag \fIshader.frag\fR
+Override the default fragment shader used on the objects
+(\fB$HEVROOT/idea/shader/tim.frag\fR). May be abbreviated to \fB-f\fR.
+
+.TP
+.B --attrib \fIobjectNumber\fR
+Override the default attribute slot used on the objects. May be
+abbreviated to \fB-a\fR.
+
+.TP
+.B --posn \fItextureNumber\fR
+Override the default texture unit of the position texture. May be
+abbreviated to \fB-p\fR.
+
+.TP
+.B --quat \fItextureNumber\fR
+Override the default texture unit of the orientation texture. May be
+abbreviated to \fB-q\fR.
+
+.SH DESCRIPTION
+
+\fBhev-tim\fR creates a master OpenSceneGraph file for animating a
+collection of objects. Change the frame of the animation by changing
+the shader \fBuniform unsigned int frame\fR. For example, to use frame 3
+of the animation:
+.IP
+.B echo UNIFORM demo frame uint 1 3 > $IRIS_CONTROL_FIFO
+
+.SH FRAMEFILE
+
+Each line of the \fBframeFile\fR gives the position and orientation
+of one object in one frame. Lines should be in the order
+.IP
+object0 frame0
+.br
+object1 frame0
+.br
+...
+.br
+object(N-1) frame0
+.br
+object0 frame1
+.br
+object1 frame1
+.br
+ ...
+.br
+object0 frame(M-1)
+.br
+object1 frame(M-1)
+.br
+ ...
+.br
+object(N-1) frame(M-1)
+.br
+object0 frameM
+.br
+object1 frameM
+.br
+ ...
+.br
+object(N-1) frameM
+.PP
+with N objects and M frames.
+.PP
+Lines of the \fBframeFile\fR consist of space-separated floating-point
+numbers:
+.IP
+.B x y z \fI[\fBqx qy qz qw \fI[\fBs \fI[\fBt\fI]]]\fB
+.TP
+.B x y z
+gives the object position. 
+
+.TP
+.B qx qy qz qw
+gives a unit quaternion orientation for the object. If not
+present, the default is 0 0 0 1 (i.e. no rotation). 
+
+.TP
+.B s
+gives a positive uniform scale for the object. The default scale is
+1. If the scale is 0, the object will not appear in the given frame.
+
+.TP
+.B t
+is an extra floating point parameter that can be used in custom
+shaders as desired. If not given, the default value is 1. This
+parameter will be stored in the \fBw\fR component of the object
+position texture.
+
+.SH AUTHOR
+Marc Olano and Wesley Griffin, wesley.griffin@nist.gov
+

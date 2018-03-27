@@ -1,0 +1,90 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-savgVolumeOfCubes 1 "Augusg 2014" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-savgVolumeOfCubes
+
+
+.SH SYNOPSIS
+.B "hev-savgVolumeOfCubes"
+ [--scale xs yx zs | -sfile filename] [--color r g b | -cfile filename ]  ix jy kz
+
+
+
+.SH DESCRIPTION
+.PP
+.I
+\fBhev-savgVolumeOfCubes\fR 
+outputs a savg file to \fIstdout\fR that represents a volume of
+size \fBix\fR by \fBjy\fR by \fBkz\fR made of individual unit cubes.
+
+
+.SH "PARAMETERS"
+.TP
+.B "--scale xs yx zs"
+specify a scale factor for the cubes,
+in the range 0 to 1.  Default is 1.
+
+.TP
+.B "--sfile filename"
+specify a file to read x y z scale values.
+Each line has x y z scale values. There should be
+a line for every cube. This over rides --scale.
+A scale of -1 -1 -1 indicates no cube will be output.
+
+
+.TP
+.B "--color r g b"
+specify the cube color in the range 0 to 1.
+The default is 1 1 1.
+
+.TP
+.B "--cfile filename"
+specify a file to read r g b color values.
+Each line has r g b values. There should be
+a line for every cube. This over rides --color.
+
+.TP
+.B "ix jy kz"
+specify the size of the volume
+
+			
+.SH NOTES
+.PP
+While come command line options are optional,
+they should be specified int the order shown.
+
+.PP
+Loop order:
+.IP
+Loop kz
+.br
+   Loop jy
+.br
+     Loop ix
+
+
+
+.SH EXAMPLE
+.PP
+For an example go to
+$HEVROOT/idea/src/hev-savgVolumeOfCubes/Example
+and see the README in that directory.
+Make a personal copy and experiment.
+
+.PP
+Here is one example:
+.br
+hev-savgVolumeOfCubes --scale .75 .75 .75 --color .8 0 .8  10 8 6 > vol.savg
+
+.SH "SEE ALSO"
+savg(1),
+irisfly(1),
+
+.SH AUTHOR
+.PP
+Steven G. Satterfield
+.br
+steve@nist.gov
+.br
+NIST/ITL/ACMD/HPCVG

@@ -1,0 +1,144 @@
+#!/bin/sh
+
+name=hev-sequentialSymlinks
+
+usage()
+{
+    echo $name '[ --directory dir ] [ --verbose ] [ --keep | --delete ] [ --start n ] [ --prefix s ] [ command ]'
+}
+
+spew()
+{
+    if [ -n "$verbose" ]
+    then env DTK_SPEW=info dtk-msgInfo  -p "$name" $*
+    fi
+}
+
+# default start number
+n=0
+
+# parse arguments
+while [ "$1" != "${1#--}" ]
+do
+    if ( echo '--directory'  | grep -q "^$1" )
+    then shift
+	if [ $# -eq 0 ]
+	then dtk-msgError -p "$name" no directory specified
+	    usage
+	    exit 1
+	fi
+	# create directory, but it might already exist
+	mkdir -p $1
+	    # is it empty?
+	if [ "`echo $1/*`" != $1'/*' ]
+	then  dtk-msgWarning -p "$name" directory $1 is not empty
+	fi
+	# can we write to it?
+	tmp=$1/$RANDOM
+	while [ -e $tmp ]
+	do tmp=$1/$RANDOM
+	done
+	touch $tmp
+	if [ ! -e $tmp ]
+	then dtk-msgError -p "$name" can\'t create files in $1
+	    usage
+	    exit 1
+	fi
+	directoryOption=$1
+	directory=1
+	rm $tmp
+    elif ( echo '--start'  | grep -q "^$1" )
+    then shift
+	if [ $# -eq 0 ]
+	then dtk-msgError -p "$name" no start value specified
+	    usage
+	    exit 1
+	fi
+	d=`echo $1 | tr -d [0-9]`
+	if [ -n "$d" ]
+	then dtk-msgError -p "$name" start value isn\'t a string of digits
+	    usage
+	    exit 1
+	fi
+	n=$1
+    elif ( echo '--prefix'  | grep -q "^$1" )
+    then shift
+	if [ $# -eq 0 ]
+	then dtk-msgError -p "$name" no prefix value specified
+	    usage
+	    exit 1
+	fi
+	prefix=$1
+    elif ( echo '--verbose'  | grep -q "^$1" )
+    then verbose=1
+    elif ( echo '--keep'  | grep -q "^$1" )
+    then if [ -n "$delete" ]
+	then dtk-msgError -p "$name" can\'t specify both --delete and --keep
+	    usage
+	    exit 1
+	fi
+	keep=1
+    elif ( echo '--delete'  | grep -q "^$1" )
+    then if [ -n "$keep" ]
+	then dtk-msgError -p "$name" can\'t specify both --delete and --keep
+	    usage
+	    exit 1
+	fi
+	delete=1
+    else
+	usage
+	exit 1
+    fi
+    shift
+done
+
+command="$*"
+
+# make a directory if one wasn't specified
+if  [ -z "$directory" ]
+then dir=/tmp/$name-$RANDOM
+    while [ -e "$dir" ]
+    do dir=/tmp/$name-$RANDOM
+    done
+    mkdir -p $dir
+else dir="$directoryOption"
+fi
+
+# create symlinks
+# allow multiple files per line
+while read filenames
+do
+    for filename in $filenames
+    do
+        # the symlinks should retain the suffix, if any
+	suffix=`echo $filename | sed -e 's/^.*\.//'`
+	if [ "$suffix" == "$filename" ]
+	then suffix=""
+	else suffix=".$suffix"
+	fi
+	ln=$(printf "ln -s \"$filename\" \"$dir/$prefix%04d$suffix\"" "$n")
+	sh -c "$ln"
+	spew $ln
+	n=$(($n+1))
+	done
+done
+
+# run the command, if any
+if [ -n "$command" ]
+then spew $command
+    sh -c "cd $dir ; $command"
+fi
+
+if [ -n "$delete" ] # always delete
+then deleteDir=1
+elif [ -z "$keep" -a -z "$delete" ] # need to figure what to do
+then if [ -n "$command" -a -z "$directory" ] # a command was given and a directory wasn't given
+    then deleteDir=1
+    fi
+fi
+
+if [ -n "$deleteDir" ]
+then dtk-msgNotice  -p "$name" directory $dir deleted
+    rm -rf $dir
+else dtk-msgNotice  -p "$name" symlinks in $dir not deleted
+fi

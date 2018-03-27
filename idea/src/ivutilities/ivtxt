@@ -1,0 +1,51 @@
+#! /bin/sh
+
+# ivtxt - output an iv file of 3D text
+
+usage()
+{
+  echo "Usage: ivtxt [r g b] string"
+  exit
+}
+
+r=1
+g=1
+b=1
+
+case $# in
+4)
+   r=$1
+   g=$2
+   b=$3
+   string=$4
+   ;;
+
+1)
+   string="$1"
+   ;;
+
+*)
+   usage
+   esac
+
+
+#echo $r $g $b
+#echo $string
+#exit
+
+
+/bin/cat <<!end
+#Inventor V2.0 ascii
+Separator {
+ Material {
+  diffuseColor [$r $g $b]
+ }
+ Font {
+  name  "Times-Roman"
+  size 2
+ }
+ Text3 {
+   string ["$string"]
+ }
+}
+!end

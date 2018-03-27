@@ -1,0 +1,8 @@
+# Glowing example LUT from Mar Olano
+# See man page for volumeAppBuilder
+0     0   0   0   0
+50    0   0   0   0
+100   0   0  .5  .1
+150   0   0   0   0
+230   0   0   0   0
+255   3   0   0  .1

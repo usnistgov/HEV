@@ -1,0 +1,249 @@
+#! /usr/bin/perl
+#
+# hyv-phase2vtk - see usage message below
+#
+# steve@nist.gov
+#
+
+#$version="20080715";
+#$version="20090117";  # add --phantom
+$version="20090117";   # fis a bug in --phantom
+
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hyv-phase2vtk [--parallel n] [--phantom val] i j k  dataDir | phaseFile
+
+  Convert all *.phase files found in the data directory into vtk files
+
+  --parallel n     specifies how many concurrent processes to be used convert
+                   in parallel. On a 2 CPU machine, n of 2 is a good number.
+
+  --phantom value  A specified phantom value is added to all sides
+                   of the volume.  The dimensions of the the volume in the 
+                   resulting vtk file is increased.  For example, an input
+                   25x25x25 volume will be output as 27x27x27.
+
+  i j k            is the dimension of the image. 
+
+  dataDir          is an existing directory containing the phase files.
+                   The resulting vtk files are written to dataDir
+		   with names in the form of *.vtk.
+
+  phaseFile        if a phase file is specified rather than a directory name,
+                   then the single specified phase file is converted to
+                   a vtk file in the current directory.
+
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+$parallel=1;
+undef($phantom);
+$phantomFlag=0;
+
+GetOptions("debug"       => \$debugFlag,
+	   "phantom:f"     => \$phantom,
+           "parallel:i"  => \$parallel);
+
+usage() if (@ARGV != 4);
+
+$iDimension= shift;
+$jDimension= shift;
+$kDimension= shift;
+$data= shift;
+
+if (defined($phantom)) {
+    $phantomFlag=1;
+}
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "parallel= $parallel\n";
+    print STDERR "phantomFlag= $phantomFlag\n";
+    print STDERR "phantom= $phantom\n";
+    print STDERR "dimensions: $iDimension $jDimension $kDimension\n";
+    print STDERR "data= $data\n";
+}
+
+
+
+# Is the input data a single file or directory of file?
+if ( -d $data ) {
+    #print STDERR "$data is a directory\n";
+    processDirFiles();
+    #print STDERR "All Done\n";
+} else {
+    #print STDERR "$data is a file\n";
+    processSingleFile()
+
+}
+
+
+#########################
+# Process a single file #
+#########################
+
+sub processSingleFile {
+    print STDERR "Process a single phase file: $data\n";
+	
+    ($basename, $dirname, $suffix) = fileparse($data, ('.phase'));
+
+    $a=rindex($basename,"_");
+    if ($a<0) {
+	print STDERR "Phase number must be part of the file name: $basename\n";
+	usage();
+    }
+    $phaseNumber=substr($basename,$a+1);
+    if ($debugFlag) {
+	print STDERR "phaseNumber $phaseNumber\n";
+    }
+
+    $vtkName=$basename.".vtk";
+    if ($debugFlag) {
+	print STDERR "data= $data\n";
+	print STDERR "basename= $basename\n";
+	print STDERR "path= $path\n";
+	printf(STDERR "suffix= '%s'\n",$suffix);
+	print STDERR "vtkName= $vtkName\n";
+    }
+    if ($suffix eq '') {die("'$data' is not a phase file or directory\n");}
+
+    if ($phantomFlag) {
+	$iDimension=$iDimension+2;
+	$jDimension=$jDimension+2;
+	$kDimension=$kDimension+2;
+	if ($debug) {
+	    print STDERR "Add phantom: $iDimension $jDimension $kDiemnsion $phantom\n";
+	}
+    }
+
+    open(PHASE,"<$data") || die("Can not open file: $data\n");
+    open(VTK,">$vtkName") || die("Can not open file: $vtkName\n");
+    
+    print VTK "# vtk DataFile Version 2.0\n";
+    print VTK "Cement component(phase) $phaseNumber\n";
+    print VTK "ASCII\n";
+    print VTK "\n";
+    print VTK "DATASET STRUCTURED_POINTS\n";
+    print VTK "DIMENSIONS $iDimension $jDimension $kDimension\n";
+    print VTK "ASPECT_RATIO 1 1 1\n";
+    if ($phantomFlag) {
+	print VTK "ORIGIN -1 -1 -1\n";
+    } else {
+	print VTK "ORIGIN 0 0 0\n";
+    }
+    $pointData=$iDimension*$jDimension*$kDimension;
+    print VTK "POINT_DATA $pointData\n";
+    print VTK "SCALARS scalars float\n";
+    print VTK "LOOKUP_TABLE default\n";
+
+
+    if ($phantomFlag) {        # Output volume data with phantom value
+	$i=1; $j=1; $k=1;
+	while (1) {
+	    if (($i > 1) && ($i < $iDimension) &&
+		($j > 1) && ($j < $jDimension) &&
+		($k > 1) && ($k < $kDimension)) {
+		$a=<PHASE>;
+		@c=split(' ', $a, -1);
+		print VTK "$c[0]\n";
+	    } else {
+		print VTK "$phantom\n";
+	    }
+	    
+	    $i++;
+	    if ($i > $iDimension) {
+		$i=1;
+		$j++;
+		if ($j > $jDimension) {
+		    $j=1;
+		    $k++;
+		    if ($k > $kDimension) {
+			last;
+		    }
+		}
+	    }
+	}
+    } else {          # Output volume data as is
+	while (<PHASE>) {
+	    @c=split(' ', $_, -1);
+	    print VTK "$c[0]\n";
+	}
+    }
+
+    close(PHASE);
+
+    # This here for debugging
+    #print STDERR "Process sleeping: $$\n";
+    #sleep 1;
+    #print STDERR "Process continuing: $$\n";
+
+	
+}
+
+
+######################################
+# Process a directory of Phase files #
+######################################
+
+sub processDirFiles {
+    print STDERR "Process a directory of Phase files: $data\n";
+    chdir($data) || die("Can not chdir to: $data\n");
+
+    ($debugFlag) ? ($debugOption="--debug") : ($debugOption="");
+
+    ($phantomFlag) ? ($phantomOption="--phantom $phantom") : ($phantomOption="");
+
+    $pcount=$parallel;
+
+    while ($phaseFile = < *.phase > ) {
+	$cmd="hyv-phase2vtk $debugOption $phantomOption $iDimension $jDimension $kDimension $phaseFile";
+	if ($pid = fork) {
+	    # parent here
+	    #print STDERR "Parent\n";
+	    $pcount--;
+	    if ($pcount == 0) {
+		while (wait != -1) {
+		    #print STDERR "waiting\n";
+		}
+		$pcount=$parallel;
+	    }
+	} else {
+	    # child here
+	    #print STDERR "Child: $cmd\n";
+	    exec($cmd);
+	    exit 0;
+	}
+
+
+    }
+
+    while (wait != -1) {
+	#print STDERR "waiting\n";
+    }
+}

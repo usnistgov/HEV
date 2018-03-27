@@ -1,0 +1,41 @@
+.TH hev-writeInts 1 "April 2011"
+.SH NAME
+
+hev-writeInts
+
+.SH SYNOPSIS
+
+\fBhev-writeInts [ -c N ] shmName [ int ... ]
+
+.SH DESCRIPTION
+
+\fBhev-writeInts\fR
+writes ints to the specified DTK shared memory file.
+.PP
+Unless -c is specified, the specified shared memory must exist prior to executing the command.
+.PP
+If \fIint\fR is not supplied on the command line, ints will be read
+from stdin and written to \fIshmName\fR until EOF.
+.PP
+If the -c option is specified, the shared memory file will be created, sized
+to store N ints.
+
+.SH NOTE
+The number of ints must match the size of the shared memory file.  If in
+doubt about the shared memory file's size, use \fBdtk-getSize\fR and divide
+that by 4 (sizeof(int)).
+
+.SH "SEE ALSO"
+.BR dtk-writeShm "(no man page currently available)"
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

@@ -1,0 +1,179 @@
+#!/usr/bin/env python
+
+import sys
+import vtk
+from optparse import OptionParser
+import array
+
+def showHelp():
+    sys.stderr.write('\nUsage:\nhev-gridToVtkStructGrid [options] --dim d1 d2 d3 inFName inCoordFName outFName\n')
+    sys.exit(1)
+
+use = "Usage: %prog [options] --dim X Y Z inFName outFName"
+
+# PARSE COMMAND LINE
+parser = OptionParser(usage = use)
+
+# ASSIGN VALUES
+parser.add_option("--ncomp", "--nc", dest="ncomp", type="int", default="1")
+parser.add_option("--dim", "--d", dest="dim", nargs=3, type="int")
+parser.add_option("--type", "--t", dest="type", type="string", default="float")
+parser.add_option("--input", "--i", dest="input", type="string", default="text")
+parser.add_option("--vector", "-v", dest="vector", action="store_true", default=False)
+
+options, args = parser.parse_args()
+
+# SET INPUT AND OUTPUT FILE
+if len(args) == 3:
+    inputdatafile = args[0]
+    inputcoordfile = args[1]
+    outputdatafile = args[2]
+else:
+    print 'Incorrect number of arguments.'
+    showHelp()
+
+# SETUP GRID AND POINTS
+grid = vtk.vtkStructuredGrid()
+points = vtk.vtkPoints()
+#grid.SetNumberOfScalarComponents(options.ncomp)
+
+if options.dim != None:
+    grid.SetDimensions(options.dim)
+    pnum = options.dim[0]*options.dim[1]*options.dim[2]
+else:
+    print "--dim X Y Z is missing/incorrect. This option is required to run this program."
+    showHelp()
+
+# SETUP ARRAY
+if options.type == "float":
+    arra = vtk.vtkFloatArray()
+    points.SetDataTypeToFloat()
+    kind = float
+    fmt = 'f'
+elif options.type.lower() == "double":
+    arra = vtk.vtkDoubleArray()
+    points.SetDataTypeToDouble()
+    kind = float
+    fmt = 'd'
+elif options.type.lower() == "int":
+    arra = vtk.vtkIntArray()
+    points.SetDataTypeToInt()
+    kind = int
+    fmt = 'i'
+elif options.type.lower() == "uint":
+    arra = vtk.vtkUnsignedIntArray()
+    points.SetDataTypeToUnsignedInt()
+    kind = int
+    fmt = 'I'
+elif options.type.lower() == "long":
+    arra = vtk.vtkLongArray()
+    points.SetDataTypeToLong()
+    kind = long
+    fmt = 'l'
+elif options.type.lower() == "ulong":
+    arra = vtk.vtkUnsignedLongArray()
+    points.SetDataTypeToUnsignedLong()
+    kind = long
+    fmt = 'L'
+elif options.type.lower() == "short":
+    arra = vtk.vtkShortArray()
+    points.SetDataTypeToShort()
+    kind = int
+    fmt = 'h'
+elif options.type.lower() == "ushort":
+    arra = vtk.vtkUnsignedShortArray()
+    points.SetDataTypeToUnsignedShort()
+    kind = int
+    fmt = 'H'
+elif options.type.lower() == "uchar":
+    arra = vtk.vtkUnsignedCharArray()
+    points.SetDataTypeToUnsignedChar()
+    kind = int
+    fmt = 'B'
+elif options.type.lower() == "char":
+    arra = vtk.vtkCharArray()
+    points.SetDataTypeToChar()
+    kind = str
+    fmt = 'b'
+else:
+    print ("--type TYPE. TYPE can either be float,double, int, uint, long, ulong, short, ushort, char or uchar")
+    showHelp()
+
+arra.SetNumberOfComponents(options.ncomp)
+
+# READ INPUT FILE AND EXTRACT DATA POINTS INTO ARRAY - TODO  BINARY
+# ASCII
+if options.input.lower() == "text":
+    inp = open(inputdatafile,'r')
+    arr=[]
+    for line in inp.readlines():
+        values = map(kind,line.split())
+        arr.append(values)
+
+    data=[]
+    for groups in arr:
+        for datapoint in groups:
+            data.append(datapoint)
+
+    arra.SetNumberOfValues(len(data))
+
+    # FILL ARRAY
+    for i in range(len(data)):
+        arra.SetValue(i,data[i])
+
+# BINARY
+elif options.input.lower() == "binary":
+    inp = open(inputdatafile,'rb')
+    data = array.array(fmt)
+
+    data.fromfile(inp,pnum)
+    
+    arra.SetNumberOfValues(len(data))
+
+    # FILL ARRAY
+    for i in range(len(data)):
+        arra.SetValue(i,data[i])
+    
+else:
+    print "--input INPUT. INPUT can either be 'text' or 'binary'"
+    showHelp()
+
+# READ INPUT COORD FILE AND EXTRACT DATA POINTS INTO vtkPoints()
+# ASCII
+if options.input.lower() == "text":
+    cinp = open(inputcoordfile,'r')
+    carr=[]
+    for line in cinp.readlines():
+        values = map(kind,line.split())
+        points.InsertNextPoint(values) # FILLING POINTS
+
+# BINARY
+else:
+    cinp = open(inputcoordfile,'rb')
+    data = array.array(fmt)
+
+    data.fromfile(cinp,pnum*3)
+
+    i=0
+
+    while i in range(len(data)):
+        points.InsertNextPoint(data[i], data[i+1], data[i+2]) # FILLING POINTS
+        i += 3 # ENSURES THAT ALWAYS 3 POINTS AT A TIME ARE TAKEN AND NONE ARE TAKEN TWICE+
+
+# FILL GRID
+if options.vector:
+    grid.GetPointData().SetVectors(arra)
+else:
+    grid.GetPointData().SetScalars(arra)
+grid.SetPoints(points)
+
+# FILEWRITER
+write = vtk.vtkStructuredGridWriter()
+if options.input.lower() == "text":
+    write.SetFileTypeToASCII()
+else:
+    write.SetFileTypeToBinary()
+write.SetInput(grid)
+write.SetFileName(outputdatafile)
+write.Write()
+write.Update()

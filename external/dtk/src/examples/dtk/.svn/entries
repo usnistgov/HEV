@@ -1,0 +1,64 @@
+10
+
+dir
+995
+https://diverse.svn.sourceforge.net/svnroot/diverse/trunk/dtk/examples/dtk
+https://diverse.svn.sourceforge.net/svnroot/diverse
+
+
+
+2009-03-05T06:32:23.610166Z
+915
+pshinpaugh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+507ea766-9cfe-0310-9089-a533cff91c67
+
+examplesByClass
+dir
+
+more
+dir
+
+tests
+dir
+
+tutorial
+dir
+
+Makefile.orig
+file
+
+
+
+
+2011-01-24T20:43:42.000000Z
+09895155089daea6470fe1ffccedc807
+2007-08-10T18:14:15.234094Z
+687
+pshinpaugh
+
+CMakeLists.txt
+file
+
+
+
+
+2011-01-24T20:43:42.000000Z
+cae290d7bafe703106cc280d51e923cf
+2007-08-10T18:14:15.234094Z
+687
+pshinpaugh
+

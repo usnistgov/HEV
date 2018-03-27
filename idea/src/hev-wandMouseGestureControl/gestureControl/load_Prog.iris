@@ -1,0 +1,11 @@
+#Created by Divya Mouli on 6/13/2012
+#Begins execution of Gesture Recognition Software
+
+#ECHO On
+
+#Executes main gesture control program
+EXEC hev-wandMouseGestureControl
+#Loads button on Master Control Panel
+LOAD gestureControl/Gestures.mcp
+
+

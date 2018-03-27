@@ -1,0 +1,88 @@
+
+set -x
+
+
+cp /local/HEV/apps/diverse/installed/share/dgl/data/sub.osg sub.osg
+
+savg-sphere > sphere.savg
+iris-convert --nostatesets sphere.savg tmp.osg
+../hev-materialTransform --diffuse 0 1 0 1 --colormode off tmp.osg  greenSphere.osg
+
+savg-cube > cube.savg
+iris-convert --nostatesets cube.savg tmp.osg
+../hev-materialTransform --diffuse 1 0 0 1 --colormode off tmp.osg redCube.osg
+
+
+
+#
+
+#
+#      --help
+../hev-materialTransform  --help
+
+#
+#      --verbose
+../hev-materialTransform  --verbose --ambient 1 0 1 0 --rmMat redCube.osg redCube.noMat.osg
+
+
+
+
+#
+#
+#Errors:
+#
+#	bad option
+../hev-materialTransform  --overwhelm --ambient 0.9 0.9 0 1 noInput.osg
+
+#
+#	bad arg count
+../hev-materialTransform redCube.osg
+../hev-materialTransform --ambient 0.9 0.9 0 1
+
+#
+#	bad output file spec
+../hev-materialTransform  --override --ambient 0.9 0.9 0 1 redCube.osg tmp.xyz
+../hev-materialTransform  --override --ambient 0.9 0.9 0 1 redCube.osg xyz
+
+#
+#	no input / multi output
+../hev-materialTransform  --noInput --override --ambient 0.9 0.9 0 1 ive
+
+# --noInput improperly specified
+../hev-materialTransform  --noInput --override --ambient 0.9 0.9 0 1 redCube.osg bad.ive
+../hev-materialTransform  --noI --override --ambient 0.9 0.9 0 1 redCube.osg sub.osg bad.ive
+
+#
+#	bad input file(s)
+../hev-materialTransform   --ambient 1 0 1 0 --rmMat redCubeXXX.osg badIn.osg
+
+#
+#	bad input file name(s)
+../hev-materialTransform --ambient 1 0 1 0 --rmMat redCube.xyz badIn.osg
+
+
+
+#
+# various incorrectly specified options
+
+../hev-materialTransform  --ambient black 1 0 0 1 redCube.osg bad.osg
+../hev-materialTransform  --ambient back 0 0 1 redCube.osg bad.osg
+../hev-materialTransform  --ambient 1 0 0  redCube.osg bad.osg
+../hev-materialTransform  --colormode back 1 0 0 1 redCube.osg bad.osg
+
+../hev-materialTransform  --colormode back off redCube.osg bad.osg
+../hev-materialTransform  --colormode orf redCube.osg bad.osg
+../hev-materialTransform  --shininess off redCube.osg bad.osg
+../hev-materialTransform  --shininess -1 redCube.osg bad.osg
+../hev-materialTransform  --shininess 129 redCube.osg bad.osg
+
+
+
+#	
+#
+#
+#
+#
+#
+#
+#

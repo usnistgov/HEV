@@ -1,0 +1,8 @@
+LIBS=  -lglut -lGLU -lGL -lXmu -lXext -lX11 -lm
+
+
+leftRightEyeTest: leftRightEyeTest.o
+	cc -o leftRightEyeTest leftRightEyeTest.o ${LIBS}
+
+clean:
+	rm -f leftRightEyeTest leftRightEyeTest.o

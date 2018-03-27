@@ -1,0 +1,30 @@
+BUTTON cube
+
+ # create a DCS and load an object under it
+ FIRST DCS myCubeDCS
+ FIRST ADDCHILD myCubeDCS world
+ FIRST LOAD cube.osgb
+ FIRST ADDCHILD - myCubeDCS
+ FIRST LOAD gnomon.osg
+ FIRST ADDCHILD - myCubeDCS
+ FIRST EXAMINE world
+ 
+ # set the selector
+ FIRST WAIT irisfly-select cube
+
+ # start hev-cubeTransformationWand
+ FIRST EXEC hev-cubeTransformationWand $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS -title cube --noescape --dcs myCubeDCS --shm foo > $IRIS_CONTROL_FIFO
+ FIRST WAIT irisfly-addAndShowWindow cube
+ FIRST WAIT irisfly-select cube
+
+ # set the IRIS variable, show and activate the cube window and the selector
+ # when the button in MCP is turned on
+ ON SET RELATIVE_MOVE cube
+ ON WAIT irisfly-select cube
+ ON WAIT irisfly-addAndShowWindow cube
+
+ # unset the IRIS variable, hide and deactivate the cube window when the
+ # button in MCP is turned off
+ OFF WAIT irisfly-deselect
+ OFF WAIT irisfly-removeAndHideWindow cube
+ OFF SET RELATIVE_MOVE

@@ -1,0 +1,8 @@
+ObjectType = Image
+NDims = 2
+DimSize = 128 128
+ElementNumberOfChannels = 4
+HeaderSize = -1
+ElementType = MET_FLOAT
+ElementByteOrderMSB = true
+ElementDataFile = test.pmm

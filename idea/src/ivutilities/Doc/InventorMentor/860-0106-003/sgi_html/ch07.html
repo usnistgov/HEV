@@ -1,0 +1,475 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 7. Textures</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch06.html" title="Chapter 6. Text"><link rel="next" href="ch08.html" title="Chapter 8. Curves and Surfaces"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 7. Textures</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch06.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5461942"></a>Chapter 7. <a name="id39277"></a>Textures</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Apply textures to objects in the scene graph using the default values for texture mapping</p>
+</li>
+<li><p>Apply textures to objects in the scene graph by specifying texture coordinates explicitly</p>
+</li>
+<li><p>Use texture-coordinate functions such as <span class="bold"><b>SoTextureCoordinatePlane</b></span> and <span class="bold"><b>SoTextureCoordinateEnvironment</b></span> to map textures onto objects</p>
+</li>
+<li><p>Create a texture map that can be stored in memory and applied to an object</p>
+</li>
+<li><p>Wrap a texture around an object so that the image is repeated</p>
+</li>
+<li><p>Specify how a texture affects the underlying shaded color of an object</p>
+</li>
+</ul></div><p>This chapter explains how to use textures, which allow you to add realism and detail to scenes. In Inventor, you create a 2D texture image and then apply this texture to the surface of a 3D shape object. The rectangular patch of texture you define is stretched and compressed to &#8220;fit&#8221; the 3D shape according to your specifications. Key concepts introduced in this chapter include <i>texture map</i>, <i>wrapping textures</i>, <i>texture model</i>, <i>texture components</i>, and <i>environment mapping</i>. </p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5462059"></a>Creating Textured Objects</h2></div></div>
+<p>Using textures, you can create a table with a wood grain, an orange with a dimpled, shiny surface, and a field of grass. To do so, first create wood, orange peel, and grass textures and then apply the textures to the various shape objects. <a href="ch07.html#id12959">Figure 7-1</a> contrasts two sets of objects:  the objects on the right use texture mapping, and the objects on the left do not use textures.</p>
+<p><div class="figure"><p><a name="id5462084"></a><b>Figure 7-1. <a name="id12959"></a>Texture Mapping</b></p>
+<div class="mediaobject"><img src="figures/7.1.txtr.map.gif"></div></div><br>
+</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5462124"></a><a name="id29601"></a>What Is a Texture Map?</h3></div></div>
+<p>A <a name="idch071"></a><i>texture map</i> is a 2D array of pixel information for a particular pattern, or texture.  Inventor, like OpenGL, uses the letter <i>s</i> for the horizontal texture coordinate and <a name="idch072"></a><i>t</i> for the vertical texture coordinate. A texture map is a 1×1 square, with coordinates ranging from 0.0 to 1.0 in both the <i>s</i> and <i>t</i> dimensions, as shown in <a href="ch07.html#id26755">Figure 7-2</a>. Texture coordinates are assigned to each vertex of a polygon (this assignment is done either explicitly by you, or automatically by Inventor). If the pixels in the texture do not match up exactly with the pixels in the polygon, Inventor uses a filtering process to assign texture pixels to the object. The texture is read from a file or from memory.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5462191"></a>Nodes Used for Texture Mapping<a name="idch073"></a></h3></div></div>
+<p>This section describes use of the following node classes:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><a name="idch074"></a><span class="bold"><b>SoTexture2</b></span></span></td><td width="10"> </td><td><p>specifies a 2D texture map to be used and associated parameters for texture mapping.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SoTextureCoordinate2<a name="idch075"></a></b></span> </span></td><td width="10"> </td><td><p><br>
+explicitly defines the set of 2D texture coordinates to be used by subsequent vertex shapes.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch076"></a><span class="bold"><b>SoTextureCoordinateBinding</b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+<br>
+</b></span>specifies how the current texture coordinates are to be bound to subsequent shape nodes.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch077"></a><span class="bold"><b>SoTextureCoordinatePlane</b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+<br>
+SoTextureCoordinateEnvironment</b></span> 	<br>
+	allow you to use a function to map from spatial<br>
+	coordinates to texture coordinates.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SoTextureCoordinateDefault<a name="idch078"></a></b></span>
+</span></td><td width="10"> </td><td><p>
+
+
+<br>
+turns off any previous texture-coordinate function so that all following shapes use their default texture coordinates.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch079"></a><span class="bold"><b>SoTexture2Transform</b></span></span></td><td width="10"> </td><td><p><br>
+defines a 2D transformation for the texture map.</p>
+<p><div class="figure"><p><a name="id5462439"></a><b>Figure 7-2. <a name="id26755"></a>Texture Coordinates</b></p>
+<div class="mediaobject"><img src="figures/7.2.text.coord.gif"></div></div><br>
+</p>
+
+</td></tr></table></div><p>The <a name="idch0710"></a><span class="bold"><b>SoComplexity</b></span> node has a <span class="bold"><b>textureQuality</b></span> field that relates to texture mapping as well.  It allows you to specify a value between 0.0 and 1.0, with 0.0 for the fastest rendering and 1.0 for the finest texturing.  (In general, there is a trade-off between speed and the quality of texturing.) The default value for this field is 0.5.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5462491"></a>Using the Defaults<a name="idch0711"></a></h3></div></div>
+<p>Although you can affect how a texture is applied to an object in many ways, the simplest way to use textures is to use the default values. If you use textures, you need only an <span class="bold"><b>SoTexture2</b></span> node (for the texture) and a shape node (the target object). <a name="idch0712"></a><a href="ch07.html#id40338">Example 7-1</a>, which displays a textured cube,  illustrates this method. See <a href="ch07.html#id50320">&#8220;SoTexture2 Node&#8221;</a> for a detailed description of the <span class="bold"><b>SoTexture2</b></span> node and its defaults.</p>
+<div class="example"><p><a name="id5462576"></a><b>Example 7-1. <a name="id40338"></a>Using the Default Texture Values</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+#include &lt;Inventor/nodes/SoCube.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoTexture2.h&gt;
+
+main(int , char **argv)
+{
+   Widget myWindow = SoXt::init(argv[0]);
+   if(myWindow == NULL) exit(1);
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+
+   // Choose a texture 
+   SoTexture2 *rock = new SoTexture2;
+   root-&gt;addChild(rock);
+   rock-&gt;filename.setValue(&quot;brick.1.rgb&quot;);
+
+   // Make a cube
+   root-&gt;addChild(new SoCube);
+
+   SoXtExaminerViewer *myViewer = 
+            new SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;Default Texture Coords&quot;);
+   myViewer-&gt;show();
+   
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	If several nodes use the same texture, position the texture node so that it can be used by all the nodes.  When possible, group nodes to share textures first, then to share materials, because it is expensive to switch textures.<a name="idch0713"></a>
+</td></tr></table><hr noshade="noshade"></div><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5462648"></a>Key Concepts</h2></div></div>
+<p>This section explains some special ways you can change how a texture is applied to a shape object. These variations include the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>How the texture wraps around the object</p>
+</li>
+<li><p>How the texture affects the object's underlying colors</p>
+</li>
+</ul></div><p>In addition, this section explains how to specify the pixels for a texture image to be stored in memory.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5462680"></a>Wrapping a Texture around an Object<a name="idch0714"></a></h3></div></div>
+<p>Texture coordinates range from 0.0 to 1.0 in each dimension (see <a href="ch07.html#id29601">&#8220;What Is a Texture Map?&#8221;</a>).  What happens, then, if your polygon texture coordinates range from 0.0 to 2.0 in some dimension?  In such cases, you have a choice:  </p>
+<div class="itemizedlist"><ul type="disc"><li><p>The texture can either be <i>repeated</i> as many times as necessary to cover the face (or stretched to cover the face) </p>
+</li>
+<li><p>Or the last row of pixels can be repeated to cover the rest of the face (called <a name="idch0715"></a><i>clamping</i>)</p>
+</li>
+</ul></div><p><a href="ch07.html#id17374">Figure 7-3</a> shows examples of both types of wrapping. The cylinder on the left has the texture repeated twice along its length and around its circumference. The cylinder on the right has the top scanline clamped, by setting <span class="bold"><b>wrapT</b></span> to CLAMP. See <a href="ch07.html#id50320">&#8220;SoTexture2 Node&#8221;</a> for a description of the <span class="bold"><b>wrapS</b></span> and <span class="bold"><b>wrapT</b></span> fields.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5453644"></a>How a Texture Affects the Underlying Colors <i>(Advanced)</i></h3></div></div>
+<p>You can specify one of three texture <a name="idch0716"></a><i>models</i> to use (see <a href="ch07.html#id50320">&#8220;SoTexture2 Node&#8221;</a>).  Each model causes the texture map to affect the underlying colors of the polygon in different ways.  The model types are as follows:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term">MODULATE</span></td><td width="10"> </td><td><p>	multiplies the shaded color by the texture color (the default). If the texture has an alpha component, the alpha value modulates the object's transparency.<a name="idch0717"></a><a name="idch0718"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term">DECAL</span></td><td width="10"> </td><td><p>replaces the shaded color with the texture color. If the texture has an alpha component, the alpha value specifies the texture's transparency, allowing the object's color to show through the texture.<a name="idch0719"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term">BLEND</span></td><td width="10"> </td><td><p>uses the texture intensity to blend between the shaded color and a specified constant blend color. <a name="idch0720"></a></p>
+<p><div class="figure"><p><a name="id5464070"></a><b>Figure 7-3. <a name="id17374"></a>Wrapping the Texture around the Object</b></p>
+<div class="mediaobject"><img src="figures/7.3.txtr.wrap.gif"></div></div><br>
+</p>
+
+</td></tr></table></div><p>The MODULATE model can be used with any texture file. The BLEND model is used with one- or two-component files. The DECAL model is used with three- or four-component files. See <a href="ch07.html#id41054">&#8220;Components of a Texture&#8221;</a>.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>MODULATE works best on bright materials because the texture intensity, which is less than or equal to 1.0, is multiplied by the shaded color.
+</td></tr></table><hr noshade="noshade"></div><p><a href="pr02.html#id35329">Figure In-11</a> through <a href="pr02.html#id44333">Figure In-14</a> show examples of each texture model. The image in <a href="pr02.html#id35329">Figure In-11</a> shows the scene without a texture. The image in <a href="pr02.html#id99297">Figure In-12</a> uses a MODULATE model, so the color of the building is a combination of the texture and material colors. The image in <a href="pr02.html#id19160">Figure In-13</a> uses a DECAL model, so the color of the building is determined completely by the texture map. The image in <a href="pr02.html#id44333">Figure In-14</a> uses the BLEND model, so the color of the building blends between the underlying material color and the blend color value (gold).</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>To create bright green polka dots on an object, create a black and white texture with white dots. Then use the BLEND texture model with a green blend color.
+</td></tr></table><hr noshade="noshade"></div><p>See the <a name="idch0721"></a><span class="bold"><b>glTexEnv()</b></span> function in the <i>OpenGL Reference Manual</i> for the actual equations used to calculate the final textured object colors.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	If you use MODULATE, you may want to surround your texture images with a one-pixel border of white pixels and set <span class="bold"><b>wrapS</b></span> and <span class="bold"><b>wrapT</b></span> to CLAMP so that the object's color is used where the texture runs out.
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5464276"></a><a name="id20325"></a>Storing an Image <i>(Advanced)</i></h3></div></div>
+<p>Texture maps are read from a file or from memory. For information on what image file formats your platform supports, see your release documentation. <a name="idch0722"></a></p>
+<p>You can store a texture map as an <a name="idch0723"></a><span class="bold"><b>SoSFImage</b></span> and then specify the image in the <span class="bold"><b>image</b></span> field of the <span class="bold"><b>SoTexture2</b></span> node.  This section provides details on how to store the texture-map pixels in memory. The texture, whether stored in a file or in memory, can contain from one to four components, as described in the following section. </p>
+<div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5464360"></a><a name="id41054"></a>Components of a Texture<a name="idch0724"></a></h4></div></div>
+<p>A texture can be one of the following types:</p>
+<div class="itemizedlist"><ul type="disc"><li><p><i>One-component texture&#8212;<a name="idch0725"></a></i>contains only an intensity value. This type of texture is often referred to as an <a name="idch0726"></a><i>intensity map</i>. For example, an image of a mountain could use a one-component texture and vary the intensity of a constant-color polygon to make the image more realistic.</p>
+</li>
+<li><p><i>Two-component texture&#8212;<a name="idch0727"></a></i>contains an intensity value and an alpha (transparency) value. For example, you can create a tree with leaves made of polygons of varying intensity, from dark green to bright green. Then, you can vary the transparency at the edges of the leaf <a name="idch0728"></a></p>
+<p>area, so that you can see around the edges of the leaves to the objects behind them.</p>
+</li>
+<li><p><i>Three-component texture&#8212;<a name="idch0729"></a></i>contains red, green, and blue values. This is a red-green-blue image, such as a photo or a commonly used texture such as brick, concrete, or cloth.</p>
+</li>
+<li><p><i>Four-component texture&#8212;<a name="idch0730"></a></i>contains red, green, blue, and alpha (transparency) values. This texture is similar to the RGB three-component texture, but also contains transparency information. You can use a four-component texture to create a colorful New England maple tree in October using the technique described previously for two-component textures.</p>
+</li>
+</ul></div><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>One- and two-component textures are generally faster than three- and four-component textures, since they require less computation.
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5464504"></a>Storing an Image in Memory</h4></div></div>
+<p>Use the <span class="bold"><b>setValue()</b></span> method to assign the value to the <span class="bold"><b>SoSFImage</b></span>. This method requires you to supply the size of the texture (<i>width</i> * <i>height</i>, in pixels), the number of components in the texture, and the values of the components for each pixel (as an array of unsigned chars, with values 0 to 255).</p>
+<p>For a one-component texture, each byte in the array stores the intensity value for one pixel.  As shown in <a name="idch0731"></a><a href="ch07.html#id41495">Figure 7-4</a>, byte 0 is the lower left corner of the pixel map, and numbering of bytes is from left to right within each row.</p>
+<p>For example, to store a one-component texture, the code would be</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoTexture2 *textureNode = new SoTexture2;
+// A 3-by-2 array of black and white pixels; the array is
+//upside-down here (the first pixel is the lower left corner)
+unsigned char image [] = {
+   255, 0,
+   0, 255,
+   255, 0
+};
+//Set the image field:
+textureNode-&gt;image.setValue(SbVec2s(3,2), 1, image);
+</pre></td></tr></table><p><div class="figure"><p><a name="id5464615"></a><b>Figure 7-4. <a name="id41495"></a>Format for Storing a One-Component Texture in Memory</b></p>
+<div class="mediaobject"><img src="figures/7-4.gif"></div><a name="idch0732"></a></div><br>
+</p>
+<p>For a two-component texture, byte 0 is the intensity of the first pixel, and byte 1 is the alpha (transparency) value for the first pixel.  Bytes 2 and 3 contain the information for pixel 2, and so on (see <a href="ch07.html#id24667">Figure 7-5</a>).</p>
+<p><div class="figure"><p><a name="id5464677"></a><b>Figure 7-5. <a name="id24667"></a>Format for Storing a Two-Component Texture in Memory</b></p>
+<div class="mediaobject"><img src="figures/7-5.gif"></div></div><br>
+</p>
+<p>A three-component texture requires three bytes to store the information for each pixel.  For the first pixel, byte 0 contains the red value, byte 1 contains the green value, and byte 2 contains the blue value (see <a name="idch0733"></a><a href="ch07.html#id17704">Figure 7-6</a>). A four-component texture requires four bytes for each pixel (red, green, blue, and alpha values).</p>
+<p><div class="figure"><p><a name="id5464724"></a><b>Figure 7-6. <a name="id17704"></a>Format for Storing a Three-Component Texture in Memory</b></p>
+<div class="mediaobject"><img src="figures/7-6.gif"></div></div><br>
+</p>
+</div></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5464748"></a><a name="id50320"></a>SoTexture2 Node</h2></div></div>
+<p>An <a name="idch0734"></a><span class="bold"><b>SoTexture2</b></span> node specifies the image for the texture map,  how the texture wraps around the object, and the texture model to use. </p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5464773"></a>Fields of an SoTexture2 Node</h3></div></div>
+<p>The <span class="bold"><b>SoTexture2</b></span> node has the following fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>filename </b></span>(SoSFName)</span></td><td width="10"> </td><td><p><br>
+specifies the name of the file to use as a texture map. <br>
+See your release documentation for information on what file formats your system supports. You specify either a file name or an image (see next field) for the texture map.<br>
+<br>
+If the <span class="bold"><b>filename</b></span> field is set, the image file is read and the <span class="bold"><b>image</b></span> field is set to the pixels in that file.  If the<span class="bold"><b> image</b></span> field is set, the <span class="bold"><b>filename</b></span> field is set to &quot; &quot; (an empty string; the default value). This behavior assures that there is no ambiguity about which field is used for the texture.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>image </b></span>(SoSFImage)</span></td><td width="10"> </td><td><p><br>
+specifies the color and number of pixels in the texture map.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>wrapS (SoSFEnum),wrapT (SoSFEnum)</b></span></span></td><td width="10"> </td><td><p><br>
+	specifies how the image wraps in the <a name="idch0735"></a><i>s</i> (horizontal) and<br>
+	<i>t</i> (vertical) directions (see <a href="ch07.html#id17374">Figure 7-3</a>).  Possible values<br>
+	are as follows:<br>
+<br>
+	REPEAT	specifies to repeat the map to fill the<br>
+		shape (the default)<br>
+	CLAMP	specifies to repeat the last row of pixels</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>model </b></span>(SoSFEnum)</span></td><td width="10"> </td><td><p><br>
+specifies the texture model to use.  Possible values are<br>
+as follows:<br>
+<br>
+MODULATE		multiplies the shaded color times the<br>
+		texture color (the default)<br>
+DECAL		replaces the shaded color with the<br>
+		texture color<br>
+BLEND		blends between the shaded color and<br>
+		the specified blend color (see the<br>
+		<a name="idch0736"></a><span class="bold"><b>blendColor</b></span> field)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>blendColor </b></span>(SoSFColor)</span></td><td width="10"> </td><td><p><br>
+specifies the color to blend when using the BLEND texture model.<a name="idch0737"></a></p>
+
+</td></tr></table></div><p>The <a name="idch0738"></a><span class="bold"><b>textureQuality</b></span> field of the <span class="bold"><b>SoComplexity</b></span> node controls the quality of filtering used to apply the texture.  A value of 0.0 disables texturing completely, and a value of 1.0 specifies to use the highest quality of texturing.  The default value for this field is 0.5.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5465113"></a>Transforming a Texture Map<a name="idch0739"></a></h3></div></div>
+<p>You can transform the texture map by inserting an <span class="bold"><b>SoTexture2Transform<a name="idch0740"></a></b></span> node into the scene graph before the shape node. This node has a cumulative effect and is applied to the texture coordinates. As shown in <a href="ch07.html#id62656">Figure 7-7</a>, the relationship between the <span class="bold"><b>SoTexture2Transform</b></span> node and the <span class="bold"><b>SoTextureCoordinate2</b></span> node is analogous to the relationship between the <span class="bold"><b>SoTransform</b></span> nodes and the <span class="bold"><b>SoCoordinate</b></span> nodes.</p>
+<p><div class="figure"><p><a name="id5465248"></a><b>Figure 7-7. <a name="id62656"></a>How the SoTexture2Transform Node Relates to the Texture Coordinates</b></p>
+<div class="mediaobject"><img src="figures/7-7.gif"></div></div><br>
+</p>
+<p>The fields of the <span class="bold"><b>SoTexture2Transform</b></span> node are as follows: </p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>translation</b></span> (SoSFVec2f)</span></td><td width="10"> </td><td><p><br>
+specifies a translation of the object's texture coordinates.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>rotation </b></span>(SoSFFloat)</span></td><td width="10"> </td><td><p><br>
+specifies a rotation of the object's texture coordinates.  The rotation angle is in radians.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>scaleFactor</b></span> (SoSFVec2f)</span></td><td width="10"> </td><td><p><br>
+specifies how to scale the texture on the object.  The object's <i>s</i> and <i>t</i> coordinates are multiplied by the scale factor.  A scale factor of (2.0, 2.0) thus makes the texture appear smaller on the object (see left side of <a href="ch07.html#id28478">Figure 7-8</a>). A scale factor of (0.5, 0.5) makes the texture appear larger (see right side of <a href="ch07.html#id28478">Figure 7-8</a>).</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>center </b></span>(SoSFVec2f)</span></td><td width="10"> </td><td><p><br>
+specifies the center of the rotation and scale transformations.  The default is (0.0,  0.0), the lower left corner of the texture.</p>
+
+</td></tr></table></div><p>In <a href="ch07.html#id28478">Figure 7-8</a>, the sphere on the left has a texture <span class="bold"><b>scaleFactor</b></span> of (2.0, 2.0), so the texture is repeated twice in <i>s</i> and <i>t</i>. The sphere on the right has a texture <span class="bold"><b>scaleFactor</b></span> of  (0.5, 0.5), so only half the texture is used in both the <i>s</i> and <i>t</i> directions.<a name="idch0741"></a></p>
+<p><div class="figure"><p><a name="id5465517"></a><b>Figure 7-8. <a name="id28478"></a><a name="idch0742"></a>Effects of Different Scale Factors on a Texture Map</b></p>
+<div class="mediaobject"><img src="figures/ch07-3.gif"></div></div><br>
+</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5465544"></a>Mapping the Texture onto the Object<a name="idch0743"></a></h2></div></div>
+<p>You can choose one of three techniques for mapping the 2D texture space onto the 3D object space:</p>
+<div class="orderedlist"><ol type="1"><li><p>Use the default texture coordinates.  The texture is applied in different ways for different shapes, as described later in this section. <a name="idch0744"></a><a name="idch0745"></a></p>
+</li>
+<li><p>For shapes derived from <span class="bold"><b>SoVertexShape</b></span>, you can specify the texture coordinates explicitly.  With this method, you create an <a name="idch0746"></a><span class="bold"><b>SoTextureCoordinate2</b></span>  node and specify a texture coordinate for each vertex in the shape.</p>
+</li>
+<li><p>Use one of the texture-coordinate functions to map the texture to the shape:<br>
+<br>
+<a name="idch0747"></a><span class="bold"><b>SoTextureCoordinatePlane<br>
+SoTextureCoordinateEnvironment</b></span></p>
+</li>
+</ol></div><p>Techniques 1 and 3 are automatic, and hence easy to use. Technique 2 requires explicit coordinates generated by you and is thus harder to use but gives more explicit control. Each of these three techniques is described in detail in the following sections.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5465642"></a>Using the Default Texture Mapping<a name="idch0748"></a></h3></div></div>
+<p>Inventor uses the same technique for generating default texture coordinates for any shape that is derived from <a name="idch0749"></a><span class="bold"><b>SoVertexShape</b></span>. First, it computes the bounding box of the object.  Then, it uses the longest edge of the box as the horizontal <i>(s</i>) axis of the texture. It uses the next longest edge as the vertical (<i>t</i>) axis of the texture. The value of the <i>s</i> coordinate ranges from 0.0 to 1.0, from one end of the bounding box to the other.  The value of <i>t</i> ranges from 0 to <i>n</i>, where <i>n</i> equals the ratio of the second longest side of the bounding box to the longest side (the effect is that the texture is applied to the longest side of the box, without distortion).</p>
+<p>For shapes that are not derived from <span class="bold"><b>SoVertexShape</b></span>, the default texture coordinates are generated differently for each shape. These shapes include <span class="bold"><b>SoCone</b></span>, <span class="bold"><b>SoCube</b></span>, <span class="bold"><b>SoCylinder</b></span>, <span class="bold"><b>SoNurbsSurface</b></span>, <span class="bold"><b>SoSphere</b></span>, and <span class="bold"><b>SoText3</b></span>. Default texture mapping for each of these shapes is described in the following paragraphs.</p>
+<div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5465806"></a>SoSphere</h4></div></div>
+<p>For example, if your scene graph contains an <span class="bold"><b>SoTexture2</b></span> node followed by an <a name="idch0750"></a><span class="bold"><b>SoSphere</b></span> node, the texture is applied to the sphere using default texture coordinates. The texture covers the entire surface of the sphere, wrapping counterclockwise from the back of the sphere (see <a href="ch07.html#id12359">Figure 7-9</a>).  The texture wraps around and connects to itself. A visible seam can result if the texture is nonrepeating.</p>
+<p><div class="figure"><p><a name="id5465848"></a><b>Figure 7-9. <a name="id12359"></a>Default Texture Mapping for SoSphere</b></p>
+<div class="mediaobject"><img src="figures/7.9.sphere.gif"></div></div><br>
+</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>Increasing the complexity of a simple shape improves the appearance of a texture on it.<a name="idch0751"></a>
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5465900"></a>SoCube</h4></div></div>
+<p>When a texture is applied to an <a name="idch0752"></a><span class="bold"><b>SoCube</b></span> using the default texture coordinates, the entire texture is applied to each face.  On the front, back, right, and left sides of the cube, the texture is applied right-side up. On the top, the texture appears right-side up if you tilt the cube toward you. On the bottom, the texture appears right-side up if you tilt the cube away from you (see <a href="ch07.html#id31357">Figure 7-10</a>).</p>
+<p><div class="figure"><p><a name="id5465935"></a><b>Figure 7-10. <a name="id31357"></a>Default Texture Mapping for SoCube</b></p>
+<div class="mediaobject"><img src="figures/7.10.cube.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5465956"></a>SoCylinder</h4></div></div>
+<p>When a texture is applied to an <a name="idch0753"></a><span class="bold"><b>SoCylinder</b></span> using the default texture coordinates, the texture wraps around the sides in a counterclockwise direction, beginning at the -<i>z</i> axis.  A circle cut from the center of the texture square is applied to the top and bottom of the cylinder. When you look at the cylinder from the <i>+z</i> axis, the texture on the top appears right-side up when the cylinder tips towards you. The texture on the bottom appears right-side up when the cylinder tips away from you (see <a href="ch07.html#id40266">Figure 7-11</a>).</p>
+<p><div class="figure"><p><a name="id5466001"></a><b>Figure 7-11. <a name="id40266"></a>Default Texture Mapping for SoCylinder</b></p>
+<div class="mediaobject"><img src="figures/7.11.cyl.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5466042"></a>SoCone</h4></div></div>
+<p>When a texture is applied to an<a name="idch0754"></a><span class="bold"><b> SoCone</b></span> using the default texture coordinates, the texture wraps counterclockwise around the sides of the cone, starting at the back of the cone. The texture wraps around and connects to itself. A visible seam can result if the texture is nonrepeating. A circle cut from the center of the texture square is applied to the bottom of the cone just as it is applied to the bottom of a cylinder (see <a href="ch07.html#id26834">Figure 7-12</a>).</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>Increasing the complexity of a textured cone is especially important because of the way the texture is mapped near the tip of the cone. <a name="idch0755"></a>
+</td></tr></table><hr noshade="noshade"></div><p><div class="figure"><p><a name="id5466120"></a><b>Figure 7-12. <a name="id26834"></a>Default Texture Mapping for SoCone</b></p>
+<div class="mediaobject"><img src="figures/7.12.cone.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5466141"></a>SoNurbsSurface</h4></div></div>
+<p>When a texture is applied to a NURBS surface using the default texture coordinates, the edges of the texture square are stretched to fit the NURBS patch (see <a name="idch0756"></a><a href="ch07.html#id41802">Figure 7-13</a>). A surface can be made up of many patches, like the teapot. If the NURBS surface is trimmed, so is the texture.</p>
+<p><div class="figure"><p><a name="id5466169"></a><b>Figure 7-13. <a name="id41802"></a>Default Texture Mapping for SoNurbsSurface</b></p>
+<div class="mediaobject"><img src="figures/7.13.nurbs.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5466211"></a>SoText3</h4></div></div>
+<p>When a texture is applied to the front of an <a name="idch0757"></a><span class="bold"><b>SoText3</b></span> surface using the default texture coordinates, texture coordinate (0,0) is at the text's origin. The distance from 0.0 to 1.0 in <i>s</i> and <i>t</i> texture coordinates is equal to the font size. For the sides of an <span class="bold"><b>SoText3</b></span> surface, using default texture mapping, the <i>s</i> coordinate extends forward along the text profile, starting with texture coordinate 0.0 at the back of the letter and increasing to the front.  A <i>font-size</i> distance along the profile is a texture coordinate distance of 1.0. The <i>t</i> coordinates extend around the outline of the character clockwise in a similar fashion. (See <a href="ch07.html#id41802">Figure 7-13</a>.)</p>
+<p><div class="figure"><p><a name="id5466277"></a><b>Figure 7-14. <a name="id41802"></a>Default Texture Mapping for SoText3</b></p>
+<div class="mediaobject"><img src="figures/7.14.text.gif"></div></div><br>
+</p>
+</div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5466300"></a>Specifying Texture Coordinates Explicitly <a name="idch0758"></a><i>(Advanced)<a name="idch0759"></a></i></h3></div></div>
+<p>Sometimes, you may want to explicitly specify the texture coordinates for each vertex of an object. In this case, create an <a name="idch0760"></a><span class="bold"><b>SoTextureCoordinate2</b></span> node and specify the set of 2D texture coordinates to be applied to the vertices of the shape.</p>
+<p>When you use this technique, you must specify a texture coordinate for each vertex in the shape. The coordinates are specified in pairs: the <i>s</i> coordinate followed by the <i>t</i> coordinate.</p>
+<p><a href="ch07.html#id16586">Example 7-2</a> 
+
+
+shows specifying texture coordinates explicitly. It uses an <a name="idch0761"></a><span class="bold"><b>SoTextureCoordinateBinding</b></span> node to index into the texture-coordinates list.</p>
+<div class="example"><p><a name="id5466422"></a><b>Example 7-2. <a name="id16586"></a>Specifying Texture Coordinates Explicitly</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+#include &lt;Inventor/nodes/SoCoordinate3.h&gt;
+#include &lt;Inventor/nodes/SoFaceSet.h&gt;
+#include &lt;Inventor/nodes/SoNormal.h&gt;
+#include &lt;Inventor/nodes/SoNormalBinding.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoTexture2.h&gt;
+#include &lt;Inventor/nodes/SoTextureCoordinate2.h&gt;
+#include &lt;Inventor/nodes/SoTextureCoordinateBinding.h&gt;
+
+main(int , char **argv)
+{
+   Widget myWindow = SoXt::init(argv[0]);
+   if(myWindow == NULL) exit(1);
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+
+   // Choose a texture 
+   SoTexture2 *brick = new SoTexture2;
+   root-&gt;addChild(brick);
+   brick-&gt;filename.setValue(&quot;brick.1.rgb&quot;);
+
+   // Define the square's spatial coordinates
+   SoCoordinate3 *coord = new SoCoordinate3;
+   root-&gt;addChild(coord);
+   coord-&gt;point.set1Value(0, SbVec3f(-3, -3, 0));
+   coord-&gt;point.set1Value(1, SbVec3f( 3, -3, 0));
+   coord-&gt;point.set1Value(2, SbVec3f( 3,  3, 0));
+   coord-&gt;point.set1Value(3, SbVec3f(-3,  3, 0));
+
+   // Define the square's normal
+   SoNormal *normal = new SoNormal;
+   root-&gt;addChild(normal);
+   normal-&gt;vector.set1Value(0, SbVec3f(0, 0, 1));
+
+   // Define the square's texture coordinates
+   SoTextureCoordinate2 *texCoord = new SoTextureCoordinate2;
+   root-&gt;addChild(texCoord);
+   texCoord-&gt;point.set1Value(0, SbVec2f(0, 0));
+   texCoord-&gt;point.set1Value(1, SbVec2f(1, 0));
+   texCoord-&gt;point.set1Value(2, SbVec2f(1, 1));
+   texCoord-&gt;point.set1Value(3, SbVec2f(0, 1));
+
+   // Define normal and texture coordinate bindings
+   SoNormalBinding *nBind = new SoNormalBinding;
+   SoTextureCoordinateBinding *tBind =
+            new SoTextureCoordinateBinding;
+   root-&gt;addChild(nBind);
+   root-&gt;addChild(tBind);
+   nBind-&gt;value.setValue(SoNormalBinding::OVERALL);
+   tBind-&gt;value.setValue 
+            (SoTextureCoordinateBinding::PER_VERTEX);
+
+   // Define a FaceSet
+   SoFaceSet *myFaceSet = new SoFaceSet;
+   root-&gt;addChild(myFaceSet);
+   myFaceSet-&gt;numVertices.set1Value(0, 4);
+
+   SoXtExaminerViewer *myViewer = 
+            new SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;Texture Coordinates&quot;);
+   myViewer-&gt;show();
+   
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5466515"></a>Using a Texture-Coordinate Function<a name="idch0762"></a></h3></div></div>
+<p>A third way to map texture coordinates onto an object is through the use of a <i>texture-coordinate function<a name="idch0763"></a></i>. A texture-coordinate function defines the texture coordinates for an object based on the position of each vertex in the object.  Each texture-coordinate function uses a different algorithm for calculating the texture coordinates, as described in detail in the following subsections. These functions allow you to specify texture mapping in a general way, without requiring you to define explicit texture coordinates. The texture-coordinate function ignores the current texture coordinates specified by an <span class="bold"><b>SoTextureCoordinate2 </b></span>node.</p>
+<p>Inventor includes two texture-coordinate functions:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><a name="idch0764"></a><a name="idch0765"></a><span class="bold"><b>SoTextureCoordinatePlane</b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+<br>
+</b></span>projects a texture map through a plane.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch0766"></a><a name="idch0767"></a><span class="bold"><b>SoTextureCoordinateEnvironment</b></span></span></td><td width="10"> </td><td><p>	<br>
+	specifies that objects should look as if they reflect their environment (also known as <i>reflection mapping<a name="idch0768"></a></i> or <i>environment mapping</i>).</p>
+
+</td></tr></table></div><p>To use the default texture coordinates (in effect, to &#8220;turn off&#8221; the effect of any previous texture-coordinate node in the scene graph without using a separator), use the <span class="bold"><b>SoTextureCoordinateDefault</b></span> node.</p>
+<div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5466713"></a>SoTextureCoordinatePlane</h4></div></div>
+<p><a name="idch0769"></a><span class="bold"><b>SoTextureCoordinatePlane</b></span>, probably the most commonly used texture-coordinate function, projects a texture plane onto a shape object, as shown in <a href="pr02.html#id89227">Figure In-15</a>. You define an <i>s</i> and a <i>t</i> direction, which are used to define a plane for the texture. The texture coordinate (<i>s</i>) is then defined by the following equation, where <i>coord</i> is a coordinate in the object:</p>
+<p><div class="mediaobject"><img src="figures/ch07-4.gif"></div>
+</p>
+<p>The fields for <span class="bold"><b>SoTextureCoordinatePlane</b></span> are as follows:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>directionS</b></span> (SoSFVec3f)</span></td><td width="10"> </td><td><p><br>
+projection direction of <i>s</i> coordinate <br>
+(default = 1.0, 0.0, 0.0)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>directionT</b></span> (SoSFVec3f)</span></td><td width="10"> </td><td><p><br>
+projection direction of<i> t</i> coordinate <br>
+(default = 0.0, 1.0, 0.0)</p>
+
+</td></tr></table></div><p>The length of the direction vector equals the repeat interval of the texture (see <a href="ch07.html#id10512">Example 7-3</a>).</p>
+<p><a href="ch07.html#id10512">Example 7-3</a> shows the use of<span class="bold"><b> SoTextureCoordinatePlane<a name="idch0770"></a></b></span> (see  <a href="ch07.html#id79041">&#8220;SoTextureCoordinatePlane with Different Repeat Frequencies&#8221;</a>). It draws three texture-mapped spheres, each with a different repeat frequency as defined by the fields of the <a name="idch0771"></a><span class="bold"><b>SoTextureCoordinatePlane</b></span> node.</p>
+<div class="example"><p><a name="id5466946"></a><b>Example 7-3. <a name="id10512"></a>Using SoTextureCoordinatePlane</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoSphere.h&gt;
+#include &lt;Inventor/nodes/SoTexture2.h&gt;
+#include &lt;Inventor/nodes/SoTexture2Transform.h&gt;
+#include &lt;Inventor/nodes/SoTextureCoordinatePlane.h&gt;
+#include &lt;Inventor/nodes/SoTranslation.h&gt;
+
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+
+main(int , char **argv)
+{
+   Widget myWindow = SoXt::init(argv[0]);
+   if(myWindow == NULL) exit(1);
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+
+   // Choose a texture.
+   SoTexture2 *faceTexture = new SoTexture2;
+   root-&gt;addChild(faceTexture);
+   faceTexture-&gt;filename.setValue(&quot;sillyFace.rgb&quot;);
+   // Make the diffuse color pure white
+   SoMaterial *myMaterial = new SoMaterial;
+   myMaterial-&gt;diffuseColor.setValue(1,1,1);
+   root-&gt;addChild(myMaterial);
+</pre></td></tr></table><p><a name="id79041"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/07.15.TextureFunction.iv"><div class="caption"><p>SoTextureCoordinatePlane with Different Repeat Frequencies</p>
+</div></a></blockquote></div>
+</p>
+<p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   // This texture2Transform centers the texture about (0,0,0) 
+   SoTexture2Transform *myTexXf = new SoTexture2Transform;
+   myTexXf-&gt;translation.setValue(.5,.5);
+   root-&gt;addChild(myTexXf);
+
+   // Define a texture coordinate plane node.  This one will 
+   // repeat with a frequency of two times per unit length.
+   // Add a sphere for it to affect.
+   SoTextureCoordinatePlane *texPlane1 = new
+             SoTextureCoordinatePlane;
+   texPlane1-&gt;directionS.setValue(SbVec3f(2,0,0));
+   texPlane1-&gt;directionT.setValue(SbVec3f(0,2,0));
+   root-&gt;addChild(texPlane1);
+   root-&gt;addChild(new SoSphere);
+
+   // A translation node for spacing the three spheres.
+   SoTranslation *myTranslation = new SoTranslation;
+   myTranslation-&gt;translation.setValue(2.5,0,0);
+
+   // Create a second sphere with a repeat frequency of 1.
+   SoTextureCoordinatePlane *texPlane2 = new
+            SoTextureCoordinatePlane;
+   texPlane2-&gt;directionS.setValue(SbVec3f(1,0,0));
+   texPlane2-&gt;directionT.setValue(SbVec3f(0,1,0));
+   root-&gt;addChild(myTranslation);
+   root-&gt;addChild(texPlane2);
+   root-&gt;addChild(new SoSphere);
+
+   // The third sphere has a repeat frequency of .5
+   SoTextureCoordinatePlane *texPlane3 = new
+            SoTextureCoordinatePlane;
+   texPlane3-&gt;directionS.setValue(SbVec3f(.5,0,0));
+   texPlane3-&gt;directionT.setValue(SbVec3f(0,.5,0));
+   root-&gt;addChild(myTranslation);
+   root-&gt;addChild(texPlane3);
+   root-&gt;addChild(new SoSphere);
+
+   SoXtExaminerViewer *myViewer = new SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;Texture Coordinate Plane&quot;);
+   myViewer-&gt;show();
+   
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5467077"></a>SoTextureCoordinateEnvironment</h4></div></div>
+<p>The <a name="idch0772"></a><span class="bold"><b>SoTextureCoordinateEnvironment</b></span> node specifies that subsequent objects should reflect their environment, just as a shiny round Christmas ornament reflects its surroundings. For best results, the texture map specified should be a spherical reflection map. See the <a name="idch0773"></a><i>OpenGL Programming Guide</i>, Chapter 9, for tips on how to create a spherical reflection map.</p>
+<p>When <span class="bold"><b>SoTextureCoordinateEnvironment</b></span> is used, a calculation is made at each vertex of the polygon to determine where a vector from the viewpoint to the vertex would be reflected.  This reflection point defines the texture coordinate for that point on the polygon. See <a href="pr02.html#id72036">Figure In-17</a> and <a href="pr02.html#id84997">Figure In-18</a>.</p>
+<p>Because of the way environment mapping is implemented in OpenGL, environment maps are accurate only if the camera does not move relative to the environment being reflected.</p>
+</div></div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch06.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 6. Text </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 8. Curves and Surfaces </td></tr></table></div></body></html>

@@ -1,0 +1,40 @@
+.TH HEV-SHADERLIBRARY-NOISE 7 "May 2013" "NIST/ACMD" "HCPVG HEV"
+
+.SH NAME
+hev-shaderLibrary-noise
+- noise functions includeable in other shaders.
+
+.SH SYNOPSIS
+\fB#include <noise.glsl>\fR
+.PP
+\fBfloat noiseT(float\fR \fIp\fR\fB);\fR
+.br
+\fBfloat noiseT(vec2\fR \fIp\fR\fB);\fR
+.br
+\fBfloat noiseT(vec3\fR \fIp\fR\fB);\fR
+
+.SH DESCRIPTION
+The function
+.BR noiseT ()
+computes 1D, 2D and 3D Perlin-like noise. Like the original Perlin function,
+these return results in the range -1 to 1, with an average value of 0, passing
+through 0 at each integer input value, and between 1/2 and 1 cycle per input
+unit. Scale the input parameter before calling to get larger or smaller noise
+effects. These functions cycle every \fBNTmod\fR (=61) units in the input space.
+.PP
+These functions are a subset of the noise functions from Olano, Marc.
+"Modified Noise for Evaluation on Graphics Hardware". \fIProceedings of
+Graphics Hardware 2005\fR, Eurographics/ACM SIGGRAPH, July 2005.
+
+.SH REQUIRED STATE
+\fBuniform sampler2D noiseTexture;\fR
+.IP
+A Texture2D refering to the noise.png texture.
+
+.SH AUTHOR
+Marc Olano
+
+.SH SEE ALSO
+.BR hev-shaders (7),
+.BR hev-shaderLibrary (7).
+

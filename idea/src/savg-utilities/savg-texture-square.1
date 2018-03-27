@@ -1,0 +1,34 @@
+.TH SAVG\-TEXTURE\-SQUARE 1 "24 June 2005"
+.SH NAME
+savg-texture-square \- SAVG ToolBox: create textured square
+.SH SYNOPSIS
+.B savg-texture-square
+[image file name]
+.SH DESCRIPTION
+.I savg-texture-square
+creates a unit sized 2d square with a texture mapped onto it from an
+image file.
+It accepts the object from
+.I stdin
+and outputs to 
+.I stdout.
+Exactly one command line argument must be present or 
+a usage message will appear and the program will 
+terminate, the name of the image file for the texture. 
+
+.SH EXAMPLES
+.TP
+.B savg-texture-square plot1124.rgb > plot1124.savg
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+June 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

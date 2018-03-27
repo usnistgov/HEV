@@ -1,0 +1,58 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+Function {make_window()} {open
+} {
+  Fl_Window {} {open
+    xywh {904 29 395 85} type Double visible
+  } {
+    Fl_Menu_Button navigation {
+      label {navigation     }
+      callback {setNavigation(int(o->value())) ;} open
+      xywh {5 5 125 20} align 16
+    } {
+      MenuItem {} {
+        label item1
+        xywh {59 0 36 21}
+      }
+      MenuItem {} {
+        label item2
+        xywh {79 0 36 21}
+      }
+      MenuItem {} {
+        label item3
+        xywh {98 0 36 21}
+      }
+      MenuItem {} {
+        label item4
+        xywh {0 0 36 21}
+      }
+    }
+    Fl_Roller scale {
+      callback {setScale(float(o->value())) ;} selected
+      xywh {135 5 125 20} type Horizontal align 6 minimum -3 maximum 5 step 0.005
+    }
+    Fl_Roller response {
+      callback {setResponse(float(o->value())) ;}
+      xywh {265 5 125 20} type Horizontal align 6 minimum -3 maximum 5 step 0.005
+    }
+    Fl_Button reset {
+      label RESET
+      callback {setReset() ;}
+      xywh {322 60 70 20}
+    }
+    Fl_Group currentNav {
+      label currentNav open
+      xywh {5 60 280 20} align 20
+    } {}
+    Fl_Output scaleValue {
+      xywh {135 29 125 20}
+      code0 {o->value("scale: 1.0") ;}
+    }
+    Fl_Output responseValue {
+      xywh {265 29 125 20}
+      code0 {o->value("response: 1.0") ;}
+    }
+  }
+} 

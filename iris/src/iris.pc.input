@@ -1,0 +1,11 @@
+prefix=
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: iris
+Description: Interpreted Runtime Immersive Scenegraph
+Version: 0.0
+Requires: openscenegraph
+Conflicts:
+Libs: -L${libdir} -liris
+Cflags: -I${includedir}

@@ -1,0 +1,31 @@
+DSO raveLeftCubeOffscreenWindow
+DSO raveFrontCubeOffscreenWindow
+DSO raveBackCubeOffscreenWindow
+DSO raveRightCubeOffscreenWindow
+DSO raveFloorCubeOffscreenWindow
+DSO raveCeilingCubeOffscreenWindow
+
+BEFORE REALIZE WINDOW raveLeft    TRAIT X 0 Y 0 WIDTH 2048 HEIGHT 2048
+BEFORE REALIZE WINDOW raveFront   TRAIT X 0 Y 0 WIDTH 2048 HEIGHT 2048
+BEFORE REALIZE WINDOW raveBack    TRAIT X 0 Y 0 WIDTH 2048 HEIGHT 2048
+BEFORE REALIZE WINDOW raveRight   TRAIT X 0 Y 0 WIDTH 2048 HEIGHT 2048
+BEFORE REALIZE WINDOW raveFloor   TRAIT X 0 Y 0 WIDTH 2048 HEIGHT 2048
+BEFORE REALIZE WINDOW raveCeiling TRAIT X 0 Y 0 WIDTH 2048 HEIGHT 2048
+
+AFTER  REALIZE PANE   raveLeft    VIEWPORT 0 0 2048 2048
+AFTER  REALIZE PANE   raveFront   VIEWPORT 0 0 2048 2048
+AFTER  REALIZE PANE   raveBack    VIEWPORT 0 0 2048 2048
+AFTER  REALIZE PANE   raveRight   VIEWPORT 0 0 2048 2048
+AFTER  REALIZE PANE   raveFloor   VIEWPORT 0 0 2048 2048
+AFTER  REALIZE PANE   raveCeiling VIEWPORT 0 0 2048 2048
+
+LOAD screen 360title-screen.osgb
+TXTR screen 0 @CREDITS_TEXTURE@ FILTER linear WRAP clamp_to_edge
+SHADERPROG screen V textured.vert F textured.frag
+ADDCHILD screen world
+NAV POSITION 0 1 0
+NAV ORIENTATION -56 0 0
+
+DSO frameGrabber PREFIX /tmp/hev-360credits
+AFTER FRAME 10 DSO frameGrabber SNAP raveLeft raveFront raveBack raveRight raveFloor raveCeiling
+AFTER FRAME 20 TERMINATE

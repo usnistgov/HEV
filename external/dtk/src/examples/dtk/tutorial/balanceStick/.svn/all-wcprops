@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/tutorial/balanceStick
+END
+programList
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tutorial/balanceStick/programList
+END
+debugDemo.sh
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tutorial/balanceStick/debugDemo.sh
+END
+stickBalance.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tutorial/balanceStick/stickBalance.cpp
+END
+Makefile.orig
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/tutorial/balanceStick/Makefile.orig
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/tutorial/balanceStick/CMakeLists.txt
+END
+demo.sh
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tutorial/balanceStick/demo.sh
+END

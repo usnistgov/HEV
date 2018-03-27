@@ -1,0 +1,9 @@
+LOAD cube cube.savg
+
+DCS xyz -.4 .4 0   0 0 0  .1
+
+ADDCHILD cube xyz
+
+ADDCHILD xyz world
+
+NAV PIVOTPOINT -.4 .4 0

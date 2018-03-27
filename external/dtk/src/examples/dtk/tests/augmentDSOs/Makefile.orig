@@ -1,0 +1,58 @@
+#!gmake
+
+# IRIX make has a make directive that lets you
+# execute an alternate interpreter
+#  #!alternate_make
+# GNU make will ignore it
+
+# This file works with GNU make
+# you can get it at
+# ftp://prep.ai.mit.edu/pub/gnu/make/
+
+#################################################################
+
+CXX = $(shell dtk-config --compiler)
+CXXFLAGS += $(shell dtk-config --cxxflags) $(shell dtk-config --include)
+DTK_LIBS = $(shell dtk-config --libs)
+FLTK_LIB = $(shell fltk-config --libs)
+FLTK_INC = $(shell fltk-config --cxxflags)
+
+# list of things to build
+DSO = test.so
+BIN = dtk-augmentManager
+
+
+####################################################################
+
+
+build: test $(DSO) $(BIN)
+
+
+# target rules
+
+test:
+	@if ! dtk-config --test ; \
+          then echo; \
+          echo "\`dtk-config' must be in your path." ;\
+          exit 1; fi
+
+
+$(BIN): %: %.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(DTK_LIBS)
+
+
+.SUFFIXES: .cpp
+
+$(DSO): %.so: %.cpp
+	$(CXX) $(CXXFLAGS) -elf -shared -Wl,-soname,$@ -o $@ $^ 
+
+
+
+################## clean stuff ###################################
+
+clean:
+	rm -f *.so so_locations $(BIN)
+
+cleaner distclean: clean
+	rm -f *~ core make.depend make.depend.bak
+#

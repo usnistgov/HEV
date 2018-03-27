@@ -1,0 +1,52 @@
+
+DONE savg-octa - puts out bogus square; needs normals; needs man page; unit scale
+
+DONE savg-tetra needs normals and man page; unit scale
+
+DONE savg-prism needs normals;  needs man page
+
+DONE savg-output-normals needs man page
+
+
+
+DONE savg-add_normals - implement it!
+
+
+
+DONE savg-rgb  - fix man page
+
+
+
+DONE savg-scatterplot - fix man page
+
+DONE savg-surfaceplot - fix man page
+
+DONE savg-bargraph - fix man page
+
+
+
+
+
+
+
+savg-dodec - implement?
+
+savg-icosa - implement?
+
+
+
+
+savg-ptgraph ??????????
+
+savg-reverse  needs man page - expand number of lines
+
+
+savg-rmcom  - removes comments; needs man page
+
+
+savg-sor fix man page - remove gtb ref; does it work at all??????
+
+
+savg-text-font - man page?????
+
+

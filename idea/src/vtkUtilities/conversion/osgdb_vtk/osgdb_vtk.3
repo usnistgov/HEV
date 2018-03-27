@@ -1,0 +1,148 @@
+.TH osgdb_vtk.so 3
+
+
+.SH NAME
+osgdb_vtk.so  -  VTK File Loader for OSG
+
+.SH DESCRIPTION
+
+The VTK file loader for OSG is an OSG plugin that
+enables OSG applications to load VTK files directly,  
+without prior conversion.
+OSG applications such as \fIosgconv\fR and \fIosgviewer\fR can 
+use this file loader as well as locally developed
+software that uses OSG such as \fIirisfly\fR (see below).
+
+
+The VTK files must have names that end in \fB.vtk\fR.
+
+This loader is primary intended for loading \fIvtkPolyData\fR objects
+that are represented in VTK's \fBSimple Legacy Formats\fR.  
+These file formats are described in detail in:
+.RS
+\fIThe VTK User's Guide\fR, by Kitware, Inc.
+.RE
+and (as of this writing):
+.RS
+http://www.vtk.org/VTK/img/file-formats.pdf
+.RE
+
+
+In addition to handling \fIvtkPolyData\fR objects, this file loader
+will also read the following data types:
+
+.RS
+\fIvtkStructurePoints\fR
+.br
+\fIvtkStructuredGrid\fR
+.br
+\fIvtkUnstructuredGrid\fR
+.br
+\fIvtkRectilinearGrid\fR
+.RE
+
+When data of these types are encountered, the loader attempts to
+convert them to \fIvtkPolyData\fR by using VTK's \fIvtkGeometryFilter\fR
+and (when necessary) normals are added to polygons with 
+\fIvtkPolyDataNormals\fR.  
+(See the VTK documentation for details on these algorithms.)
+
+
+Note that this file loader  does \fBNOT\fR handle 
+VTK \fIfield\fR data or the VTK XML file formats.
+
+
+.SH IRIS and HEV 
+
+This file loader makes it possible for our locally developed IRIS
+software to read, display, and process VTK data files.
+For example, the following command will display a cube described
+by a VTK file:
+
+.RS
+.B "irisfly --ex $HEVROOT/idea/src/vtkUtilities/data/cube.vtk"
+.RE
+
+Similarly, 
+\fIiris-bounds\fR, 
+\fIiris-convert\fR, and
+\fIiris-viewer\fR
+can handle VTK files through this file loader.
+
+In addition, there are some HEV utility programs that are currently
+under development that are designed to simplify access to various VTK
+functionality.  These utilities can be used to generate and process
+VTK data and files.  
+For more information see the man page for \fIvtkUtilities\fR.
+
+
+.SH ADDITIONAL DETAILS
+
+
+If normals are not present in the VTK data, 
+they are not added except when the
+polygons are derived from grid data as described above.
+
+If color is not present in the VTK data, an overall color of white is added.
+
+Objects may display somewhat differently in VTK viewers and in viewers
+based on OSG.  This is because of different handling of ambient,
+diffuse, and specular color components and different lighting.  
+The conversion of the base model color into the ambient, diffuse,
+and specular components is not expressed in the vtkPolyData objects and
+these can be manipulated in various ways in other parts of VTK.  
+Lighting is also handled outside the specification of the model
+in both VTK and OSG.
+
+If the VTK file specifies color or normals at each vertex \fIand\fR at
+each cell (polygon, line, or rendered point), the property specified
+at the vertex is used.
+
+The file loader preserves vertex texture map coordinates that are present
+in the VTK file.
+
+If the VTK file specifies texture map coordinates at each cell, these
+coordinates are discarded.  OSG has no representation for texture
+map coordinates defined per cell.
+
+This file loader attempts to preserve the structure of the
+incoming VTK data in the generated OSG data, however the
+structures may be altered in the interest of generating
+OSG data that can be processed efficiently.
+These alterations change the structure but not the meaning
+of the data.
+
+It appears that the VTK library does not always report errors correctly 
+to the calling code. This has been observed when there are 
+some types of errors in reading the incoming VTK data files. 
+VTK will print error messages but no error code is returned. 
+The calling code, being unaware of the error, 
+will continue to execute as if there were no problem. 
+This may result in OSG data structures with incomplete or otherwise
+unexpected contents.  
+When you see unexpected results, look for error messages displayed
+by the VTK library.
+
+.SH SEE ALSO
+
+VTK Documentation:
+
+.RS
+\fIThe Visualization Toolkit: An Object Oriented Approach to 3D Graphics\fR, 
+by Schroeder, Martin and Lorensen.
+
+\fIThe VTK User's Guide\fR, by Kitware, Inc.
+
+http://www.vtk.org
+.RE
+
+Documentation for the VTK utilities under HEV:
+
+.RS
+man vtkUtilities
+.RE
+
+
+
+
+

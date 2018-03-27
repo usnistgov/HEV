@@ -1,0 +1,32 @@
+#! /bin/bash
+
+# hev-testRenderCMP
+# May 21, 2015
+
+function usage {
+
+cat <<EOF
+
+Usage: hev-testRenderCmp baseLineImage    newImage
+
+EOF
+exit 1
+}
+
+case $# in
+2)
+	baseline=$1
+	new=$2
+	;;
+*)
+	usage
+	;;
+esac
+
+
+
+cmp $baseline $new
+exitStatus=$?
+
+exit $exitStatus
+

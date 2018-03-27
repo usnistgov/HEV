@@ -1,0 +1,102 @@
+#! /bin/bash
+
+# hev-progressBar - display a window with a progress bar. The progress
+#                   is updated via an integer 0-100 read from shared memory
+
+# Steve Satterfield
+
+version="20140519"
+
+function usage {
+cat <<EOF
+
+  Usage: hev-progressBar [-geometry GEOM] [--noborder] [--noirisfly] shmname
+
+     Optional parameters must be specified in order shown.
+EOF
+exit 1
+}
+
+if [ "$HEVROOT" == "" ]
+then
+    echo "HEVROOT not defined"
+    exit 1
+fi
+
+
+if [ "${PROGRESSBAR_IMAGES}" == "" ]
+then
+    if [ -d "./imagesProgBar" ]
+    then
+	PROGRESSBAR_IMAGES="./imagesProgBar"
+    else
+	PROGRESSBAR_IMAGES="${HEVROOT}/idea/etc/hev-progressBar/data"
+    fi
+fi
+
+if [ ! -d ${PROGRESSBAR_IMAGES} ]
+then
+    echo  ${PROGRESSBAR_IMAGES} not found
+    exit 1
+fi
+
+
+
+
+G=""
+case $1 in
+-geometry)
+	shift
+	G="-geometry $1"
+	shift
+	;;
+esac
+
+B=""
+case $1 in
+--nob*)
+	B="--noborder"
+	shift
+	;;
+esac
+
+irisflyFLAG="yes"
+case $1 in
+--noi*)
+	irisflyFLAG="no"
+	shift
+	;;
+esac
+
+case $# in
+1)
+	SHM=$1
+	shift
+	;;
+*)
+        usage
+	;;
+esac
+
+hev-writeInts -c 1 $SHM 0
+
+hev-imageDisplay $G -title progressBar $B --noescape --shm $SHM ${PROGRESSBAR_IMAGES}/*.png &
+j=$!
+
+trap "kill $j" 0
+
+
+if [ "$irisflyFLAG" == "yes" ]
+then
+    echo KILL $j > $IRIS_CONTROL_FIFO
+    echo KILL $$ > $IRIS_CONTROL_FIFO
+fi
+
+while [ $(hev-readInts -i -d -1 $SHM) -lt 100 ]
+do
+       sleep 1
+done
+
+
+
+#end

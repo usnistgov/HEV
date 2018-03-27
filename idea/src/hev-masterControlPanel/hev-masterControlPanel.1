@@ -1,0 +1,242 @@
+.TH hev-masterControlPanel 1 "March 2011"
+
+.SH NAME
+hev-masterControlPanel
+
+.SH SYNOPSIS 
+.B hev-masterControlPanel [--noescape] [--fifo filename]
+[file ...]
+
+.SH DESCRIPTION
+
+\fBhev-masterControlPanel\fR (\fBMCP\fR for short) creates a FLTK window
+filled with buttons.  The types of buttons and what they do are defined by
+commands read by \fBhev-masterControlPanel\fR at startup.  Files of commands
+to be loaded can be listed on the command line and can also be supplied as a
+colon separated list of file names given in the $MCP_FILES environment
+variable.  The files in $MCP_FILES are read before the files given on the
+command line.
+
+After the files are read additional MCP commands, \fBnot\fR filenames, are read
+via stdin.  Stdin is polled once at startup and if data are present stdin is
+read until an EOF is encountered.  Stdin is not read again after the initial
+EOF is reached.
+
+When a button event occurs, text associated with that event is written to
+stdout.  By redirecting stdout to the IRIS control fifo
+\fBhev-masterControlPanel\fR can send commands to a running IRIS
+application.
+
+.SH OPTIONS
+
+.IP --noescape
+if supplied, specifies that the GUI can't be killed by pressing the window
+manager's close button, or by pressing escape in he GUI window.
+
+.IP "--fifo filename"
+if supplied, specifies that lines containing files to be loaded will be read
+from the specified fifo.  To avoid a lot of messy book-keeping, the fifo
+won't be read while the RESET button is turned ON.  If this causes a problem
+for your application,
+please email the author.
+
+.SH COMMANDS
+
+All command data may contain one or more environment variables of the form
+${ENVVAR}; the value of the environment variable is substituted as the
+command is read.
+
+.IP "BUTTON offLabel [onLabel] [COLOR r g b]"
+define a button with label.  A button accepts multiple FIRST, ON, OFF and
+CLEANUP commands.  The optional COLOR specifies the button's color.  If the
+button has an OFF command it will be a check button.  If it doesn't have an
+OFF command it will be a normal button.  An FLTK gotcha is that you can't
+define the color of individual buttons inside a menu button- they will all
+be the same color as the MENU button. The optional onLabel parameter
+specifies the button's label while it is turned on, which only applies to
+check buttons and radio buttons.
+
+.IP "MENU label [COLOR r g b]"
+defines a menu button with a label.  Until an END command is reached, all
+new buttons will become part of the menu button's entries.  The optional
+COLOR specifies the button's color, and the color of the buttons in the menu.
+It's OK to create a RADIO group within a menu.
+
+.IP "RADIO [COLOR r g b]"
+starts a group of round radio BUTTONs.  Until an END command is reached, all new
+buttons will be part of the radio group.  When any button of a radio group
+is turned on, the previously turned on button will be turned off, calling
+its OFF command if one exists.  The optional color will be the default
+color of all buttons in the radio group.  You can't define MENU or RESET
+buttons in a radio group.  An FLTK gotcha is that you can't define the
+color of individual buttons in a menu button- they will all be the same
+color as the MENU button, so you can't define a default color for a RADIO
+group in a menu.
+
+.IP "RADIOMENU label [COLOR r g b]"
+defines a menu button with a label.  Until an END command is reached, all
+new buttons will become part of the menu button's entries.  The optional
+COLOR specifies the button's color, and the color of the buttons in the
+menu.  All buttons defined in a RADIOMENU button will be radio buttons, and
+the label of the RADIOMENU button will be the label of the currently selected
+button.  The label specified in the RADIOMENU command will only be displayed
+if none of the defined radio buttons have an INIT command, in which case
+all of them will be off.
+
+.IP "END"
+ends a group of radio buttons, radiomenu buttons or menu button entries.
+
+.IP "RESET offLabel [onLabel] [COLOR r g b]"
+defines a RESET button with a label. Only one RESET button is allowed.  When
+this button is turned on all buttons will have their OFF commands
+called if they are turned on.  When the button is turned off, all the
+buttons that were turned off will have their ON commands called.  If any
+other button is turned on while the RESET button is turned on, the reset
+button will be turned off without calling any other button's ON commands.
+The optional onLabel parameter specifies the button's label while it is
+turned on.
+The optional COLOR specifies the button's color.  A RESET button can not be
+part of a MENU button or RADIO group.
+
+.P
+Hint: to turn all buttons in a radio group off, instead of all buttons in
+the window, just define a button in the radio group with no commands
+associated with it.
+
+.IP "LABEL [text]"
+creates a button-sized space with \fItext\fR centered
+in the space.  Error if encountered while defining a menu button.  The text
+can be omitted to create an empty button-sized space.
+
+.IP "CELLRULER HORIZONTAL | VERTICAL | LLCORNER | LRCORNER | ULCORNER | URCORNER"
+creates a button-sized space with optional lines drawn in the space.
+Lines can be horizontal and vertical lines centered in the space, or corners
+of a box, with the corner in the center of the space. LL stands for lower
+left, UL stands for upper left, LR stands for lower right and UR stands for
+upper right.  LLCORNER looks like the letter "L". Error if encountered while
+defining a menu button.
+
+.IP "FIRST [command]"
+add a command to be echoed the first time the most recently defined button
+is pressed or turned on.  These commands will be echoed instead of the ON
+commands for this button for this one button press.  Multiple FIRST
+commands may be specified, and they are echoed in the order added to the
+button.
+
+.IP "ON [command]"
+add a command to be echoed when the most recently defined button is
+pressed or turned on.  If no FIRST commands are defined for the button,
+the ON commands are echoed for the button's first press.  Multiple ON
+commands may be specified, and they are echoed in the order added to the
+button.
+
+.IP "OFF [command]"
+add a command to be echoed when the most recently defined button is turned
+off. Multiple OFF commands may be specified, and they are echoed in the
+order added to the button.
+
+.IP "CLEANUP [command]"
+add a command to be echoed when hev-masterControlPanel is exiting,
+associated with the most recently defined button.  If this button was never
+pressed, the button's CLEANUP command is not echoed.  Multiple CLEANUP
+commands may be specified, and they are echoed in the order added to the
+button.
+
+.P
+In the above four commands, if \fIcommand\fR is omitted the command will be
+"counted", but nothing will printed when the command is executed.  By using
+an empty OFF command a check box button can be created instead of a normal
+button.  The "command" parameter can
+contain spaces, multiple spaces, quotes, backslashes and any other special
+characters.  It is echoed literally as it's given, no processing is done.
+
+.IP "INIT "
+instructs MCP to run all of the defined FIRST commands for the current
+button and if the button is a radio or check button, to turn the button on.
+If there are no FIRST commands, the ON commands are run.
+If you don't have any FIRST commands and you do not want the ON commands
+to run, insert a FIRST NOOP command.
+Only the first INIT in a radio group is used, the rest are ignored.  An INIT
+command in a button with no OFF commands is also ignored, as it only has one
+state.
+
+.IP "READ filename"
+opens a file of MCP commands in filename and processes its contents. An
+error is returned if the file can't be found or the file's contents generate
+an error.
+
+.IP "SREAD filename"
+opens a file of MCP commands in filename and processes its contents. If the
+file isn't found no error is returned. If the file is found an error is
+returned if the file's contents generate
+an error. 
+
+.P
+The following are global settings that aren't used until all buttons have been
+defined.  The last encountered value wins.
+
+The first button is created in the top left corner of the window, and new
+buttons are added from this position, either across or down.
+
+.IP "SIZE x y"
+specifies the size of all buttons in pixels.  The default is x = 75 and y = 20.
+
+.IP "SPACING x y"
+specifies the spacing between all buttons in pixels.  The default is x = y = 5.
+
+.IP "ROWS r"
+specifies how many rows of buttons to use before wrapping- it's only
+used if DOWN is specified.  The default is 4 rows.
+
+.IP "COLUMNS c"
+specifies how many columns of buttons to use before wrapping- it's only
+used if ACROSS is specified.  The default is 3 columns.
+
+.IP "ACROSS "
+specifies that new buttons are created directly to the right of the previous
+button, or at the left side of the next row down if ACROSS buttons have
+already been created.  ACROSS is the default.
+
+.IP "DOWN "
+specifies that new buttons are created directly below the previous
+button, or at the top of the next column to the right if ROWS buttons have
+already been created.
+
+.IP "TIMEOUT f"
+specifies that \fBhev-masterControlPanel\fR should wait up to f
+seconds (f is a floating point number) for data to appear on stdin
+before giving up and moving on.  It should be noted that putting a TIMEOUT
+command in the commands read via stdin has no effect.  The default TIMEOUT
+value is 0.
+
+.SH ENVIRONMENT VARIABLES
+
+.IP MCP_FILES
+
+Is a colon separated list of files to be loaded before the files specified on
+the command line.
+
+.IP MCP_FILE_PATH
+
+Is a colon separated list of directories to searched for files to load.  The
+current directory is always searched first.
+
+.SH FILENAMES
+
+Filenames read from the command line, the MCP_FILES environment variable and
+the READ and SREAD commands can contain an absolute or relative path. The
+filename can be an environment variable of the the form $ENVVAR, or may
+contain one or more environment variables of the form ${ENVVAR}.
+
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+March 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

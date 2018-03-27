@@ -1,0 +1,54 @@
+#!/bin/bash
+
+width=3840
+height=2160
+subtitle="High Performance Computing\nand Scientific Visualization"
+
+while getopts "hs:W:H:" opt; do
+    case $opt in
+        W) width=$OPTARG ;;
+        H) height=$OPTARG ;;
+        s) subtitle=$OPTARG ;;
+        ?|h)
+            echo "usage: $0 [options] \"Title\" <OUTPUT_PREFIX>";
+            echo "    -W <width>  final image width (3840)"
+            echo "    -H <height> final image height (2160)"
+            echo "    -s \"Subtitle\""
+            exit 1
+            ;;
+    esac
+done
+
+shift $(($OPTIND-1))
+if [ -z "$1" ]; then echo "$0: No title specified"; exit 1; fi
+if [ -z "$2" ]; then echo "$0: No output prefix specified"; exit 1; fi
+
+title=$1
+out=$2
+shift 2
+
+mvg=$(mktemp /tmp/hev-360title-XXXXXX.mvg)
+png=$(mktemp /tmp/hev-360title-XXXXXX.png)
+irs=$(mktemp /tmp/hev-360title-XXXXXX.iris)
+trap "rm -f /tmp/hev-360title-*" EXIT
+
+sed -e "s,@TITLE@,$title," -e "s,@SUBTITLE@,$subtitle," \
+    < $HEV_IDEA_DIR/etc/hev-360title/data/title.mvg.in >> $mvg
+gm convert mvg:$mvg $png
+
+sed -e "s,@TITLE_TEXTURE@,$png," \
+    < $HEV_IDEA_DIR/etc/hev-360title/data/title.iris.in >> $irs
+irisfly $irs 2>&1 > /dev/null < /dev/null
+
+COPTS="+matte -type TrueColor -depth 8"
+gm convert /tmp/hev-360title-$USER-snap-raveLeft-000000.pam $COPTS ${out}Left.png
+gm convert /tmp/hev-360title-$USER-snap-raveFront-000000.pam $COPTS ${out}Front.png
+gm convert /tmp/hev-360title-$USER-snap-raveBack-000000.pam $COPTS ${out}Back.png
+gm convert /tmp/hev-360title-$USER-snap-raveRight-000000.pam $COPTS ${out}Right.png
+gm convert /tmp/hev-360title-$USER-snap-raveFloor-000000.pam $COPTS ${out}Floor.png
+gm convert /tmp/hev-360title-$USER-snap-raveCeiling-000000.pam $COPTS ${out}Ceiling.png
+
+hev-stitch -O ${out}.png -W ${width} -H ${height} ${out}Left.png \
+    ${out}Right.png ${out}Ceiling.png ${out}Floor.png ${out}Front.png \
+    ${out}Back.png
+

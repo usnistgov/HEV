@@ -1,0 +1,12 @@
+BUTTON Holodeck
+FIRST WAIT echo GROUP       holodeck                    > $IRIS_CONTROL_FIFO
+FIRST WAIT echo LOAD        holodeck0 /home/steve/banDemo_March19_2015/holodeck.savg  > $IRIS_CONTROL_FIFO
+FIRST WAIT echo LOAD        holodeck1 /home/steve/banDemo_March19_2015/edges.savg  > $IRIS_CONTROL_FIFO
+FIRST WAIT echo ADDCHILD    holodeck0 holodeck          > $IRIS_CONTROL_FIFO
+FIRST WAIT echo ADDCHILD    holodeck1 holodeck          > $IRIS_CONTROL_FIFO
+FIRST WAIT echo NOCLIP      holodeck                    > $IRIS_CONTROL_FIFO
+FIRST WAIT echo ADDCHILD    holodeck scene              > $IRIS_CONTROL_FIFO
+FIRST WAIT echo NODEMASK    holodeck ON                 > $IRIS_CONTROL_FIFO
+
+ON    EXEC echo NODEMASK    holodeck ON                > $IRIS_CONTROL_FIFO
+OFF   EXEC echo NODEMASK    holodeck OFF               > $IRIS_CONTROL_FIFO

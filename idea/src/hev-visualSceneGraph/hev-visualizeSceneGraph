@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ -z $HEVROOT ]; then
+  echo HEV environment not defined
+  exit 1
+fi
+
+NODE=$(which node 2>/dev/null)
+if [ -z $NODE ]; then
+  source $HEVROOT/external/node/profile
+fi
+
+echo "AFTER TIME 1 EXEC firefox -no-remote -P RAVE localhost:8080/index.html" > $IRIS_CONTROL_FIFO
+iris-server -d $HEV_IDEA_DIR/etc/hev-visualSceneGraph/data

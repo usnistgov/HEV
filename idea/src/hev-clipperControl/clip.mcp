@@ -1,0 +1,30 @@
+BUTTON clip
+
+ # choose a unique name for your application
+ # this gives relativeMove.iris a unique name for setting node names, shared
+ # memory names, a fifo name and a selector name. It allows relativeMove.iris
+ # to be loaded multiple times and not cause interference with other instances.
+ FIRST SET RELATIVE_MOVE clip
+
+ # set the selector
+ FIRST WAIT irisfly-select $(RELATIVE_MOVE)
+
+ # load this file to set up the relative move
+ FIRST LOAD relativeMove.iris
+ 
+ # start the clipper, use data from relativeMove
+ FIRST EXEC hev-clipperControl $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS -title '$(RELATIVE_MOVE)' --sceneNode relativeMoveSceneNode-$(RELATIVE_MOVE) --worldMatShm idea/relativeMove/worldOffsetWand-$(RELATIVE_MOVE) --noescape > $IRIS_CONTROL_FIFO
+ FIRST WAIT irisfly-addAndShowWindow '$(RELATIVE_MOVE)'
+ FIRST WAIT irisfly-select '$(RELATIVE_MOVE)'
+
+ # set the IRIS variable, show and activate the clip window and the selector
+ # when the button in MCP is turned on
+ ON SET RELATIVE_MOVE clip
+ ON WAIT irisfly-select $(RELATIVE_MOVE)
+ ON WAIT irisfly-addAndShowWindow '$(RELATIVE_MOVE)'
+
+ # unset the IRIS variable, hide and deactivate the clip window when the
+ # button in MCP is turned off
+ OFF WAIT irisfly-deselect
+ OFF WAIT irisfly-removeAndHideWindow '$(RELATIVE_MOVE)'
+ OFF SET RELATIVE_MOVE

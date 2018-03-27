@@ -1,0 +1,13 @@
+An example of hyv-utilities using a smalll data set 7x7x7
+for illustration purposes.
+
+To use, make a personal copy of this directory.
+
+Then: gunzip c3swithcl02.data/*
+
+Review and follow instructions in ./build.sh
+
+
+-Steve
+ October 2, 2008
+

@@ -1,0 +1,766 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 10. Handling Events and Selection</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch09.html" title="Chapter 9. Applying Actions"><link rel="next" href="ch11.html" title="Chapter 11. File Format"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 10. Handling Events and Selection</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch09.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch11.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5479888"></a>Chapter 10. <a name="id10433"></a>Handling Events and Selection</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Explain how Open Inventor handles input events</p>
+</li>
+<li><p>Select objects in the scene using one of Inventor's built-in selection policies</p>
+</li>
+<li><p>Implement your own selection policy by creating an event callback node</p>
+</li>
+<li><p>Highlight selected objects in the scene</p>
+</li>
+<li><p>Write selection callback functions to allow the application to perform certain operations when the selection list changes</p>
+</li>
+</ul></div><p>This chapter describes the Open Inventor event model, which provides a simple mechanism for passing events such as a key press or mouse movement to objects in the database for processing. In much the same way a window system passes events to its client windows, Inventor passes events to database objects that can handle them. Important concepts introduced in this chapter include the Inventor programming model for event handling and the use of the <a name="idch101"></a><span class="bold"><b>SoXtRenderArea</b></span>, a widget that performs rendering and event handling on the Inventor database. The <span class="bold"><b>SoHandleEventAction</b></span> is discussed in detail, as well as the concepts of <i>event callback functions</i>, the <i>selection node</i>, and <i>highlighting.</i></p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5480022"></a>Overview</h2></div></div>
+<p>When a user clicks a mouse button on a handle-box manipulator and drags the object to a new location on the screen, how does Inventor receive the user input from the mouse and translate the object accordingly? What happens if the user clicks the mouse on a space in the rendered image that doesn't contain any objects? How does Inventor keep track of several user-selected objects? These are all questions that need to be answered before you can write interactive Inventor applications.</p>
+<p>This chapter begins by providing a brief description of how window-specific events are translated into Inventor events. It introduces you to the different kinds of Inventor events and the methods associated with them. You will learn how the scene manager finds the event handler for a specific event and how different nodes handle events. </p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5480051"></a>General Programming Model for Event Handling<a name="idch102"></a></h2></div></div>
+<p>Inventor includes a built-in event model for the scene database. This model is not based on any specific window system or toolkit. When writing an Inventor program, you can select the X window programming model and use the tools provided by the window system to open windows and pass events into Inventor. Inventor provides event translation from X events into the Inventor event classes. <a href="ch10.html#id32385">Figure 10-1</a> shows how X events are passed to the render area and then translated into Inventor events that are handled by the Inventor scene manager. Since Inventor is independent of any window system, you can also choose a different window system and then write your own event translator.<a name="idch103"></a><a name="idch104"></a></p>
+<p><div class="figure"><p><a name="id5480115"></a><b>Figure 10-1. <a name="id32385"></a><a name="idch105"></a><a name="idch106"></a>Event Processing in Inventor</b></p>
+<div class="mediaobject"><img src="figures/10-1.gif"></div></div><br>
+</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5480142"></a>Using the X Window System</h3></div></div>
+<p>Inventor provides a set of Xt utilities for use with the X Window System. This set of utilities contains the following:<a name="idch107"></a><a name="idch108"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>A render-area &#8220;widget&#8221;<a name="idch109"></a></p>
+</li>
+<li><p>Main loop and initialization functions<a name="idch1010"></a><a name="idch1011"></a></p>
+</li>
+<li><p>An event translator utility<a name="idch1012"></a></p>
+</li>
+</ul></div><p>In addition to these features, the Inventor Component Library also contains a set of Xt components. These components include viewers and editors with a user interface for modifying the scene database directly.<a name="idch1013"></a><a name="idch1014"></a></p>
+<p>This chapter focuses on the aspects of Inventor that are independent of the window system:<a name="idch1015"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>Events (derived from <a name="idch1016"></a><span class="bold"><b>SoEvent</b></span>)</p>
+</li>
+<li><p>Scene manager</p>
+</li>
+<li><p>Handle event action</p>
+</li>
+<li><p>Event callback functions</p>
+</li>
+<li><p>Selection node</p>
+</li>
+</ul></div><p><a href="ch16.html#id37269">Chapter 16</a> describes use of the Inventor Component Library in more detail. If you want to use Inventor viewers and editors, you must use an Xt render area (<a name="idch1017"></a><span class="bold"><b>SoXtRenderArea</b></span>) and the X Window System model. If you are not using these viewers and editors, you can choose a different window system and then implement your own render area, event loop, and event translator.<a name="idch1018"></a><a name="idch1019"></a></p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5480375"></a>Render Area</h3></div></div>
+<p>The  render-area widget provides a convenient object for creating a window and translating window-specific events into generic Inventor events. With the X Window System model, you create an <a name="idch1020"></a><a name="idch1021"></a><span class="bold"><b>SoXtRenderArea</b></span> (see <a href="ch10.html#id32385">Figure 10-1</a>). Window-specific events are passed into this render area and then automatically translated into a generic Inventor <span class="bold"><b>SoEvent<a name="idch1022"></a></b></span>.</p>
+<p>The render area provides the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Built-in sensors that redraw the window when the scene changes or when the window resizes or is exposed<a name="idch1023"></a></p>
+</li>
+<li><p>Built-in event processing</p>
+</li>
+<li><p>Certain controls, such as the type of transparency and the amount of antialiasing<a name="idch1024"></a><a name="idch1025"></a></p>
+</li>
+</ul></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5480466"></a>Inventor Events (SoEvent)</h3></div></div>
+<p>The class tree for <span class="bold"><b>SoEvent</b></span> is shown in <a href="ch10.html#id25917">Figure 10-2</a>.</p>
+<p><div class="figure"><p><a name="id5480510"></a><b>Figure 10-2. <a name="id25917"></a><a name="idch1026"></a>Event Classes</b></p>
+<div class="mediaobject"><img src="figures/fig10.2.events.gif"></div></div><br>
+</p>
+<p>Each <a name="idch1027"></a><span class="bold"><b>SoEvent</b></span> instance contains the following information:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Type identification (<a name="idch1028"></a><span class="bold"><b>SoType</b></span>)</p>
+</li>
+<li><p>Time the event occurred</p>
+</li>
+<li><p>Cursor position when the event occurred<a name="idch1029"></a></p>
+</li>
+<li><p>State of the modifier keys (Shift, Control, Alt) when the event occurred</p>
+</li>
+</ul></div><p>Subclasses of <span class="bold"><b>SoEvent</b></span> contain additional information. For example, <a name="idch1030"></a><span class="bold"><b>SoButtonEvent</b></span> contains information about whether the button was up or down when the event occurred. <a name="idch1031"></a><span class="bold"><b>SoMouseButtonEvent</b></span> contains information about which button was pressed (button 1, 2, or 3).</p>
+<p>See the <i>Open Inventor C++ Reference Manual</i> entry on <a name="idch1032"></a><span class="bold"><b>SoEvent</b></span> for a list of methods available for querying the event. In addition, you can use the following macros:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>SO_MOUSE_PRESS_EVENT()&#8212;You pass in an <span class="bold"><b>SoEvent</b></span> and a button number, and the macro returns TRUE if that button was pressed.</p>
+</li>
+<li><p>SO_MOUSE_RELEASE_EVENT()&#8212;You pass in an <span class="bold"><b>SoEvent</b></span> and a button number, and the macro returns TRUE if that button was released.</p>
+</li>
+</ul></div><p><a name="idch1033"></a><span class="bold"><b>SoKeyboardEvent</b></span> contains information on which key was pressed (but does not indicate uppercase or lowercase).<a name="idch1034"></a></p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>Using the <span class="bold"><b>SoKeyboardEvent::getKey()</b></span> method is the same as <br>
+using XLookupKeysym() on an X key event.
+</td></tr></table><hr noshade="noshade"></div><p>An <a name="idch1035"></a><span class="bold"><b>SoLocation2Event</b></span> is generated whenever the cursor moves. This event contains the <i>absolute</i> location of the cursor in window coordinates. (Window coordinates begin with (0, 0) at the lower left corner of the window.) An <a name="idch1036"></a><span class="bold"><b>SoMotion3Event</b></span> is generated whenever a 3D input device, such as the spaceball, moves. This event contains the rotation and translation <a name="idch1037"></a><a name="idch1038"></a><i>relative to</i> the device's previous position.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>Inventor events are extensible. If you have a device that does not correspond to existing <span class="bold"><b>SoEvent</b></span> classes, you can create your own. (See <i>The Inventor Toolmaker</i>, Chapter 11.)
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5480903"></a>Scene Manager</h3></div></div>
+<p>As shown in <a href="ch10.html#id32385">Figure 10-1</a>, <a name="idch1039"></a><span class="bold"><b>SoSceneManager</b></span> is a common class used to tie window-system&#8211;dependent render areas (such as <span class="bold"><b>SoXtRenderArea</b></span>) to Inventor. The render area employs the scene manager to handle the scene graph. The scene manager handles both rendering and event processing and is independent of any particular window system. </p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5480945"></a>Inventor Event Handling</h2></div></div>
+<p>In Inventor, events are distributed to the 3D objects contained in the scene database. Manipulator and dragger objects, described in detail in <a href="ch15.html#id31593">Chapter 15</a>, are the 3D objects in the Inventor scene graph that handle events. Shape objects (such as sphere, cylinder, quad mesh), property objects (such as material and draw style), transformation objects, light objects, and camera objects ignore events. Finding the node that handles an event is discussed in <a href="ch10.html#id21726">&#8220;How Nodes Handle Events: SoHandleEventAction&#8221;</a>.</p>
+<p>With Inventor, you can choose from one of four event-handling mechanisms:<a name="idch1040"></a></p>
+<div class="orderedlist"><ol type="1"><li><p>You can use Inventor's automatic event-handling mechanism, provided by the scene manager, in which certain kinds of <i>nodes</i> handle events (see <a href="ch10.html#id21726">&#8220;How Nodes Handle Events: SoHandleEventAction&#8221;</a>). This is probably the easiest mechanism to use. (Note that you can also create your own nodes to handle events. You might create your own node if you want to use it in several different applications or </p>
+<p>give it to other programmers.  You could also create a new manipulator to handle events. See <i>The Inventor Toolmaker </i>for more information on creating new nodes and manipulators.)</p>
+</li>
+<li><p>You can use Inventor's <a name="idch1041"></a><i>event callback</i> mechanism, in which user-written callback nodes handle events (see <a href="ch10.html#id27212">&#8220;Using Event Callback Nodes&#8221;</a> ). This method handles events on a per-object basis and is fairly easy to implement. Its drawback is that, although the callback node does write to a file, it has no fields describing which path it is monitoring or which events it is interested in.</p>
+</li>
+<li><p>You can override Inventor's event-handling mechanisms entirely and pass all events directly to the application (see <a name="idch1042"></a><a href="ch10.html#id13458">&#8220;Sending Events Directly to the Application&#8221;</a>). Use this method if you prefer to work directly with X events and you do not need to handle events on a per-object basis.  This method bypasses scene traversal and handles only window events.</p>
+</li>
+<li><p>You can use Inventor's generic callback mechanism in which user-written callback nodes handle all actions (see <a name="idch1043"></a><a href="ch17.html#id19349">Chapter 17</a> for an example of an <span class="bold"><b>SoCallback</b></span> node). Use this mechanism if you need to handle events and you want to implement another action, such as rendering.  If you are only handling events, use Method 2 (the event callback node), because it does more work for you.</p>
+</li>
+</ol></div><p>Methods 1, 2, and 4 are recommended because they are window-system&#8211;<br>
+independent and therefore more flexible. Methods 1 and 2 are probably the easiest.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5481209"></a><a name="id21726"></a>How Nodes Handle Events: SoHandleEventAction<a name="idch1044"></a></h2></div></div>
+<p><i>(Advanced)</i> <br>
+Inventor provides a mechanism for automatic event handling by &#8220;smart&#8221; nodes, which can be summarized as follows:<a name="idch1045"></a><a name="idch1046"></a></p>
+<div class="orderedlist"><ol type="1"><li><p>The render area registers interest in particular events with its window system.</p>
+</li>
+<li><p>The render area receives an event from its window system. (<span class="bold"><b>SoXtRenderArea</b></span> receives an X event.)</p>
+</li>
+<li><p>The render area translates the event into an <span class="bold"><b>SoEvent</b></span>.</p>
+</li>
+<li><p>The<span class="bold"><b> SoEvent</b></span> is sent to the scene manager, which creates an instance of the <span class="bold"><b>SoHandleEventAction.</b></span></p>
+</li>
+<li><p><i>(Advanced)</i>	<br>
+The handle event action is applied to the top node of the scene graph. This action traverses the scene graph. Each node implements its own action behavior, as described in the following paragraphs. When a node is found to handle the event (typically a manipulator), the <span class="bold"><b>SoHandleEventAction</b></span> stops traversing the scene graph and the node handles the event.</p>
+</li>
+</ol></div><p>The following sections describe how different types of nodes implement <span class="bold"><b>SoHandleEventAction</b></span>.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5481363"></a>SoNode</h3></div></div>
+<p><span class="bold"><b>SoNode</b></span>, the base class for all nodes, does nothing for the handle event action.  Therefore, all properties, transforms, shapes, cameras, and lights do nothing for this action.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5481381"></a>SoGroup</h3></div></div>
+<p>When the handle event action is applied to an <a name="idch1047"></a><span class="bold"><b>SoGroup</b></span>, the group traverses its children from left to right, asking each child to handle the event. After each child, it checks to see if the event was handled. If it was, the handle event action ends its traversal of the scene graph. If the event was not handled, the <span class="bold"><b>SoGroup</b></span> asks the next child to handle the event.</p>
+<p>The <span class="bold"><b>SoGroup</b></span> uses the <a name="idch1048"></a><span class="bold"><b>isHandled()</b></span> method of <span class="bold"><b>SoHandleEventAction</b></span> to find out if an event has been handled. When a node handles an event, it calls <a name="idch1049"></a><span class="bold"><b>setHandled()</b></span> on the handle event action.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5481484"></a>SoManipulator</h3></div></div>
+<p>Manipulators are the &#8220;smart&#8221; objects in the scene graph that handle certain kinds of events (see <a name="idch1050"></a><a href="ch15.html#id31593">Chapter 15</a> for a more detailed discussion). Typically, a manipulator replaces a node in the scene graph with an editable version of that node. Using <span class="bold"><b>SoHandleBoxManip</b></span>, you can change an object's size and position by replacing the transform node in the scene graph that affects the object with the handle-box manipulator. This manipulator then scales and translates itself in response to the user moving the mouse. Using <a name="idch1051"></a><a name="idch1052"></a><span class="bold"><b>SoTrackballManip</b></span>, you can rotate an object around a center point by replacing the appropriate transform node in the scene graph with a </p>
+<p>trackball manipulator. This manipulator then changes its rotation field in response to the user moving the mouse.</p>
+<p>Manipulators, such as the trackball and handle box, require picking information in addition to the event type. These manipulators call <a name="idch1053"></a><span class="bold"><b>getPickedPoint()</b></span> on <span class="bold"><b>SoHandleEventAction</b></span> to see which object was picked. If the manipulator was picked, it handles the event. You can also create manipulators that do not require a hit on their geometry to be activated. (See <i>The Inventor Toolmaker</i>, Chapter 8, for information on creating your own manipulator.)</p>
+<div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5481600"></a>Grabbing</h4></div></div>
+<p>A node can request that all subsequent events be sent directly to it until further notice. This request is called <a name="idch1054"></a><i>grabbing</i>. For example, after receiving a mouse-button-down event, a manipulator might grab all subsequent events until a mouse-button-up event occurs. The <span class="bold"><b>setGrabber()</b></span> method is called on the handle event action, with a pointer to the manipulator (<span class="bold"><b>this</b></span>):</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+handleEA-&gt;setGrabber(this);
+</pre></td></tr></table><p>The handle event action now applies the action directly to the grabbing node instead of to the scene graph root. To stop grabbing events, the manipulator uses the <a name="idch1055"></a><span class="bold"><b>releaseGrabber()</b></span> method:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+handleEA-&gt;releaseGrabber();
+</pre></td></tr></table><p>If the node calls <span class="bold"><b>releaseGrabber()</b></span> for an event but did not handle the event, the handle event action initiates a traversal at the root and passes the event to the entire scene graph.  For example, manipulators grab after a mouse-<br>
+press event.  However, if a mouse release occurs with no mouse motion in between, the manipulator ungrabs and does not handle the event.  The event is then passed to the scene graph for processing.</p>
+<p>The <a name="idch1056"></a><span class="bold"><b>getGrabber()</b></span> method returns the node that is currently grabbing events. (See <span class="bold"><b>SoHandleEventAction</b></span> in the <i>Open Inventor C++ Reference Manual</i>.)</p>
+<div class="note"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/note.png"></td><td align="left" valign="top"><b>Note: </b>	Grabbing events in the scene graph does not perform an X server grab.
+</td></tr></table><hr noshade="noshade"></div><br></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5481763"></a><a name="id32479"></a>SoSelection</h3></div></div>
+<p>An <a name="idch1057"></a><span class="bold"><b>SoSelection</b></span> node, derived from <span class="bold"><b>SoGroup</b></span>, is typically inserted near the top of the scene graph, as shown in <a href="ch10.html#id34980">Figure 10-3</a>. When the handle event action is applied to an <span class="bold"><b>SoSelection</b></span> node, it traverses its children in the same way as <span class="bold"><b>SoGroup</b></span>. However, if none of its children handles the event, the selection node itself handles it. </p>
+<p><div class="figure"><p><a name="id5481842"></a><b>Figure 10-3. <a name="id34980"></a>Inserting an SoSelection Node</b></p>
+<div class="mediaobject"><img src="figures/10-3.gif"></div></div><br>
+</p>
+<div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5481901"></a>Picking<a name="idch1058"></a></h4></div></div>
+<p>When a left-mouse-button event occurs, the <span class="bold"><b>SoSelection</b></span> object needs to know which node was picked. It calls the <a name="idch1059"></a><span class="bold"><b>getPickedPoint()</b></span> method on the handle event action. (<span class="bold"><b>SoSelection</b></span> checks the picked object on both mouse-down and mouse-up events to make sure that both events occurred over the same object. Specify FALSE for the <span class="bold"><b>setPickMatching()</b></span> method to disable this feature, and <span class="bold"><b>SoSelection</b></span> will get the picked point only on mouse-up events.)</p>
+<p>The handle event action performs the pick the first time a node in the scene graph requests information concerning the hit objects (picking is performed only when necessary). <span class="bold"><b>SoHandleEventAction</b></span> caches this picking information so that any subsequent nodes encountered during traversal, such as manipulators and the selection object, can have access to this information quickly. Only one pick (at most) is performed during the traversal for <span class="bold"><b>SoHandleEventAction</b></span>.</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5481985"></a><a name="id31270"></a>Selection Policy<a name="idch1060"></a></h4></div></div>
+<p>After receiving the pick information, the <span class="bold"><b>SoSelection</b></span> class implements the appropriate selection policy. Currently, you can choose one of three </p>
+<p>selection policies with the <span class="bold"><b>policy</b></span> field. <span class="bold"><b>SoSelection</b></span> keeps track of the selection list for you. Selected objects can be highlighted by the render area (see <a href="ch10.html#id14210">&#8220;Highlighting Selected Objects&#8221;</a>). The default selection policy, <a name="idch1061"></a><span class="bold"><b>SoSelection::SHIFT</b></span>, is as follows:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>If the user clicks the left mouse button on a node, <span class="bold"><b>SoSelection</b></span> clears the selection list and adds the node to the list.</p>
+</li>
+<li><p>If the user clicks the left mouse button on a node while pressing the Shift key, <span class="bold"><b>SoSelection</b></span> toggles the node's selection status (that is, if the node is currently in the selection list, it is removed from the list; if the node is not currently selected, it is added to the selection list).</p>
+</li>
+<li><p>If the user clicks the left mouse button on nothing, <span class="bold"><b>SoSelection</b></span> clears the selection list.</p>
+</li>
+</ul></div><p>With the <a name="idch1062"></a><span class="bold"><b>SoSelection::SINGLE</b></span> policy, only one object can be selected at a time. This policy is as follows:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>If the user clicks the left mouse button on a node, <span class="bold"><b>SoSelection</b></span> clears the selection list and adds the node to the list.</p>
+</li>
+<li><p>If the user clicks the left mouse button on nothing, <span class="bold"><b>SoSelection</b></span> clears the selection list.</p>
+</li>
+</ul></div><p>With the <a name="idch1063"></a><span class="bold"><b>SoSelection::TOGGLE</b></span> policy, multiple objects can be selected at a time. This policy is as follows:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>If the user clicks the left mouse button on a node, <span class="bold"><b>SoSelection</b></span> toggles that node's selection status (that is, it adds the node to the list if it was not previously selected, or it removes the node from the list if it was previously selected).</p>
+</li>
+<li><p>If the user clicks the left mouse button on nothing, <span class="bold"><b>SoSelection</b></span> does nothing.</p>
+</li>
+</ul></div><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Shift selection is the same as Single selection when the Shift key is not pressed, and Toggle selection when the Shift key is pressed.
+</td></tr></table><hr noshade="noshade"></div><p>If none of these selection policies meets your needs, you can implement  your own custom selection policy by creating an event callback node and passing it a pointer to the <a name="idch1064"></a><span class="bold"><b>SoSelection</b></span> node. You can then call select(), <span class="bold"><b>deselect()</b></span>, <span class="bold"><b>toggle()</b></span>, and <span class="bold"><b>deselectAll()</b></span> on the <span class="bold"><b>SoSelection</b></span> node to implement your new selection policy. An additional alternative is to derive your own class from <span class="bold"><b>SoSelection</b></span>.</p>
+<p>See <a href="ch10.html#id34473">&#8220;Selection&#8221;</a> for more information on the selection list.</p>
+</div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5482350"></a>Finding the Event Handler<a name="idch1065"></a></h3></div></div>
+<p>The following example illustrates the process of finding the event handler for a given event. Assume you have a scene graph containing several shape objects, with a handle-box manipulator that affects the transformation of an indexed face set. The scene graph also contains <i>yourManip</i>, a manipulator you've written that handles the middle mouse-button event. This scene graph is shown in <a href="ch10.html#id25456">Figure 10-4</a>.</p>
+<p>If the user clicks the left mouse button on the handle box surrounding the face-set object on the screen, the scene manager receives the event and sends it to the <a name="idch1066"></a><span class="bold"><b>SoHandleEventAction</b></span> with the <span class="bold"><b>setEvent()</b></span> method. Here is how the nodes in <a href="ch10.html#id25456">Figure 10-4</a> respond during the handle event action traversal:</p>
+<div class="orderedlist"><ol type="1"><li><p>The <span class="bold"><b>SoSeparator</b></span> group asks each child, from left to right in the scene graph, to handle the event.</p>
+</li>
+<li><p>The <i>yourManip</i> node does not handle the event, since it handles only middle mouse-button events.</p>
+<p><div class="figure"><p><a name="id5482499"></a><b>Figure 10-4. <a name="id25456"></a>Scene Graph with Manipulators</b></p>
+<div class="mediaobject"><img src="figures/10.4.gif"></div></div><br>
+</p>
+</li>
+<li><p>The <i>carGroup</i> node traverses each of its children, from left to right, and asks them to handle the event. The third child, also a group, traverses its children from left to right.</p>
+</li>
+<li><p>The handle-box manipulator node, which handles left mouse events, needs to know if it is in the picked path. It calls <span class="bold"><b>getPickedPoint()</b></span> on the <span class="bold"><b>SoHandleEventAction</b></span>. Since it was hit, it then calls <span class="bold"><b>setHandled()</b></span> and handles the event.</p>
+</li>
+</ol></div><p>In <a href="ch10.html#id10406">Figure 10-5</a>, the scene graph contains a new instance of a face set (<i>faceSet2</i>). Suppose the user clicks on this face set instead of the handle box surrounding <i>faceSet1</i>. Since the handle-box manipulator is not contained in the pick path and has no effect on the pick path, it does not handle the event. In this case, the <span class="bold"><b>SoSelection</b></span> object handles the event.</p>
+<p><div class="figure"><p><a name="id5482598"></a><b>Figure 10-5. <a name="id10406"></a>Picking a Shape Node</b></p>
+<div class="mediaobject"><img src="figures/10.5.gif"></div></div><br>
+</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5482641"></a><a name="id27212"></a>Using Event Callback Nodes <i>(Advanced)</i><a name="idch1067"></a></h2></div></div>
+<p>If you require an event-handling behavior that is not provided by Inventor manipulators, you can create your own manipulator, or you can write your own event handler using an<i> event callback node</i>. Creating new manipulators is discussed in <i>The Inventor Toolmaker</i>, Chapter 8. Using event callback nodes is discussed in this section.</p>
+<p>An <i>event callback node</i> contains a user-written function that is invoked whenever an event of a specified type occurs, when the specified path is picked, and when the handle event action traverses the event callback node. If no path is specified (that is, NULL), the event callback function is invoked automatically every time an event of the specified type occurs and the node is traversed by the handle event action. You can write multiple event callback functions and add them to the list of callback functions maintained by the <a name="idch1068"></a><span class="bold"><b>SoEventCallback</b></span> node.</p>
+<p>To specify which <span class="bold"><b>SoEvents </b></span>the callback node is interested in and to specify the callback, use the <a name="idch1069"></a><span class="bold"><b>addEventCallback()</b></span> method:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoEventCallback *eventCB = new SoEventCallback;
+<b><tt>eventCB-&gt;</tt></b>addEventCallback(SoKeyboardEvent::getClassTypeId(),
+ <i>        myCallbackFunc</i>,<i> userData</i>);
+</pre></td></tr></table><p>To specify the path to be monitored, use the <a name="idch1070"></a><span class="bold"><b>setPath()</b></span> method.</p>
+<p>When the callback function is invoked, it is passed the user data and a pointer to the instance of <span class="bold"><b>SoEventCallback</b></span>. To remove a callback function from the event callback list, use the <a name="idch1071"></a><span class="bold"><b>removeEventCallback()</b></span> method.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>To have your callback invoked for every event type, pass <span class="bold"><b>SoEvent::getClassTypeId()</b></span> as the type.
+</td></tr></table><hr noshade="noshade"></div><p>The <a name="idch1072"></a><span class="bold"><b>SoHandleEventAction</b></span>, discussed earlier in this chapter, does its work behind the scenes when you use event callback functions. It performs a pick when necessary and caches the pick information. The event callback function itself is responsible for setting whether the event was handled (with the <a name="idch1073"></a><span class="bold"><b>setHandled()</b></span> method). If there are multiple event callback functions in an event callback node, all of them are invoked, regardless of whether one of them has handled the event.</p>
+<p>The event callback function can use any of the following methods on <a name="idch1074"></a><span class="bold"><b>SoEventCallback</b></span>, which parallel those used in standard Inventor event handling:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>getAction()<a name="idch1075"></a></b></span></span></td><td width="10"> </td><td><p>returns the handle event action applied.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>getEvent()<a name="idch1076"></a></b></span></span></td><td width="10"> </td><td><p>returns the Inventor event to handle.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch1077"></a><span class="bold"><b>getPickedPoint()</b></span></span></td><td width="10"> </td><td><p>returns the object hit. The pick is performed automatically by the <span class="bold"><b>SoHandleEventAction</b></span>.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>grabEvents()<a name="idch1078"></a></b></span></span></td><td width="10"> </td><td><p>tells the event callback node to grab events. However, the event callback functions are still invoked only for events of interest. </p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch1079"></a><span class="bold"><b>releaseEvents()</b></span></span></td><td width="10"> </td><td><p>tells the event callback node to stop grabbing events.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setHandled()<a name="idch1080"></a></b></span></span></td><td width="10"> </td><td><p>tells the action that the event was handled.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>isHandled()<a name="idch1081"></a></b></span></span></td><td width="10"> </td><td><p>returns whether the event has been handled.</p>
+
+</td></tr></table></div><p><a href="ch10.html#id38910">Example 10-1</a> shows the use of event callback functions with the <a name="idch1082"></a><span class="bold"><b>SoEventCallback</b></span> node. It creates an event callback node that is interested in key-press events. The callback function, <i>myKeyPressCB</i>, is then registered with the <a name="idch1083"></a><span class="bold"><b>addEventCallback()</b></span> method. The scene graph has four objects that can be selected by picking with the left mouse button. (Use the Shift key to extend the selection to more than one object.) When a key-press occurs, it checks to see if the up or down arrow is pressed and scales the picked object up or down accordingly.</p>
+<div class="example"><p><a name="id5483231"></a><b>Example 10-1. <a name="id38910"></a>Using an Event Callback</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// An event callback node so we can receive key press events
+SoEventCallback *myEventCB = new SoEventCallback;
+myEventCB-&gt;addEventCallback(
+         SoKeyboardEvent::getClassTypeId(), 
+         myKeyPressCB, selectionRoot);
+selectionRoot-&gt;addChild(myEventCB);
+
+...
+
+// userData is the selectionRoot from main().
+void
+myKeyPressCB(void *userData, SoEventCallback *eventCB)
+{
+   SoSelection *selection = (SoSelection *) userData;
+   const SoEvent *event = eventCB-&gt;getEvent();
+
+   // Check for the Up and Down arrow keys being pressed.
+   if (SO_KEY_PRESS_EVENT(event, UP_ARROW)) {
+      myScaleSelection(selection, 1.1);
+      eventCB-&gt;setHandled();
+   } else if (SO_KEY_PRESS_EVENT(event, DOWN_ARROW)) {
+      myScaleSelection(selection, 1.0/1.1);
+      eventCB-&gt;setHandled();
+   }
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5483270"></a><a name="id13458"></a>Sending Events Directly to the Application <a name="idch1084"></a><i>(Advanced)</i></h2></div></div>
+<p>In some cases, you may want to short-circuit Inventor event handling and send all events directly to the application. <a name="idch1085"></a><span class="bold"><b>SoXtRenderArea</b></span> contains a method that enables you to pass events to an application event handler. For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoXtRenderArea *myRenderArea;
+myRenderArea-&gt;setEventCallback(myEventCallback, userData);
+</pre></td></tr></table><p>When this method is passed a non-NULL user function, all events that come into the render area are passed to the user function.  The callback function returns a Boolean value. If this value is TRUE, the callback function handled the event and the render area does not send the event to the scene manager for handling. If this value is FALSE, the event is sent to the scene graph for handling.</p>
+<p>Note that the events sent to the event callback function are not Inventor events. For the <span class="bold"><b>SoXtRenderArea</b></span>, X events are passed.  The application is thus assured of receiving every event, even those that do not translate to Inventor events.<a name="idch1086"></a></p>
+<p><a href="ch10.html#id37851">Example 10-2</a> demonstrates using <span class="bold"><b>setEventCallback()</b></span>, which causes events to be sent directly to the application without being sent into the scene graph.<a name="idch1087"></a></p>
+<div class="example"><p><a name="id5483392"></a><b>Example 10-2. <a name="id37851"></a>Sending Events Directly to the Application</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Clicking the left mouse button and dragging will draw 
+// points in the xy plane beneath the mouse cursor.
+// Clicking middle mouse and holding causes the point set 
+// to rotate about the Y axis. 
+// Clicking right mouse clears all points drawn so far out 
+// of the point set.
+...
+// Have render area send events to us instead of the scene 
+// graph.  We pass the render area as user data.
+myRenderArea-&gt;setEventCallback(
+            myAppEventHandler, myRenderArea);
+
+SbBool
+myAppEventHandler(void *userData, XAnyEvent *anyevent)
+{
+   SoXtRenderArea *myRenderArea = (SoXtRenderArea *) userData;
+   XButtonEvent *myButtonEvent;
+   XMotionEvent *myMotionEvent;
+   SbVec3f vec;
+   SbBool handled = TRUE;
+
+   switch (anyevent-&gt;type) {
+   
+   case ButtonPress:
+      myButtonEvent = (XButtonEvent *) anyevent;
+      if (myButtonEvent-&gt;button == Button1) {
+         myProjectPoint(myRenderArea, 
+                  myButtonEvent-&gt;x, myButtonEvent-&gt;y, vec);
+         myAddPoint(myRenderArea, vec);
+      } else if (myButtonEvent-&gt;button == Button2) {
+         myTicker-&gt;schedule();  // start spinning the camera
+      } else if (myButtonEvent-&gt;button == Button3) {
+         myClearPoints(myRenderArea);  // clear the point set
+      }
+      break;
+      
+   case ButtonRelease:
+      myButtonEvent = (XButtonEvent *) anyevent;
+      if (myButtonEvent-&gt;button == Button2) {
+         myTicker-&gt;unschedule();  // stop spinning the camera
+      }
+      break;
+      
+   case MotionNotify:
+      myMotionEvent = (XMotionEvent *) anyevent;
+      if (myMotionEvent-&gt;state &amp; Button1Mask) {  
+         myProjectPoint(myRenderArea, 
+                  myMotionEvent-&gt;x, myMotionEvent-&gt;y, vec);
+         myAddPoint(myRenderArea, vec);
+      }
+      break;
+      
+   default:
+      handled = FALSE;
+      break;
+   }
+   
+   return handled;
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5483449"></a><a name="id34473"></a>Selection</h2></div></div>
+<p>The <span class="bold"><b>SoSelection</b></span> node provides several additional features that relate to the topic of user interaction. These features include managing the selection list (introduced in <a href="ch10.html#id31270">&#8220;Selection Policy&#8221;</a>), highlighting the selected objects, and the use of user-written callback functions that are invoked when the selection list changes. The following sections describe each of these features.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5483483"></a>Managing the Selection List<a name="idch1088"></a></h3></div></div>
+<p>The <span class="bold"><b>SoSelection</b></span> node keeps a list of paths to objects that have been selected. This list is called the <i>selection list</i>. Typically, the user selects an object or objects and then performs an operation on the selected objects, such as copying them, deleting them, or setting their color.</p>
+<p>Each path in the selection list begins with the selection node and ends with the selected object. Objects can be added to and removed from the selection list in one of two ways:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>By the event-processing mechanism of the selection object itself. This mechanism is based on the current selection policy.</p>
+</li>
+<li><p>By methods on <span class="bold"><b>SoSelection</b></span> that allow you to select, deselect, toggle, and clear objects from the selection list. You need to use these methods only if you want to manage the selection list directly.</p>
+</li>
+</ul></div><p>The methods on <a name="idch1089"></a><span class="bold"><b>SoSelection</b></span> that are available for direct management of the selection list are as follows:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><a name="idch1090"></a><span class="bold"><b>select</b></span>(<i>path</i>)</span></td><td width="10"> </td><td><p>adds a path to the selection list</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>deselect<a name="idch1091"></a></b></span>(<i>path</i>)</span></td><td width="10"> </td><td><p>removes a path from the selection list</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch1092"></a><span class="bold"><b>toggle</b></span>(<i>path</i>)</span></td><td width="10"> </td><td><p>toggles a path in the selection list (that is, adds the path if it is not already in the list, or removes the path if it is in the list)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch1093"></a><span class="bold"><b>deselectAll</b></span>()</span></td><td width="10"> </td><td><p>removes all paths from the selection list</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>isSelected<a name="idch1094"></a></b></span>() </span></td><td width="10"> </td><td><p>returns TRUE if the passed path is in the selection list</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch1095"></a><span class="bold"><b>getNumSelected</b></span>()</span></td><td width="10"> </td><td><p>returns the length of the selection list</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch1096"></a><span class="bold"><b>getList</b></span>()</span></td><td width="10"> </td><td><p>returns the selection list</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch1097"></a><span class="bold"><b>getPath</b></span>(<i>index</i>)</span></td><td width="10"> </td><td><p>returns one item (<i>path</i>) in the selection list</p>
+
+</td></tr></table></div><p>For convenience, you can provide these methods with a node instead of a path. If the node is instanced multiple times in the scene graph, the path to the first instance of the node is used.</p>
+<p>For example, suppose each of the objects in the scene graph has a name associated with it, such as a car part. The user selects the object by clicking on a name from a list displayed on the screen (&#8220;hubcap&#8221;). Your program then uses this name, finds the path to the selected object, and adds this path to the selection list. <a href="ch10.html#id33037">Example 10-3</a> shows using a Motif-style list to select objects in this manner. This example shows selecting and deselecting objects using a Motif-style list that contains names for four objects (cube, sphere, cone, cylinder). <a name="idch1098"></a><a name="idch1099"></a></p>
+<div class="example"><p><a name="id5483973"></a><b>Example 10-3. <a name="id33037"></a>Using a Motif-Style List to Select Objects</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+//  The scene graph has 4 objects which may be
+//  selected by picking with the left mouse button
+//  (use shift key to extend the selection to more
+//  than one object).
+// 
+//  Hitting the up arrow key will increase the size of
+//  each selected object; hitting down arrow will decrease
+//  the size of each selected object.
+//
+//  This also demonstrates selecting objects from a Motif-style
+//  list, and calling select/deselect functions on the
+//  SoSelection node to change the selection. Use the Shift
+//  key to extend the selection (i.e. pick more than one
+//  item in the list.)
+...
+enum objects {
+        CUBE,
+        SPHERE,
+        CONE,
+        CYL,
+        NUM_OBJECTS
+};
+
+static char *objectNames[] = {
+        &quot;Cube&quot;,
+        &quot;Sphere&quot;,
+        &quot;Cone&quot;,
+        &quot;Cylinder&quot;
+};
+...
+   cube-&gt;setName(objectNames[CUBE]);
+   sphere-&gt;setName(objectNames[SPHERE]);
+   cone-&gt;setName(objectNames[CONE]);
+   cyl-&gt;setName(objectNames[CYL]);
+...
+   // Create a table of object names
+   XmString *table = new XmString[NUM_OBJECTS];
+   for (i=0; i&lt;NUM_OBJECTS; i++) {
+       table[i] = XmStringCreate(objectNames[i], 
+                                 XmSTRING_DEFAULT_CHARSET);
+   }
+
+   // Create the list widget
+   n = 0;
+   XtSetArg(args[n], XmNitems, table);
+   n++;
+   XtSetArg(args[n], XmNitemCount, NUM_OBJECTS);
+   n++;
+   XtSetArg(args[n], XmNselectionPolicy, XmEXTENDED_SELECT);
+   n++;
+
+   motifList = XmCreateScrolledList(shell, &quot;funcList&quot;, args, n);
+   XtAddCallback(motifList, XmNextendedSelectionCallback,
+      (XtCallbackProc) myListPickCB, (XtPointer) selection);
+...
+   // Clear the selection node, then loop through the list
+   // and reselect
+   selection-&gt;deselectAll();
+
+   // Update the SoSelection based on what is selected in
+   // the list.  We do this by extracting the string
+   // from the selected XmString, and searching for the 
+   // object of that name.
+   for (int i = 0; i &lt; listData-&gt;selected_item_count; i++) {
+      mySearchAction.setName(
+               SoXt::decodeString(listData-&gt;selected_items[i]));
+      mySearchAction.apply(selection);
+      selection-&gt;select(mySearchAction.getPath());
+   }
+</pre></td></tr></table><p>Another example of how the selection list might be used is that the user selects several objects and wants to make all of them twice their original size. Here, you would call <span class="bold"><b>getList()</b></span> or <span class="bold"><b>getPath()</b></span> for each of the selected objects. Then you would find the appropriate <span class="bold"><b>SoTransform</b></span> node in the path for each object and modify its <span class="bold"><b>scaleFactor</b></span> field. Example 10-4 is an example of using the selection list in this way. </p>
+<div class="example"><p><a name="id5484097"></a><b>Example 10-4. Using the Selection List</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Scale each object in the selection list
+void
+myScaleSelection(SoSelection *selection, float sf)
+{
+   SoPath *selectedPath;
+   SoTransform *xform;
+   SbVec3f scaleFactor;
+   int i,j;
+
+   // Scale each object in the selection list
+
+   for (i = 0; i &lt; selection-&gt;getNumSelected(); i++) {
+      selectedPath = selection-&gt;getPath(i);
+      xform = NULL;
+
+      // Look for the shape node, starting from the tail of the 
+      // path.  Once we know the type of shape, we know which 
+      // transform to modify
+      for (j=0; j &lt; selectedPath-&gt;getLength() &amp;&amp; 
+                (xform == NULL); j++) {
+         SoNode *n = (SoNode *)selectedPath-&gt;getNodeFromTail(j);
+         if (n-&gt;isOfType(SoCube::getClassTypeId())) {
+            xform = cubeTransform;
+         } else if (n-&gt;isOfType(SoCone::getClassTypeId())) {
+            xform = coneTransform;
+         } else if (n-&gt;isOfType(SoSphere::getClassTypeId())) {
+            xform = sphereTransform;
+         } else if (n-&gt;isOfType(SoCylinder::getClassTypeId())) {
+            xform = cylTransform;
+         }
+      }
+      // Apply the scale
+      scaleFactor = xform-&gt;scaleFactor.getValue();
+      scaleFactor *= sf;
+      xform-&gt;scaleFactor.setValue(scaleFactor);
+   }
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5484140"></a><a name="id14210"></a>Highlighting Selected Objects<a name="idch10100"></a></h3></div></div>
+<p>Usually, when objects are selected, they are highlighted or treated in some other special way to distinguish them from unselected objects. With the <span class="bold"><b>SoXtRenderArea</b></span>, Inventor provides two highlight styles. You can choose to have highlighted objects drawn in wireframe with a particular color, line pattern, and line width, or you can have selected objects drawn with a wireframe bounding box surrounding each object. The type of highlight can be set on <span class="bold"><b>SoXtRenderArea</b></span>. The default highlight style is no highlight.</p>
+<p><a href="ch10.html#id27406">Figure 10-6</a> shows the class tree for the highlighting classes. Because highlighting objects are simply another way to render the scene, Inventor highlights are derived from the <span class="bold"><b>SoGLRenderAction</b></span>. To create your own custom highlights, see <i>The Inventor Toolmaker</i>, Chapter 11.</p>
+<p><div class="figure"><p><a name="id5484228"></a><b>Figure 10-6. <a name="id27406"></a><a name="idch10101"></a>Highlight Classes</b></p>
+<div class="mediaobject"><img src="figures/new10.6.gif"></div></div><br>
+</p>
+<p>To specify which highlight to use, pass a highlight to the<span class="bold"><b> setGLRenderAction()<a name="idch10102"></a></b></span> method on <span class="bold"><b>SoXtRenderArea</b></span>. The action will render highlights for selected objects in the scene. Note that whenever you create a new highlight and pass it to the render area, you are responsible for deleting the highlight after the render area is destroyed. The render area will not delete it for you.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>The redraw sensor employed by the render area does not trigger a redraw when the selection changes. Use the <a name="idch10103"></a><span class="bold"><b>redrawOnSelectionChanges()</b></span> convenience method on <span class="bold"><b>SoXtRenderArea</b></span> to ensure that a redraw occurs when the selection changes. Pass the selection node that should be monitored for changes.
+</td></tr></table><hr noshade="noshade"></div><br><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5484337"></a>How Highlighting Occurs</h4></div></div>
+<p>First, the highlight render action renders the scene graph. Then it renders the path for each object in the selection list. For <a name="idch10104"></a><span class="bold"><b>SoLineHighlightRender-<br>
+Action</b></span>, the selected objects are drawn in wireframe, with the specified color, line pattern, and line width. The following methods are available for <span class="bold"><b>SoLineHighlightRenderAction</b></span>:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>setColor<a name="idch10105"></a></b></span> (<i>color</i>)</span></td><td width="10"> </td><td><p>specifies the highlight color</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch10106"></a><span class="bold"><b>setLinePattern</b></span> (<i>pattern</i>)</span></td><td width="10"> </td><td><p><br>
+	specifies the line pattern of the highlight</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch10107"></a><span class="bold"><b>setLineWidth</b></span> (<i>width</i>)</span></td><td width="10"> </td><td><p><br>
+specifies the line width of the highlight</p>
+
+</td></tr></table></div><p>For <a name="idch10108"></a><span class="bold"><b>SoBoxHighlightRenderAction</b></span>, the selected objects are drawn with a wireframe box surrounding them, using the specified color, line pattern, and line width. Methods for <span class="bold"><b>SoBoxHighlightRenderAction</b></span> are the same as for <span class="bold"><b>SoLineHighlightRenderAction</b></span>.</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5484505"></a><span class="bold"><b><a name="idch10109"></a></b></span>Custom Highlighting<a name="idch10110"></a></h4></div></div>
+<p>If you want highlight styles other than the line and box highlight styles provided by Inventor, you can do either of the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Create a new subclass from <span class="bold"><b>SoGLRenderAction</b></span> and pass it to <br>
+<span class="bold"><b>renderArea-&gt;setGLRenderAction()</b></span></p>
+</li>
+<li><p>Specify NULL for <span class="bold"><b>addSelectionHighlight()</b></span> and then use selection callback functions, described in the following section, to add geometry, draw-style, and other required nodes to the scene graph for highlighting selected objects. A common highlighting technique is to use selection callbacks to add a manipulator to selected objects.<a name="idch10111"></a><a name="idch10112"></a></p>
+</li>
+</ul></div><p>See <i>The Inventor Toolmaker</i>, Chapter 10, for a detailed explanation of creating your own highlight.</p>
+</div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5484681"></a><a name="id30080"></a>Callback Functions for Selection Changes</h3></div></div>
+<p>The <a name="idch10113"></a><span class="bold"><b>SoSelection</b></span> class has several types of callback functions associated with it: selection callbacks, deselection callbacks, a pick filter callback, start callbacks, and finish callbacks. For example, you might write a callback function that puts a trackball around an object every time it is selected. This function would be a <a name="idch10114"></a><i>selection callback</i> function. You would probably write a second callback function to remove the trackball when the object is deselected. This function would be a <a name="idch10115"></a><i>deselection callback</i> function. The <a name="idch10116"></a><i>pick filter callback</i> function is invoked whenever an object is picked and is about to be selected or deselected.  This function allows you to truncate the selection path at a certain object type, such as a node kit (see <a href="ch10.html#id39412">Example 10-8</a>).</p>
+<p>A start callback function is called whenever the selection is about to change, and a finish callback function is called when the selection is finished changing. These functions are useful for implementing undo and redo features. When the selection is about to change, you can save the current selection in an undo buffer. To undo a change, you restore this saved information.<a name="idch10117"></a><a name="idch10118"></a><a name="idch10119"></a></p>
+<p>Another example of a user callback function for selected objects would be a function that checks to see if the material editor is on the screen when an object is selected. If it is, then the function finds the material node affecting the selected object and attaches the material editor to that node. </p>
+<p>The following methods allow you to specify what happens when an object is selected and deselected:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>addSelectionCallback</b></span>(<i>functionName</i>, <i>userData</i>)</span></td><td width="10"> </td><td><p><br>
+<span class="bold"><b>removeSelectionCallback</b></span>(<i>functionName</i>, <i>userData</i>)	<br>
+	are invoked whenever an object is selected.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>addDeselectionCallback</b></span>(<i>functionName</i>, <i>userData</i>)	<br>
+<span class="bold"><b>removeDeselectionCallback</b></span>(<i>functionName</i>, <i>userData</i>)	<br>
+</span></td><td width="10"> </td><td><p>are invoked whenever an object is deselected.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setPickFilterCallback</b></span>(<i>functionName</i>, <i>userData</i>)</span></td><td width="10"> </td><td><p><br>
+is invoked whenever an object is picked and is about to be selected or deselected.  This function allows you to truncate the selection path at a certain object type.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>addStartCallback</b></span>(<i>functionName</i>, <i>userData</i>)</span></td><td width="10"> </td><td><p><br>
+<span class="bold"><b>removeStartCallback</b></span>(<i>functionName</i>, <i>userData</i>)	<br>
+	are invoked whenever the selection list is about to<br>
+	change.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>addFinishCallback</b></span>(<i>functionName</i>, <i>userData</i>)</span></td><td width="10"> </td><td><p><br>
+<span class="bold"><b>removeFinishCallback</b></span>(<i>functionName</i>, <i>userData</i>)	<br>
+	are invoked when the selection list is finished changing.</p>
+
+</td></tr></table></div><p>These methods allow you to pass in a callback function and a pointer to user data. If you specify NULL for the pick filter callback function, whatever is picked will be selected and deselected.</p>
+<p><a href="ch10.html#id24685">Example 10-5</a> illustrates the use of selection callback functions. The scene graph in this example has a sphere and a 3D text object.  A selection node is placed at the top of the scene graph. When an object is selected, a selection callback is invoked to change the material color of that object.<a name="idch10120"></a></p>
+<div class="example"><p><a name="id5485132"></a><b>Example 10-5. <a name="id24685"></a>Using Selection Callback Functions</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;X11/Intrinsic.h&gt;
+#include &lt;Inventor/Sb.h&gt;
+#include &lt;Inventor/SoInput.h&gt;
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt;
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoPickStyle.h&gt;
+#include &lt;Inventor/nodes/SoSelection.h&gt;
+#include &lt;Inventor/nodes/SoSphere.h&gt;
+#include &lt;Inventor/nodes/SoText3.h&gt;
+#include &lt;Inventor/nodes/SoTransform.h&gt;
+
+// global data
+SoMaterial *textMaterial, *sphereMaterial;
+static float reddish[] = {1.0, 0.2, 0.2};
+static float white[] = {0.8, 0.8, 0.8};
+
+// This routine is called when an object gets selected. 
+// We determine which object was selected, and change 
+// that object's material color.
+void
+mySelectionCB(void *, SoPath *selectionPath)
+{
+   if (selectionPath-&gt;getTail()-&gt;
+            isOfType(SoText3::getClassTypeId())) { 
+      textMaterial-&gt;diffuseColor.setValue(reddish);
+   } else if (selectionPath-&gt;getTail()-&gt;
+            isOfType(SoSphere::getClassTypeId())) {
+      sphereMaterial-&gt;diffuseColor.setValue(reddish);
+   }
+}
+
+// This routine is called whenever an object gets deselected. 
+// We determine which object was deselected, and reset 
+// that object's material color.
+void
+myDeselectionCB(void *, SoPath *deselectionPath)
+{
+   if (deselectionPath-&gt;getTail()-&gt;
+            isOfType(SoText3::getClassTypeId())) {
+      textMaterial-&gt;diffuseColor.setValue(white);
+   } else if (deselectionPath-&gt;getTail()-&gt;
+            isOfType(SoSphere::getClassTypeId())) {
+      sphereMaterial-&gt;diffuseColor.setValue(white);
+   }
+}
+
+void
+main(int argc, char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) exit(1);
+
+   // Create and set up the selection node
+   SoSelection *selectionRoot = new SoSelection;
+   selectionRoot-&gt;ref();
+   selectionRoot-&gt;policy = SoSelection::SINGLE;
+   selectionRoot-&gt; addSelectionCallback(mySelectionCB);
+   selectionRoot-&gt; addDeselectionCallback(myDeselectionCB);
+
+   // Create the scene graph
+   SoSeparator *root = new SoSeparator;
+   selectionRoot-&gt;addChild(root);
+
+   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
+   root-&gt;addChild(myCamera);
+   root-&gt;addChild(new SoDirectionalLight);
+
+   // Add a sphere node
+   SoSeparator *sphereRoot = new SoSeparator;
+   SoTransform *sphereTransform = new SoTransform;
+   sphereTransform-&gt;translation.setValue(17., 17., 0.);
+   sphereTransform-&gt;scaleFactor.setValue(8., 8., 8.);
+   sphereRoot-&gt;addChild(sphereTransform);
+
+   sphereMaterial = new SoMaterial;
+   sphereMaterial-&gt;diffuseColor.setValue(.8, .8, .8);
+   sphereRoot-&gt;addChild(sphereMaterial);
+   sphereRoot-&gt;addChild(new SoSphere);
+   root-&gt;addChild(sphereRoot);
+
+   // Add a text node
+   SoSeparator *textRoot = new SoSeparator;
+   SoTransform *textTransform = new SoTransform;
+   textTransform-&gt;translation.setValue(0., -1., 0.);
+   textRoot-&gt;addChild(textTransform);
+
+   textMaterial = new SoMaterial;
+   textMaterial-&gt;diffuseColor.setValue(.8, .8, .8);
+   textRoot-&gt;addChild(textMaterial);
+   SoPickStyle *textPickStyle = new SoPickStyle;
+   textPickStyle-&gt;style.setValue(SoPickStyle::BOUNDING_BOX);
+   textRoot-&gt;addChild(textPickStyle);
+   SoText3 *myText = new SoText3;
+   myText-&gt;string = &quot;rhubarb&quot;;
+   textRoot-&gt;addChild(myText);
+   root-&gt;addChild(textRoot);
+
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+   myRenderArea-&gt;setSceneGraph(selectionRoot);
+   myRenderArea-&gt;setTitle(&quot;My Selection Callback&quot;);
+   myRenderArea-&gt;show();
+
+   // Make the camera see the whole scene
+   const SbViewportRegion myViewport = 
+            myRenderArea-&gt;getViewportRegion();
+   myCamera-&gt;viewAll(root, myViewport, 2.0);
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5485235"></a>Pick Filter Callback <i>(Advanced)</i></h4></div></div>
+<p>The pick filter callback returns a path for the new object to be selected,  deselected, or toggled:<a name="idch10121"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+typedef SoPath *SoSelectionPickCB( void *<i>userData</i>, SoDetail *<i>d</i>);
+void <a name="idch10122"></a><span class="bold"><b>setPickFilterCallback</b></span>(SoSelectionPickCB *<i>f</i>,
+	void *<i>userData</i> = NULL,
+	SbBool <i>callOnlyIfSelectable</i> = TRUE);
+</pre></td></tr></table><p>This callback can look at the picked point to see what was picked and return a path to whatever the selection policy is to be applied to. It can truncate the picked path so that it ends in a particular type of node. If an unselectable object is picked, the pick filter callback determines how that information is used. When the callback is set, the application passes in a Boolean value that specifies whether the callback is called only if the object is selectable, or is called for all objects. The pick filter callback can then return one of the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>NULL&#8212;the selection behaves as if nothing were picked (for SINGLE and SHIFT selection policies, this clears the selection list).</p>
+</li>
+<li><p>Path&#8212;this path will be selected or deselected according to the selection policy. It must pass through the selection node.</p>
+</li>
+<li><p>Path not passing through the selection node&#8212;the selection ignores this pick event and no change is made to the selection list.</p>
+</li>
+<li><p>Path containing only the selection node&#8212;applies the selection policy as though nothing were picked, but continues traversal. </p>
+</li>
+</ul></div><p>Examples 10-6 through 10-8 illustrate sample pick filter callbacks the application could use. <a name="idch10123"></a></p>
+<p><a href="ch10.html#id11882">Example 10-6</a> shows the use of the pick filter callback to implement a top-level selection policy. Rather than selecting the actual node that was picked, it always selects the topmost group beneath the selection node. <a name="idch10124"></a><a href="ch10.html#id80459">Figure 10-7</a> shows the two viewers created by this example.</p>
+<p><div class="figure"><p><a name="id5485418"></a><b>Figure 10-7. <a name="id80459"></a>Top-Level Selection Policy (left) and Default Selection Policy (right)</b></p>
+<div class="mediaobject"><img src="figures/10.7.ex.10.6.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5485439"></a><b>Example 10-6. <a name="id11882"></a>Creating a Top-Level Selection Policy</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;X11/StringDefs.h&gt;
+#include &lt;X11/Intrinsic.h&gt;
+
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/SoInput.h&gt;
+#include &lt;Inventor/SoPath.h&gt;
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+#include &lt;Inventor/actions/SoBoxHighlightRenderAction.h&gt;
+#include &lt;Inventor/misc/SoPickedPoint.h&gt;
+#include &lt;Inventor/nodes/SoSelection.h&gt;
+
+// Pick the topmost node beneath the selection node
+SoPath *
+pickFilterCB(void *, const SoPickedPoint *pick)
+{    
+   // See which child of selection got picked
+   SoPath *p = pick-&gt;getPath();
+   int i;
+   for (i = 0; i &lt; p-&gt;getLength() - 1; i++) {
+      SoNode *n = p-&gt;getNode(i);
+      if (n-&gt;isOfType(SoSelection::getClassTypeId()))
+         break;
+   }
+   // Copy 2 nodes from the path:
+   // selection and the picked child
+   return p-&gt;copy(i, 2);
+}
+
+
+void
+main(int argc, char *argv[])
+{
+   // Initialization
+   Widget mainWindow = SoXt::init(argv[0]);
+    
+   // Open the data file
+   SoInput in;   
+   char *datafile = &quot;parkbench.iv&quot;;
+   if (! in.openFile(datafile)) {
+      fprintf(stderr, &quot;Cannot open %s for reading.\n&quot;,
+              datafile);
+      return;
+   }
+
+   // Read the input file
+   SoNode *n;
+   SoSeparator *sep = new SoSeparator;
+   while ((SoDB::read(&amp;in, n) != FALSE) &amp;&amp; (n != NULL))
+      sep-&gt;addChild(n);
+   
+   // Create two selection roots - one will use the pick filter.
+   SoSelection *topLevelSel = new SoSelection;
+   topLevelSel-&gt;addChild(sep);
+   topLevelSel-&gt;setPickFilterCallback(pickFilterCB);
+
+   SoSelection *defaultSel = new SoSelection;
+   defaultSel-&gt;addChild(sep);
+
+   // Create two viewers, one to show the pick filter for top
+   // level selection, the other to show default selection.
+   SoXtExaminerViewer *viewer1 = new
+            SoXtExaminerViewer(mainWindow);
+   viewer1-&gt;setSceneGraph(topLevelSel);
+   viewer1-&gt;setGLRenderAction(new SoBoxHighlightRenderAction());
+   viewer1-&gt;redrawOnSelectionChange(topLevelSel);
+   viewer1-&gt;setTitle(&quot;Top Level Selection&quot;);
+
+   SoXtExaminerViewer *viewer2 = new SoXtExaminerViewer();
+   viewer2-&gt;setSceneGraph(defaultSel);
+   viewer2-&gt;setGLRenderAction(new SoBoxHighlightRenderAction());
+   viewer2-&gt;redrawOnSelectionChange(defaultSel);
+   viewer2-&gt;setTitle(&quot;Default Selection&quot;);
+
+   viewer1-&gt;show();
+   viewer2-&gt;show();
+   
+   SoXt::show(mainWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><p><a href="ch10.html#id42688">Example 10-7</a> shows the use of the pick filter callback to pick through manipulators. In the complete example, the scene graph contains the text  &#8220;Open Inventor.&#8221;  Clicking the left mouse on an object selects it and adds a manipulator to it.  Clicking again deselects it and removes the manipulator. The pick filter is used to deselect the object rather than select the manipulator.</p>
+<div class="example"><p><a name="id5485538"></a><b>Example 10-7. <a name="id42688"></a>Picking through Manipulators</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoPath *
+pickFilterCB(void *, const SoPickedPoint *pick)
+{
+   SoPath *filteredPath = NULL;
+    
+   // See if the picked object is a manipulator. 
+   // If so, change the path so it points to the object the 
+   // manip is attached to.
+   SoPath *p = pick-&gt;getPath();
+   SoNode *n = p-&gt;getTail();
+   if (n-&gt;isOfType(SoTransformManip::getClassTypeId())) {
+      // Manip picked! We know the manip is attached
+      // to its next sibling. Set up and return that path.
+      int manipIndex = p-&gt;getIndex(p-&gt;getLength() - 1);
+      filteredPath = p-&gt;copy(0, p-&gt;getLength() - 1);
+      filteredPath-&gt;append(manipIndex + 1); // get next sibling
+   }
+   else filteredPath = p;
+    
+   return filteredPath;
+}
+</pre></td></tr></table><p><a href="ch10.html#id39412">Example 10-8</a> illustrates using the pick filter callback to truncate the pick path at a node kit. This filter facilitates editing the attributes of objects because the node kit takes care of the part creation details. </p>
+<div class="example"><p><a name="id5485624"></a><b>Example 10-8. <a name="id39412"></a><a name="idch10125"></a><a name="idch10126"></a><i>Selecting Node Kits</i></b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Truncate the pick path so a nodekit is selected
+SoPath *
+pickFilterCB(void *, const SoPickedPoint *pick)
+{    
+   // See which child of selection got picked
+   SoPath *p = pick-&gt;getPath();
+   int i;
+   for (i = p-&gt;getLength() - 1; i &gt;= 0; i--) {
+      SoNode *n = p-&gt;getNode(i);
+      if (n-&gt;isOfType(SoShapeKit::getClassTypeId()))
+         break;
+   }
+   
+   // Copy the path down to the nodekit
+   return p-&gt;copy(0, i+1);
+}
+</pre></td></tr></table><br></div></div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch09.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch11.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 9. Applying Actions </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 11. File Format </td></tr></table></div></body></html>

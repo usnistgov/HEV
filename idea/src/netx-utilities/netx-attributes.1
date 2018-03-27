@@ -1,0 +1,93 @@
+.TH NETX-ATTRIBUTES 1 "15 June 2012"
+
+.SH NAME
+
+netx-attributes
+
+
+.SH SYNOPSIS
+
+.B netx-attributes
+.I  inputFile
+.I  nodeFile
+
+
+.SH DESCRIPTION
+
+\fBnetx-attributes\fR creates a file that contains the node name, degree of the node, and the string or url or value that the node stands for, based on what is given in the \fInodeFile\fR. \fIinputFile.attributes.txt\fR is the name of the file where the output is written (\fIinputFile\fR will vary based on the argument given). The output is sorted alphabetically by node. The graph can be weighted or not (although weight has no bearing on the output), and can contain two edges between each pair of nodes and up to one self-loop per node. The graph can be directed or not. If directed, the degree is the sum of the in-degree and out-degree.
+.br .P
+.br .P
+.PP
+\fBinputFile.attributes.txt\fR Example Output:					
+.br .P						
+1 40 http://www.website.com								
+.br
+1000 1 http://www.website.com/page1.html							
+.br
+1001 2 http://www.website.com/page45.html					
+.br
+1002 1 http://www.website.com/page100.html						
+.br
+2 3 http://www.website.com/page4								
+.br .P
+Where the first value on each line is the node, the second is the degree of the node, and the third is the url/string/value.
+.br .P
+.br .P
+.PP
+\fBinputFile\fR is a file in edge-list format that contains only text. It does not have any header information. The nodes can have any name, as long as each node has a unique name (i.e. you can't have two nodes both named "sam" in the same graph). Optionally, after listing the two nodes, a weight to be assigned to that edge. The weight does not affect the calculations of the connected components, but is included to allow for a greater breadth of input files. The weight must be a positive number. Two examples of input files are given below. The first does not have edge-weight. The second does.
+.br .P
+.PP
+Example One:
+.br .P
+node1 node2 
+.br .P
+node3 node1
+.br .P
+node4 node5
+.br .P
+.br .P
+.PP
+Where there is an edge between the two nodes on the same line.
+.br .P
+.br .P
+.PP
+Example Two:
+.br .P
+node1 node2 4
+.br .P
+node3 node1 3.14
+.br .P
+node4 node5 2
+.br .P
+.br .P
+.PP
+Where there is an edge between the first two entries(nodes) on the same line and the third number is the weight of that edge.
+.br .P
+.br .P
+.PP
+\fBnodeFile\fR is a text file where each line contains two items. The first is the node and the second is the value/string/url the node stands for. Each node that is in \fBinputFile\fR must be included in this file. An example is given below. 
+.br .P
+.PP
+Example:
+.br .P
+node1 http://www.awesome.com 
+.br .P
+node3 http://www.awesome.com/page1.html
+.br .P
+node4 http://www.awesome.com/page2.html
+.br .P
+.br .P
+.PP
+.SH AUTHOR
+
+Zachary Keller
+
+.PP
+June 2012
+
+.PP 
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/hpcvg/

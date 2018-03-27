@@ -1,0 +1,9 @@
+
+dtk-server axisPad
+
+dtk-floatScope axisPad/joystick  -geometry 623x380+300+20
+#comments -- hay cool --comments
+xterm -T joystick -n joystick -geometry 50x7+0+0 -e dtk-readFloats -qc axisPad/joystick
+xterm -T buttons -n buttons -geometry 45x6+0+123 -e dtk-readButtons -qc axisPad/buttons
+xterm -T hat -n hat -geometry 45x6+0+233 -e dtk-readChars -qc axisPad/hat
+xlogo -bg blue -fg yellow

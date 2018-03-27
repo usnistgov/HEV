@@ -1,0 +1,76 @@
+Test programs programs for sphere shaders
+=========================================
+
+General procedure
+-----------------
+    make
+    irisfly something.iris
+
+sphere-vert.iris, sphere-geom.iris, sphere-clip.iris
+----------------------------------------------------
+
+Fat points using either a vertex shader or geometry shader to set the
+point size. The vertex shader approach a square sufficient to cover
+all of the pixels in the sphere, and the fragment shader trims it to
+points actually in the sphere. This can result in some extra pixels if
+the projection of the sphere is particularly elongated along the X or
+Y screen axis. The geometry shader approach uses a rectangle just big
+enough cover all of the pixels in the sphere, which can result in less
+overdraw.
+
+The sphere-clip version uses a variation of the geometry shader that
+supports user clipping planes.
+
+
+Files:
+* sphere-vert.iris, sphere-geom.iris: load the shaders, textures, and
+  geometry files for the vertex or geometry shader versions
+* sphere-clip.iris: load the clipping controls and shaders for the clip test
+* sphere.vert.i, sphere.frag.i: shaders for the vertex shader
+  version. Makefile converts to sphere.vert and sphere.frag
+* dummy.vert, sphere.geom.i, sphere.frag.i: shaders for the geometry
+  shader version. The Makefile converts to sphere.geom and sphere.frag
+* dummy.vert, sphere-clip.geom.i, sphere-clip.frag.i: shaders for the
+  clipping version.
+* points.osg: a test set of eight points of different colors
+* textures.osg: a set of sample textures for some of the shading
+  options.
+
+sphere.vert.i or sphere.geom.i demonstrate how to use the sphereSize
+or sphereBBox functions from sphere.glsl.
+
+sphere.frag.i demonstrates many of the sphere fragment shader
+options. In typical use, you'd plug together the parts you need, but
+for simple demonstration purposes, many options are stuffed together
+in this file with #defines at the top to determine which to use. These
+are:
+
+* Color
+** COLOR_SOLID = use color from gl_Color
+** COLOR_CUBEMAP = use a cube texture defined by six faces
+** COLOR_SPHEREMAP = use a single square texture of a reflective sphere
+** COLOR_SPHERICAL = use a texture defined in spherical coordinates
+** COLOR_PROCEDURAL = shows using a simple function to choose a color
+
+* Lighting
+** LIGHT_NONE = just the color, without lighting
+** LIGHT_DIFFUSE = diffuse only
+** LIGHT_SPECULAR = OpenGL-style diffuse and specular
+** LIGHT_PHYSICAL = physically based diffuse and specular
+
+* ENVGLOW = a Fresnel reflective rim with a color ramp
+  environment. Makes the points stand out from the background more,
+  but can alias
+
+* SELECT = blinking selection mode for all spheres. To use it, you'd
+  really want to just enable this for some (selected :-) spheres
+
+
+sphere-clip.frag.i demonstrates a fragment shader supporting user
+clipping.  It should be used with sphere-clip.geom.i, which is exactly
+the same as sphere.geom.i, but without setting gl_ClipVertex. There is
+one #define at the top of sphere-clip.frag.i to control the
+appearance:
+
+* SOLID = draw sphere as if it were a solid material (rather than hollow)
+

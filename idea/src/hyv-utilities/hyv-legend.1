@@ -1,0 +1,129 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hyv-legend 1 "September 22, 2008" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hyv-legend
+- Generate and display a png image of a legend to correlate color (r,g,b) to
+a text string name
+
+.SH SYNOPSIS
+.B "hyv-legend"
+[--nodisplay] [--bg r g b] [--size n m]  [config.prgb]  legend.png
+
+.SH DESCRIPTION
+.PP
+.I
+hyv-legend
+will generate and display a png image of a legend to correlate color (r,g,b) to
+a text string name. In the specific case of
+.B hyv-utilities,
+this command creates a legend to correlate color of the displayed isosurfaces to the phase names.
+
+.PP
+Note that due to lighting characteristics, it may be necessary to
+.I tweak
+the color values used in the legend as compared to the color values specified
+for isosurfaces and three dimensional objects to make the legend visually
+match.
+
+
+.SH OPTIONS
+.IP "\fB--nodisplay n\fR"
+generate but don't display the legend. Normally, the legend is
+displayed when it is generated.
+
+.IP "\fB--bg r g b\fR"
+optionally specify a background color. Default is 1 1 1 (white).
+
+.IP "\fB--size n m\fR"
+optionally specify an image size. The default is 110 90 which is appropriate
+for four entries.
+
+.IP "\fB--mvgsave file.mvg\fR"
+will save the intermediate mvg (ImageMagick) commands
+to a specified file. Normally, this intermediate
+temporary file is deleted. Useful for manual
+modifications. See: http://www.imagemagick.org/
+
+
+.IP "\fBconfig.prgb\fR"
+is a config file of the phases to be plotted and the RGB
+color of the plotted curves. See below for the format.
+If not specified, then it is assumed legend.png has been
+previously generated and is displayed.
+
+.IP "\fBlegend.png\fR"
+is the output png file.
+
+
+.SH "CONFIG.PRGB FORMAT"
+
+.PP
+
+Contains lines of the form: \fIphase  red  green blue name\fR
+.br
+where the color are floats in the range 0.0 to 1.0.
+.br
+For example:
+
+.IP
+
+  1 1.0   0.498 0.941  C3S
+  2 1.0   0.757 0.498  Ca(OH)2
+  3 0.867 1.0   0.498  CSH
+  4 0.498 0.741 1.0    CSH(m)
+
+
+.PP
+
+The phase value is actually ignored in this command. It is included in the
+file format to be compatible with the config.prgb format used in other
+hyv-utilities commands
+
+
+
+
+.SH EXAMPLE
+
+.PP
+Using a
+.I config.prgb
+as described above, the legend will be generated and
+displayed.
+
+.IP
+ hyv-legend config.prgb   legend.png
+
+.PP
+To display a previously computed plot:
+
+.IP
+hyv-vfplot  legend.png
+
+.PP
+To generate a larger image to allow for more text
+
+.IP
+ hyv-legend --size 300 200 config.prgb   legend.png
+
+
+
+
+
+
+
+.SH SEE ALSO
+.I hyv-utilities(3),
+.I display(1),
+.I convert(1)
+.I gm(1)
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,
+.br
+NIST/ITL/MCSD/SAVG
+
+\"  LocalWords:  hyv png nodisplay bg config prgb isosurfaces fb fBconfig RGB
+\"  LocalWords:  flegend vfplot

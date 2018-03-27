@@ -1,0 +1,113 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-constrainedTriangulation 1 "March 18, 2009" "NIST/MCSD/SAVG" "SAVG"
+.SH NAME
+hev-constrainedTriangulation
+- Triangulate a set of 3D points, delimited by a boundary, in the plane.
+
+
+
+.SH SYNOPSIS
+.B hev-constrainedTriangulation
+input.savg boundary.savg output.savg
+
+
+
+.SH DESCRIPTION
+.I
+hev-constrainedTriangulation
+is a program that creates a constrained Delaunay triangulation with constrained edges for the vertical projection of a set of 3D points
+.I A.
+.br
+The points have elevation, that is they are 3D points, but the predicates used to build the triangulation are computed using only the x and y coordinates of these points.
+Each point can also have a color (rgba) which is added to the corresponding vertex in the triangulation.
+.br
+The set of constrained edges represents the boundary of 
+.I A.
+The computed triangles will be inside the domain defined by the set of constrained edges.
+.PP
+The inputs,
+.I input.savg, boundary.savg,
+and the output,
+.I output.savg,
+are .savg files (See http://math.nist.gov/mcsd/savg/software/loaders/#id634273 for more details).
+.PP
+This program uses the class
+.I Constrained_Delaunay_triangulation_2<Traits,Tds,Itag>
+of the Computational Geometry Algorithms Library (CGAL) (See http://www.cgal.org).
+
+
+
+.SH FILES
+.B input.savg
+.RS
+input file. It contains the set of 3D points we want to triangulate. The format is:
+.RS
+.B points [r g b a]
+.br
+.I x y z [r g b a]
+.br
+...
+.RE
+where:
+.RS
+.I x y z
+define a vertex position in 3 space
+.br
+.I r g b a
+define a color and transparency (values range from 0 to 1). If it is ommitted, the default color of the computed surface will be white ("
+.I 1 1 1 1
+").
+.RE
+.RE
+.B boundary.savg
+.RS
+input file. It contains the boundary line that follows the domain defined by the set of points. The vertices in the boundary have to be
+.B identical
+to the points in the input file, and two adjoining vertices in the file have to be adjoining in the reality. The format is:
+.RS
+.B lines [r g b a]
+.br
+.I x y z [r g b a]
+.br
+...
+.RE
+where:
+.RS
+.I x y z
+define a vertex position in 3 space
+.br
+.I r g b a
+define a color and transparency (values range from 0 to 1). It is not taken into account in the triangulation, because only the position is needed to define which points are on the boundary.
+.RE
+.RE
+.B outfile.savg
+.RS
+output file. It contains a set of polygons that represents a surface. 
+
+
+
+.SH EXAMPLES
+hev-constrainedTriangulation  color.savg  boundary.savg  color_surface.savg
+
+
+
+.SH SEE ALSO
+.I
+hev-triangulation(1),
+.br
+.I
+http://www.cgal.org
+
+
+
+.SH AUTHORS
+Audrey Lemoussu
+.br
+Judith Terrill (group leader)
+.br
+NIST/ITL/MCSD/SAVG
+.br
+Original implementation March 2009.
+
+

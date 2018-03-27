@@ -1,0 +1,30 @@
+#! /bin/sh
+
+# ivdef - add a "DEF name" to the stdin.
+
+
+case $# in
+1)
+	case $1 in
+	-h)
+		echo "Usage: ivdef name"
+                echo "   add a 'DEF name' to the iv file which can later"
+                echo "   be used by a 'USE name' (ivuse)"
+		exit
+		;;
+         *)
+		name=$1
+		;;
+
+	esac
+	;;
+*)
+	ivdef -h
+	exit
+	;;
+esac
+	
+echo "#Inventor V2.0 ascii"
+echo "DEF" $name "Group {"
+iv_stdin_out
+echo "}"

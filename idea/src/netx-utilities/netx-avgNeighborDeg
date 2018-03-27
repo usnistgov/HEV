@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+
+#This function finds the average degree of the neighbors of a node.
+#The graph can be weighted or not, and can be directed or not.
+#If the graph is directed, the first element on the line is the source
+#node and the second element is the receiving node. Also, two additional
+#strings must be included in the argument. The first string argument is
+#the degree type for the source node ('in' or 'out') and the second string
+#argument is for the target node ('in' or 'out'). If the graph is not directed
+#no additional string arguments are needed. The function will determine if the
+#graph is weighted or not. If the graph is weighted, the weight must be
+#the third element on the line of the input file.
+
+#Example call of the function: ./avgNeighborDeg.py input.g  out in 
+
+#Example call of the function: ./avgNeighborDeg.py input.g
+
+import networkx as nx
+import sys
+
+if(len(sys.argv)==4):
+    myFile = open(sys.argv[1], 'r')
+    directed = True
+    outNode = sys.argv[2]
+    inNode = sys.argv[3]
+
+elif(len(sys.argv)==2):
+    myFile = open(sys.argv[1], 'r')
+    directed = False
+
+else:
+    print("Error: not enough arguments given")
+    sys.exit()
+
+lines = []
+
+for edge in myFile:
+    lines.append(tuple(edge.split()))
+
+if(len(lines[0])>=3):
+    weighted = True
+    if(not directed):
+        graph = nx.MultiGraph()
+        for item in lines:
+            graph.add_weighted_edges_from([(item[0],item[1],float(item[2]))])
+    else:
+        graph = nx.MultiDiGraph()
+        for item in lines:
+            graph.add_weighted_edges_from([(item[0],item[1],float(item[2]))])
+elif(len(lines[0])==2):
+    weighted = False
+    if(not directed):
+        graph = nx.Graph()
+        graph.add_edges_from(lines)
+    else:
+        graph = nx.DiGraph()
+        graph.add_edges_from(lines)
+else:
+    print("Error with input file. Incorrect number of elements per line.")
+    sys.exit()
+if(directed and weighted):
+    r=nx.average_neighbor_degree(graph,outNode,inNode,weight='weight')
+elif(directed and not weighted):
+    r=nx.average_neighbor_degree(graph,outNode,inNode)
+elif(directed and weighted):
+    r=nx.average_neighbor_degree(graph,weight='weight')
+elif(not directed and weighted):
+    r=nx.average_neighbor_degree(graph,weight='weight')
+else:
+    r=nx.average_neighbor_degree(graph)
+
+myList = [x for x in r.items()]
+myList.sort(key=lambda x: x[0])
+
+for thing in myList:
+    print(str(thing[0])+" "+str(thing[1]))
+
+myFile.close()

@@ -1,0 +1,7 @@
+BUTTON wand
+  FIRST EXEC hev-desktopWand $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS -title "wand" --0 "left click" --0h "left on/off" --2 "right click" --2h "right on/off" --noescape
+  #FIRST EXEC hev-desktopWand $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS -title "wand" --0h "left on/off" --2h "right on/off" --noescape
+  FIRST WAIT irisfly-addAndShowWindow wand
+  ON WAIT irisfly-addAndShowWindow wand
+  OFF WAIT irisfly-removeAndHideWindow wand
+

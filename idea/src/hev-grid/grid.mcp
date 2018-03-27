@@ -1,0 +1,5 @@
+BUTTON grid
+ FIRST EXEC hev-grid > $IRIS_CONTROL_FIFO
+ FIRST WAIT irisfly-addAndShowWindow hev-grid
+ ON WAIT irisfly-addAndShowWindow hev-grid
+ OFF WAIT irisfly-removeAndHideWindow hev-grid

@@ -1,0 +1,8 @@
+#! /bin/sh
+
+if [ $# = 4 ]
+then
+ ivmaterial diffusecolor $1 $2 $3 transparency `echo $4 | awk '{print 1-$1;}'`
+else
+ echo "Usage: ivrgba r g b a"
+fi

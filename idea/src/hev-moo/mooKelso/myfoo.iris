@@ -1,0 +1,100 @@
+#
+# myfoo.iris created Month DD, 2011 (this is a prototype created by hand )
+# with command: hev-moo foo *.savg
+#
+# example usage: irisfly --ex myfoo.iris
+#
+
+###########################################################
+# Load objects and create scenegraph switch models on/off #
+###########################################################
+
+LOAD moo-foo-000.savg 000.savg
+NODEMASK moo-foo-000.savg OFF
+ADDCHILD moo-foo-000.savg world
+LOAD moo-foo-001.savg 001.savg
+NODEMASK moo-foo-001.savg OFF
+ADDCHILD moo-foo-001.savg world
+LOAD moo-foo-010.savg 010.savg
+NODEMASK moo-foo-010.savg OFF
+ADDCHILD moo-foo-010.savg world
+LOAD moo-foo-011.savg 011.savg
+NODEMASK moo-foo-011.savg OFF
+ADDCHILD moo-foo-011.savg world
+LOAD moo-foo-100.savg 100.savg
+NODEMASK moo-foo-100.savg OFF
+ADDCHILD moo-foo-100.savg world
+LOAD moo-foo-101.savg 101.savg
+NODEMASK moo-foo-101.savg OFF
+ADDCHILD moo-foo-101.savg world
+LOAD moo-foo-110.savg 110.savg
+NODEMASK moo-foo-110.savg OFF
+ADDCHILD moo-foo-110.savg world
+LOAD moo-foo-111.savg 111.savg
+NODEMASK moo-foo-111.savg OFF
+ADDCHILD moo-foo-111.savg world
+
+EXAMINE
+
+
+###################################################
+# Create the "MOO" mcp file to turn models on/off #
+###################################################
+
+EXEC echo BUTTON 000  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo ON NODEMASK moo-foo-000.savg ON  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo OFF NODEMASK moo-foo-000.savg OFF  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo BUTTON 001  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo ON NODEMASK moo-foo-001.savg ON  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo OFF NODEMASK moo-foo-001.savg OFF  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo BUTTON 010  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo ON NODEMASK moo-foo-010.savg ON  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo OFF NODEMASK moo-foo-010.savg OFF  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo BUTTON 011  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo ON NODEMASK moo-foo-011.savg ON  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo OFF NODEMASK moo-foo-011.savg OFF  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo BUTTON 100  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo ON NODEMASK moo-foo-100.savg ON  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo OFF NODEMASK moo-foo-100.savg OFF  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo BUTTON 101  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo ON NODEMASK moo-foo-101.savg ON  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo OFF NODEMASK moo-foo-101.savg OFF  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo BUTTON 110  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo ON NODEMASK moo-foo-110.savg ON  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo OFF NODEMASK moo-foo-110.savg OFF  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo BUTTON 111  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo ON NODEMASK moo-foo-111.savg ON  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo OFF NODEMASK moo-foo-111.savg OFF  >> /tmp/moo_${USER}${PPID}.mcp
+EXEC echo RESET hide show COLOR .7 .8 1  >> /tmp/moo_${USER}${PPID}.mcp
+
+
+
+
+################################################
+# Create a file to add a button to irisfly MCP #
+################################################
+
+EXEC echo Using tmp file /tmp/mooAddToMCP_${USER}${PPID}.mcp
+
+EXEC echo BUTTON MOO > /tmp/mooAddToMCP_${USER}${PPID}.mcp
+
+EXEC echo FIRST EXEC hev-masterControlPanel -title MOO --noescape  /tmp/moo_${USER}${PPID}.mcp \> \$IRIS_CONTROL_FIFO >> /tmp/mooAddToMCP_${USER}${PPID}.mcp
+
+EXEC echo ON  EXEC hev-showWindow MOO >> /tmp/mooAddToMCP_${USER}${PPID}.mcp
+EXEC echo OFF EXEC hev-hideWindow MOO >> /tmp/mooAddToMCP_${USER}${PPID}.mcp
+
+# Add to MCP
+EXEC irisfly-addToMCP /tmp/mooAddToMCP_${USER}${PPID}.mcp
+
+#########################################
+# Clean up tmp files when irisfly exits #
+#########################################
+
+AFTER CLEANUP EXEC rm /tmp/mooAddToMCP_${USER}${PPID}.mcp
+AFTER CLEANUP EXEC rm /tmp/moo_${USER}${PPID}.mcp
+
+
+
+# END
+
+

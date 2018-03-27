@@ -1,0 +1,68 @@
+.TH "hev-savgCylinder/hev-savgCone" 1 "September 21, 2010"
+
+.SH NAME
+hev-savgCylinder/hev-savgCone
+.SH SYNOPSIS
+.B hev-savgCylinder 
+[--sides int] [--arc float] [--cap string] [--help]
+.br
+or
+.br
+.B hev-savgCone
+[--sides int] [--arc float] [--cap string] [--help]
+
+.SH DESCRIPTION 
+.I hev-savgCylinder
+Creates a cylinder oriented along the Z axis with a length of 2 and radius
+of 1 to
+.I stdout.
+.P
+.I hev-savgCone
+Creates a cone similar cone. The base is radius 1.
+.P
+The body is approximated by parallel bands of triangles a
+single tristrip. The optional end caps are multi-sides polygons.
+
+.SH OPTIONS
+.TP
+.B " --sides int"
+is an integer > 3 (default = 16).
+The number of flat polygons used to approximate the cylinder.
+
+.TP
+.B "--arc float"
+is a float in range 0 to 360 (default = 360).
+
+.TP
+.B "--cap string"
+is a string: \fItop, bottom, both, none\fR (default=\fIboth\fR).
+Specify the end caps to include or not. \fItop\fR  is invalid with \fBhev-savgCone\fR
+
+.TP
+.B "--help"
+Print usage message
+
+
+.SH EXAMPLES
+.TP
+.B "hev-savgSphere > sphere.savg"
+This creates a complete white (default) sphere at the origin made up of 460
+triangles in 15 parallel bands.
+
+.TP
+.B "hev-savgSphere 4 > sphere.savg"
+This creates a complete white (default) sphere at the origin made up of 98
+triangles in 7 parallel bands.
+
+
+.SH SEE ALSO
+savg(1), hev-savgSphere(1), hev-savgCube(1), hev-savgTransformation(1)
+
+.SH AUTHORS
+.PP
+Steve Satterfield, steve@nist.gov
+.br
+High Performance Computing and Visualization Group
+.br
+NIST
+

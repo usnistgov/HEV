@@ -1,0 +1,342 @@
+#!/bin/bash
+
+########################################################################
+usage() {
+    cat<<EOF
+Usage: irisfly -v -s -W -M [ --"options" ] file ... 
+EOF
+
+}
+
+########################################################################
+# quick way to get a usage command, although it keeps you from running
+# iris-viewer with no files
+
+if [ $# -eq 0 ]
+then usage
+    exit 0
+fi
+
+########################################################################
+# if $1 has a value, append :$2, otherwise just set $1 to $2
+setOrAppend() {
+    a=`eval echo '$'$1`
+    if [ "$a" = "" ] ; then
+	eval $1="$2"
+    else
+	eval $1="\$$1":\""$2"\"
+    fi
+}
+
+########################################################################
+# if $1 has a value, prepend $2:, otherwise just set $1 to $2
+setOrPrepend() {
+    a=`eval echo '$'$1`
+    if [ "$a" = "" ] ; then
+	eval $1="$2"
+    else
+	eval $1=\""$2"\":"\$$1"
+    fi
+}
+
+########################################################################
+doit() {
+    first=`echo $* | sed -e 's/ .*$//'`
+
+    if [ "$first" = "source" -o "$first" = "." ] ; then
+	$*
+    else
+	sh -c "$*"
+    fi
+
+}
+
+########################################################################
+# "main"
+
+
+# Set default FSAA mode. List modes: nvidia-settings --query=fsaa --verbose
+if [ -z "$__GL_FSAA_MODE" ]
+then
+    hev-glinfo | grep GeForce > /dev/null
+    if [ "$?" == "0" ]
+    then
+	export __GL_FSAA_MODE=11   # GeForce series
+    else
+	export __GL_FSAA_MODE=14   # Quardo series
+    fi
+fi
+
+
+dataDir=$HEV_IDEA_DIR/etc/irisfly/data
+
+# where to find the files
+# irisfly only adds OSG loadable files, it doesn't add any of its own DSOs
+setOrAppend OSG_FILE_PATH "${dataDir}"
+export OSG_FILE_PATH
+
+setOrAppend MCP_FILE_PATH "${dataDir}"
+export MCP_FILE_PATH
+
+# set an envvar for the default interocular distance if not already
+# set. This is used by common.iris and interocular.sh
+[ -z "$IRISFLY_INTEROCULAR_DISTANCE" ] && export IRISFLY_INTEROCULAR_DISTANCE=".1"
+
+# these load the displays
+# $IRISFLY_DESKTOP_DISPLAY will override
+defaultDesktopDisplay="desktopDisplay.iris"
+# $IRISFLY_IMMERSIVE_DISPLAY will override
+defaultRaveDisplay="raveDisplay.iris"
+defaultPowerwallDisplay="powerwallDisplay.iris"
+# $IRISFLY_SIMULATOR_DISPLAY will override
+# make the rave the default simulator, since we can't automatically choose
+defaultSimulatorDisplay="simulatorDisplay.iris"
+
+# these load DSO and run programs
+# $IRISFLY_COMMON will override
+defaultCommon="common.iris"
+# $IRISFLY_DESKTOP will override
+defaultDesktop="desktop.iris"
+# $IRISFLY_IMMERSIVE will override
+defaultImmersive="immersive.iris"
+# $IRISFLY_SIMULATOR will override
+defaultSimulator="simulator.iris"
+# $IRISFLY_WANDMOUSE will override
+defaultWandMouse="wandMouse.iris"
+# $IRISFLY_MONO will override
+defaultMono="mono.iris"
+
+# these set up the MCP menus
+# $IRISFLY_COMMON_MCP will override
+defaultCommonMCP="common.mcp"
+# $IRISFLY_DESKTOP_MCP will override
+defaultDesktopMCP="desktop.mcp"
+# $IRISFLY_IMMERSIVE_MCP will override
+defaultImmersiveMCP="immersive.mcp"
+# $IRISFLY_SIMULATOR_MCP will override
+defaultSimulatorMCP="simulator.mcp"
+
+# $env, and $IRISFLY_ENV will be set to desktop, simulator or immersive
+
+# parse arguments
+while [ -n "$*" ]
+do
+    if [ "$1" == "-v" ]
+    then export DTK_SPEW_LEVEL=info
+    elif [ "$1" == "-s" ]
+    then env=simulator
+    elif [ "$1" == "-W" ]
+    then noWandMouse=1
+    elif [ "$1" == "-M" ]
+    then mono=1
+    elif [ "$1" == "-l" ]
+    then log=1
+    elif [ "$1" == "-t" ]
+    then trackerMonitor=1
+    elif [ "$1" != "${1#--}" ]
+    then viewerStuff="$*"
+	break
+    elif [ "$1" != "${1#-}" ]
+    then usage
+	exit 0 
+    else
+	viewerStuff="$*"
+	break
+    fi
+    shift
+done
+
+if ( hev-testImmersive && [ "$env" == "simulator" ] )
+then echo dtk-msgWarning irisfly: running the simulator on an immersive console. Tracked devices will be used.
+fi
+
+# set env if not specified
+if [ -z "$env" ]
+then if ( hev-testImmersive )
+     then env=immersive
+     else env=desktop
+     fi
+fi
+
+dtk-msgInfo irisfly: $env environment
+
+
+
+# if we're immersive see what kind
+if [ "$env" == "immersive" ]
+then immersive=`hev-identifyImmersive` # set to rave, powerwall or desktop
+    dtk-msgInfo irisfly: immerive system is $immersive
+    # if set IRIS_DISPLAY_NAME so the desktopDisplay will come out in the right place
+    export IRIS_DISPLAY_NAME=$DISPLAY
+    if [ "$immersive" == "desktop" ]
+    then dtk-msgError irisfly: immersive returned \"desktop\"- email what you did to get this mesage to kelso@nist.gov
+    fi
+fi
+
+if [ "$env" == "desktop" ] 
+then export IRISFLY_DESKTOP_ENV=1
+elif [ "$env" == "simulator" ]
+then export IRISFLY_SIMULATOR_ENV=1
+elif [ "$env" == "immersive" ]
+then export IRISFLY_IMMERSIVE_ENV=$immersive
+else dtk-msgError irisfly: unknown value of \$env- email what you did to get this mesage to kelso@nist.gov
+fi
+export IRISFLY_ENV=$env
+
+# $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS will be set to this if not already set
+if [ "$env" == "immersive" ]
+then if [ -z "$IRISFLY_MCP_X11_IMMERSIVE_OPTIONS" ]
+     then IRISFLY_MCP_X11_IMMERSIVE_OPTIONS='-geometry +512+0'
+	  export IRISFLY_MCP_X11_IMMERSIVE_OPTIONS
+     fi
+# $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS will be ignored if not immersive
+else unset IRISFLY_MCP_X11_IMMERSIVE_OPTIONS
+fi
+
+
+# load iris files
+
+# load display files
+# always load a desktop
+irisfly_files=${IRISFLY_DESKTOP_DISPLAY:-$defaultDesktopDisplay}
+if [ "$env" == "simulator" ]
+then irisfly_files="$irisfly_files ${IRISFLY_SIMULATOR_DISPLAY:-$defaultSimulatorDisplay}"
+elif [ "$env" == "immersive" ]
+then if [ -n "$IRISFLY_IMMERSIVE_DISPLAY" ]
+     then irisfly_files="$irisfly_files $IRISFLY_IMMERSIVE_DISPLAY"
+     else if [ "$immersive" = "rave" ]
+	  then irisfly_files="$irisfly_files $defaultRaveDisplay"
+	  elif [ "$immersive" = "powerwall" ]
+	  then irisfly_files="$irisfly_files $defaultPowerwallDisplay"
+	  else dtk-msgError irisfly: no default immersive environment on a desktop- email what you did to get this mesage to kelso@nist.gov
+	  fi
+     fi
+fi
+
+irisfly_files="$irisfly_files ${IRISFLY_COMMON:-$defaultCommon}"
+irisfly_files="$irisfly_files ${IRISFLY_DESKTOP:-$defaultDesktop}"
+if [ "$env" == "simulator" ]
+then irisfly_files="$irisfly_files ${IRISFLY_SIMULATOR:-$defaultSimulator}"
+elif [ "$env" == "immersive" ]
+then irisfly_files="$irisfly_files ${IRISFLY_IMMERSIVE:-$defaultImmersive}"
+fi
+
+# for tracker monitoring
+if [ -n "$trackerMonitor" ]
+then irisfly_files="$irisfly_files trackerMonitor.iris"
+fi
+
+# this is the window that wandMouse uses, so put your GUIs on this screen
+export IRISFLY_WANDMOUSE_WINDOW="raveFrontWindow"
+export IRISFLY_WANDMOUSE_DISPLAY=`iris-DISPLAYfromWindow $IRISFLY_WANDMOUSE_WINDOW`
+
+# if immersive turn on wandMouse unless told otherwise
+if [ "$env" == "immersive" -a -z "$noWandMouse" ]
+then 
+    irisfly_files="$irisfly_files ${IRISFLY_WANDMOUSE:-$defaultWandMouse}"
+fi
+
+# this is the window where we save the pointer
+export IRIS_SAVE_RESTORE_POINTER="$DISPLAY"
+
+# make windows mono if requested
+if [ -n "$mono" ]
+then irisfly_files="$irisfly_files ${IRISFLY_MONO:-$defaultMono}"
+fi
+
+dtk-msgInfo irisfly: irisfly files: $irisfly_files
+
+# load MCP files
+IRISFLY_MCP_FILES=${IRISFLY_COMMON_MCP:-$defaultCommonMCP}
+
+[ -n "$IRISFLY_LAST_MCP" ] && IRISFLY_MCP_FILES="$IRISFLY_MCP_FILES $IRISFLY_LAST_MCP"
+
+# this ennvar is either the name of the mcp file that allows interocular to
+# be changed or is /dev/null so no button gets created. Yeajh, it's a hack
+if [ "$env" == "immersive" -a -z "$mono" ]
+then export IRISFLY_INTEROCULAR_MCP_FILE=interocular.mcp
+else export IRISFLY_INTEROCULAR_MCP_FILE=/dev/null
+fi
+
+if [ -z "$IRISFLY_DISPLAY_MCP" ]
+then if [ "$env" == "desktop" ] 
+    then export IRISFLY_DISPLAY_MCP=${IRISFLY_DESKTOP_MCP:-$defaultDesktopMCP}
+    elif [ "$env" == "simulator" ]
+    then export IRISFLY_DISPLAY_MCP=${IRISFLY_SIMULATOR_MCP:-$defaultSimulatorMCP}
+    elif [ "$env" == "immersive" ]
+    then export IRISFLY_DISPLAY_MCP=${IRISFLY_IMMERSIVE_MCP:-$defaultImmersiveMCP}
+    else dtk-msgError irisfly: unknown value of \$env- email what you did to get this mesage to kelso@nist.gov
+    fi
+fi
+
+# turn on logging button if requested
+[ -n "$log" ] && IRISFLY_MCP_FILES="$IRISFLY_MCP_FILES log.mcp"
+
+# and tell MCP what they are
+export IRISFLY_MCP_FILES
+dtk-msgInfo irisfly: IRISFLY_MCP_FILES = $IRISFLY_MCP_FILES
+
+# this is the window MCP uses
+if [ "$env" == "immersive" ]
+then export IRISFLY_MCP_DISPLAY=$IRISFLY_WANDMOUSE_DISPLAY
+else export IRISFLY_MCP_DISPLAY=$DISPLAY
+fi
+
+# this is the fifo that mcp will read from
+if [ -z "$IRISFLY_MCP_CONTROL_FIFO" ]
+then IRISFLY_MCP_CONTROL_FIFO=/tmp/irisfly-mcp-fifo-${USER}
+fi
+
+export IRISFLY_MCP_CONTROL_FIFO
+
+# always start with a minty fresh fifo
+if [ -e $IRISFLY_MCP_CONTROL_FIFO ]
+then if [ ! -p $IRISFLY_MCP_CONTROL_FIFO ]
+     then dtk-msgError irisfly: $IRISFLY_MCP_CONTROL_FIFO fifo exists but is not a fifo. exiting
+          exit 0
+     fi
+     rm $IRISFLY_MCP_CONTROL_FIFO
+     if [ -e $IRISFLY_MCP_CONTROL_FIFO ]
+     then dtk-msgError irisfly: $IRISFLY_MCP_CONTROL_FIFO fifo exists and can\'t be removed. exiting
+          exit 0
+     fi
+fi
+
+# this allows commands to be fed to the pipe befre MCP is running
+dtk-msgInfo irisfly: creating iris control fifo $IRISFLY_MCP_CONTROL_FIFO 
+mkfifo $IRISFLY_MCP_CONTROL_FIFO
+
+# this is the file that contains a list of windows to hide/show
+if [ -z "$IRISFLY_HIDE_SHOW_WINDOWS" ]
+then IRISFLY_HIDE_SHOW_WINDOWS=/tmp/irisfly-hideShowWindows-${USER}
+fi
+export IRISFLY_HIDE_SHOW_WINDOWS
+
+# create and/or zero out the window list file
+cat /dev/null> $IRISFLY_HIDE_SHOW_WINDOWS
+
+# do this when you exit
+if [ -n "$IRISFLY_EXIT_COMMANDS" ]
+then trap "doit $IRISFLY_EXIT_COMMANDS" EXIT
+fi
+
+# do pre iris-viewer commands
+if [ -n "$IRISFLY_PRE_VIEWER_COMMANDS" ]
+then doit $IRISFLY_PRE_VIEWER_COMMANDS
+fi
+
+# to find our private bin
+export PATH="$HEV_IDEA_DIR/etc/irisfly/bin:$PATH"
+
+# display is set so new GUIs will appear on the correct screen
+command="env DISPLAY=$IRISFLY_MCP_DISPLAY iris-viewer $irisfly_files $viewerStuff"
+dtk-msgInfo irisfly: $command
+$command
+
+# do post iris-viewer commands
+if [ -n "$IRISFLY_POST_VIEWER_COMMANDS" ]
+then doit $IRISFLY_POST_VIEWER_COMMANDS
+fi
+
+# get rid of the window list file
+rm -f $IRISFLY_HIDE_SHOW_WINDOWS

@@ -1,0 +1,75 @@
+.TH NETX-COULDBEISOMORPHIC 1 "23 July 2012"
+
+.SH NAME
+
+netx-couldBeIsomorphic
+
+
+.SH SYNOPSIS
+
+.B netx-couldBeIsomorphic
+.I  inputFile1
+.I  inputFile2
+
+.SH GRAPH LIMITATIONS
+\fBDirected:\fR No
+.br
+\fBUndirected:\fR Yes
+.br
+\fBSelf-Loops:\fR No
+.br
+\fBParallel Edges:\fR No
+.br
+\fBOther:\fR None
+.br .br
+.PP
+.SH DESCRIPTION
+
+\fBnetx-couldBeIsomorphic\fR prints 'True' if the two graphs could be isomorphic and 'False' if they are not isomorphic. Note: 'True' does not guarantee the graphs are isomorphic. This function uses a software package called NetworkX that must be installed for the function to work.
+.br .P
+.br .P
+.PP
+\fBinputFile1\fR and \fBinputFile2\fR are a file in edge-list format that contains only text. It does not have any header information. The nodes can have any name, as long as each node has a unique name (i.e. you can't have two nodes both named "sam" in the same graph). Optionally, after listing the two nodes, various other edge attributes can be assigned. In this function, the first value is assumed to be the weight of the edge. No other attribute is used in this function. Below are two example input files. The first has no attributes, the second does.
+.br .P
+.PP
+Example One:
+.br .P
+node1 node2 
+.br .P
+node3 node1
+.br .P
+node4 node5
+.br .P
+.br .P
+.PP
+Where there is an edge between the two nodes on the same line.
+.br .P
+.br .P
+.PP
+Example Two:
+.br .P
+node1 node2 4
+.br .P
+node3 node1 3.14
+.br .P
+node4 node5 2
+.br .P
+.br .P
+.PP
+Where there is an edge between the first two entries (nodes) on the same line and the third number is the weight of that edge.
+.br .P
+.br .P
+.PP
+.SH AUTHOR
+
+Zachary Keller
+
+.PP
+July 2012
+
+.PP 
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/hpcvg/

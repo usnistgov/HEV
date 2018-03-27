@@ -1,0 +1,48 @@
+.TH SAVG\-COLORMODE 1 "26 May 2009"
+.SH NAME
+savg-colormode \- SAVG ToolBox: colormode
+.SH SYNOPSIS
+.B savg-colormode ambient/diffuse/emission/specular/ambient_and_diffuse/off/default
+.SH DESCRIPTION
+.I savg-colormode
+specifies the color mode for \fIsavg\fP files (\fISAVG ToolBox\fP).  It 
+accepts input from
+.I stdin
+and outputs to
+.I stdout.
+If invalid arguments or no arguments are given, 
+then 
+.I savg-colormode
+prints usage information and terminates.
+.SH OPTIONS
+.TP
+.B \   savg-colormode ambient/diffuse/emission/specular/ambient_and_diffuse/off/default
+.SH EXAMPLES
+.TP
+.B savg-colormode diffuse < in.savg > out.savg
+Reads from 
+.I in.savg
+and sets the colormode to diffuse.  Then outputs to 
+.I out.savg.
+.SH BUGS
+(none)
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+March 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

@@ -1,0 +1,139 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH qvd-rheometerAppBuilder 1 "June 2015" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+qvd-rheometerAppBuilder
+- Rheometer Application Builder
+
+.SH SYNOPSIS
+.B "qvd-rheometerAppBuilder"
+[--verbose] [--noclean] [--noexamine] [--radius float] [--listRadius radiusList] [--gpuSpheres] [--vane 4 | 6] [--columns N] [--on] [--noPID]  file1.qvisdat [file2.qvisdat ...]
+
+.SH DESCRIPTION
+.PP
+.I
+qvd-rheometerAppBuilder
+builds an application for Vane Rheometer Visualization based on
+one or more specified
+.B .qvisdat
+files.
+
+.PP
+The application will be self contained in an output sub-directory
+named \fIvaneRheometerVis\fR. 
+The sub-directory will be created, so it must not exist prior to
+executing this command.
+
+.PP
+A hard coded data size of 50x50x100
+
+
+.SH OPTIONS
+.TP
+.B "--radius float"
+Optional parameter to specify the radius of the spheres.
+The default radius is 1.398
+
+.TP
+.B " --listRadius radiusList"
+When specified, provides the name of a file containing radius values
+for the generated gpuSpheres. Currently, it only works with gpu
+spheres. The file is a single column of numbers corresponding to the
+inclusions in the qvisdat file. This option takes precedence over
+\fB--radius\fR.
+
+
+.TP
+.B "--noclean"
+Don't remove intermediate files. Normally, this should
+not be used.
+
+.TP
+.B "--noexamine"
+Don't use \fBirisfly --examine\fR in the application. Default does use
+\fB--examine\fR.
+
+.TP
+.B "--gpuSpheres"
+renders spheres with the GPU instead of polygon based spheres
+
+.TP
+.B "--vane 4 | 6"
+specifies a four or six blade rheometer vane will be used. The default
+when this option not used is a four blade rheometer.
+.IP
+If a file named \fIvane.savg\fR exists in the current directory, then
+it will be used instead of the built-in vane models. This feature
+allows custom vane models to be used.
+
+.TP
+.B "--columns n"
+specified the number of columns n that will be passed to the underlying \fBhev-moo\fR.
+The default is 2.
+
+.TP
+.B "--on"
+if specified, then "--on" will be passed to the underlying \fBhev-moo\fR.
+
+.TP
+.B "--noPID"
+Normally, the current PID is appended to the osgb filenames to keep
+their names unique for the generated app. The option turns that off.
+Most users don't need this option.
+
+
+.SH QVISDAT
+
+.PP
+The format of the input \fB.qvisdat\fR is normally described in header
+comments of the \fB.qvisdat\fR file.
+
+.PP
+This command is currently limited to spheres for the inclusions. 
+Spheres are created to represent the inclusions. At some point general
+shapes should be allowed. 
+
+.PP
+
+The polygon based spheres are created using "hev-savgSphere 4", unless
+the \fI--gpuSpheres\fR option is specified.
+The val of 4 can be changed an environment variable.
+Example: export SPHERE_N=5
+
+   3 ugly sphere, but faster
+   4 less accurate sphere give better speed
+   5 more accurate sphere look better, slower to build, load and run
+   6 even more accurate, but not significantly better looking than 5
+
+Input \fB.qvisdat\fR file uses a \fIshape number\fR to specify a
+sphere inclusion. Each sphere will have a different color.
+
+Four blade vane shape numbers:
+
+	\fB000, 001, 010, 011, 100, 101, 110, 111\fR.
+
+Six blade vane shape numbers:
+
+	\fB201, 202, 203, 204, 205, 206,
+.br
+	301, 302, 303, 304, 305, 306\fR.
+
+To specify the vane shape, use the number: \fB999\fR.
+
+Its not required, but suggested to use 20x numbers for the bottom half and
+30x numbers for the to half. The 30x series are bright colors: blue,
+green, cyan, red, magenta, yellow. The 20x series are muted versions.
+
+
+
+
+.SH SEE ALSO
+.I
+qvd-utilities(1), irisfly(1), hev-moo(1)
+
+
+.SH AUTHOR
+Steven G. Satterfield,
+steve@nist.gov,
+NIST/ITL/MCSD/SAVG
+

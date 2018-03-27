@@ -1,0 +1,92 @@
+.TH hev-vtkGridResample
+.SH NAME
+hev-vtkGridResample - resample grid at specified points
+
+.SH SYNOPSIS
+.B hev-vtkGridResample [ options ] inFName outFName
+
+.SH DESCRIPTION
+.B hev-vtkGridResample
+Resamples a VTK grid. The input files must be in VTK format.
+
+.PP
+
+.SH OPTIONS
+
+.B NOTE:
+One and only one of the two options --magFactors and --resampGrid
+must be specified.
+
+.TP
+.B --magFactors or --m m1 m2 m3
+These factors are applied to the point spacings of the input grid
+to generate the point spacings of the resampled grid in each
+dimension.
+
+.TP
+.B --resampGrid or --r gridFN
+Name of grid file that specifies points at which to resample grid.
+Output grid will have same structure as the grid specified in
+this option.
+When specified, linear interpolation is used.
+
+.TP
+.B --interp or --i MODE
+Type of interpolation for resampling based on --magFactors.
+Must be one of these:
+                            linear
+                            cubic
+                            neighbour
+                            Default is "linear"
+
+Note: Some interpolations might not be possible for some grid strcutures.
+
+
+.SH PARAMETERS
+.TP
+.B inFName
+Location/filename of input grid file.
+This file has to be in vtk format.
+
+.TP
+.B outFName
+Location/filename of resampled output grid file. 
+This file is written in vtk format.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+  hev-vtkGridResample --magFactors 0.5 0.5 0.5 gridA.3D.vtk gridA.resamp.vtk
+
+Resample the grid gridA.3D.vtk using grid spacing that is half
+that of the input file in each dimension.
+
+  hev-vtkGridResample --resampGrid stdGrid.vtk gridA.3D.vtk gridA.std.vtk
+
+Resamples the grid in file gridA.3D.vtk to a grid with points
+located at the same locations as the points in stdGrid.vtk.
+
+
+.SH NOTES
+When the --resampGrid (or --r) option is specified, we have observed
+anomalous results in a few cases.  In particular we have observed
+incorrect resampling when a "structured points" grid is specified as
+the --resampGrid option and a "rectilinear grid" is the input grid.
+This appears to be a bug in the VTK class vtkProbeFilter.
+
+
+.SH SEE ALSO
+
+hev-vtkGridSubset, vtkUtilities
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+June 14th 2012

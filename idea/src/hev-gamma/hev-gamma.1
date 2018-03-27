@@ -1,0 +1,45 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-gamma 1 "May 2011" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+hev-gamma - convenience utility to run xgamma on 3 RAVE screens
+
+.SH SYNOPSIS
+
+\fBhev-gamma [value]\fR 
+
+.SH DESCRIPTION
+
+\fBhev-gamma\fR is a convenience utility to run \fBxgamma(1)\fR on 3 RAVE
+screens.  Gamma of 1.0 is the typical default value.  Higher gamma values such
+as 1.4 can often boost the overall screen brightness of the RAVE to make the
+RAVE appear a bit more like LCD screens.
+
+.PP
+Note that menus may become washed out as the gamma value is increased.
+
+.PP
+When no \fIvalue\fR is specified, the current gamma value is printed.
+
+.SH DESKTOP
+When run on a desktop it assumes screens 0 and 1 exist.  In
+general, you probably don't need or want to change the gamma value on screens
+other than the RAVE. If you do, it may be best to run the \fBxgamma\fR
+directly.
+
+.SH POWERWALL
+When run on the Boulder PowerWall, it applies to PowerWall, screen 1.  Due to
+differences in screen material, RAVE gamma values are probably not approrpiate
+for the PowerWall.
+
+.SH SEE ALSO
+.PP
+xgamma(1)
+
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov

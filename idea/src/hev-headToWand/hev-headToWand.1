@@ -1,0 +1,54 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-headToWand 1 "May 2013" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-headToWand
+- Stuff the wand position into the head shared memory
+
+
+.SH SYNOPSIS
+.B hev-headToWand
+[--help]
+
+.SH DESCRIPTION
+.PP
+.I hev-headToWand
+is a convenience command to read the current wand position and stuff
+the values into the head shared memory.
+
+.PP
+Typically used when using a tripod mounted video camera to record
+video of a RAVE user session. Place the wand at the camera and click
+the left wand button. Click the right button to exit. This usage only
+makes sense when the head tracking has been disabled.
+
+
+.SH  OPTIONS
+.PP
+.TP
+.B --help
+print a help message.
+
+
+.SH EXAMPLE
+.PP
+Example command sequence:
+
+        hev-tracker haltClient
+
+        hev-tracker startClientWandOnly
+
+        hev-headToWand
+
+
+.PP
+To restore normal head tracking:
+
+        hev-tracker startClient
+
+
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov,  NIST/ITL/ACMD/HPCVG
+
+

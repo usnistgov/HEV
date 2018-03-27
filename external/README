@@ -1,0 +1,29 @@
+June 22, 2012 - Steve Satterfield
+
+The directory $HEVROOT/external is for the installation of software
+packages from sources outside of NIST, typically needed to support the
+core HEV and/or HEV applications.
+
+Each software package should be a self contained top level directory.
+
+Each software package should use application-specific bin, included,
+lib, man directories within their respective directories. There should
+NOT be common bin, lib, man directories.
+
+Each software package should have its own profile which is sourced by
+the user to set PATH and other specific environment variables.
+
+Each software package should be installed in both
+/usr/local/HEV/external and /usr/local/HEV-beta/external.  At the
+choice of the installer, the beta installation can be done with a
+symlink.
+
+Each software package must be installed as group 'diverse' and group
+writable.
+
+Each software package should have a file named "nistInstallationNotes"
+with installation details including the steps use to do the installation.
+
+For additional information on the HEV tree see:
+
+   /usr/local/HEV/doc/HEV_IRIS_Tree.txt

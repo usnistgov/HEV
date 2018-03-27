@@ -1,0 +1,7 @@
+#! /bin/bash
+
+rm -fr vaneRheometerVis
+
+./run $* vane.qvisdat octant*.qvisdat
+
+

@@ -1,0 +1,5 @@
+# /tmp/fooFifo is the fifo from which to read ping responses
+exec ./queryPing /tmp/fooFifo > $IRIS_CONTROL_FIFO
+after time 1 exec echo QUERY /tmp/fooFifo PING DEF> $IRIS_CONTROL_FIFO
+after time 2 exec echo QUERY /tmp/fooFifo PING GHI> $IRIS_CONTROL_FIFO
+

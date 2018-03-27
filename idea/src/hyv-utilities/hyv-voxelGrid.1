@@ -1,0 +1,54 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hyv-voxelGrid 1 "October 17, 2008" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hyv-voxelGrid
+- output a wire frame 3D grid of the specified volume.
+
+.SH SYNOPSIS
+.B "hyv-voxelGrid"
+i j k [r g b]
+
+.SH DESCRIPTION
+.PP
+.I
+hyv-voxelGrid 
+will generate a \fB.savg\fR file that is a wire frame 3D grid of the
+specified volume.
+
+
+.SH OPTIONS
+.IP "\fBi j k\fR"
+is the dimensions of the3D volume, e.g. 25 25 25
+
+.IP "\fBr g b\fR"
+is the color of the grid lines. If not specified, the default
+value of .5 .5 .5 is used.
+These values are specified in the range 0.0 to 1.0.
+
+
+
+
+.SH EXAMPLE
+
+.PP
+
+.IP
+ ./hyv-voxelGrid -d 4 4 4 .2 .4 .5 > sample.savg
+
+
+
+
+.SH SEE ALSO
+.I
+hyv-utilities(3)
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,
+.br
+NIST/ITL/MCSD/SAVG
+
+

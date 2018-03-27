@@ -1,0 +1,67 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-animator 1 "March, 2011" "NIST/MCSD" "MCSD HEV"
+.SH NAME
+hev-animator
+- a control panel to animate frame numbers and optionally the display of child nodes of sequence and group
+nodes
+
+.SH SYNOPSIS
+.B "hev-animator"
+.I [ --first n ] [ --last n ] [ --time t ] [ --descend ] [ --noescape ] shm [ file ... ]
+
+.SH PARAMETERS
+
+.IP "--first \fIn\fR"
+specifies the first frame number to use.  If omitted, 0 is used.
+
+.IP "--last \fIn\fR"
+specifies the last frame number to use.  If omitted, it defaults to the
+number of child nodes minus 1.  If both --last and files are supplied, last
+is checked to be sure it is less than the number of child nodes.  If no
+files are supplied, --last must be given.
+
+.IP "--time \fIt\fR"
+specifies the amount of time to display each frame, in seconds.  This number
+is the inverse of he frame rate. If omitted it defaults to .1, or 10 frames
+per second.
+
+.IP "--descend"
+if supplied, specifies that if the top node of the file has only a single
+child node, then nodes should be descended until a child node is reached
+with more than one child node.  This is useful if the file has a top-level
+transformation applied to it via iris-DCS.  The option is ignored if
+no files are specified.
+
+.IP --noescape
+if supplied, specifies that the GUI can't be killed by pressing the window
+manager's close button, or by pressing escape in he GUI window.
+
+.IP shm
+is the name of a dtk shared memory file which will store the integer frame
+number of the child being displayed.
+
+.IP file
+is the name of one or more osg readable files.  Each file should return a node with one
+or more child nodes.  All of the returned nodes need to have the same number of child
+nodes.  If the returned node is a group node, but not a sequence node, all
+child nodes need to have unique non-blank node names.
+
+.SH DESCRIPTION
+.PP
+.I hev-animator
+displays a GUI similar to a digital video controller which allows the
+selective display of frames in an animation by writing a frame number to dtk
+shared memory.  If files were loaded, \fIhev-animator\fR interacts with a
+running iris-viewer process by sending IRIS control commands to standard
+output, causing the selective display of child nodes.
+
+.SH EXAMPLE
+
+See flipbook.sh and tim.sh in $HEVROOT/idea/src/hev-animator
+
+.SH AUTHOR
+
+John Kelso, kelso@nist.gov,  NIST/ITL/MCSD
+
+

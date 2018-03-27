@@ -1,0 +1,3 @@
+
+Other possible files:
+SampleStructGrid.vtk  : example from VTK 

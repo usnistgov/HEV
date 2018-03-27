@@ -1,0 +1,107 @@
+#!/usr/bin/perl
+use strict;
+use Getopt::Long;
+use File::Basename;
+
+my $prog = basename($0);     # program base name
+
+sub usage {
+  print STDERR <<EOF
+$prog [--smooth] [--help]
+
+Computes tangents for line segments in a savg file.
+
+Processes a savg file (on stdin) to produce a new savg file (on
+stdout) with tangents attached to the "normal" component of line
+endpoint.
+
+options:
+    --smooth  Compute smooth per-vertex tangents (otherwise produces
+              faceted per-line segment tangents).
+EOF
+  ;
+}
+
+# option: smooth normals between line segments or use per-segment normals?
+my $smooth = 0;
+GetOptions("smooth"=>\$smooth);
+usage() if ($#ARGV >= 0);
+
+
+# save lines of file until tangents are determined
+my @file;
+
+my %tangents;			# map of points to tangents
+my %update;			# file line to corresponding endpoint
+
+while(<>) {
+  chop($_);			# remove trailing return
+
+  # "line" directive followed by two endpoints in one of these formats
+  #   x y z
+  #   x y z nx ny nz
+  #   x y z r g b a
+  #   x y z r g b a nx ny nz
+  if (/^line/i) {
+    push @file,$_;			# replicate line directive
+
+    my @line0 = split(/\s+/,<>);
+    my @line1 = split(/\s+/,<>);
+
+    my (@p0,@p1);		# coordinates for end points
+    my ($p0,$c0,$p1,$c1);	# text versions of end points & colors
+    # point location always first three
+    # "map" adds 0 to each component, effectively removing trailing 0s
+    @p0 = map{$_+0}@line0[0..2]; $p0 = join(" ",@p0);
+    @p1 = map{$_+0}@line1[0..2]; $p1 = join(" ",@p1);
+
+    # if 7 or 10 numbers given, rgba are entries 3-6
+    if ($#line0 >= 6) {$c0 = join(" ",map{$_+0}@line0[3..6]);}
+    if ($#line1 >= 6) {$c1 = join(" ",map{$_+0}@line1[3..6]);}
+
+    # compute normalized tangent
+    my @t = map{$p1[$_]-$p0[$_]}(0..2);
+    my $tlen = sqrt($t[0]*$t[0] + $t[1]*$t[1] + $t[2]*$t[2]);
+    if ($tlen>0) {@t = map{$_/$tlen} @t;}
+
+    # add this tangent to total for each endpoint
+    # and add these lines to list of ones that need tangent updates
+    if ($smooth) {
+      my $t0 = $tangents{$p0};
+      my $t1 = $tangents{$p1};
+      if (!defined($t0)) { $t0 = $tangents{$p0} = [0,0,0]; }
+      if (!defined($t1)) { $t1 = $tangents{$p1} = [0,0,0]; }
+
+      foreach (0..2) {$$t0[$_] += $t[$_]}
+      foreach (0..2) {$$t1[$_] += $t[$_]}
+
+      $update{$#file+1} = $p0;
+      $update{$#file+2} = $p1;
+    }
+
+    # output with or without new tangent
+    push @file, $p0." ".$c0 . ($smooth?"":(" ".join(" ",@t)));
+    push @file, $p1." ".$c1 . ($smooth?"":(" ".join(" ",@t)));
+  }
+  else {
+    push @file,$_;			# copy any other lines
+  }
+}
+
+if ($smooth) {
+  # renormalize tangents
+  while (my ($p,$t) = each %tangents) {
+    my $tlen = sqrt($$t[0]*$$t[0] + $$t[1]*$$t[1] + $$t[2]*$$t[2]);
+    foreach (0..2) {
+      $$t[$_] /= $tlen;
+    }
+  }
+
+  # patch new tangents into file lines
+  while (my ($line,$p) = each %update) {
+    my $t = $tangents{$p};
+    $file[$line] = $file[$line] . " " . join(" ",@$t);
+  }
+}
+
+print join("\n",@file),"\n";

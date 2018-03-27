@@ -1,0 +1,52 @@
+If stderr (stdout) of `dtk-server --daemon' is redirected to
+a file or piped, then the file stderr (stdout) will not be
+closed.
+
+
+If you run `dtk-server --daemon' as user root it will run the
+DTK server part of `dtk-server' as user `nobody'.
+
+
+
+If you run `dtk-server' as user root, it will automatically switch to
+running as user nobody, the leftover root process is just there to do
+"clean up" after the nobody process finishes.  All user requests are
+handled by the nobody process.
+
+
+A way to set `dtk-server' to run as nobody is:
+
+
+run as root:
+
+
+cd `dtk-config --root`/bin
+
+chown root.root dtk-server
+chmod o-w dtk-server
+chmod a+x dtk-server
+chmod u+s dtk-server
+ls -l dtk-server
+
+
+------------------------------------------------------------------------
+ The DIVERSE Toolkit
+Copyright (C) 2000 - 2003  Virginia Tech
+
+This software, the DIVERSE Toolkit library, is free software; you can
+redistribute it and/or modify it under the terms of the GNU Lesser
+General Public License (LGPL) as published by the Free Software
+Foundation; either version 2.1 of the License, or (at your option) any
+later version.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this software, in the top level source directory in
+a file named "COPYING.LGPL"; if not, see it at:
+http://www.gnu.org/copyleft/lesser.html or write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA.

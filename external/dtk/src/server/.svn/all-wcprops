@@ -1,0 +1,215 @@
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svnroot/diverse/!svn/ver/981/trunk/dtk/server
+END
+serviceSlaveTCP.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/serviceSlaveTCP.cpp
+END
+usage.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/usage.cpp
+END
+serviceClientTCP.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/serviceClientTCP.cpp
+END
+serverRespond.h
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/serverRespond.h
+END
+threadManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/threadManager.h
+END
+fileSignal_test.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/fileSignal_test.cpp
+END
+signal.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/signal.cpp
+END
+fileSignal.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/fileSignal.cpp
+END
+if_windows.h
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/669/trunk/dtk/server/if_windows.h
+END
+dtk-server.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/783/trunk/dtk/server/dtk-server.cpp
+END
+serviceInetTCP.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/serviceInetTCP.cpp
+END
+configParser.h
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/669/trunk/dtk/server/configParser.h
+END
+globels.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/globels.cpp
+END
+serviceManager.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/diverse/!svn/ver/728/trunk/dtk/server/serviceManager.cpp
+END
+parse_args.h
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/669/trunk/dtk/server/parse_args.h
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/915/trunk/dtk/server/CMakeLists.txt
+END
+serviceInetUDP.h
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/serviceInetUDP.h
+END
+get_dso_path.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/728/trunk/dtk/server/get_dso_path.cpp
+END
+serverRespond.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/diverse/!svn/ver/721/trunk/dtk/server/serverRespond.cpp
+END
+threadManager.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/threadManager.cpp
+END
+server_test.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/981/trunk/dtk/server/server_test.cpp
+END
+serviceSlaveTCP.h
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/serviceSlaveTCP.h
+END
+daemonize.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/diverse/!svn/ver/981/trunk/dtk/server/daemonize.cpp
+END
+serviceClientTCP.h
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/serviceClientTCP.h
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/README
+END
+fileSignal.h
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/fileSignal.h
+END
+configParser.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/728/trunk/dtk/server/configParser.cpp
+END
+parseRequest.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/parseRequest.cpp
+END
+parse_args.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/981/trunk/dtk/server/parse_args.cpp
+END
+condition.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/condition.cpp
+END
+pthread_test.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/pthread_test.cpp
+END
+serviceInetUDP.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/serviceInetUDP.cpp
+END
+serverMutex.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/serverMutex.cpp
+END
+dtk-server.h
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/dtk-server.h
+END
+serviceInetTCP.h
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/569/trunk/dtk/server/serviceInetTCP.h
+END

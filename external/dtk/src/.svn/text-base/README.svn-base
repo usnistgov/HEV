@@ -1,0 +1,243 @@
+The DIVERSE Toolkit (DTK)
+
+Home-Page: http://diversetoolkit.sourceforge.net/
+
+
+
+Requirements:
+
+
+   ** FLTK 1.1 ** (http://www.fltk.org/)
+
+
+    FLTK 1.1 on general UNIXes:
+
+      DTK requires that FLTK be installed with the --enable-gl
+      configure option.  For example you could install FLTK by running
+      in a bash shell:
+
+       ./configure --enable-gl && make && make install
+
+
+    FLTK 1.1 on Mac OS X:
+
+      Use FLTK-1.1.7 or the latest snapshot of 1.1.x if 1.1.7 is not yet available.
+
+	   ./configure && make && make install
+
+
+    FLTK 1.1 on Cygwin
+
+	  Cygwin has only been tested with the prebuilt FLTK package
+	  available through the Cygwin Setup application. 
+
+
+   ** GNU make 3.80 ** (http://www.gnu.org/software/make/make.html)
+
+    The examples use "GNU make" make files.  To build and install DTK
+    the GNU Autotools generate generic make files.  On GNU/Linux
+    systems GNU make is the default make program.  On other systems
+    you may want to install the GNU make program as `gmake'.
+
+
+   ** OpenGL or Mesa, X11 and/or xfree86 **
+
+
+
+OPTIONAL Dependencies
+
+
+   ** Doxygen 1.3.5 ** (http://www.stack.nl/~dimitri/doxygen/)
+
+    Doxygen is used to generate html and man documents for DTK.  You
+    can use the configure option --without-doxygen to disable the
+    building of doxygen html and man pages and a subset of the html
+    documentation will be built and installed.  By default if the
+    program doxygen is found it will be used.
+
+
+   ** Graphviz and the program `dot' **
+      (http://www.research.att.com/sw/tools/graphviz/)
+
+    Graphviz, a graph visualization toolkit from AT&T and Lucent Bell
+    Labs. This will generate the class collaboration diagram in the
+    doxygen reference documention.  By default if doxygen is used and
+    the program dot is found it will be used.
+
+
+
+
+
+Building and installing:
+
+
+   ** tarball source ** 
+
+
+   https://sourceforge.net/project/showfiles.php?group_id=70210
+
+   To build and install DTK run:
+
+      ./configure --prefix=INSTALL_DIR
+      make
+      make install
+
+   INSTALL_DIR should be your choice of installation directory for DTK.
+   That's about it.  There are more options to the configure program.
+   See INSTALL and the output of `./configure --help' for more build
+   and installation information.  Don't run `./bootstrap' or `cvsclean'
+   unless you are developing DTK.  There appears to be a bug in the GNU
+   Autotools, so that making DTK without the shared libraries with also
+   not make the plug-in shared object modules.  So don't use the option
+   --enable-shared=no with the configure script.
+
+
+
+
+   ** from CVS source ** 
+
+
+   https://sourceforge.net/cvs/?group_id=70210
+
+   If you checked this package out of CVS, you'll need to generate
+   more files to build and install DTK.  You can't do this unless you
+   have the GNU Autotools installed. To build and install run:
+
+      ./bootstrap
+      ./configure --prefix=INSTALL_DIR
+      make
+      make install
+
+   Some people call `bootstrap' `autogen.sh'.  At the time of this writing
+   the documentation in the GNU Autotools recommends calling it
+   `bootstrap'.  Run `cvsclean' to remove all auto-generated files.
+   All the other scripts in the top source directory are generated
+   from the GNU Autotools.
+
+   GNU Autotools versions that we used:
+
+     running: automake --version && autoconf --version && libtool --version
+
+      GNU automake  1.7.9  http://www.gnu.org/software/automake/
+      GNU Autoconf  2.59   http://www.gnu.org/software/autoconf/
+      GNU libtool   1.4.3  http://www.gnu.org/software/libtool/libtool.html
+
+    Google can find lots of tutorials on GNU Autotools.  They help
+    alot, but you need to keep in mind that most of them are
+    dated. The info (texinfo) pages seem to be the official documentation.
+
+
+
+
+  SGI IRIX notes:
+
+
+    DTK is not ported to IRIX using g++.  It can build and install
+    with the IRIX `CC' C++ compiler.
+
+
+
+    --- N32 bit IRIX binaries with IRIX CC ---
+
+    For building and installing FLTK N32 binaries with the IRIX CC
+    compiler try the following configure command (bash shell) (don't
+    forget to add --prefix):
+
+      CC=cc CXX=CC LD=CC ./configure --enable-gl && make && make install
+
+
+
+    For building and installing DTK N32 binaries with the IRIX CC
+    compiler try the following configure command (bash shell) (don't
+    forget to add --prefix):
+
+      ./configure && make && make install
+    or
+      ./configure --enable-32bit && make && make install
+
+
+
+    --- 64 bit IRIX binaries with IRIX CC ---
+
+    For building and installing FLTK 64 binaries with the IRIX CC
+    compiler try the following configure command (bash shell) (don't
+    forget to add --prefix):
+
+
+      CC="cc -64" CXX="CC -64" LD=CC ./configure --enable-gl && make && make install
+
+
+
+    For building and installing DTK 64 binaries with the IRIX CC
+    compiler try the following configure command (bash shell) (don't
+    forget to add --prefix):
+
+      CXX="CC -64" CXXFLAGS=-O3 ./configure && make && make install
+    or
+      ./configure --enable-64bit && make && make install
+
+
+
+Mac OS X Notes:
+
+    You must install the X11User.pkg from the OS X installation disk to install X11 and 
+    related libraries. You must also install the X11.pkg from the XCode installation disk 
+    to install X11 and related header files.
+
+
+
+Cygwin Notes:
+
+    Use the prebuilt FLTK packages available through the Cywin setup program.
+
+    Support for Cygwin uses System V semaphores and shared memory. To work properly,
+    the cygserver should be running. You can set the cygserver to run as a regular Windows
+    service by running cygserver-config and setting the global Windows environment variable 
+    (Control Panel/System/Advanced/Environemnt Variables) CYGWIN to equal server.
+
+    Otherwise use the standard build and install options.
+
+      ./configure && make && make install
+
+
+
+Examples:
+
+   In the directory examples/ are example programs that use DTK.  You
+   need GNU make to use the Makefiles.  Running make (gmake) in the
+   directory examples/ will try to build all the examples.
+
+
+
+
+
+More IRIX notes (Mon Aug  2 17:13:24 EDT 2004), install bug:
+
+
+   Can you tell my why this command works:
+ > /sbin/install -v dirA/file1 dirB/file2
+ dirA/file1 installed as dirB/file2.
+ > find . -print | sort
+ .
+ ./dirA
+ ./dirA/file1
+ ./dirB
+ ./dirB/file2
+ > rm dirB/file2
+
+ But this command does not:
+ > /sbin/install -v dirA/file1 dirB/file1
+ /sbin/install: can't open file1: No such file or directory.
+ > find . -print | sort
+ .
+ ./dirA
+ ./dirA/file1
+ ./dirB
+
+
+  So when installing on IRIX you may need to use a different install
+program other than /sbin/install.  For example you can use the
+following configure command to configure for IRIX n32 binaries:
+
+  bash% INSTALL="/usr/freeware/bin/install -c" CXX=CC ./configure
+

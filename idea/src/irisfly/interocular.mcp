@@ -1,0 +1,5 @@
+BUTTON stereo
+  FIRST EXEC $HEV_IDEA_DIR/etc/irisfly/bin/interocular.sh
+  FIRST WAIT irisfly-addAndShowWindow interocular
+  ON WAIT irisfly-addAndShowWindow interocular
+  OFF WAIT irisfly-removeAndHideWindow interocular

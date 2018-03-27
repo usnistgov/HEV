@@ -1,0 +1,124 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.\" .TH hyv-img2phase 1 "October 17, 2008" "NIST/MCSD/SAVG" "SAVG HEV"
+.TH hyv-img2phase 1 "June 2014" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hyv-img2phase
+- convert *.img files to *.phase files
+
+.SH SYNOPSIS
+.B "hyv-img2phase"
+[--parallel n] [--ext string] phaseNumber exprString  dataDir | imgFile
+
+.SH DESCRIPTION
+.PP
+.I
+hyv-img2phase
+will convert all
+.B *.img
+files to
+.B *.phase.
+A required expression string specifies how to convert the multiple columns on
+the
+.B img
+file into a single column
+.B phase
+file.
+
+Each output
+.B phase
+file is a single column of numbers.
+The command is invoked multiple times to generate multiple phases.
+
+
+
+.SH OPTIONS
+.IP "\fB--parallel n\fR"
+specifies how many concurrent processes to be used convert
+in parallel. On a 2 CPU machine, n of 2 is a good number.
+
+.IP "\fB--ext string\fR"
+is an optional parameter that changes the .extension
+portion of the generated file names. When not specified,
+files are named as \fI.phase\fR.
+
+
+
+
+.IP "\fBphaseNumber\fR"
+is an integer used to identify the phase being created.
+
+.IP "\fBexprString\fR"
+is an expression specifying which column is selected or how multiple columns
+are combined.
+
+The expression follows perl syntax for arrays where the first element of the
+array is refers to column 1.  Thus column 2 is $c[2], etc.
+
+To extract column 3 from the
+.B img
+file into a
+.B phase
+file the parameter would be '$c[3]'.
+
+Columns can be combined, for example: '$c[2]+$c[4]' Other typical operations
+can be performed, for example '($c[1]+2*$c[3])/2'
+
+The expression must result in a single value.
+
+If the expression is invalid, the output file will have a value of 0.
+Perhaps this should be an error. However, there is a special case
+of computing pH were data of 0 means pH undefined, so we'll
+output a pH of 0 to indicate undefined
+
+
+.IP "\fBdataDir\fR"
+is an existing directory containing the 
+.B img
+file.
+The resulting
+.B phase
+files are written to
+.B dataDir
+with names in the form of 
+.B *_{P}.phase
+where
+.B {P}
+is the specified
+.B phaseNumber.
+
+.IP "\fBimgFile\fR"
+if an
+.B img
+file is specified rather than a directory name,
+then the single specified
+.B img
+file is converted to a
+.B phase
+file in the current directory.
+
+
+
+.SH EXAMPLE
+
+.PP
+Run with 2 parallel processes creating phase 3 by adding columns 4 and 5.
+
+.IP
+hyv-img2phase --parallel 2  3 '$c[4]+$c[5]' C3Ssmall
+
+
+
+
+
+
+.SH SEE ALSO
+.I
+hyv-utilities(3)
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,
+

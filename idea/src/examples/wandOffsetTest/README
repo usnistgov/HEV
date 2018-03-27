@@ -1,0 +1,9 @@
+This is a simple example of an MCP file that creates two button
+
+The first button, labeled "offset" modifies the distance between the wand and
+the offsetWand
+
+The seond button, labeled "glyph", turns on an doff an object at the
+position of the offsetWand
+ 
+To use it, just load wandOffset.mcp on any irisfly command line

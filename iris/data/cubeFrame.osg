@@ -1,0 +1,483 @@
+MatrixTransform {
+  DataVariance DYNAMIC
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  referenceFrame RELATIVE
+  Matrix {
+    2 0 0 0
+    0 2 0 0
+    0 0 2 0
+    0 0 0 1
+  }
+  num_children 1
+  Group {
+    DataVariance DYNAMIC
+    name "cubeFrame.flt"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    num_children 6
+    Geode {
+      DataVariance DYNAMIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance DYNAMIC
+        StateSet {
+          UniqueID StateSet_0
+          DataVariance STATIC
+          rendering_hint DEFAULT_BIN
+          renderBinMode INHERIT
+          GL_CULL_FACE ON
+<<<<<<< .mine
+          GL_LIGHTING PROTECT|ON
+=======
+          GL_LIGHTING PROTECTED|OFF
+>>>>>>> .r850
+          GL_BLEND OFF
+          Material {
+            DataVariance STATIC
+            ColorMode AMBIENT_AND_DIFFUSE
+            ambientColor 0.3 0.3 0.3 1
+            diffuseColor 0.7 0.7 0.7 1
+            specularColor 0.2 0.2 0.2 1
+            emissionColor 0 0 0 1
+            shininess 0
+          }
+          CullFace {
+            DataVariance STATIC
+            mode BACK
+          }
+        }
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays QUADS 0 36
+        }
+        VertexArray Vec3Array 36
+        {
+          0.5 -0.475 -0.5
+          -0.5 -0.475 -0.5
+          -0.5 -0.5 -0.5
+          0.5 -0.5 -0.5
+          -0.475 -0.0125 -0.5
+          -0.5 -0.0125 -0.5
+          -0.5 -0.475 -0.5
+          -0.475 -0.475 -0.5
+          0.0125 -0.0125 -0.5
+          -0.0125 -0.0125 -0.5
+          -0.0125 -0.475 -0.5
+          0.0125 -0.475 -0.5
+          -0.475 0.475 -0.5
+          -0.5 0.475 -0.5
+          -0.5 0.0125 -0.5
+          -0.475 0.0125 -0.5
+          0.0125 0.475 -0.5
+          -0.0125 0.475 -0.5
+          -0.0125 0.0125 -0.5
+          0.0125 0.0125 -0.5
+          0.5 0.475 -0.5
+          0.475 0.475 -0.5
+          0.475 0.0125 -0.5
+          0.5 0.0125 -0.5
+          0.5 0.5 -0.5
+          -0.5 0.5 -0.5
+          -0.5 0.475 -0.5
+          0.5 0.475 -0.5
+          0.5 0.0125 -0.5
+          -0.5 0.0125 -0.5
+          -0.5 -0.0125 -0.5
+          0.5 -0.0125 -0.5
+          0.475 -0.475 -0.5
+          0.5 -0.475 -0.5
+          0.5 -0.0125 -0.5
+          0.475 -0.0125 -0.5
+        }
+        NormalBinding PER_PRIMITIVE
+        NormalArray Vec3Array 9
+        {
+          0 0 1
+          0 0 1
+          0 0 1
+          0 0 1
+          0 0 1
+          0 0 1
+          0 0 1
+          0 0 1
+          0 0 1
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0 0 1.0 1
+        }
+      }
+    }
+    Geode {
+      DataVariance DYNAMIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance DYNAMIC
+        Use StateSet_0
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays QUADS 0 36
+        }
+        VertexArray Vec3Array 36
+        {
+          0.5 -0.5 0.5
+          -0.5 -0.5 0.5
+          -0.5 -0.475 0.5
+          0.5 -0.475 0.5
+          -0.475 -0.475 0.5
+          -0.5 -0.475 0.5
+          -0.5 -0.0125 0.5
+          -0.475 -0.0125 0.5
+          0.0125 -0.475 0.5
+          -0.0125 -0.475 0.5
+          -0.0125 -0.0125 0.5
+          0.0125 -0.0125 0.5
+          -0.475 0.0125 0.5
+          -0.5 0.0125 0.5
+          -0.5 0.475 0.5
+          -0.475 0.475 0.5
+          0.0125 0.0125 0.5
+          -0.0125 0.0125 0.5
+          -0.0125 0.475 0.5
+          0.0125 0.475 0.5
+          0.5 0.0125 0.5
+          0.475 0.0125 0.5
+          0.475 0.475 0.5
+          0.5 0.475 0.5
+          0.5 0.475 0.5
+          -0.5 0.475 0.5
+          -0.5 0.5 0.5
+          0.5 0.5 0.5
+          0.5 -0.0125 0.5
+          -0.5 -0.0125 0.5
+          -0.5 0.0125 0.5
+          0.5 0.0125 0.5
+          0.475 -0.0125 0.5
+          0.5 -0.0125 0.5
+          0.5 -0.475 0.5
+          0.475 -0.475 0.5
+        }
+        NormalBinding PER_PRIMITIVE
+        NormalArray Vec3Array 9
+        {
+          0 0 -1
+          0 0 -1
+          0 0 -1
+          0 0 -1
+          0 0 -1
+          0 0 -1
+          0 0 -1
+          0 0 -1
+          -0 0 -1
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          1.0 1.0 0 1
+        }
+      }
+    }
+    Geode {
+      DataVariance DYNAMIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance DYNAMIC
+        Use StateSet_0
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays QUADS 0 36
+        }
+        VertexArray Vec3Array 36
+        {
+          -0.5 -0.475 -0.5
+          -0.5 -0.475 0.5
+          -0.5 -0.5 0.5
+          -0.5 -0.5 -0.5
+          -0.5 -0.0125 0.475
+          -0.5 -0.0125 0.5
+          -0.5 -0.475 0.5
+          -0.5 -0.475 0.475
+          -0.5 -0.0125 -0.0125
+          -0.5 -0.0125 0.0125
+          -0.5 -0.475 0.0125
+          -0.5 -0.475 -0.0125
+          -0.5 0.475 0.475
+          -0.5 0.475 0.5
+          -0.5 0.0125 0.5
+          -0.5 0.0125 0.475
+          -0.5 0.475 -0.0125
+          -0.5 0.475 0.0125
+          -0.5 0.0125 0.0125
+          -0.5 0.0125 -0.0125
+          -0.5 0.475 -0.5
+          -0.5 0.475 -0.475
+          -0.5 0.0125 -0.475
+          -0.5 0.0125 -0.5
+          -0.5 0.5 -0.5
+          -0.5 0.5 0.5
+          -0.5 0.475 0.5
+          -0.5 0.475 -0.5
+          -0.5 0.0125 -0.5
+          -0.5 0.0125 0.5
+          -0.5 -0.0125 0.5
+          -0.5 -0.0125 -0.5
+          -0.5 -0.475 -0.475
+          -0.5 -0.475 -0.5
+          -0.5 -0.0125 -0.5
+          -0.5 -0.0125 -0.475
+        }
+        NormalBinding PER_PRIMITIVE
+        NormalArray Vec3Array 9
+        {
+          1 0 -0
+          1 0 -0
+          1 0 -0
+          1 0 -0
+          1 0 -0
+          1 0 -0
+          1 0 -0
+          1 0 -0
+          1 0 -0
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          1.0 0 0 1
+        }
+      }
+    }
+    Geode {
+      DataVariance DYNAMIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance DYNAMIC
+        Use StateSet_0
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays QUADS 0 36
+        }
+        VertexArray Vec3Array 36
+        {
+          0.5 -0.5 -0.5
+          0.5 -0.5 0.5
+          0.5 -0.475 0.5
+          0.5 -0.475 -0.5
+          0.5 -0.475 0.475
+          0.5 -0.475 0.5
+          0.5 -0.0125 0.5
+          0.5 -0.0125 0.475
+          0.5 -0.475 -0.0125
+          0.5 -0.475 0.0125
+          0.5 -0.0125 0.0125
+          0.5 -0.0125 -0.0125
+          0.5 0.0125 0.475
+          0.5 0.0125 0.5
+          0.5 0.475 0.5
+          0.5 0.475 0.475
+          0.5 0.0125 -0.0125
+          0.5 0.0125 0.0125
+          0.5 0.475 0.0125
+          0.5 0.475 -0.0125
+          0.5 0.0125 -0.5
+          0.5 0.0125 -0.475
+          0.5 0.475 -0.475
+          0.5 0.475 -0.5
+          0.5 0.475 -0.5
+          0.5 0.475 0.5
+          0.5 0.5 0.5
+          0.5 0.5 -0.5
+          0.5 -0.0125 -0.5
+          0.5 -0.0125 0.5
+          0.5 0.0125 0.5
+          0.5 0.0125 -0.5
+          0.5 -0.0125 -0.475
+          0.5 -0.0125 -0.5
+          0.5 -0.475 -0.5
+          0.5 -0.475 -0.475
+        }
+        NormalBinding PER_PRIMITIVE
+        NormalArray Vec3Array 9
+        {
+          -1 0 0
+          -1 0 0
+          -1 0 0
+          -1 0 0
+          -1 0 0
+          -1 0 0
+          -1 0 0
+          -1 0 0
+          -1 0 0
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0 1.0 1.0 1
+        }
+      }
+    }
+    Geode {
+      DataVariance DYNAMIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance DYNAMIC
+        Use StateSet_0
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays QUADS 0 36
+        }
+        VertexArray Vec3Array 36
+        {
+          0.5 0.5 -0.5
+          0.5 0.5 0.5
+          0.475 0.5 0.5
+          0.475 0.5 -0.5
+          0.475 0.5 0.475
+          0.475 0.5 0.5
+          0.0125 0.5 0.5
+          0.0125 0.5 0.475
+          0.475 0.5 -0.0125
+          0.475 0.5 0.0125
+          0.0125 0.5 0.0125
+          0.0125 0.5 -0.0125
+          -0.0125 0.5 0.475
+          -0.0125 0.5 0.5
+          -0.475 0.5 0.5
+          -0.475 0.5 0.475
+          -0.0125 0.5 -0.0125
+          -0.0125 0.5 0.0125
+          -0.475 0.5 0.0125
+          -0.475 0.5 -0.0125
+          -0.0125 0.5 -0.5
+          -0.0125 0.5 -0.475
+          -0.475 0.5 -0.475
+          -0.475 0.5 -0.5
+          -0.475 0.5 -0.5
+          -0.475 0.5 0.5
+          -0.5 0.5 0.5
+          -0.5 0.5 -0.5
+          0.0125 0.5 -0.5
+          0.0125 0.5 0.5
+          -0.0125 0.5 0.5
+          -0.0125 0.5 -0.5
+          0.0125 0.5 -0.475
+          0.0125 0.5 -0.5
+          0.475 0.5 -0.5
+          0.475 0.5 -0.475
+        }
+        NormalBinding PER_PRIMITIVE
+        NormalArray Vec3Array 9
+        {
+          -0 -1 0
+          -0 -1 0
+          -0 -1 0
+          -0 -1 0
+          -0 -1 0
+          -0 -1 0
+          -0 -1 0
+          -0 -1 0
+          0 -1 0
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          1.0 0 1.0 1
+        }
+      }
+    }
+    Geode {
+      DataVariance DYNAMIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance DYNAMIC
+        Use StateSet_0
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays QUADS 0 36
+        }
+        VertexArray Vec3Array 36
+        {
+          0.475 -0.5 -0.5
+          0.475 -0.5 0.5
+          0.5 -0.5 0.5
+          0.5 -0.5 -0.5
+          0.0125 -0.5 0.475
+          0.0125 -0.5 0.5
+          0.475 -0.5 0.5
+          0.475 -0.5 0.475
+          0.0125 -0.5 -0.0125
+          0.0125 -0.5 0.0125
+          0.475 -0.5 0.0125
+          0.475 -0.5 -0.0125
+          -0.475 -0.5 0.475
+          -0.475 -0.5 0.5
+          -0.0125 -0.5 0.5
+          -0.0125 -0.5 0.475
+          -0.475 -0.5 -0.0125
+          -0.475 -0.5 0.0125
+          -0.0125 -0.5 0.0125
+          -0.0125 -0.5 -0.0125
+          -0.475 -0.5 -0.5
+          -0.475 -0.5 -0.475
+          -0.0125 -0.5 -0.475
+          -0.0125 -0.5 -0.5
+          -0.5 -0.5 -0.5
+          -0.5 -0.5 0.5
+          -0.475 -0.5 0.5
+          -0.475 -0.5 -0.5
+          -0.0125 -0.5 -0.5
+          -0.0125 -0.5 0.5
+          0.0125 -0.5 0.5
+          0.0125 -0.5 -0.5
+          0.475 -0.5 -0.475
+          0.475 -0.5 -0.5
+          0.0125 -0.5 -0.5
+          0.0125 -0.5 -0.475
+        }
+        NormalBinding PER_PRIMITIVE
+        NormalArray Vec3Array 9
+        {
+          -0 1 0
+          -0 1 0
+          -0 1 0
+          -0 1 0
+          -0 1 0
+          -0 1 0
+          -0 1 0
+          -0 1 0
+          0 1 -0
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0 1.0 0 1
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+#
+# orthoviews.mcp - creates a Views menu for selection of perspective,
+#                  orthographic, left, right, top, bottom, 
+#                  front, back views.
+#
+# To use, just load via Fifo or command line,
+# for example:
+#                irisfly --ex tape.osg orthoviews.mcp
+#
+# March 28, 2014
+# steve@nist.gov
+#
+
+
+MENU Views
+
+RADIO
+BUTTON Perspective
+INIT
+FIRST NOOP
+ON  DSO desktopWindow PERSPECTIVE
+OFF NOOP
+
+BUTTON Orthographic
+ON  DSO desktopWindow ORTHO
+OFF NOOP
+END
+
+RADIO
+BUTTON Right
+ON  NAV RESET
+ON  NAV PIVOT -90 0 0
+OFF NOOP
+
+BUTTON Left
+ON  NAV RESET
+ON  NAV PIVOT 90 0 0
+OFF NOOP
+
+BUTTON Top
+ON  NAV RESET
+ON  NAV PIVOT 0 90 0
+OFF NOOP
+
+BUTTON Bottom
+ON  NAV RESET
+ON  NAV PIVOT 0 -90 0
+OFF NOOP
+
+BUTTON Front
+ON  NAV RESET
+ON  NAV PIVOT 0 0 0
+OFF NOOP
+
+BUTTON Back
+ON  NAV RESET
+ON  NAV PIVOT 180 0 0
+OFF NOOP
+END
+
+
+END

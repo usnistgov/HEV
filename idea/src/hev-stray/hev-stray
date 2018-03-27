@@ -1,0 +1,72 @@
+#! /bin/bash
+
+# hev-stray - look for typical HEV related "stray" processes
+# 
+# Usage:   hev-stray [-v] [word ...]
+#
+#  when additional words are specified, they are also used in the search
+#
+# 12/19/2008
+# 02/13/2009         added savgfly as a default word
+# 03/24/2009         added some stuff to exclude
+# 07/12/2010         added sort | uniq
+# 02/25/2011         added iris
+# 02/14/2012         filter out emacs and man commands
+# 02/17/2012         add -l
+# 02/24/2012         changes to efilter
+# 07/16/2012         filter out vi, vim, hev-initXscreen commands
+# 02/02/2015         filter out hev-screenCautionTape
+#
+# steve@nist.gov
+#
+
+function efilter {
+awk '{
+        if ($8 == "emacs") {
+        } else if ($8 == "vi") {
+        } else if ($8 == "vim") {
+        } else if ($8 == "man") {
+        } else {
+             print $0;
+        }
+     }'
+}
+
+
+LIST="hev dtk dgl dosg hyv qvd osgconv savgfly iris"
+
+
+exclude=0 
+
+case $1 in
+-v)
+     exclude=1
+     shift
+     ;;
+-l)
+     shift
+     echo "hev-stray currently looks for the following strings:"
+     echo
+     echo "   " $LIST $*
+     echo
+     exit
+     ;;
+esac
+
+
+(for i in ${LIST} $*
+do
+   if [ $exclude == 1 ]
+   then
+   	ps -ef | grep $i | grep -v "grep" | grep -v "hev-stray" 
+   else
+	ps -ef | grep $i | grep -v "grep" | grep -v "hev-stray" \
+               | grep -v gnome-terminal \
+               | grep -v nroff \
+               | grep -v hev-initXscreen \
+               | grep -v hev-screenCautionTape \
+	       | grep -v dtk-server | efilter
+   fi	    
+done ) | sort | uniq
+
+

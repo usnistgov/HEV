@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/sideWinder2Joystick
+END
+sideWinder2Joystick.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/sideWinder2Joystick/sideWinder2Joystick.cpp
+END
+config.h
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/sideWinder2Joystick/config.h
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/sideWinder2Joystick/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/sideWinder2Joystick/README
+END
+demo.sh
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/sideWinder2Joystick/demo.sh
+END

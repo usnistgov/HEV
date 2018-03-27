@@ -1,0 +1,79 @@
+Geode {
+  UniqueID Geode_0
+  DataVariance STATIC
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  name "showLUT"
+  StateSet {
+    DataVariance STATIC
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+    Program {
+      DataVariance STATIC
+      num_shaders 2
+      Shader {
+        DataVariance STATIC
+        type VERTEX
+	code {
+	  "void main() {"
+	  "  gl_Position = gl_Vertex;"
+	  "  gl_TexCoord[0] = gl_MultiTexCoord0;"
+	  "}"
+	}
+      }
+      Shader {
+        DataVariance STATIC
+        type FRAGMENT
+        code {
+          "uniform sampler2D volumeLUT;"
+          "void main() {"
+	  "  vec4 lut = texture2D(volumeLUT, gl_TexCoord[0].xy);"
+	  "  vec2 grid = abs(mod(64.*gl_TexCoord[0].xy,2.)-1.);"
+	  "  grid = 2.*smoothstep(.4,.6,grid)-1.;"
+	  "  float c = mix(.5,.75,grid.x*grid.y);"
+	  "  gl_FragColor = vec4(c,c,c,1.);"
+	  "  gl_FragColor.rgb = gl_FragColor*max(0,1-lut.a) + lut.rgb;"
+          "}"
+        }
+      }
+    }
+    textureUnit 0 {
+      Texture2D {
+        DataVariance STATIC
+	file "transfer.mhd"
+        min_filter LINEAR
+        mag_filter LINEAR
+        maxAnisotropy 1
+        borderColor 0 0 0 0
+        borderWidth 0
+        useHardwareMipMapGeneration TRUE
+        unRefImageDataAfterApply TRUE
+        internalFormatMode USE_IMAGE_DATA_FORMAT
+        resizeNonPowerOfTwo FALSE
+      }
+    }
+  }
+  Geometry {
+    Primitives 1 {
+      DrawElementsUByte TRIANGLE_STRIP 4 {
+        0 1 2 3
+      }
+    }
+    VertexArray 4 {
+      -1 -1 0
+       1 -1 0
+      -1  1 0
+       1  1 0
+    }
+    TexCoordArray 0 Vec2Array 4 {
+      0 0
+      1 0
+      0 1
+      1 1
+    }
+    TexCoordIndices 0 {
+      0 1 2 3
+    }
+  }
+}
+

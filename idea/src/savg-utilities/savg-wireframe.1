@@ -1,0 +1,55 @@
+.TH SAVG\-WIREFRAME 1 "January 2009"
+.SH NAME
+savg-wireframe \- SAVG ToolBox: wireframe
+.SH SYNOPSIS
+.B savg-wireframe
+[no arguments]
+.SH DESCRIPTION
+.I Savg-wireframe
+converts a \fIsavg\fP object to a wireframe.  It 
+accepts input from
+.I stdin
+and outputs to
+.I stdout.
+.SH OPTIONS
+(none)
+.SH EXAMPLES
+.TP
+.B savg-wireframe < in.savg > out.savg
+Reads from 
+.I in.savg
+and changes to a wireframe.  Then outputs to 
+.I out.savg.
+.TP
+.B cat in.savg | savg-wireframe > out.savg
+Reads from 
+.I in.savg
+and changes to a wireframe.  Then outputs to
+.I out.savg.
+.SH NOTES
+This program tries to weed line segments that are duplicated; 
+this frequently occurs when adjacent polygons share an edge.
+The program tests for duplicated segments only on the basis
+of the position of the vertices.  Segments that differ in
+color will be regarded as identical if their vertices are
+identical.
+.SH AUTHOR
+Brandon M. Smith, et al.
+.TP
+SAVG Toolbox Project
+Version 2.0
+.br
+January 2009
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

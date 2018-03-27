@@ -1,0 +1,71 @@
+.TH HEV-SHADERLIBRARY-RAND 7 "May 2013" "NIST/ACMD" "HCPVG HEV"
+
+.SH NAME
+hev-shaderLibrary-matrix
+- random numbers based on Tiny Encryption Algorithm, includeable in other shaders.
+
+.SH SYNOPSIS
+\fB#include <rand.glsl>\fR
+.PP
+\fBuvec2 tea2(uvec4\fR \fIkey\fR\fB, uvec2\fR \fIval\fR\fB);\fR
+.br
+\fBuvec2 tea8(uvec4\fR \fIkey\fR\fB, uvec2\fR \fIval\fR\fB);\fR
+
+.SH DESCRIPTION
+
+The function
+.BR tea2 ()
+returns a random number after two rounds of TEA, which is sufficient for many
+visual uses, but not strong random numbers. The function
+.BR tea8 ()
+returns a random number after eight rounds of TEA, which is enough to pass the
+testU01 crush randomness test suite.
+.PP
+Both tea2 and tea8 take two parameters, a 64-bit value to encrypt,
+.IR val ,
+and a 126-bit key,
+.IR key .
+The key is only 126 bits, because the high-order bit of key.x and key.z should
+always be 0. Keys with either of these bits set to 1 alias to other key values
+with them set to 0 and the high order bits of key.y or key.w flipped. 
+.PP
+The result is 64 bits that are random with respect to changes in
+either the key or value. The key can be used as a seed with val
+used as a counter to generate sequential random numbers, or val can
+be used as a seed with key used as a counter, or key and val can be
+combined together in some other configuration. 
+.PP
+Typical use:
+.IP
+  randomNumber0 = tea2(uv4seed, uvec2(0,0))
+  randomNumber1 = tea2(uv4seed, uvec2(0,1))
+  randomNumber2 = tea2(uv4seed, uvec2(0,2))
+.PP
+or
+.IP
+  randomNumber0 = tea2(uvec4(0,0,0,0),uv2seed)
+  randomNumber1 = tea2(uvec4(0,0,0,1),uv2seed)
+  randomNumber2 = tea2(uvec4(0,0,0,2),uv2seed)
+.PP
+The
+.BR tea2 ()
+function doesn't have enough rounds for full mixing, so sequential counter
+values won't fully propagate to random differences in the high-order bits of
+the result, but is good enough for many visual applications where only a few
+low-order random bits are needed. The
+.BR tea8 ()
+function has enough rounds to pass the testU01 crush randomness test suite, so
+should be good enough for any purpose.
+ 
+.SH NOTES
+Requires #version 130 or later, which can be enabled using the preprocessor line
+.IP
+//GLSL#version 130
+
+.SH AUTHOR
+Marc Olano
+
+.SH SEE ALSO
+.BR hev-shaders (7),
+.BR hev-shaderLibrary (7).
+

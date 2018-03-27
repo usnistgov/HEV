@@ -1,0 +1,18 @@
+# modular sphere test using geometry shader
+
+# load point data set with culling off
+LOAD points points.osg
+CULLING points OFF
+ADDCHILD points world
+
+# add textured sphere shader
+SHADERPROG points V dummy.vert G P TS 4 sphere.geom F sphere.frag
+UNIFORM points fatpointSize 1
+
+# add texture maps
+LOAD textures textures.osg
+MERGESTATE textures points
+
+# choose a background different from all spheres, and center them
+BACKGROUND .5 .7 .9
+EXAMINE

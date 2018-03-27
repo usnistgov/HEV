@@ -1,0 +1,76 @@
+.TH HEV-SHADERLIBRARY-QUAT 7 "May 2013" "NIST/ACMD" "HCPVG HEV"
+
+.SH NAME
+hev-shaderLibrary-quat
+- common quaternion math functions, includeable in other shaders.
+
+.SH SYNOPSIS
+\fB#include <quat.glsl>\fR
+.PP
+\fBvec3 QRotate(vec4\fR \fIQ\fR\fB, vec3\fR \fIV\fR\fB);\fR
+.br
+\fBvec3 QsRotate(vec4\fR \fIQs\fR\fB, vec3\fR \fIV\fR\fB);\fR
+.PP
+\fBmat3 QMatrix(vec4\fR \fIQ\fR\fB);\fR
+.br
+\fBmat3 QsMatrix(vec4\fR \fIQs\fR\fB);\fR
+.br
+\fBvec4 QMultiply(vec4\fR \fIQ1\fR\fB, vec4\fR \fIQ2\fR\fB);\fR
+
+.SH DESCRIPTION
+
+The function
+.BR QRotate ()
+rotates the vector
+.IR V
+by the unit quaternion
+.IR Q .
+The function
+.BR QsRotate ()
+rotates the vector
+.IR V
+by the non-unit quaternion
+.IR Qs
+[equivalent to \fBdot(\fR\fIQs\fR\fB, \fR\fIQs\fR\fB) * QRotate(\fR\fIQs\fR\fB, \fR\fIV\fR\fB)\fR].
+.PP
+The function
+.BR QMatrix ()
+returns the 3x3 rotation matrix for the unit quaternion
+.IR Q .
+The function
+.BR QsMatrix ()
+returns the 3x3 rotation and scaling matrix for the non-unit quaternion
+.IR Qs
+[rotates by \fBnormalize(\fR\fIQs\fR\fB)\fR and scales by
+\fBdot(\fR\fIQs\fR\fB, \fR\fIQs\fI\fB)\fR].
+.PP
+The function
+.BR QMultiply ()
+multiplies two quaternions together, and can be used to replace
+.IP
+\fBQRotate(\fR\fIQ1\fR\fB, QRotate(\fR\fIQ2\fR\fB, \fR\fIV\fR\fB));\fR
+.PP
+with
+.IP
+\fBQRotate(QMultiply(\fR\fIQ1\fR\fB, \fR\fIQ2\fR\fB), \fR\fIV\fR\fB);\fR
+
+.SH NOTES
+The
+.BR QRotate ()
+and
+.BR QsRotate ()
+functions are more efficient for a single vector rotation.
+To rotate two or more vectors, however, it is more efficient to generate the
+matrix using
+.BR QMatrix ()
+or
+.BR QsMatrix ()
+and then use matrix multiplies to rotate each vector.
+
+.SH AUTHOR
+Marc Olano
+
+.SH SEE ALSO
+.BR hev-shaders (7),
+.BR hev-shaderLibrary (7).
+

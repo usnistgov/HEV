@@ -1,0 +1,8 @@
+ObjectType = Image
+NDims = 2
+DimSize = 2 2
+ElementNumberOfChannels = 1
+HeaderSize = -1
+ElementType = MET_FLOAT
+ElementByteOrderMSB = true
+ElementDataFile = test.pfm

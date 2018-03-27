@@ -1,0 +1,71 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-which 1 "May 2015" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+hev-which
+
+.SH SYNOPSIS
+
+\fBhev-which [--help ] [--quiet] [--title]\fR 
+
+.SH DESCRIPTION
+
+\fIhev-which\fR prints to stdout which HEV environment is currently
+set.  It also sets the an exit status, which can be tested with the
+\fB$?\fR bash variable.
+
+.IP
+Exit status    HEV environment
+
+   0           no HEV set
+
+  10           HEV Classic
+  11           HEV Classic Beta
+
+  20           HEV IRIS
+  21           HEV IRIS Beta
+
+
+.SH EXAMPLE
+This command is primarily intended as an information command to the
+user.  However, it can also be used within a script. Here is
+\fBbash\fR script snippet of one way this command can be used in a
+script.
+
+.IP
+    hev-which -q
+    h=$?
+    if [ $h -eq 20 ]
+    then
+        echo HEV IRIS environment is set up
+    fi
+
+
+.SH OPTIONS
+.TP
+.B --help
+prints a usage message.
+
+.TP
+.B --quiet
+quietly sets the exit status, i.e. doesn't print a message.  May be
+abbreviated to \fB-q\fR.
+
+.TP
+.B --title
+when specified, an code sequence is also sent to \fIstdout\fR which
+will display the HEV environemt identification in the title bar of the
+current terminal application.
+.IP
+Note, this works by default for \fBxterm\fR and \fBgnome-terminal\fR.
+For \fBKonsole\fR, you must modify \fBKonsole\fR Setting -> Tabs -> Tab title format to \fIWindow Title set by Shell\fR.
+
+
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov
+

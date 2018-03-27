@@ -1,0 +1,96 @@
+#!/bin/bash
+
+# check usage
+export TEXTURE="$1"
+if [[ $# -ne 1 || ! -e "$TEXTURE" ]]; then
+    cat <<EOF
+Usage: ${0##*/} imagefile
+
+Create and run (with osgviewer) a test for 3D images
+
+Displays the image on a square, cycling through slices
+EOF
+
+    exit 1
+fi
+
+# create test file
+cat >test.osg <<EOF
+Geode {
+  UniqueID Geode_0
+  DataVariance DYNAMIC
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  StateSet {
+    DataVariance STATIC
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+    Program {
+      DataVariance STATIC
+      name "testShader"
+      num_shaders 1
+      Shader {
+        DataVariance DYNAMIC
+        type FRAGMENT
+        code {
+          "uniform sampler3D tex;"
+          "uniform float osg_FrameTime;"
+          "void main()"
+          "{"
+          "  float time = sin(4.*osg_FrameTime)*.5+.5;"
+          "  vec4 c = texture3D(tex, vec3(gl_TexCoord[0].xy,time));"
+          "  if (c.r>1. || c.g>1. || c.b>1. || c.a>1.)"
+          "    c = mix(c,vec4(1.,0.,0.,1.),sin(3.*osg_FrameTime)*.5+.5);"
+          "  gl_FragColor = c;"
+          "}"
+        }
+      }
+    }
+    textureUnit 0 {
+      Texture3D {
+        DataVariance STATIC
+	file "$TEXTURE"
+        min_filter LINEAR
+        mag_filter LINEAR
+        maxAnisotropy 1
+        borderColor 0 0 0 0
+        borderWidth 0
+        useHardwareMipMapGeneration TRUE
+        unRefImageDataAfterApply TRUE
+        internalFormatMode USE_IMAGE_DATA_FORMAT
+        resizeNonPowerOfTwo FALSE
+      }
+    }
+  }
+  Geometry {
+    Primitives 1 {
+      DrawArrays TRIANGLE_STRIP 0 4 {
+        0 1 2 3
+      }
+    }
+    VertexArray 4 {
+      -1 0 -1
+       1 0 -1
+      -1 0  1
+       1 0  1
+    }
+    NormalBinding OVERALL
+    NormalArray 4 {
+      0 1 0
+    }
+    TexCoordArray 0 Vec2Array 4 {
+      0 0
+      1 0
+      0 1
+      1 1
+    }
+    TexCoordIndices 0 {
+      0 1 2 3
+    }
+  }
+}
+
+EOF
+
+# run test
+exec osgviewer test.osg

@@ -1,0 +1,66 @@
+#!/bin/bash
+
+function usage {
+cat <<EOF
+
+Usage: hev-mergeState sourceFile targetFile outputFile
+          or
+       hev-mergeState sourceFile targetNode
+
+Merges the state of the source file into the state of the
+target file or node.  It can produce an output file or it 
+can modify a node's state in an executing irisfly session.
+
+The state that is modified is the contents of the OSG StateSet
+object associated with a node.  
+
+For more details see the hev-mergeState man page.
+
+EOF
+
+exit 1
+}
+
+
+
+# print usage and exit if we don't have either one or two arguments left
+if [ $# -ne 3  -a $# -ne 2 ] ; then
+ echo
+ echo hev-mergeState: Bad argument count.
+ usage
+fi
+
+
+SOURCE="$1"
+TARGET="$2"
+
+if [ $# -eq 3 ] ; then
+  OUTPUTFILE="$3"
+
+  CMDFILE=${TMPDIR:-/tmp}/$USER-$$.iris
+
+  # load the source and target, merge the states, and write the output
+  cat > $CMDFILE <<EOF
+    LOAD $TARGET $TARGET
+    LOAD $SOURCE $SOURCE
+    MERGESTATE $SOURCE $TARGET
+    RETURN $TARGET
+EOF
+
+  # we convert this file to desired output file.
+  iris-convert $CMDFILE $OUTPUTFILE
+  rm -f $CMDFILE
+
+else
+
+  cat > $IRIS_CONTROL_FIFO <<EOF
+    LOAD $SOURCE.state.$$ $SOURCE
+    MERGESTATE $SOURCE.state.$$ $TARGET
+    UNLOAD $SOURCE.state.$$
+EOF
+
+fi
+
+exit 0
+
+

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="d3-3.5.6.min.js"></script>
+
+    <style>
+      .node circle {
+        fill: #fff;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+      }
+
+      .node {
+        font: 12px sans-serif;
+      }
+
+      .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 1.5px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div>
+      <form>
+        <label>Node: <input id="node" value="world" onkeydown="event.keyCode==13 && reload();"></label>
+        <input type="button" value="Reload" onclick="reload();">
+      </form>
+    </div>
+    <div id="scenegraph"></div>
+
+    <script>
+
+var socket = io.connect("http://localhost");
+
+function clean(s) { return s.trim().replace(/\s+/g, " "); }
+
+function reload() {
+  socket.emit("control", "QUERY GRAPH JSON "+d3.select("#node").property("value"));
+}
+
+var width = 1000,
+    height = 1000;
+
+var tree = d3.layout.tree()
+    .size([width, height-160]);
+
+var diagonal = d3.svg.diagonal().projection(function(d) { return [d.y,d.x]; });
+
+var vis = d3.select("#scenegraph").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(40,0)");
+
+socket.on("response", function(message) {
+  vis.selectAll('*').remove();
+
+  var root = JSON.parse(message);
+  var nodes = tree.nodes(root);
+      links = tree.links(nodes);
+
+  var link = vis.selectAll(".link").data(links).enter().append("path")
+             .attr("class", "link")
+             .attr("d", diagonal);
+
+  var node = vis.selectAll(".node").data(nodes).enter().append("g")
+             .attr("class", "node")
+             .attr("transform", function(d) { return "translate("+ d.y +","+ d.x +")"; })
+
+  node.append("circle")
+      .attr("r", 4.5)
+      .on("click", function(d) { d3.select("#node").property("value", d.name); reload(); })
+      .on("mouseover", function(d) { d3.select(this).style("cursor", "pointer"); })
+      .on("mouseout", function(d) { d3.select(this).style("cursor", ""); });
+
+  node.append("text")
+      .attr("dy", "2em")
+      .attr("text-anchor", function(d) { return "end" })
+      .text(function(d) { return d.name; });
+});
+
+reload();
+
+    </script>
+  </body>
+</html>

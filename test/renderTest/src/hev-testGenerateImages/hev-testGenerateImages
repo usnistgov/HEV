@@ -1,0 +1,95 @@
+#! /usr/bin/env python3
+
+# hev-testGenerateImages
+# July 20, 1016
+# Terence Griffin
+
+#
+# hev-testGenerateImages
+#  This is a Python 3 script to generate images used for testing the 
+#  immersive visualization system. The goal is to have a single common
+#  call that all runTestCase.sh scripts will run to generate images.
+#  When a change is made to the method that images are geerated, this
+#  script will serve as the only place that would need modification to
+#  keep every run script working.
+#
+# Options:
+#
+#  Basline/Test images?
+#  Output image format?
+#  
+#
+# Return
+#
+#  Number of images generated
+
+
+
+# Check options:
+# -Look for irisfly options
+#   Concat to a string containing irisfly options
+# -Look for option of this command
+# -Look for files to be used with irifly
+#   Concat to a string containing irisfly files
+
+# Should I set $OSG_FILE_PATH and $PATH here or before calling? If here,
+# then I need to know what changes to set. Or:
+#  add subdirs of ${HEV_IDEA_DIR}/testSuite to $OSG_FILE_PATH, thus:
+#   OSG_FILE_PATH=${OSG_FILE_PATH}$( find ${HEV_IRIS_PATH}/testSuite --type d -printf ":%p" )
+#  add ONLY ${HEVROOT}/test/renderTest/bin to (begining of) $PATH
+
+# Build irisfly command with irisfly options and filenames
+
+
+########################################
+# START # Original runTestCase.sh script 
+#
+#LOG=/tmp/$(basename $0 .sh)_${USER}_$$.log
+#TC=$( basename $(pwd) )
+#
+#export OSG_FILE_PATH=${OSG_FILE_PATH}:${HEV_IDEA_DIR}/testSuite:${HEV_IDEA_DIR}/testSuite/moth_data
+#export PATH=${HEVROOT}/test/renderTest/bin:${PATH}
+#
+#
+## Remove previous frameGrabber images to ensure we are later testing
+## against newly created images
+#rm -f /tmp/frameGrabber-${USER}*
+#
+#
+## Generate new images
+#irisfly  --background 1 1 1  --ex moth.iris  moth.timeline.iris  >  $LOG 2>&1 #desktopWindowTrait512.iris
+#
+## Compare new images against base line
+#exitCode=0
+#
+#pamCount=$(ls -1 baseLine_*.pam | wc -l)
+#for ((i=0; i<${pamCount}; i++))
+#do
+#    n=$(printf "%06d" ${i})
+#
+#    newfile="/tmp/frameGrabber-${USER}-snap-perspective-${n}.pam"
+#    basefile="baseLine_${n}.pam"
+#
+#    # Do the test
+#    compare-binary ${newfile} ${basefile} >>  $LOG  2>&1
+#    Dif=$?
+#    # DEBUG echo Dif = ${Dif}
+#
+#    # Check the result
+#    if [ ${Dif} -ne 0 ]
+#    then
+#            echo "${TC} base line ${i}: FAILED (${Dif})"
+#            echo "   Generated file differs from base line ${i}"
+#            echo "   Baseline: ${basefile}"
+#            echo "   Generated: ${newfile}"
+#            exitCode=1
+#    else
+#            echo "${TC} base line ${i}: PASSED"
+#    fi
+#done
+#
+## Return exit code
+#exit ${exitCode}
+#
+#  END  # Original runTestCase.sh script 
+########################################

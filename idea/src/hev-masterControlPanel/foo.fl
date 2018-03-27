@@ -1,0 +1,45 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+Function {make_window()} {open
+} {
+  Fl_Window {} {open
+    xywh {3272 31 360 245} type Double box PLASTIC_THIN_DOWN_BOX visible
+  } {
+    Fl_Menu_Button {} {
+      label menu open
+      xywh {25 25 75 20}
+    } {
+      MenuItem {} {
+        label item1
+        xywh {0 0 36 21}
+      }
+      MenuItem {} {
+        label item2
+        xywh {0 0 36 21}
+      }
+    }
+    Fl_Check_Button {} {
+      label check
+      xywh {25 57 70 15} box THIN_UP_FRAME down_box UP_BOX color 0 labelcolor 1
+    }
+    Fl_Round_Button {} {
+      label round
+      xywh {95 55 70 15} box THIN_UP_FRAME down_box ROUND_DOWN_BOX
+    }
+    Fl_Light_Button {} {
+      label light
+      callback {foo(baz) ;} selected
+      xywh {165 55 74 20}
+    }
+    Fl_Check_Button {} {
+      label {radio check}
+      xywh {25 88 116 15} type Radio down_box DOWN_BOX
+    }
+    Fl_Round_Button {} {
+      label {radio round}
+      xywh {140 85 110 15} type Radio box UP_BOX down_box ROUND_DOWN_BOX color 1
+    }
+  }
+} 

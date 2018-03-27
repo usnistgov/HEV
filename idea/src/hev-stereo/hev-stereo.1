@@ -1,0 +1,32 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-stereo 1 "Oct=ober, 2016" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+hev-stereo - turn stereo on or off
+
+.SH SYNOPSIS
+
+\fBhev-stereo --on | --off | --interocular value \fR
+
+.SH DESCRIPTION
+
+\fBhev-stereo\fR is a convenience utility to turn on or off screen
+stereo.  This action is accomplished using the HEV FiFo command INTEROCULAR.
+
+.SH OPTIONS
+
+.IP "--on"
+turns on stereo with an interocular value of .1
+
+.IP "--interocular value"
+specify a value.
+
+.IP "--off"
+turns off stereo with an interocular value of 0.
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov

@@ -1,0 +1,53 @@
+
+cmp compareA.dump asc_10_11_12_flt_neg_n2.raw
+cmp compareB.dump asc_10_11_12_flt_neg_n3.raw
+cmp compareC.dump asc_10_11_12_flt_neg_n4.raw
+cmp compareD.dump asc_10_11_12_flt_neg_n5.raw
+cmp compareE.dump asc_10_11_12_int_neg.raw.onePerLine
+cmp compareF.dump asc_10_11_12_int.raw.onePerLine
+
+
+
+cmp compareG.dump asc_10_11_12_int.raw.onePerLine
+cmp compareH.dump asc_10_11_12_int.raw.onePerLine
+cmp compareI.dump asc_10_11_12_int.raw.onePerLine
+cmp compareJ.dump asc_10_11_12_int.raw.onePerLine
+
+
+
+cmp compareK.dump asc_10_11_12_int_neg.raw.onePerLine
+cmp compareL.dump asc_10_11_12_int_neg.raw.onePerLine
+cmp compareM.dump asc_10_11_12_int_neg.raw.onePerLine
+
+
+cmp compareR.dump asc_10_11_12_int.raw.onePerLine
+cmp compareS.dump asc_10_11_12_int.raw.onePerLine
+
+
+
+cmp compareT.dump asc_10_11_12_int.raw.onePerLine
+cmp compareU.dump asc_10_11_12_int.raw.onePerLine
+
+
+xxdiff compareV.dump asc_10_11_12_int.raw.onePerLine
+xxdiff compareW.dump asc_10_11_12_int.raw.onePerLine
+
+cmp compareX.dump asc_10_11_12_int.raw.onePerLine
+cmp compareY.dump asc_10_11_12_int.raw.onePerLine
+
+
+echo clamp to [2, 8]
+xxdiff int.clamp.mha asc_10_11_12_int.raw
+
+echo clamp to   [1.098612, 1.94591]
+xxdiff log.clamp.asc.mha log.asc.mha
+
+exit
+
+xxdiff int.norm.mha int.norm.mha.mha
+xxdiff log.norm.asc.mha log.norm.asc.mha.mha
+
+
+
+
+

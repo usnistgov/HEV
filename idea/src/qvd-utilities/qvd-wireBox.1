@@ -1,0 +1,77 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH qvd-wireBox 1 "April 13, 2012" "NIST/ACMD/HPCVG" "SAVG HEV"
+.SH NAME
+qvd-wireBox
+- Create a wire frame box suitable for loading with irisfly.
+
+.SH SYNOPSIS
+.B "qvd-wireBox"
+[--verbose] [--[no]clip] x y z [r g b] [outfile]
+
+
+.SH DESCRIPTION
+.PP
+.I qvd-wireBox
+is a convenience command to create a wire box, \fIwireBox.osgb\fR,
+suitable for use with
+.B irisfly.
+It is useful for use in the flow visualizations created
+with
+.I qvd-utilities.
+Its main feature is the ability of selecting whether the
+.I wireBox.osgb
+will be affected by clipping planes.  It is often useful to have a wire box
+around the data that is not affected by clipping plane to provide visual
+.I context.
+
+
+
+.SH PARAMETERS
+.IP \fB--verbose\fR
+print a few debug messages
+
+.IP \fB--noclip\fR
+The creates box will not be affected by clipping planes.
+This is the default.
+
+.IP \fB--clip\fR
+The creates box will be affected by clipping planes.
+
+
+.IP \fBx\ y\ z\fR
+Specify the x,y,z size of the box. The box is centered around 0,0,0.
+
+.IP \fBr\ g\ b\fB
+Optional specification for color of the box. Values in the range 0.0 to
+1.0. The default is white: 1 1 1
+
+.IP \fBoutfile\fR
+Optional output file name. The file type is typically .osgb,
+but .osgt, .osg and ive are also acceptable. 
+
+
+
+
+.SH EXAMPLES
+Create a 60x60x60 box to be used with a sphere animation that is not clipped.
+.IP
+qvd-wireBox --clip 60 60 60 wireBox.osgb
+
+.IP
+irisfly --examine wireBox.osgb clip.mcp
+
+.SH SEE ALSO
+.I
+qvd-utilities(3), irisfly(1),  hev-clipperControl(1)
+
+
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield
+.br
+steve@nist.gov
+

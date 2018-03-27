@@ -1,0 +1,47 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-director 1 "November, 2012" "NIST/ACMD" "HPCVG HEV"
+.SH NAME
+hev-director
+- a control panel to animate frame numbers.
+
+.SH SYNOPSIS
+.B "hev-director"
+.I [ --noescape ] [ --first n ] [ --time t ] [ --stdout ] --last n [ shm ]
+
+.SH PARAMETERS
+
+.IP --noescape
+if supplied, specifies that the GUI can't be killed by pressing the window
+manager's close button, or by pressing escape in the GUI window.
+
+.IP "--first \fIn\fR"
+specifies the first frame number to use.  If omitted, 0 is used.
+
+.IP "--last \fIn\fR"
+specifies the last frame number to use. 
+
+.IP "--time \fIt\fR"
+specifies the amount of time to display each frame, in seconds.  This number
+is the inverse of he frame rate. If omitted it defaults to .1, or 10 frames
+per second.
+
+.IP --stdout
+if supplied, the frame number will be written to stdout.
+
+.IP shm
+is the name of the dtk shared memory file which will store the frame number.
+If specified without --stdout, then no output on stdout will be written. If
+--stdout is specified, then the frame number will also be written to stdout.
+If not specified, the frame number will be written to stdout.
+
+.SH DESCRIPTION
+.PP
+.I hev-director
+displays a GUI similar to a digital video controller which controls the
+selective display of frames.
+
+.SH AUTHOR
+
+Wesley Griffin, wesley.griffin@nist.gov
+

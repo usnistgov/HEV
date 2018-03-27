@@ -1,0 +1,52 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-glinfo 1 "May 2011" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+hev-glinfo - print version information OpenGL
+
+.SH SYNOPSIS
+
+\fBhev-glinfo\fR 
+
+.SH DESCRIPTION
+
+\fBhev-glinfo\fR is a convenience utility to print the version information of
+the installed OpenGL.
+
+.PP
+The following environment and OpenGL values are queried and their returned values printed:
+.IP
+.B DISPLAY
+.br
+.B GL_VERSION
+.br
+.B GL_SHADING_LANGUAGE_VERSION
+.br
+.B GL_VENDOR
+.br
+.B GL_RENDERER
+
+
+.PP
+Returned values are dependent on the \fBDISPLAY\fR environment value.
+Typically, this means that you should run this command from the system console.
+
+.PP
+The command \fBglxinfo\fR provides more detailed information, but it
+doesn't seem to provide, \fBGL_SHADING_LANGUAGE_VERSION\fR.
+
+.SH SEE ALSO
+.PP
+"glxinfo -h"
+
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov
+.br
+http://www.nist.gov/itl/math/hpcvg/
+
+

@@ -1,0 +1,50 @@
+.TH hev-matrixToCoord 1 "April 2011"
+
+.SH NAME
+hev-matrixToCoord
+
+.SH SYNOPSIS 
+.B hev-matrixToCoord [--[x][y][z][h][p][r][s]] [--loop] [--every] [--usleep t] shm
+
+.SH OPTIONS
+
+.IP "[--[x][y][z][h][p][r][s]]"
+specifies which components of the coord to print.  The components will be
+printed in the order xyzhprs regardless of the order of the option string.
+
+The default option is --xyzhpr.
+
+Scale is omitted by default as it isn't part of a dtkCoord. Also, a uniform
+scale is assumed, so only the x component of the scale is returned.
+
+.IP "--loop"
+specifes that \fB hev-matrixToCoord\fR should loop, and print the values
+every loop whenever the value changes.
+
+.IP "--every"
+specifes that when \fB hev-matrixToCoord\fR is looping it should print the values
+every loop, regardless of whether that values change or not.
+
+.IP "--usleep t"
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+
+.SH DESCRIPTION
+
+\fB hev-matrixToCoord\fR reads an existing shared memnory file \fIshm\fR containing an
+osg::Matrix and prints to standard output the equivalent dtkCoord.
+
+.SH EXAMPLE
+
+echo "wand is at \`hev-matrixToCoord --xyz idea/worldWandProbe\`" | hev-messageBox
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+April 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

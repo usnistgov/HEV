@@ -1,0 +1,95 @@
+#!/bin/bash
+#Created by Divya Mouli,  Summer 2012
+
+
+# GESTURE               FUNCTION
+
+#0 Line Left            NO ACTION
+#1 Line Right           NO ACTION
+#2 Line Up              NO ACTION
+#3 Line Down            NO ACTION
+#4 Upright              NO ACTION
+#5 UpLeft               NO ACTION
+#6 DownRight            NO ACTION
+#7 DownLeft             NO ACTION
+
+#8 Flick Up             Not Assigned
+#9 Flick Left		Not Assigned
+#10 Flick Right         Not Assigned
+#11 Throw		Not Assigned
+#12 Underhand Toss	Not Assigned
+#13 Box                 Not Assigned
+#14 Triangle            Not Assigned
+#15 Z                   Not Assigned
+#16 X                   Not Assigned
+#17 V                   Not Assigned
+#18 Circle              Not Assigned
+#19 Infinity            Not Assigned
+#20 Loop de Loop        Not Assigned
+#21 Fish Hook           Not Assigned
+#22 Wave                Not Assigned
+#23 Backhand Shot	Not Assigned 
+#24 Pancake Flip	Not Assigned
+
+#This program compares the current gesture number to previous to see if new gesture action should be performed
+#then runs the functions assigned to each gesture
+
+dtk-writeShm gestureNum 4 1 %i 30
+first=0 # variable that tells whether or not the button release is the first time 1-button pressed, later is set to 0
+check=1
+while [ $check -eq 1 ];
+do
+  le=`dtk-readChars -n 1 buttons |awk '{print $1}'`
+  left=${le:0:1}
+  num=`dtk-readChars -n 1 gestureNum |awk '{print $1}' `
+  num=${num:0:2}  
+  let w="300";
+  let l="100"; 
+  if [[ $left == 0 && $first == 1 ]];
+  then	
+	case $num in	        
+
+        ##########################################
+        #### DO NOT ASSIGN FUNCTIONS 0 THRU 7 ####
+        ##########################################
+
+	###########################################
+        ########### ENTER ACTIONS HERE ############
+        ###########################################
+
+
+	############ PRESET ACTIONS ###############
+        
+	#8) #Hide Windows - Flick Up
+        	#echo "WAIT hev-hideWindow [Window Names]" >$IRIS_CONTROL_FIFO;;
+
+	#11) #Show Windows - Throw 
+        	#echo "WAIT hev-showWindow [Window Names]" >$IRIS_CONTROL_FIFO;;
+
+	#15) #Restart Program - Z
+        	#echo "WAIT kill 0"     >$IRIS_CONTROL_FIFO;
+        	#echo "EXEC [irisfly file.iris] [executable]" >$IRIS_CONTROL_FIFO;;
+
+	16) #Close Program- X
+        	kill 0  ;;
+
+
+	############## EXAMPLE ACTIONS #############
+
+	#Hide Nodes/Objects
+        	#echo "NODEMASK [object] OFF" >$IRIS_CONTROL_FIFO;;
+
+	#Show Nodes/Objects
+        	#echo "NODEMASK [object] ON" >$IRIS_CONTROL_FIFO;;              
+
+	*);;
+	esac
+		let first=0
+   fi	
+   if [ $left == 1 ];
+   then
+	let first=1
+   fi
+ch=`dtk-readChars -n 1 GON |awk '{print $1}'`
+check=${ch:0:1}
+done

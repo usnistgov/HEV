@@ -1,0 +1,737 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 13. Engines</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch12.html" title="Chapter 12. Sensors"><link rel="next" href="ch14.html" title="Chapter 14. Node Kits"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 13. Engines</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch12.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch14.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5492035"></a>Chapter 13. <a name="id11499"></a>Engines</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Connect fields in a scene graph to each other</p>
+</li>
+<li><p>Create and use global fields in the database</p>
+</li>
+<li><p>Connect a variety of engines to fields and other engines in a scene graph</p>
+</li>
+<li><p>Disable engine connections temporarily</p>
+</li>
+<li><p>Create a simple engine network</p>
+</li>
+<li><p>Animate parts of a scene using engines</p>
+</li>
+<li><p>Use the rotor, blinker, shutter, and pendulum nodes to animate parts of a scene graph</p>
+</li>
+</ul></div><p>This chapter describes <i>engines</i>, classes of Inventor objects that can be connected to fields in the scene graph and used to <i>animate</i> parts of the scene or to <i>constrain</i> certain elements of the scene to each other. It also describes how fields can be connected to engines and to other fields, and how to use and create <i>global fields</i> in the database.</p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5492151"></a>Introduction to Engines</h2></div></div>
+<p>In earlier chapters, you've created scene graphs with 3D objects that responded to user events. The 3D objects themselves were fixed, and they moved only in response to user interaction or to sensor activity. In this chapter, you'll learn about a new class of object, called <i>engines</i>, that allows you to encapsulate both motion and geometry into a single scene graph. Just as you would connect a real-world engine to other equipment to spin a flywheel or turn a fan belt, you &#8220;wire&#8221; engine objects into the scene database to cause animated movement or other complex behavior in the scene graph. Engines can also be connected to other engines so that they move or react in relation to each other, and eventually make changes to the Inventor database.</p>
+<p>As a simple example, consider a scene graph that describes the geometry for a windmill. You can attach an engine object that describes the rotation of the windmill blades and performs an incremental rotation of the blades in response to time. This scene graph, including the engine, can be saved in an Inventor file. Whenever the scene graph is read in, the windmill is displayed <i>and</i> the blades animate. Both the geometry and the behavior are described by the nodes and engines in the scene graph.</p>
+<p>A more complex example would involve wiring two objects together. For example, you might create a scene with a car whose motion is based on an engine object. A second engine could look at the car's motion and turn that information into camera motion so that the camera could follow the moving car. Or you might wire two engines together so that one engine affects the activity of the other engine. In the case of the windmill, you could connect a second engine in front of the rotation engine to filter time so that the windmill blades rotate only between the hours of nine in the morning and five at night.</p>
+<p>In some cases, you could use either a sensor or an engine to create a certain effect. <a href="ch13.html#id10153">Table 13-1</a> compares sensors and engines to help you weigh the trade-offs between the two.</p>
+<div class="table"><p><a name="id5492242"></a><b>Table 13-1. <a name="id10153"></a><a name="idch131"></a>Comparison of Sensors and Engines</b></p>
+<table summary="Comparison of Sensors and Engines" border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>Sensors			</p>
+</th><th valign="top"><p>Engines</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>Are part of the application (are not written 
+to file)</p>
+</td><td valign="top"><p>Are part of the scene graph (can be read 
+from file and written to file)</p>
+</td></tr><tr valign="top"><td valign="top"><p>Have user-defined callback functions</p>
+</td><td valign="top"><p>Have built-in functions</p>
+</td></tr><tr valign="top"><td valign="top"><p>Allow explicit control over order of firing</p>
+</td><td valign="top"><p>Are evaluated automatically</p>
+</td></tr><tr valign="top"><td valign="top"><p>Can be attached to any kind of field (field 
+data sensors)</p>
+</td><td valign="top"><p>Have inputs and outputs of a fixed type</p>
+</td></tr><tr valign="top"><td valign="top"><p>Can affect objects outside the scene graph</p>
+</td><td valign="top"><p>Can affect only other nodes or engines in a 
+scene graph</p>
+</td></tr></tbody></table></div><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5492397"></a>General Uses of Engines<a name="idch132"></a><a name="idch133"></a></h2></div></div>
+<p>Engines are generally used in two different ways:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>To animate parts of a scene</p>
+</li>
+<li><p>To constrain one part of a scene in relation to some other part of the scene</p>
+</li>
+</ul></div><p><a href="ch13.html#id20841">Figure 13-1</a> and <a href="ch13.html#id34596">Figure 13-2</a> show applications that use engines. In <a href="ch13.html#id20841">Figure 13-1</a>, four different classes of links are created&#8212;struts, hinges, cranks, and double struts. Engines are used to connect links end-to-end. The objects in <a href="ch13.html#id34596">Figure 13-2</a> use engines to edit transform nodes that animate the animals and objects in the scene.</p>
+<p><div class="figure"><p><a name="id5492530"></a><b>Figure 13-1. <a name="id20841"></a><a name="idch134"></a>Mechanisms Made from a Set of Link Classes</b></p>
+<div class="mediaobject"><img src="figures/13..5.linkages.gif"></div></div><br>
+<div class="figure"><p><a name="id5492612"></a><b>Figure 13-2. <a name="id34596"></a>Objects That Use Engines for Animation and Placement</b></p>
+<div class="mediaobject"><img src="figures/13.0.mechanimls.gif"></div></div><br>
+</p>
+<p>As shown in <a href="ch13.html#id14207">Example 13-1</a> later in this chapter, you can connect parts of a scene to a clock so that animation in the scene occurs in relation to changes in time. <a href="ch13.html#id47756">Example 13-6</a> shows an example of constraints, where the movement of an object is constrained to a set path.</p>
+<p>You can think of an engine as a black box that receives input values, performs some operation on them, and then copies the results into one or more outputs. Both the inputs and the outputs of the engine can be connected to other fields or engines in the scene graph. When an engine's output values change, those new values are sent to any fields or engines connected to them.</p>
+<p>An engine, shown in <a href="ch13.html#id12019">Figure 13-3</a>, has inputs derived from <a name="idch135"></a><span class="bold"><b>SoField</b></span> and outputs derived from <a name="idch136"></a><a name="idch137"></a><span class="bold"><b>SoEngineOutput</b></span>. Each engine evaluates a built-in function when its input values change. The resulting output values are then sent to all fields and engines connected to that engine. Because <span class="bold"><b>SoEngine </b></span>is derived from the <span class="bold"><b>SoBase</b></span> class, it includes methods for reading and writing to files.</p>
+<p><div class="figure"><p><a name="id5492748"></a><b>Figure 13-3. <a name="id12019"></a>Anatomy of an Engine</b></p>
+<div class="mediaobject"><img src="figures/13-1.gif"></div></div><br>
+</p>
+<p>For example, the engine shown in <a href="ch13.html#id12019">Figure 13-3</a> could represent <span class="bold"><b>SoComposeVec4f<a name="idch138"></a></b></span>, an engine that creates an <span class="bold"><b>SoMFVec4f</b></span> object. It has four inputs of type <span class="bold"><b>SoMFFloat</b></span> and one output of type<span class="bold"><b> SoMFVec4f</b></span>. This engine composes the four inputs into one <span class="bold"><b>SoMFVec4f</b></span> output.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5492871"></a><a name="id25624"></a>Types of Engines<a name="idch139"></a></h2></div></div>
+<p><a href="ch13.html#id16415">Figure 13-4</a> shows the class tree for engines, which can be grouped according to the kinds of operations they perform.</p>
+<p>Arithmetic engines are as follows:<a name="idch1310"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>SoCalculator</p>
+</li>
+<li><p>SoBoolOperation</p>
+</li>
+<li><p>SoInterpolateFloat, SoInterpolateRotation, SoInterpolateVec2f, SoInterpolateVec3f, SoInterpolateVec4f</p>
+</li>
+<li><p>SoTransformVec3f </p>
+</li>
+<li><p>SoComposeVec2f, SoDecomposeVec2f <br>
+SoComposeVec3f, SoDecomposeVec3f<br>
+SoComposeVec4f, SoDecomposeVec4f<br>
+SoComposeRotation, SoDecomposeRotation<br>
+SoComposeMatrix, SoDecomposeMatrix</p>
+</li>
+<li><p>SoComputeBoundingBox </p>
+</li>
+</ul></div><p>Animation engines are as follows:<a name="idch1311"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>SoElapsedTime</p>
+</li>
+<li><p>SoOneShot</p>
+</li>
+<li><p>SoTimeCounter</p>
+</li>
+</ul></div><p>Triggered engines are as follows:<a name="idch1312"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>SoCounter</p>
+</li>
+<li><p>SoOnOff</p>
+</li>
+<li><p>SoTriggerAny</p>
+</li>
+<li><p>SoGate</p>
+</li>
+</ul></div><p>Engines used for array manipulation are as follows:<a name="idch1313"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>SoSelectOne</p>
+</li>
+<li><p>SoConcatenate </p>
+<p><div class="figure"><p><a name="id5493094"></a><b>Figure 13-4. <a name="id16415"></a><a name="idch1314"></a>Engine Class Tree</b></p>
+<div class="mediaobject"><img src="figures/13.2Engines.gif"></div></div><br>
+</p>
+</li>
+</ul></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5493141"></a>Making Field Connections<a name="idch1315"></a></h2></div></div>
+<p>Use the <a name="idch1316"></a><span class="bold"><b>connectFrom() </b></span>method on <span class="bold"><b>SoField</b></span> to connect a field to another field or engine. When you connect fields of different types, the value of the input field is automatically converted to the new output field type. The syntax for connecting a field is as follows:</p>
+<p>void <span class="bold"><b>connectFrom</b></span>(SoField *<i>field</i>);</p>
+<p>void <span class="bold"><b>connectFrom</b></span>(SoEngineOutput *<i>engineOutput</i>);</p>
+<p>For example, to connect the <span class="bold"><b>orientation</b></span> field in an <span class="bold"><b>SoPerspective</b></span> camera to the <span class="bold"><b>rotation</b></span> field of an <span class="bold"><b>SoTransform</b></span>:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+<i>xform-&gt;rotation.connectFrom(&amp;pCamera-&gt;orientation);</i>
+</pre></td></tr></table><p>To connect the <span class="bold"><b>SoElapsedTime</b></span> engine to the <span class="bold"><b>string</b></span> field of an <span class="bold"><b>SoText3</b></span> node:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+<i>yourText-&gt;string.connectFrom(&amp;elapsedTime-&gt;timeOut);</i>
+</pre></td></tr></table><p>Suppose you connect two fields as shown in <a href="ch13.html#id29786">Figure 13-5</a>. In this example, the top arrow indicates that <i>fieldA</i> is the source field and <i>fieldB</i> is the destination field. The bottom arrow indicates that <i>fieldB</i> is the source field and <i>fieldA</i> is the destination field. Once you have set up this connection, whenever you change <i>fieldA</i>, <i>fieldB</i> changes. When you change <i>fieldB</i>, <i>fieldA</i> changes. You may be concerned that you've set up an infinite loop where the two fields continuously update each other. Actually, when the value in <i>fieldA</i> changes, <i>fieldB</i> changes. At this point, <i>fieldA</i> knows that it has already been changed and does not change again.</p>
+<p><div class="figure"><p><a name="id5493403"></a><b>Figure 13-5. <a name="id29786"></a>Field-to-Field Connections</b></p>
+<div class="mediaobject"><img src="figures/13-3.gif"></div></div><br>
+</p>
+<p>Use the <a name="idch1317"></a><span class="bold"><b>disconnect()</b></span> method to break a field connection (on the destination field), and use the <a name="idch1318"></a><span class="bold"><b>isConnected()</b></span> method to query whether a connection exists. Methods such as <a name="idch1319"></a><span class="bold"><b>setValue()</b></span> can also be called on a field that is connected from another field or engine. Whoever sets the field value last, wins.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5493493"></a>Multiple Connections</h3></div></div>
+<p>The term <a name="idch1320"></a><i>engine network</i> refers to the collection of engines and fields that are &#8220;wired together&#8221; in the scene graph. When planning larger engine networks, you may sometimes consider having multiple connections to a field or engine. The rule to follow is that a given field or engine can have only one incoming connection, but it can have multiple outgoing connections. <a href="ch13.html#id40240">Figure 13-6</a> illustrates this principle.</p>
+<p><div class="figure"><p><a name="id5493554"></a><b>Figure 13-6. <a name="id40240"></a>Multiple Outputs Are Allowed</b></p>
+<div class="mediaobject"><img src="figures/13-4.gif"></div></div><br>
+</p>
+<p>If you call <span class="bold"><b>connectFrom()</b></span> on a field or engine that has already been connected from a different source, the original connection is broken and the new connection is made. </p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5493588"></a>Field Conversion<a name="idch1321"></a></h3></div></div>
+<p>When you connect fields of different types, Inventor automatically converts values from one type to another. It performs the following conversions when necessary:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Any field type to String</p>
+</li>
+<li><p><span class="bold"><b>String</b></span> to any field type</p>
+</li>
+<li><p>Between any two of <span class="bold"><b>Bool</b></span>, <span class="bold"><b>Float</b></span>, <span class="bold"><b>Long</b></span>, <span class="bold"><b>Short</b></span>, <span class="bold"><b>ULong</b></span>, <span class="bold"><b>UShort</b></span></p>
+</li>
+<li><p>Between <span class="bold"><b>Color</b></span> and <span class="bold"><b>Vec3f</b></span></p>
+</li>
+<li><p>Between <span class="bold"><b>Float</b></span> and <span class="bold"><b>Time</b></span></p>
+</li>
+<li><p>Between <span class="bold"><b>Matrix</b></span> and <span class="bold"><b>Rotation</b></span></p>
+</li>
+<li><p>Between <span class="bold"><b>Name</b></span> and <span class="bold"><b>Enum</b></span></p>
+</li>
+<li><p>Between <span class="bold"><b>Rotation</b></span> and <span class="bold"><b>Vec4f</b></span> (quaternion)</p>
+</li>
+<li><p>From an <span class="bold"><b>MF</b></span> field to its <span class="bold"><b>SF</b></span> version, and from an <span class="bold"><b>SF</b></span> field to its <span class="bold"><b>MF</b></span> version</p>
+</li>
+</ul></div><p>Multiple-step conversions are not supported&#8212;that is, although you can convert directly from a <span class="bold"><b>Vec4f</b></span> to a <span class="bold"><b>Rotatio</b></span>n and a <span class="bold"><b>Rotation</b></span> to a <span class="bold"><b>Matrix</b></span>, you cannot convert from a <span class="bold"><b>Vec4f</b></span> to a <span class="bold"><b>Matrix</b></span>.</p>
+<p>If your program tries to connect a field to a field or engine output of a different type and no conversion between the types exists, the connection will not be made and a debugging error will occur. See <a name="idch1322"></a><i>The Inventor Toolmaker</i> for details on how to create your own field converter.</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5493940"></a>Reference Counting</h2></div></div>
+<p>Reference counting for engines is similar to that for nodes. Field-to-field connections, including connections from an engine's input to a field, do not increment any reference counts. Each engine-output-to-field connection increments the engine's reference count by 1. Similarly, removing an engine output's field connection decrements its reference count. If the last connection is removed, the reference count for that engine goes to 0 and it is deleted. To preserve the engine when you are disconnecting it, reference it. Also, be aware that field connections are broken when the node or engine containing the field is deleted. This, in turn, could cause a connected engine to be deleted as well.<a name="idch1323"></a></p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5493966"></a>Disabling a Connection</h2></div></div>
+<p>To temporarily disable a field connection, call <a name="idch1324"></a><span class="bold"><b>enableConnection</b></span>(FALSE) on the destination field or call <a name="idch1325"></a><span class="bold"><b>enable</b></span>(FALSE) on the engine output.</p>
+<p>This method is useful when you want to temporarily disable a large engine network. If you disconnect the field from the engine, that engine might be unreferenced to 0, and then mistakenly deleted. Disabling a field connection does not affect the engine's reference count. Use the <span class="bold"><b>isConnectionEnabled()</b></span> method to query whether a connection has been enabled.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5494055"></a>Updating Values<a name="idch1326"></a></h2></div></div>
+<p>When you change one value in an engine network, you can assume that all other values that depend on this value are updated at once. In fact, for efficiency, fields and inputs are marked when they are out of date, but they are updated only when their values are used. A complicated engine network, for example, could be connected to an unselected child of a switch group and never used. In this case, its values could be marked as needing to be updated but never actually reevaluated because the engine network is never traversed.</p>
+<p>Some engines, such as the gate and animation engines, can selectively control when their values are updated. Many of these engines use a field of type <a name="idch1327"></a><a name="idch1328"></a><span class="bold"><b>SoSFTrigger</b></span> that updates the output value one time only when the field is touched. See <a href="ch13.html#id12050">&#8220;Gate Engine&#8221;</a> for more information.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5494130"></a>Global Fields<a name="idch1329"></a></h2></div></div>
+<p>Global fields are fields in the Inventor database that you can access by name and that are not contained in any specific node or engine. One built-in global field is provided: the <span class="bold"><b>realTime</b></span> global field, which is of type <span class="bold"><b>SoSFTime</b></span>. This field contains the current real-clock time and can be connected to fields or engines to create clock-based animation. You can create additional global fields as required. If you were creating a key-frame animation editor, for example, you might want to create a &#8220;current frame&#8221; field that could be connected to various engines. Once the field is created, you use the standard field methods to connect it to other parts of the scene graph.<a name="idch1330"></a></p>
+<p>Use the <a name="idch1331"></a><span class="bold"><b>createGlobalField()</b></span> method of <span class="bold"><b>SoDB</b></span> to create a global field:</p>
+<p>static SoField *<span class="bold"><b>SoDB::createGlobalField</b></span>(const SbName &amp;<i>name</i>, <br>
+	SoType <i>type</i>);</p>
+<p>There can be only one global field with a given name. If there is already a field with the given name and type, it is returned. If there is already a field with the given name, but it is of an incompatible type, NULL is returned.</p>
+<p>The <a name="idch1332"></a><span class="bold"><b>getGlobalField()</b></span> method returns the global field with the given name:</p>
+<p>static SoField *<span class="bold"><b>SoDB::getGlobalField</b></span>(const SbName &amp;<i>name</i>);</p>
+<p>The type of the returned field can be checked using the field class's <span class="bold"><b>getTypeId()</b></span> method. For example, </p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+if (globalField-&gt;isOfType(SoSFFloat::getClassTypeId()) ...
+</pre></td></tr></table><p>An example of using the <span class="bold"><b>realTime</b></span> global field is</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+engineA-&gt;input1.connectFrom(SoDB::getGlobalField(&quot;realTime&quot;));
+</pre></td></tr></table><p><a href="ch13.html#id14207">Example 13-1</a> creates a digital clock that connects an <span class="bold"><b>SoText3</b></span> string to the <span class="bold"><b>realTime<a name="idch1333"></a></b></span> global field. <a href="ch13.html#id20510">Figure 13-7</a> shows the scene graph for this example. <a href="ch13.html#id21042">Figure 13-8</a> shows the digital clock.</p>
+<div class="example"><p><a name="id5494401"></a><b>Example 13-1. <a name="id14207"></a>Using the Real-Time Global Field</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt;
+#include &lt;Inventor/nodes/SoDirectionalLight.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoText3.h&gt;
+
+
+</pre></td></tr></table><p><div class="figure"><p><a name="id5494430"></a><b>Figure 13-7. <a name="id20510"></a>Scene Graph for the Digital Clock Example</b></p>
+<div class="mediaobject"><img src="figures/13-5.gif"></div></div><br>
+<div class="figure"><p><a name="id5494480"></a><b>Figure 13-8. <a name="id21042"></a>Digital Clock That Uses the Real-Time Global Field</b></p>
+<div class="mediaobject"><img src="figures/13.8.ex.13.1.gif"></div></div><br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+main(int , char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);  
+   if (myWindow == NULL) 
+      exit(1);     
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+   
+   // Add a camera, light, and material
+   SoPerspectiveCamera *myCamera = new SoPerspectiveCamera;
+   root-&gt;addChild(myCamera);
+   root-&gt;addChild(new SoDirectionalLight);
+   SoMaterial *myMaterial = new SoMaterial;
+   myMaterial-&gt;diffuseColor.setValue(1.0, 0.0, 0.0);   
+   root-&gt;addChild(myMaterial);
+
+   // Create a Text3 object, and connect to the realTime field
+   SoText3 *myText = new SoText3;
+   root-&gt;addChild(myText);
+   myText-&gt;string.connectFrom(SoDB::getGlobalField(&quot;realTime&quot;));
+
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+   myCamera-&gt;viewAll(root, myRenderArea-&gt;getSize());
+   myRenderArea-&gt;setSceneGraph(root);
+   myRenderArea-&gt;setTitle(&quot;Date &amp; Time&quot;);
+   myRenderArea-&gt;show();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5494550"></a>Animation Engines<a name="idch1334"></a></h2></div></div>
+<p>The following engines can be used to animate objects in the scene graph. Each of these engines has a<span class="bold"><b> timeIn<a name="idch1335"></a></b></span> field, which is connected automatically to the <span class="bold"><b>realTime</b></span> global field when the engine is constructed. This field can, however, be connected to any other time source.</p>
+<div class="itemizedlist"><ul type="disc"><li><p><span class="bold"><b>SoElapsedTime<a name="idch1336"></a></b></span>&#8212;functions as a stopwatch; outputs the time that has elapsed since it started running.</p>
+</li>
+<li><p><span class="bold"><b>SoOneShot<a name="idch1337"></a></b></span>&#8212;runs for a preset amount of time, then stops.</p>
+</li>
+<li><p><span class="bold"><b>SoTimeCounter<a name="idch1338"></a></b></span>&#8212;cycles from a minimum count to a maximum count at a given frequency.</p>
+</li>
+</ul></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5494646"></a>Elapsed-Time Engine</h3></div></div>
+<p>The elapsed-time engine is a basic controllable time source. You can start, stop, reset, pause, and control the speed of this engine. If you pause it (by setting the <a name="idch1339"></a><span class="bold"><b>pause</b></span> field to TRUE), it stops updating its <span class="bold"><b>timeOut</b></span> field, but it keeps counting internally. When you turn off the pause, it jumps to its current position without losing time.</p>
+<p><a href="ch13.html#id72810">Example 13-2</a> uses the output from an elapsed time engine to control the translation of a figure. The resulting effect is that the figure slides across the scene. <a href="ch13.html#id37613">Figure 13-9</a> shows the scene graph for this example. The <span class="bold"><b>timeOut</b></span> output of the elapsed time engine (<i>myCounter</i>) is connected to an <span class="bold"><b>SoComposeVec3f</b></span> engine (<i>slideDistance</i>). This second engine inserts the <span class="bold"><b>timeOut</b></span> value into the <i>x</i> slot of a vector. Once the value is in vector format, it can be connected to the <span class="bold"><b>translation</b></span> field of the <i>slideTranslation</i> node. </p>
+<p>Note that the <span class="bold"><b>timeOut</b></span> value is an <span class="bold"><b>SoSFTime</b></span>, but the <span class="bold"><b>SoComposeVec3f</b></span> engine requires inputs of type <span class="bold"><b>SoSFFloat</b></span>.  Inventor performs this conversion automatically for you, converting the time to a number of seconds.<a name="idch1340"></a></p>
+<p><div class="figure"><p><a name="id5494835"></a><b>Figure 13-9. <a name="id37613"></a>Scene Graph for Elapsed-Time Engine Example</b></p>
+<div class="mediaobject"><img src="figures/13-7.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5494856"></a><b>Example 13-2. <a name="id72810"></a>Using an Elapsed-Time Engine</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   // Set up transformations
+   SoTranslation *slideTranslation = new SoTranslation;
+   root-&gt;addChild(slideTranslation);
+   SoTransform *initialTransform = new SoTransform;
+   initialTransform-&gt;translation.setValue(-5., 0., 0.);
+   initialTransform-&gt;scaleFactor.setValue(10., 10., 10.);
+   initialTransform-&gt;rotation.setValue(SbVec3f(1,0,0), M_PI/2.);
+   root-&gt;addChild(initialTransform);
+
+   // Read the figure object from a file and add to the scene
+   SoInput myInput;
+   if (!myInput.openFile(&quot;jumpyMan.iv&quot;)) 
+      return (1);
+   SoSeparator *figureObject = SoDB::readAll(&amp;myInput);
+   if (figureObject == NULL) 
+      return (1);
+   root-&gt;addChild(figureObject);
+
+   // Make the X translation value change over time.
+   SoElapsedTime *myCounter = new SoElapsedTime;
+   SoComposeVec3f *slideDistance = new SoComposeVec3f;
+   slideDistance-&gt;x.connectFrom(&amp;myCounter-&gt;timeOut);
+   slideTranslation-&gt;translation.connectFrom(
+            &amp;slideDistance-&gt;vector);
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5494901"></a>One-Shot Engine<a name="idch1341"></a></h3></div></div>
+<p>The <a name="idch1342"></a><span class="bold"><b>SoOneShot</b></span> engine is started when its <span class="bold"><b>trigger</b></span> input is touched (with either <span class="bold"><b>touch()</b></span> or <span class="bold"><b>setValue()</b></span>). It runs for the specified <span class="bold"><b>duration</b></span>, updating its <span class="bold"><b>timeOut</b></span> field until it reaches the duration time. The <span class="bold"><b>ramp</b></span> output, a float value from 0.0 (when the trigger starts) to 1.0 (when the duration is reached), is provided as a convenience. For example, the <span class="bold"><b>ramp</b></span> output of a one-shot engine could be connected to the <span class="bold"><b>alpha</b></span> input of a rotation interpolation to make a door open. </p>
+<p>This engine has two flags stored in an <a name="idch1343"></a><span class="bold"><b>SoSFBitMask</b></span> field. The Retriggerable flag specifies whether to start the cycle over if a trigger occurs in the middle of a cycle. If this flag is not set (the default), the trigger is ignored and the cycle is finished. If this flag is set, the cycle restarts when a trigger occurs.<a name="idch1344"></a></p>
+<p>The Hold_Final flag specifies what happens at the end of the cycle.  If this flag is not set (the default), all outputs return to 0 when the cycle finishes. If this flag is set, the <a name="idch1345"></a><span class="bold"><b>isActive</b></span> output returns to 0, but <span class="bold"><b>ramp</b></span> and <span class="bold"><b>timeOut</b></span> stay at their final values.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5495092"></a>Time-Counter Engine</h3></div></div>
+<p>The <a name="idch1346"></a><span class="bold"><b>SoTimeCounter</b></span> engine counts from a minimum count (<span class="bold"><b>min</b></span>) to a maximum count (<span class="bold"><b>max</b></span>). The value for <span class="bold"><b>step</b></span> indicates how the timer counts (the default is in increments of 1). The <span class="bold"><b>frequency</b></span> input specifies the number of min-to-max cycles per second. </p>
+<p>Unlike the one-shot and elapsed-time engines, the time-counter engine does not output a time; it outputs the current <i>count</i>. Each time the time counter starts a cycle, it triggers its <span class="bold"><b>syncOut</b></span> output. This output can be used to synchronize one of the triggered engines with some other event.</p>
+<p><a href="ch13.html#id15132">Example 13-3</a> uses the output from two time-counter engines to control the horizontal and vertical motion of a figure.  The resulting effect is that the figure jumps across the screen.<a name="idch1347"></a></p>
+<p>This example creates three engines, as shown in <a href="ch13.html#id30456">Figure 13-10</a>. The output of the <i>jumpWidthCounter</i> (a time counter engine) is connected to the <i>x</i> input of the <i>jump</i> engine (an <span class="bold"><b>SoComposeVec3f</b></span> engine). The output of the <i>jumpHeightCounter</i> (another time counter engine) is connected to the <i>y</i> input of the <i>jump</i> engine.  The <i>jump</i> engine composes a vector using the <i>x</i> and <i>y</i> inputs, and then feeds this vector into the <span class="bold"><b>translation</b></span> field of the <i>jumpTranslation</i> node. <a href="ch13.html#id35505">Figure 13-11</a> shows scenes from this example.</p>
+<p><div class="figure"><p><a name="id5495318"></a><b>Figure 13-10. <a name="id30456"></a>Scene Graph for the Time-Counter Example</b></p>
+<div class="mediaobject"><img src="figures/13-8.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5495358"></a><b>Example 13-3. <a name="id15132"></a>Using Time-Counter Engines</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Set up transformations
+SoTranslation *jumpTranslation = new SoTranslation;
+root-&gt;addChild(jumpTranslation);
+SoTransform *initialTransform = new SoTransform;
+initialTransform-&gt;translation.setValue(-20., 0., 0.);
+initialTransform-&gt;scaleFactor.setValue(40., 40., 40.);
+initialTransform-&gt;rotation.setValue(SbVec3f(1,0,0), M_PI/2.);
+root-&gt;addChild(initialTransform);
+
+// Read the man object from a file and add to the scene
+SoInput myInput;
+if (!myInput.openFile(&quot;jumpyMan.iv&quot;)) 
+   return (1);
+SoSeparator *manObject = SoDB::readAll(&amp;myInput);
+if (manObject == NULL) 
+   return (1);
+root-&gt;addChild(manObject);
+
+</pre></td></tr></table><p><div class="figure"><p><a name="id5495401"></a><b>Figure 13-11. <a name="id35505"></a>Controlling an Object's Movement Using Time-Counter Engines</b></p>
+<div class="mediaobject"><img src="figures/ch13-8.gif"></div></div><br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+
+// Create two counters, and connect to X and Y translations.
+// The Y counter is small and high frequency.
+// The X counter is large and low frequency.
+// This results in small jumps across the screen,
+// left to right, again and again and again.
+SoTimeCounter *jumpHeightCounter = new SoTimeCounter;
+SoTimeCounter *jumpWidthCounter = new SoTimeCounter;
+SoComposeVec3f *jump = new SoComposeVec3f;
+   
+jumpHeightCounter-&gt;max = 4;
+jumpHeightCounter-&gt;frequency = 1.5;
+jumpWidthCounter-&gt;max = 40;
+jumpWidthCounter-&gt;frequency = 0.15;
+   
+jump-&gt;x.connectFrom(&amp;jumpWidthCounter-&gt;output);
+jump-&gt;y.connectFrom(&amp;jumpHeightCounter-&gt;output);
+jumpTranslation-&gt;translation.connectFrom(&amp;jump-&gt;vector);
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5495480"></a><a name="id12050"></a>Gate Engine</h2></div></div>
+<p>This section discusses the <a name="idch1348"></a><i>gate</i> <i>engine</i>, which provides a convenient mechanism for selectively copying values from input to output. It also introduces the <i>enable</i> field and the <i>trigger</i> field, used by other engines.</p>
+<p>By default, each time a value in an engine network changes, the new value propagates through the network. If a value is constantly changing, however, you may not want this change to propagate continuously through the scene graph. In this case, you might want to sample the value at regular intervals, or update the value only when a certain event occurs. Use the gate engine to control when such values are sent to the rest of the scene graph.</p>
+<p>When you construct the gate engine, you pass in the type of its input and output fields. This type must be the type of a multiple-value field. (If you want to gate a single-value field, just pass in the corresponding multiple-<br>
+value type and Inventor will automatically convert it.) Other engines with similar constructors are <a name="idch1349"></a><span class="bold"><b>SoSelectOne</b></span> and <span class="bold"><b>SoConcatenate</b></span>.</p>
+<p><span class="bold"><b>SoGate</b></span> has these two inputs:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>enable </b></span>(SoSFBool)</span></td><td width="10"> </td><td><p>allows continuous flow of updated values</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>trigger </b></span>(SoSFTrigger)</span></td><td width="10"> </td><td><p><br>
+copies a single value</p>
+
+</td></tr></table></div><p>When the <span class="bold"><b>enable</b></span> field is TRUE, data is allowed to be copied to the engine output each time a new value is received as input. To send only one value to the engine output, set the <span class="bold"><b>enable</b></span> field to FALSE and use the <span class="bold"><b>trigger</b></span> field to send the value. When the <span class="bold"><b>trigger</b></span> field is touched, one value is sent. The <span class="bold"><b>trigger</b></span> field is touched by calling either <a name="idch1350"></a><span class="bold"><b>touch()</b></span> or <span class="bold"><b>setValue()</b></span> on it. <a href="ch13.html#id39431">Example 13-4</a> connects an elapsed time engine (<i>myCounter</i>) to a gate engine (<i>myGate</i>). Pressing the mouse button enables and disables the gate engine, which in turn controls the motion of a duck in the scene. The scene graph for this example is shown in <a href="ch13.html#id36925">Figure 13-12</a>.</p>
+<p><div class="figure"><p><a name="id5495716"></a><b>Figure 13-12. <a name="id36925"></a>Scene Graph for Gate Engine Example</b></p>
+<div class="mediaobject"><img src="figures/13-10.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5495786"></a><b>Example 13-4. <a name="id39431"></a><a name="idch1351"></a>Using a Gate Engine</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Duck group
+SoSeparator *duck = new SoSeparator;
+root-&gt;addChild(duck);
+
+// Read the duck object from a file and add to the group
+SoInput myInput;
+if (!myInput.openFile(&quot;duck.iv&quot;)) 
+   return (1);
+SoSeparator *duckObject = SoDB::readAll(&amp;myInput);
+if (duckObject == NULL) 
+   return (1);
+
+// Set up the duck transformations
+SoRotationXYZ *duckRotXYZ = new SoRotationXYZ;
+duck-&gt;addChild(duckRotXYZ);
+SoTransform *initialTransform = new SoTransform;
+initialTransform-&gt;translation.setValue(0., 0., 3.);
+initialTransform-&gt;scaleFactor.setValue(6., 6., 6.);
+duck-&gt;addChild(initialTransform);
+
+duck-&gt;addChild(duckObject);
+
+// Update the rotation value if the gate is enabled.
+SoGate *myGate = new SoGate(SoMFFloat::getClassTypeId());
+SoElapsedTime *myCounter = new SoElapsedTime;
+myGate-&gt;input-&gt;connectFrom(&amp;myCounter-&gt;timeOut); 
+duckRotXYZ-&gt;axis = SoRotationXYZ::Y;  // rotate about Y axis
+duckRotXYZ-&gt;angle.connectFrom(myGate-&gt;output);
+
+// Add an event callback to catch mouse button presses.
+// Each button press will enable or disable the duck motion.
+SoEventCallback *myEventCB = new SoEventCallback;
+myEventCB-&gt;addEventCallback(
+         SoMouseButtonEvent::getClassTypeId(),
+         myMousePressCB, myGate);
+root-&gt;addChild(myEventCB);
+
+...
+
+// This routine is called for every mouse button event.
+void
+myMousePressCB(void *userData, SoEventCallback *eventCB)
+{
+   SoGate *gate = (SoGate *) userData;
+   const SoEvent *event = eventCB-&gt;getEvent();
+   // Check for mouse button being pressed
+   if (SO_MOUSE_PRESS_EVENT(event, ANY)) {
+
+      // Toggle the gate that controls the duck motion
+      if (gate-&gt;enable.getValue()) 
+         gate-&gt;enable.setValue(FALSE);
+      else 
+         gate-&gt;enable.setValue(TRUE);
+
+      eventCB-&gt;setHandled();
+   } 
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5495859"></a>Arithmetic Engines</h2></div></div>
+<p>By convention, all inputs and outputs for the arithmetic engines in Inventor are multiple-value (<a name="idch1352"></a><span class="bold"><b>MF</b></span>) fields. If you supply a value of type <span class="bold"><b>SoSF</b></span>, it is automatically converted to an <span class="bold"><b>MF</b></span> field. Another important feature is that if you supply an array of values for one of the inputs, the output will also be an array (an <span class="bold"><b>MF</b></span> value). If an engine has more than one input, some inputs may have more values than others. For example, <span class="bold"><b>input1</b></span> might have five values and <span class="bold"><b>input2</b></span> might have only three values. In such cases, the last value of the field with fewer values is repeated as necessary to fill out the array. (Here, the third value of <span class="bold"><b>input2</b></span> would be repeated two more times.)</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5495930"></a>Boolean Engine</h3></div></div>
+<p>As shown in <a href="ch13.html#id15059">Figure 13-13</a>, the Boolean engine, <a name="idch1353"></a><span class="bold"><b>SoBoolOperation</b></span>, has two Boolean inputs (<span class="bold"><b>a</b></span> and <span class="bold"><b>b</b></span>) and one <span class="bold"><b>SoSFEnum</b></span> input (<span class="bold"><b>operation</b></span>) that describes the operation to be performed. </p>
+<p><div class="figure"><p><a name="id5496006"></a><b>Figure 13-13. <a name="id15059"></a>SoBoolOperation Engine</b></p>
+<div class="mediaobject"><img src="figures/13-11.gif"></div></div><br>
+</p>
+<p>The value for <span class="bold"><b>operation</b></span> can be one of the following:</p>
+<div class="informaltable"><table border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p><span class="bold"><b>Operation</b></span></p>
+</th><th valign="top"><p><span class="bold"><b>Output Is TRUE If</b></span></p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>CLEA</p>
+
+R<p> </p>
+</td><td valign="top"><p>never TRUE</p>
+</td></tr><tr valign="top"><td valign="top"><p>SET</p>
+</td><td valign="top"><p>always TRUE</p>
+</td></tr><tr valign="top"><td valign="top"><p>A</p>
+</td><td valign="top"><p>A is TRUE</p>
+</td></tr><tr valign="top"><td valign="top"><p>NOT_A</p>
+</td><td valign="top"><p>A is FALSE</p>
+</td></tr><tr valign="top"><td valign="top"><p>B</p>
+</td><td valign="top"><p>B is TRUE</p>
+</td></tr><tr valign="top"><td valign="top"><p>NOT_B</p>
+</td><td valign="top"><p>B is FALSE</p>
+</td></tr><tr valign="top"><td valign="top"><p>A_OR_B</p>
+</td><td valign="top"><p>A is TRUE or B is TRUE</p>
+</td></tr><tr valign="top"><td valign="top"><p>NOT_A_OR_B</p>
+</td><td valign="top"><p>A is FALSE or B is TRUE</p>
+</td></tr><tr valign="top"><td valign="top"><p>A_OR_NOT_B</p>
+</td><td valign="top"><p>A is TRUE or B is FALSE</p>
+</td></tr><tr valign="top"><td valign="top"><p>NOT_A_OR_NOT_B</p>
+</td><td valign="top"><p>A is FALSE or B is FALSE</p>
+</td></tr><tr valign="top"><td valign="top"><p>A_AND_B</p>
+</td><td valign="top"><p>A and B are TRUE</p>
+</td></tr><tr valign="top"><td valign="top"><p>NOT_A_AND_B</p>
+</td><td valign="top"><p>A is FALSE and B is TRUE</p>
+</td></tr><tr valign="top"><td valign="top"><p>A_AND_NOT_B</p>
+</td><td valign="top"><p>A is TRUE and B is FALSE</p>
+</td></tr><tr valign="top"><td valign="top"><p>NOT_A_AND_NOT_B</p>
+</td><td valign="top"><p>A and B are FALSE</p>
+</td></tr><tr valign="top"><td valign="top"><p>A_EQUALS_B</p>
+</td><td valign="top"><p>A equals B</p>
+</td></tr><tr valign="top"><td valign="top"><p>A_NOT_EQUALS_B</p>
+</td><td valign="top"><p>A does not equal B</p>
+</td></tr></tbody></table></div><p>This engine has two outputs, <span class="bold"><b>output</b></span> and <span class="bold"><b>inverse</b></span>. The <span class="bold"><b>inverse</b></span> field is TRUE if <span class="bold"><b>output</b></span> is FALSE, and vice versa. If either of the inputs contains an array of values (they are of type <span class="bold"><b>SoMFBool</b></span>), the output will also contain an array of values.</p>
+<p><a href="ch13.html#id68392">Example 13-5</a> modifies <a href="ch13.html#id39431">Example 13-4</a> and adds a Boolean engine to make the motion of the smaller duck depend on the motion of the larger duck. The smaller duck moves when the larger duck is still. <a name="idch1354"></a><a href="ch13.html#id75114">Figure 13-14</a> shows an image created by this example.</p>
+<p><div class="figure"><p><a name="id5496555"></a><b>Figure 13-14. <a name="id75114"></a>Swimming Ducks Controlled by a Boolean Engine</b></p>
+<div class="mediaobject"><img src="figures/13.14.ex.13.5.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5496576"></a><b>Example 13-5. <a name="id68392"></a>Using a Boolean Engine</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Bigger duck group
+SoSeparator *bigDuck = new SoSeparator;
+root-&gt;addChild(bigDuck);
+SoRotationXYZ *bigDuckRotXYZ = new SoRotationXYZ;
+bigDuck-&gt;addChild(bigDuckRotXYZ);
+SoTransform *bigInitialTransform = new SoTransform;
+bigInitialTransform-&gt;translation.setValue(0., 0., 3.5);
+bigInitialTransform-&gt;scaleFactor.setValue(6., 6., 6.);
+bigDuck-&gt;addChild(bigInitialTransform);
+bigDuck-&gt;addChild(duckObject);
+
+// Smaller duck group
+SoSeparator *smallDuck = new SoSeparator;
+root-&gt;addChild(smallDuck);
+SoRotationXYZ *smallDuckRotXYZ = new SoRotationXYZ;
+smallDuck-&gt;addChild(smallDuckRotXYZ);
+SoTransform *smallInitialTransform = new SoTransform;
+smallInitialTransform-&gt;translation.setValue(0., -2.24, 1.5);
+smallInitialTransform-&gt;scaleFactor.setValue(4., 4., 4.);
+smallDuck-&gt;addChild(smallInitialTransform);
+smallDuck-&gt;addChild(duckObject);
+
+// Use a gate engine to start/stop the rotation of 
+// the bigger duck.
+SoGate *bigDuckGate = 
+         new SoGate(SoMFFloat::getClassTypeId());
+SoElapsedTime *bigDuckTime = new SoElapsedTime;
+bigDuckGate-&gt;input-&gt;connectFrom(&amp;bigDuckTime-&gt;timeOut); 
+bigDuckRotXYZ-&gt;axis = SoRotationXYZ::Y;
+bigDuckRotXYZ-&gt;angle.connectFrom(bigDuckGate-&gt;output);
+
+// Each mouse button press will enable/disable the gate 
+// controlling the bigger duck.
+SoEventCallback *myEventCB = new SoEventCallback;
+myEventCB-&gt;addEventCallback(
+         SoMouseButtonEvent::getClassTypeId(),
+         myMousePressCB, bigDuckGate);
+root-&gt;addChild(myEventCB);
+
+// Use a Boolean engine to make the rotation of the smaller
+// duck depend on the bigger duck.  The smaller duck moves
+// only when the bigger duck is still.
+SoBoolOperation *myBoolean = new SoBoolOperation;
+myBoolean-&gt;a.connectFrom(&amp;bigDuckGate-&gt;enable);
+myBoolean-&gt;operation = SoBoolOperation::NOT_A;
+
+SoGate *smallDuckGate = new
+         SoGate(SoMFFloat::getClassTypeId());
+SoElapsedTime *smallDuckTime = new SoElapsedTime;
+smallDuckGate-&gt;input-&gt;connectFrom(&amp;smallDuckTime-&gt;timeOut); 
+smallDuckGate-&gt;enable.connectFrom(&amp;myBoolean-&gt;output); 
+smallDuckRotXYZ-&gt;axis = SoRotationXYZ::Y;
+smallDuckRotXYZ-&gt;angle.connectFrom(smallDuckGate-&gt;output);
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5496678"></a>Calculator Engine</h3></div></div>
+<p>The calculator engine, <a name="idch1355"></a><span class="bold"><b>SoCalculator</b></span>, is similar to the Boolean engine, but it handles a wider range of operations and has more inputs and outputs. As shown in <a href="ch13.html#id15059">Figure 13-13</a>, this engine has the following inputs and outputs:</p>
+<div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr valign="top"><td valign="top"><p><span class="bold"><b>Inputs</b></span></p>
+</td><td valign="top"><p>SoMFFloat</p>
+</td><td valign="top"><p>a, b, c, d, e, f, g, h</p>
+</td></tr><tr valign="top"><td valign="top"><p> </p>
+</td><td valign="top"><p>SoMFVec3f</p>
+</td><td valign="top"><p>A, B, C, D, E, F, G, H</p>
+</td></tr><tr valign="top"><td valign="top"><p> </p>
+</td><td valign="top"><p>SoMFString</p>
+</td><td valign="top"><p>expression</p>
+</td></tr><tr valign="top"><td valign="top"><p> </p>
+</td><td valign="top"><p> </p>
+</td><td valign="top"><p> </p>
+</td></tr><tr valign="top"><td valign="top"><p><span class="bold"><b>Outputs</b></span></p>
+</td><td valign="top"><p>SoEngineOutput</p>
+</td><td valign="top"><p>oa, ob, oc, od (SoMFFloat)</p>
+</td></tr><tr valign="top"><td valign="top"><p> </p>
+</td><td valign="top"><p>SoEngineOutput</p>
+</td><td valign="top"><p>oA, oB, oC, oD (SoMFVec3f)</p>
+</td></tr></tbody></table></div><p>The <span class="bold"><b>expression</b></span> input, shown at the bottom of the engine, is of type <span class="bold"><b>SoMFString</b></span> and is of the form:</p>
+<p>&#8220;<i>lhs</i> = <i>rhs</i>&#8221;</p>
+<p><i>lhs</i> (lefthand side) can be any one of the outputs or a temporary variable. This engine provides eight temporary floating-point variables (ta &#8211; th) and eight temporary vector variables (tA &#8211; tH).<a name="idch1356"></a></p>
+<p><i>rhs</i> (righthand side) supports the following operators:</p>
+<div class="informaltable"><table border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>Type of Operator</p>
+</th><th valign="top"><p>Example</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>Binary operators</p>
+</td><td valign="top"><p>+  -  *  /  &lt;  &gt;  &gt;=  &lt;=  ==  !=  &amp;&amp;  ||</p>
+</td></tr><tr valign="top"><td valign="top"><p>Unary operators</p>
+</td><td valign="top"><p>-  !</p>
+</td></tr><tr valign="top"><td valign="top"><p>Ternary operator</p>
+</td><td valign="top"><p><i>cond</i>  ?  <i>trueexpr</i>  : <i>falseexpr</i></p>
+</td></tr><tr valign="top"><td valign="top"><p>Parentheses</p>
+</td><td valign="top"><p>( <i>expr</i> )</p>
+</td></tr><tr valign="top"><td valign="top"><p>Vector indexing</p>
+</td><td valign="top"><p><i>vec</i>  [<i>int</i>]</p>
+</td></tr><tr valign="top"><td valign="top"><p>Functions</p>
+</td><td valign="top"><p>func( <i>expr</i>, ... )</p>
+</td></tr><tr valign="top"><td valign="top"><p>Terms</p>
+</td><td valign="top"><p>integer or floating-point constants; named 
+constants such as MAXFLOAT, 
+MINFLOAT, M_LOG2E, M_PI; the names 
+of the calculator engine's inputs, outputs, 
+and temporary variables (a, b, A, B, oa, ob, 
+ta, tb, tA, tB, and so on)</p>
+</td></tr></tbody></table></div><p><div class="figure"><p><a name="id5497234"></a><b>Figure 13-15. <a name="id15059"></a>SoCalculator Engine</b></p>
+<div class="mediaobject"><img src="figures/13-13.gif"></div></div><br>
+</p>
+<p>See the <i>Open Inventor C++ Reference Manual</i> for detailed information on using these operators.</p>
+<p>Here is a simple example of using the calculator engine. It uses the following inputs and outputs:</p>
+<div class="informaltable"><table border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>Inputs</p>
+</th><th valign="top"><p>Outputs</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>2 vectors (A, B)</p>
+</td><td valign="top"><p>oA (f times the negation of the cross 
+product of A and B)</p>
+</td></tr><tr valign="top"><td valign="top"><p>2 scalars (a, f)</p>
+</td><td valign="top"><p>oa (convert a from degrees to radians)</p>
+</td></tr></tbody></table></div><p>To specify the expression for a calculator engine called <i>calc</i>, the code would be</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+calc-&gt;expression.set1Value(0, &quot;oa = a * M_PI / 180&quot;);
+calc-&gt;expression.set1Value(1, &quot;oA = -f * cross(A, B)&quot;);
+</pre></td></tr></table><p>Multiple expressions are evaluated in order, so a variable assigned a value in an earlier expression can be used in the righthand side of a later expression. Several expressions can be specified in one string, separated by semicolons.</p>
+<p>The expressions can also operate on arrays. If one input contains fewer values than another input, the last value is replicated as necessary to fill out the array. All the expressions will be applied to all elements of the arrays. For example, if input <i>a</i> contains multiple values and input <i>b</i> contains the value 1.0, then the expression &#8220;oa = a + b&#8221; will add 1 to all of the elements in <i>a</i>.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5497448"></a>Using the Calculator to Constrain Object Behavior</h3></div></div>
+<p><a href="ch13.html#id47756">Example 13-6</a> shows using the calculator engine to move a flower along a path. The calculator engine computes a closed, planar curve. The output of the engine is connected to the translation applied to a flower object, which then moves along the path of the curve. <a name="idch1357"></a><a href="ch13.html#id14337">Figure 13-16</a> shows the scene graph for this example. The dancing flower is shown in <a href="ch13.html#id11581">Figure 13-17</a>.</p>
+<p><div class="figure"><p><a name="id5497495"></a><b>Figure 13-16. <a name="id14337"></a>Scene Graph for Calculator Engine Example</b></p>
+<div class="mediaobject"><img src="figures/13-14.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5497516"></a><b>Example 13-6. <a name="id47756"></a>Using a Calculator Engine</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Flower group
+SoSeparator *flowerGroup = new SoSeparator;
+root-&gt;addChild(flowerGroup);
+
+// Read the flower object from a file and add to the group
+if (!myInput.openFile(&quot;flower.iv&quot;)) 
+   exit(1);
+SoSeparator *flower= SoDB::readAll(&amp;myInput);
+if (flower == NULL) 
+   exit(1);
+
+// Set up the flower transformations
+SoTranslation *danceTranslation = new SoTranslation;
+SoTransform *initialTransform = new SoTransform;
+flowerGroup-&gt;addChild(danceTranslation);
+initialTransform-&gt;scaleFactor.setValue(10., 10., 10.);
+initialTransform-&gt;translation.setValue(0., 0., 5.);
+flowerGroup-&gt;addChild(initialTransform);
+flowerGroup-&gt;addChild(flower);
+
+</pre></td></tr></table><p><div class="figure"><p><a name="id5497577"></a><b>Figure 13-17. <a name="id11581"></a>Using a Calculator Engine to Constrain an Object's Movement</b></p>
+<div class="mediaobject"><img src="figures/ch13-12.gif"></div></div><br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+
+// Set up an engine to calculate the motion path:
+// r = 5*cos(5*theta); x = r*cos(theta); z = r*sin(theta)
+// Theta is incremented using a time counter engine,
+// and converted to radians using an expression in
+// the calculator engine.
+SoCalculator *calcXZ = new SoCalculator; 
+SoTimeCounter *thetaCounter = new SoTimeCounter;
+
+thetaCounter-&gt;max = 360;
+thetaCounter-&gt;step = 4;
+thetaCounter-&gt;frequency = 0.075;
+
+calcXZ-&gt;a.connectFrom(&amp;thetaCounter-&gt;output);    
+calcXZ-&gt;expression.set1Value(0, &quot;ta=a*M_PI/180&quot;);   // theta
+calcXZ-&gt;expression.set1Value(1, &quot;tb=5*cos(5*ta)&quot;);  // r
+calcXZ-&gt;expression.set1Value(2, &quot;td=tb*cos(ta)&quot;);   // x 
+calcXZ-&gt;expression.set1Value(3, &quot;te=tb*sin(ta)&quot;);   // z 
+calcXZ-&gt;expression.set1Value(4, &quot;oA=vec3f(td,0,te)&quot;); 
+danceTranslation-&gt;translation.connectFrom(&amp;calcXZ-&gt;oA);
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5497637"></a><i>Nodes Used for Animation</i></h2></div></div>
+<p>Engines are usually connected to nodes.  You can, though, create a node class that has built-in engines automatically connected to it.  Here are some examples that Inventor provides. These nodes provide a convenient mechanism for adding animation to a scene graph:<a name="idch1358"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p><span class="bold"><b>SoRotor<a name="idch1359"></a></b></span> is a transformation node that spins the rotation angle while keeping the axis constant.</p>
+</li>
+<li><p><span class="bold"><b>SoPendulum<a name="idch1360"></a></b></span> is a transformation node that oscillates between two rotations.</p>
+</li>
+<li><p><span class="bold"><b>SoShuttle<a name="idch1361"></a></b></span> is a transformation node that oscillates between two translations.</p>
+</li>
+<li><p><span class="bold"><b>SoBlinker<a name="idch1362"></a></b></span> is a switch node that cycles through its children.</p>
+</li>
+</ul></div><p>Let's look at examples of rotor and blinker nodes.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5497764"></a>Rotor Node<a name="idch1363"></a></h3></div></div>
+<p>The <span class="bold"><b>SoRotor</b></span>  node, derived from <span class="bold"><b>SoRotation</b></span>, changes the angle of rotation at a specified speed. You can use an <span class="bold"><b>SoRotor</b></span> node any place you would use an <span class="bold"><b>SoRotation</b></span>. It has these fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>rotation </b></span>(SoSFRotation)</span></td><td width="10"> </td><td><p><br>
+specifies the rotation (axis and initial angle). The angle changes when the rotor spins.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>speed</b></span> (SoSFFloat)</span></td><td width="10"> </td><td><p>specifies the number of cycles per second.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>on</b></span> (SoSFBool)</span></td><td width="10"> </td><td><p>TRUE to run, FALSE to stop. The default is TRUE.</p>
+
+</td></tr></table></div><p>The number of times a second it is updated depends on the application. This node contains an engine that is connected to the real-time global field. <a href="ch13.html#id72836">Example 13-7</a> illustrates how you could use this node to rotate the vanes of a windmill.  It specifies the rotation and speed for the rotor node and adds it to the scene graph before the windmill vanes, as shown in <a href="ch13.html#id15399">Figure 13-18</a>. The rotation axis of the windmill vanes is (0.0, 0.0, 1.0) and the initial angle is 0.0. This rotation angle is updated automatically by the rotor node.</p>
+<div class="example"><p><a name="id5497919"></a><b>Example 13-7. <a name="id72836"></a><a name="idch1364"></a>A Spinning Windmill Using an SoRotor Node</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/SoInput.h&gt;
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoRotor.h&gt;
+
+SoSeparator *
+readFile(const char *filename)
+{
+   // Open the input file
+   SoInput mySceneInput;
+   if (!mySceneInput.openFile(filename)) {
+      fprintf(stderr, &quot;Cannot open file %s\n&quot;, filename);
+      return NULL;
+   }
+</pre></td></tr></table><p><div class="figure"><p><a name="id5497982"></a><b>Figure 13-18. <a name="id15399"></a>Scene Graph for Rotor Node Example</b></p>
+<div class="mediaobject"><img src="figures/13-16.gif"></div></div><br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+
+   // Read the whole file into the database
+   SoSeparator *myGraph = SoDB::readAll(&amp;mySceneInput);
+   if (myGraph == NULL) {
+      fprintf(stderr, &quot;Problem reading file\n&quot;);
+      return NULL;
+   } 
+
+   mySceneInput.closeFile();
+   return myGraph;
+}
+
+main(int, char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+
+   // Read in the data for the windmill tower
+   SoSeparator *windmillTower = 
+            readFile(&quot;windmillTower.iv&quot;);
+   root-&gt;addChild(windmillTower);
+
+   // Add a rotor node to spin the vanes
+   SoRotor *myRotor = new SoRotor;
+   myRotor-&gt;rotation.setValue(SbVec3f(0, 0, 1), 0); // z axis
+   myRotor-&gt;speed = 0.2;
+   root-&gt;addChild(myRotor);
+
+   // Read in the data for the windmill vanes
+   SoSeparator *windmillVanes = 
+            readFile(&quot;windmillVanes.iv&quot;);
+   root-&gt;addChild(windmillVanes);
+
+   // Create a viewer
+   SoXtExaminerViewer *myViewer = 
+            new SoXtExaminerViewer(myWindow);
+
+   // Attach and show viewer
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;Windmill&quot;);
+   myViewer-&gt;show();
+    
+   // Loop forever
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5498078"></a>Blinker Node<a name="idch1365"></a></h3></div></div>
+<p>The <a name="idch1366"></a><span class="bold"><b>SoBlinker</b></span> node, derived from <span class="bold"><b>SoSwitch</b></span>, cycles among its children by changing the value of the <span class="bold"><b>whichChild</b></span> field.  This node has the following fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>whichChild (</b></span>SoSFLong)</span></td><td width="10"> </td><td><p><br>
+index of the child to be traversed.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>speed (</b></span>SoSFFloat)</span></td><td width="10"> </td><td><p>cycles per second.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>on (</b></span>SoSFBool)</span></td><td width="10"> </td><td><p>TRUE to run, FALSE to stop. The default is TRUE.</p>
+
+</td></tr></table></div><p>When it has only one child, <span class="bold"><b>SoBlinker</b></span> cycles between that child (0) and SO_SWITCH_NONE. <a href="ch12.html#id14263">Example 13-8</a> shows how you could make the text string &#8220;Eat at Josie's&#8221; flash on and off.</p>
+<p><div class="figure"><p><a name="id5498219"></a><b>Figure 13-19. Flashing Sign Controlled by a Blinker Node</b></p>
+<div class="mediaobject"><img src="figures/ch13-13.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5498236"></a><b>Example 13-8. <a name="id14263"></a><a name="idch1367"></a>Using a Blinker Node to Make a Sign Flash</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Add the non-blinking part of the sign to the root
+root-&gt;addChild(eatAt);
+   
+// Add the fast-blinking part to a blinker node
+SoBlinker *fastBlinker = new SoBlinker;
+root-&gt;addChild(fastBlinker);
+fastBlinker-&gt;speed = 2;  // blinks 2 times a second
+fastBlinker-&gt;addChild(josie);
+
+// Add the slow-blinking part to another blinker node
+SoBlinker *slowBlinker = new SoBlinker;
+root-&gt;addChild(slowBlinker);
+slowBlinker-&gt;speed = 0.5;  // 2 secs per cycle; 1 on, 1 off
+slowBlinker-&gt;addChild(frame);
+
+</pre></td></tr></table><br></div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch12.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch14.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 12. Sensors </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 14. Node Kits </td></tr></table></div></body></html>

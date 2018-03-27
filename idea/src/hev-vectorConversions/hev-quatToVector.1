@@ -1,0 +1,30 @@
+.TH hev-quatToVector 1 "May 2009"
+.SH NAME
+
+hev-quatToVector
+
+.SH SYNOPSIS
+
+\fBhev-quatToVector [-c N]
+
+.SH DESCRIPTION
+
+\fBhev-quatToVector\fR converts lines from stdin containing a quaternion angle
+rotation to lines on stdout containing the eqivalent xyz vector rotation.
+
+.SH OPTIONS
+
+.IP "\fB-c \fIN\fR"
+Skip the first \fIN\fR tokens on each line before evaluating the next four
+tokens as x, y, z, and w quaternion values.
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/acmd/hpcvg/\fR
+

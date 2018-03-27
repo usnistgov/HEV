@@ -1,0 +1,6 @@
+BUTTON pos\'n
+  FIRST EXEC hev-xyzPositioner $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS -title "positioner" --boundingBox world --noEscape --outShm idea/positioner --button left "hev-writeButtons idea/buttons/left 1" "hev-writeButtons idea/buttons/left 0" --button3 right "hev-writeButtons idea/buttons/right 1" "hev-writeButtons idea/buttons/right 0" > $IRIS_CONTROL_FIFO
+
+  FIRST WAIT irisfly-addAndShowWindow positioner
+  ON WAIT irisfly-addAndShowWindow positioner
+  OFF WAIT irisfly-removeAndHideWindow positioner

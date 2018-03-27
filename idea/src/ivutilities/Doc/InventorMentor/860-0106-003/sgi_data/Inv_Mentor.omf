@@ -1,0 +1,21 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE omf SYSTEM "http://metalab.unc.edu/osrt/omf/OMF.dtd">
+
+<omf>
+
+ <resource created="20020328" sgipn="860-0106-002">
+   <title></title>
+   <format mime="text/html"/>
+   <identifier url="file://usr/share/Insight/library/SGI_bookshelves/SGI_Developer/books/Inv_Mentor/sgi_html/index.html"/>
+   <language code="C"/>
+   <date>20020328</date>
+   <version>
+     <identifier>1.0</identifier>
+     <date>20020328</date>
+   </version>
+   <creator>techpubs@sgi.com (SGI Technical Publications)</creator>
+   <maintainer>techpubs@sgi.com (SGI Technical Publications)</maintainer>
+ </resource>
+
+</omf>
+

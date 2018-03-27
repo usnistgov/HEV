@@ -1,0 +1,41 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-checkPerm 1 "May 2015" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+hev-checkPerm - check for proper permissions of installed HEV software
+
+.SH SYNOPSIS
+
+\fBhev-checkPerm  [--help] [ --hevOnly | --betaOnly ]\fR 
+
+.SH DESCRIPTION
+
+\fBhev-checkPerm\fR is used to check for proper permissions of installed
+HEV software. A report is printed \fIstdout\fR.
+
+.PP
+If \fB--hevOnly\fR or \fB--betaOnly\fR is specified, then only HEV
+Production or HEV Beta tress is checked.
+
+.PP
+It is important that installed HEV software follow proper installation
+conventions. All installed software should be set to group \fBdiverse\fR
+and group writable permissions. i.e. \fB-rwxrwxr-x\fR or \fB-rw-rw-r--\fR,
+Installed directories should also have \fBGID\fR set
+i.e. \fBdrwxrwsr-x\fR.
+
+.PP
+This command should only be executed on the machines used to distribute the
+HEV tree which currently is dradis.cam.nist.gov.
+
+.PP
+The command will print headers of directories it is checking. If no files are
+printed, then all is well.
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov
+

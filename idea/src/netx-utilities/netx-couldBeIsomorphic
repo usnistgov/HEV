@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+#Second arg: second edge-list to compare to
+#Must be undirected
+
+import networkx as nx
+import sys
+
+if(len(sys.argv)==3):
+    g1 = open(sys.argv[1], 'r')
+    g2 = open(sys.argv[2], 'r')
+else:
+    print("Error: wrong number of arguments.")
+    sys.exit()
+
+lines1 = []
+lines2 = []
+
+for edge in g1:
+    lines1.append(tuple(edge.split()))
+
+for edge in g2:
+    lines2.append(tuple(edge.split()))
+
+G1 = nx.Graph()
+G2 = nx.Graph()
+
+if(len(lines1[0])==2):
+    G1.add_edges_from(lines)
+elif(len(lines1[0])>=3):
+    for item in lines1:
+        G1.add_weighted_edges_from([(item[0],item[1],float(item[2]))])
+else:
+    print("Error in input file 1. Wrong number of elements per line.")
+    sys.exit()
+
+if(len(lines2[0])==2):
+    G2.add_edges_from(lines)
+elif(len(lines2[0])>=3):
+    for item in lines2:
+        G2.add_weighted_edges_from([(item[0],item[1],float(item[2]))])
+else:
+    print("Error in input file 2. Wrong number of elements per line.")
+    sys.exit()
+
+print(nx.could_be_isomorphic(G1, G2))
+
+g1.close()
+g2.close()

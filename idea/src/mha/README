@@ -1,0 +1,75 @@
+OpenSceneGraph loaders for a subset of the ITK MHA/MHD meta image
+format.
+
+Each file consists of a human-readable (ascii text) file, which refers
+to a packed binary data source, either in a separate file or embedded
+in the header file. Header elements appear one per line, in any
+order. Each line lists tag=value. White space and unknown header keys
+are ignored.
+
+Supports 1D, 2D and 3D textures, with 1-4 values per texel. Values can
+by usnigned byte, unsigned short or float. 
+
+Supported tags:
+   NDims = <1-3>
+      Indicates 1D, 2D or 3D texture
+
+   DimSize = <int> [<int> [<int>]]
+      Size of each texture dimension in x y z order
+
+   ElementNumberOfChannels = <1-4>
+      Number of channels in each texel. In OpenGL terms, 1 is an
+      luminance texture, 2 is luminance/alpha, 3 is rgb, 4 is rgba
+
+   HeaderSize = <int>
+      Number of header bytes at the beginning of the data file
+      -1 = compute size and start that far from the end of the
+      file. -1 is particularly useful for reading files in other
+      simple brick-of-bytes formats, since you can create an mha file
+      describing the contents, then skip the native header. Using this
+      approach, it is possible to use this loader for ppm or pfm files.
+
+   BinaryDataByteOrderMSB = (true|false)
+   ElementByteOrderMSB = (true|false)
+      Either of these indicate the endianness of the data. Intel
+      processor native byte order is little endian (or 'false')
+
+   ElementType = MET_(UCHAR|USHORT|FLOAT)
+      Type of data elements, both in the file, and as stored on the GPU
+
+   ElementDataFile = (<file>|LOCAL)
+      LOCAL starts on the *next* line of the file, and must be the
+      last header line to appear. Other files are relative to the
+      directory containing the mha file
+    
+
+Source files:
+  osgdb_mha.cpp		MHA and MHD file loader
+
+Support files for testing:
+  test2D      script to test 2D file loading
+  test3D      script to test 3D file loading
+  testdata    directory containing some sample files
+    testpgm.mha, test.pgm	   
+  beach_probe.pfm	binary image from Paul Debevec's high dynamic
+			range light probe collection
+
+  test.pfma		2x2 test PFMA image (hand-written)
+  test.pfm		2x2 test PFM image
+			(gen. with hev-pfmaToPfm < test.pfma > test.pfm)
+  testPmmGen.pl		perl script used to generate binary test.pmm
+  test.pmm		128x128 test 4-channel PMM
+			(generated with testPmmGen.pl)
+
+Tests: 
+
+  test2D creates a 2D mha file for the data, and an osg file to load
+  it, and views it with 'osgviewer <test>.osg'. You should see a
+  square in the middle of the screen textured with a test
+  image. Points on the test image with values greater than 1.0 will
+  cycle between being clamped to 1.0 (full intensity for that color
+  channel), and red.
+
+  test3D creates a 3D mha file for the data, and an osg file to load
+  it. You should see a square in the middle of the screen, cycling
+  back and forth between slices of the 3D texture.

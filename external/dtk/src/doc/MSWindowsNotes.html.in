@@ -1,0 +1,123 @@
+<HTML>
+<head>
+<title>The DIVERSE Toolkit -- using  MS Windows 2000/XP</title>
+</head>
+<body>
+
+<h1>The DIVERSE Toolkit -- using  MS Windows 2000/XP</h1>
+
+<hr width=90%>
+
+<h2>Binary Releases</h2>
+
+<ol>
+
+<li>
+<b>Get the files</b> from one of the files dtk_win32-*.zip in
+<a href="http://diversetoolkit.sourceforge.net/prereleases/binary/">prereleases/binary/</a> or <a
+href="http://diversetoolkit.sourceforge.net/releases/binary/">releases/binary/</a>.
+
+
+<li>
+<b>Install it</b> by unzipping the source.  There is a nice free (as
+in free beer) archive utility at <a
+href="http://www.ultimatezip.com/">http://www.ultimatezip.com/</a>.
+
+<li>
+<b>Set PATH and DTK_ROOT environment variables</b>
+
+<br>
+To use the Micro$oft binary files (dtk_win32-*.zip) you may want
+to set your PATH environment variable to include the directory where
+you put the bin\ directory and the directory where you put the lib\
+directory so that the DTK DLL may be found by running DTK programs.
+
+Also set the environment variable DTK_ROOT to the directory where you
+unzipped the files, so that DTK programs that load DTK DSOs (DLL
+files) can find the DTK DSOs that are in sub-directories of DTK_ROOT.
+This directoy should contain sub-directories bin, lib, include, and
+a few more.
+
+</ol>
+
+<p>
+
+To set Micro$oft environment variables on Windows 2000, and XP use the
+menu:
+<pre>
+       <font color=#088008>Start</font>-><font color=#088008>Settings</font>-><font color=#088008>Control Panel</font>-><font color=#088008>System</font>-><font color=#088008>Advanced</font>-><font color=#088008>Environment Variables</font>.</pre>
+
+</ol>
+
+<hr width=90%>
+
+<h2>Building from source</h2>
+
+
+<ol>
+
+<li>
+<b>Get the source files</b> a file dtk-*.tar.gz from
+<a href="http://diversetoolkit.sourceforge.net/prereleases/source/">prereleases/source/</a> or
+<a href="http://diversetoolkit.sourceforge.net/releases/source/">releases/source/</a>.
+
+<li>
+<b>Untar the source</b>.  There is a nice free (as in free beer)
+archive utility at <a
+href="http://www.ultimatezip.com/">http://www.ultimatezip.com/</a>.
+
+<li>
+<b>Set environment variables:</b>
+<ul>
+<li>
+<b>FLTK_LIB_DIR</b> to the directory where the FLTK library files
+              are in,
+<li>
+<b>FLTK_INC_DIR</b>  to the directory where the FLTK include files
+              are in,
+<li>
+<b>DIVERSE_ROOT</b>  to a directory that you would like DTK to
+              put the DLLs, executables, and include files.
+              There will be a bin, include and lib
+                  subdirectory built in this directory.
+</ul>
+
+<li>
+<b>Run Visual C++</b><br>
+
+Open the file MSWindoz/VisualCPP/dtk.dsw using the Micro Soft Visual C++ program.
+
+<li>
+<b>Build the project dtk project</b><br>
+
+In the MS visual C++ program build the dtk project.  This will put the
+dtk DLL, binary executables, documents, and include files in
+sub-directories of the DIVERSE_ROOT directory, that is gotten from the
+environment variable DIVERSE_ROOT.
+
+<li>
+<b>Set PATH and DTK_ROOT environment variables</b>
+
+<br>
+
+To use the Micro$oft binary files (dtk_win32-*.zip) you may want
+to set your PATH environment variable to include the directory where
+you put the bin\ directory and the directory where you put the lib\
+directory so that the DTK DLL may be found by running DTK programs.
+
+Also set the environment variable DTK_ROOT to the same as DIVERSE_ROOT
+so that DTK programs that load DTK DSOs (DLL files) can find the DTK
+DSOs that are in sub-directories of DIVERSE_ROOT.
+This directoy should contain sub-directories bin, lib, include, and
+a few more.
+
+</ol>
+
+<p>
+
+To set Micro$oft environment variables on Windows 2000, and XP use the
+menu:
+<pre>
+       <font color=#088008>Start</font>-><font color=#088008>Settings</font>-><font color=#088008>Control Panel</font>-><font color=#088008>System</font>-><font color=#088008>Advanced</font>-><font color=#088008>Environment Variables</font>.</pre>
+
+

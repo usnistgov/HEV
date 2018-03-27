@@ -1,0 +1,5 @@
+BUTTON anim
+  FIRST exec hev-animator --last 359 --noescape tmp/hev-animator > $IRIS_CONTROL_FIFO 
+  FIRST WAIT irisfly-addAndShowWindow hev-animator
+  ON WAIT irisfly-addAndShowWindow hev-animator
+  OFF WAIT irisfly-removeAndHideWindow hev-animator

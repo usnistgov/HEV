@@ -1,0 +1,127 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-dataRange 1 "July 2011" "NIST/ITL/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-dataRange - print numeric range of data on stdin
+.br
+hev-dataMapTo01 - map input data to an output range of 0.0 to 1.0
+.br
+hev-data2uchar - convert numbers from stdin to uchar on stdout
+.br
+hev-data2ushort - convert numbers from stdin to uchar on stdout
+.br
+hev-data2float - convert numbers from stdin to float (32 bits) on stdout
+
+
+.SH SYNOPSIS
+.B "hev-dataRange"
+[--help]
+.br
+.B "hev-dataMapTo01"
+[--help] [--range min max]
+.br
+.B "hev-data2uchar"
+[--help] [--integer | --float]
+.br
+.B "hev-data2ushort"
+[--help] [--integer | --float]
+.br
+.B "hev-data2float"
+[--help]
+
+
+.SH DESCRIPTION
+.PP
+.I
+hev-dataRange
+prints to 
+.I stdout
+the data range, i.e. min and max, values of
+the data read on stdin.
+.IP
+The input on stdin must be one ASCII number per line.
+
+
+.PP
+.I hev-dataMapTo01 
+maps input data to an output range of 0.0 to 1.0.
+.IP
+Input value are clamped
+to the specified min to max values or 0 to 1 if not specified.
+The input on stdin must be one ASCII number per line.
+
+.IP
+The option, \fB--range  min max\fR, specifies the input range.
+The default is 0.0 to 1.0.
+
+.PP
+.I  hev-data2uchar
+.IP
+Map printf style numbers from stdin to unsigned char (8 bits) on stdout
+z.IP
+The input on stdin must be one ASCII number per line.
+The option, \fB--integer\fR, indicates  input is integer in the range 0 to 255.
+The option, \fB--float\fR, indicates  input is float in the range 0.0 to 1.0.
+This is the default.     
+
+.PP
+.I  hev-data2ushort
+.IP
+Map printf style numbers from stdin to unsigned short (16 bits) on stdout
+.IP
+The input on stdin must be one ASCII number per line.
+The option, \fB--integer\fR, indicates  input is integer in the range 0 to 65535.
+The option, \fB--float\fR, indicates  input is float in the range 0.0 to 1.0.
+This is the default.     
+
+
+.PP
+.I  hev-data2float
+.IP
+Map printf style numbers from stdin to float (32 bits) on stdout
+.IP
+The input on stdin must be one ASCII number per line.
+Input is float in the range 0.0 to 1.0.
+
+
+.SH "EXAMPLE"
+.IP
+hev-dataRange < sample.dat
+
+.IP
+hev-dataMapTo01 --range 0 .03 <sample.dat > sample2.dat
+
+.SH "EXAMPLE"
+.IP
+cat i8.dat 
+.br
+0
+.br
+1
+.br
+10
+.br
+100
+.br
+200
+.br
+255
+.IP
+hev-data2uchar --integer < i8.dat > i8.raw
+.IP
+od -b i8.raw
+.br
+0000000 000 001 012 144 310 377
+.br
+0000006
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield
+.br
+steve@nist.gov
+.br
+NIST/ITL/ACMD/HPCVG
+

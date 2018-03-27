@@ -1,0 +1,7 @@
+LOAD cow cow.osg
+ADDCHILD cow world
+EXAMINE
+
+BEFORE REALIZE EXEC iris-server
+AFTER REALIZE EXEC firefox -no-remote -P RAVE "localhost:8080/clip.html?dataMin=-10&dataMax=10"
+

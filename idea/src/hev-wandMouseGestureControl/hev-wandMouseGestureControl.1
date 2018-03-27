@@ -1,0 +1,139 @@
+.TH state 2 "August 2012 "
+
+.SH NAME
+
+hev-wandMouseGestureControl
+
+.SH DESCRIPTION
+
+\fIhev-wandMouseGestureControl\fR is an executable that runs the Gesture Recognition software for IRIS. The purpose of this software is to improve the user interface while working within the RAVE for faster and more effective control.
+The command runs a separate C++ file which will use the tracking position data collected by the RAVE wand to identify the gesture performed. 
+
+The recognized gesture is then matched with a corresponding gesture number, which is then written in the shared memory file titled "gestureNum".
+
+If a user desired certain actions to run for each gesture, they achieve this by editing the gestureAction script, as outlined by the file's template.  
+
+.SH SETUP
+To use the software with an IRIS program, it is necessary to first copy the gestureControl folder into the directory of the project. Then, a one line addition must be made to the project's primary iris file, loading the gesture software's primary iris file, titled load_Prog.iris. Finally, the gestureAction template provided in the gestureControl folder must be edited and customized to link gestures with desired actions for the project. For specific details and step-by-step instructions, see \fBEXAMPLE\fR below. 
+
+
+.SH RUNTIME
+To turn on gesture recognition, select the "Gestures" button on the Master Control Panel. Doing so will create a shared Memory file titled: "GON" (Gestures On) with the value 1. This will trigger both the cpp file and the "gestureAction" file, to be able to start reading/recognizing the wand movements.
+
+To perform gestures, press and hold down the left button on the wand, then move through the gesture. The gesture is completed when the button is released (with the exception of the "X" gesture, which is two strokes). Use steady motions. Hold on to the left button for a few moments before the gesture is performed, and a few moments afterwards. In each motion, particularly angular motions, the follow through is very important. 
+
+Upon recognition, the program will execute the function specified in the gestureAction script for that gesture.
+
+*NOTE: To change the desired functions specific to your program, edit the gestureAction file, replacing the template commands with those of your own choosing.
+
+.SH IMPLEMENTED GESTURES
+.br 
+0) Line Left			Steady motion to the left 
+.br		
+1) Line Right			Steady motion to the right
+.br
+2) Line Up			Steady motion upwards
+.br	
+3) Line Down			Steady motion downwards
+.br
+4) Diagonal Up-Right	Steady motion up-right
+.br
+5) Diagonal Up-Left		Steady motion up-left
+.br
+6) Diagonal Down-Right	Steady motion down-right
+.br
+7) Diagonal Down-Left	Steady motion down-left
+.br
+8) Flick Up			Quick motion upwards, bringing angle of wand closer to parallel with user oneself
+.br
+9) Flick Left			Quick motion to the left, bringing angle of wand closer to parallel with front wall
+.br
+10) Flick Right		Quick motion to the right, bringing angle of wand closer to parallel with front wall
+.br
+11) Throw				Beginning with the wand held over shoulder, with buttons facing the floor, and then steady motion over and downwards  
+.br
+12) Underhand Toss		Beginning with wand held slightly behind leg, with buttons facing front wall, and then steady motion under and upwards
+.br
+13) Box				Steady motion upwards, then right, then downwards, then left
+.br
+14) Triangle			Steady motion up-right, then down-right, then left
+.br
+15) Z				Steady motion right, then down left, then right
+.br
+16) X				Steady motion down-right, then down left
+.br
+17) V				Steady motion down right, then up right
+.br	
+18) Circle			Steady clockwise motion beginning and ending at the 9:00 position
+.br
+19) Infinity			Steady left-to-right, initially clockwise motion, starting at the 9:00 position of the first loop
+.br
+20) Loop de Loop		Steady left-to-right motion: downwards and right, then upward facing loop drawn in a counterclockwise direction. Exit loop by moving upwards and right. 
+.br
+21) Fish Hook			Steady "J" shape, moving down, down-left, left, up-left, then up 
+.br
+22) Wave				Beginning with wand held perpendicular to floor with buttons facing the user, oscillate in a semi-circular motion to the left and right 
+.br
+23)Backhand Shot		Right-handed backhand. Wand begins parallel to floor, with buttons facing back wall (opposite direction of front wall). Steady motion across body.  
+.br
+24)Pancake Flip		Steady over-and-flip motion. Start with wand in right hand, buttons facing up. In a semicircular motion to left, flip wand so buttons are facing down.
+.SH EXAMPLE
+Following these steps will generate an example of the gesture recognition software. Running the demo will bring up an image display containing a cone, sphere, and cube. Using six preset gestures, each object can be hidden and brought back:
+.br
+	Gesture			Action
+.br
+	-------------------------------------
+.br
+	Flick Left		Hide Cone
+.br
+	Flick Right		Show Cone
+.br
+	Flick Up			Hide Sphere
+.br
+	Throw			Show Sphere
+.br
+	Underhand Toss		Hide Cube
+.br
+	Wave				Show Cube
+
+
+.br
+To demo the gesture recognition software, follow these steps:
+.br
+	1) Copy the software's example folder: 
+.br
+		cp -r  $HEVROOT/idea/src/hev-wandMouseGestureControl/example .
+.br 
+	2) Copy the "gestureControl" folder into the example folder:
+.br
+		cd example
+.br
+		cp -r  $HEVROOT/idea/src/hev-wandMouseGestureControl/gestureControl .
+.br
+	3) Add the following line to the "objects.iris" file, to apply the gesture recognition software:
+.br
+		LOAD gestureControl/load_Prog.iris
+.br 
+		*NOTE: when applying software to an actual iris program, this line should be added to the primary iris file 
+.br
+	4) Copy the example-specific file gestureAction.example into the "gestureControl" folder to replace the template:
+.br
+    		cp gestureAction.example gestureControl/gestureAction
+.br
+		*NOTE: when applying software to an actual iris program, gestureAction should be edited directly 
+.br
+	5) Run the demo
+
+.SH AUTHOR
+
+.PP
+Divya Mouli		divya.mouli@nist.gov & dmouli@andrew.cmu.edu
+.br
+Luis Catacora   	luis.catacora@nist.gov & dany.catacora@gmail.com
+.br
+Terence Griffin    	terence.griffin@nist.gov
+.br
+NIST Scientific Applications & Visualization Group
+.br
+August 2012
+               

@@ -1,0 +1,69 @@
+.TH iris-wandMouse 1 "February 2011"
+
+.SH NAME
+iris-wandMouse
+
+.SH SYNOPSIS 
+.B iris-wandMouse 
+[ --help ] [ --button buttonShm mask num ] [ --usleep t ] [ --wand wandShm ] [ file ... ]
+
+.SH DESCRIPTION
+
+\fBiris-wandMouse\fR loads files from from the command line and the
+IRIS_FILES envvar, and a single iris::Window object should be created.  
+
+In a loop it then reads the specified wand's position and orientation from
+DTK shared memory and stuffs X11 cursor motion commands so the X11 cursor
+tracks the wand's intersection with the specified iris::Window.
+
+It is also given an X11 button number and the name of a DTK shared memory
+file and a mask value, so that X11 button events can be stuffed.  This allows
+the wand and buttons to interact with X11 GUIs displayed on the specified
+Window.
+
+.SH OPTIONS
+
+.TP
+--help
+.br
+Print the usage message and exit
+
+.TP
+--button \fIbuttonShmName mask N\fR ...
+.br
+Specifies the name of the shared memory file from which to read button
+values, \fIbuttonShmName\fR, and a mask value \fImask\fR, and a X11 button number
+\fIN\fR.  When the shared memory file value ANDed with the mask changes
+state from zero to non-zero a X11 button press event is generated.  A button
+release event is generated when the shared memory value ANDed with the mask
+changes from non-zero to zero.
+
+Multiple --button options can be specified if needed.
+
+If the --button option is not given, buttons are read from the shared memory file
+"buttons", masked with 2, and the X11 button number 1 is used. 
+
+.TP
+--usleep \fIt\fR
+.br
+Specifies the number of microseconds to sleep at the end of each loop.  If
+not given, iris::GetUsleep() is used.
+
+.TP
+--wand \fIwandShmName\fR
+.br
+Specifies the shared memory segment to read for wand data, 16 doubles
+representing a coordinate transformation.  If not given, "wandMatrix" is used.
+
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+ 

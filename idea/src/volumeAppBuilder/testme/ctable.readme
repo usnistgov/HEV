@@ -1,0 +1,17 @@
+Various color tables
+
+ctable.lut       original alpha = 1
+
+ctable_.9.lut    post 4/4/2011 example of non-opaque volume
+
+Following used pre 4/4/2011
+to get the original results use --scale 100
+
+ctable_.01.lut  pre 4/4/2011 example
+ctable_1.0.lut
+ctable4.lut
+ctable8.lut
+
+
+-SGS
+ 4/6/2011

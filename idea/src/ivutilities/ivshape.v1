@@ -1,0 +1,128 @@
+#! /bin/sh
+#
+
+usage()
+{
+    echo "Usage: ivshape  -cube|-cone|-cylinder|-sphere <dimensions> <color>"
+    echo
+    echo " <dimensions>"
+    echo "     cube:         x y z dimensions"
+    echo "     cone:         radius height"
+    echo "     cylinder:     radius height"
+    echo "     sphere:       radius"
+    echo
+    echo " <color> is [r g b]"
+    echo "         r,g,b range 0.0 to 1.0."
+    echo
+    echo "   All values default to 1"
+    echo
+    echo "   The first 1,2 or 3 values are assumes to be dimensions,"
+    echo "   thus the appropriate dimensions must be specified"
+    echo "   to include color values."
+    echo
+    echo
+    exit
+}
+
+
+case $# in
+0)
+    usage
+    ;;
+*)
+    case $1 in
+    -cube|-c|-cu|-cub)
+	shape="Cube"
+	;;
+    -cone|-co|-con)
+	shape="Cone"
+	;;
+    -cylinder|-cy|-cyl)
+	shape="Cylinder"
+	;;
+    -sphere|-s|-sp|-sph|-sphe|-spher)
+	shape="Sphere"
+	;;
+    *)
+     usage
+     ;;
+    esac
+esac
+
+shift
+#echo $shape $*
+
+echo "$shape $*" | awk '
+{
+	 x=1; y=1; z=1; r=1; g=1; b=1;
+         shape = $1;
+	 ok=0;
+
+	 if (shape == "Cube") {
+	    if (NF == 7) {
+		x = $2; y = $3; z = $4; r = $5; g = $6; b = $7;
+	    } else if (NF == 4){
+		x = $2; y = $3; z = $4; r = 1; g = 1; b = 1;
+	    } else if (NF == 1){
+		x = 1; y = 1; z = 1; r = 1; g = 1; b = 1;
+	    } else {
+		system("ivshape");
+		ok=1;
+	    }
+	 }
+
+	 if ((shape == "Cone")||(shape == "Cylinder" )){
+	    if (NF == 6) {
+		x = $2; y = $3; r = $4; g = $5; b = $6;
+	    } else if (NF == 4){
+		x = $2; y = $3; r = 1; g = 1; b = 1;
+	    } else if (NF == 1){
+		x = 1; y = 1; r = 1; g = 1; b = 1;
+	    } else {
+		system("ivshape");
+		ok=1;
+	    }
+	 }
+
+	 
+	 if (shape == "Sphere") {
+	    if (NF == 5) {
+		x = $2; r = $3; g = $4; b = $5;
+	    } else if (NF == 2){
+		x = $2; r = 1; g = 1; b = 1;
+	    } else if (NF == 1){
+		x = 1; y = 1; z = 1; r = 1; g = 1; b = 1;
+	    } else {
+		system("ivshape");
+		ok=1;
+	    }
+	 }
+
+	 if (ok == 0) {
+	    printf "#Inventor V2.0 ascii\n";
+	    printf "Separator {\n";
+	    printf " Material {\n";
+	    printf "  diffuseColor [%g %g %g]\n",r,g,b;
+	    printf " }\n";
+	    printf " %s {\n",shape;
+	    if (shape == "Cube") {
+		printf "   width %g\n",x;
+		printf "   height %g\n",y;
+		printf "   depth %g\n",z;
+	    }
+	    if (shape == "Cone") {
+		printf "   bottomRadius %g\n",x;
+		printf "   height %g\n",y;
+	    }
+	    if (shape == "Cylinder") {
+		printf "   radius %g\n",x;
+		printf "   height %g\n",y;
+	    }
+	    if (shape == "Sphere") {
+		printf "   radius %g\n",x;
+	    }
+	    printf " }\n";
+	    printf "}\n";
+	}
+}
+'

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#
+# This is a helper script for HEV-chkFindAnts. 
+# It consolidates everything needed to generate 
+# a single column, sorted list of ants, with no
+# headers or seperators. This script runs in the
+# current environment, and may find local or
+# development versions of some ants. The main 
+# script, HEV_listAnts, runs this script in a
+# "clean" environment, using the command:
+#    exec -c bash --norc -c _HEV-chkFindAnts.
+# This way, it will make a list of only offical
+# and released ants.
+#
+# It takes one optional parameter, a string that 
+# is appended to the filename. This will be passed
+# through from HEV-listAnts. All others are ignored.
+# 
+
+if [ "${HEV_PROFILE}" != "1" ]        # If the "clean" shell has not set the HEV env...
+then
+  source ${HEVROOT}/profile iris  #... run the HEV profile.
+  sleep 2
+fi
+
+if [ -n "$1" ]                        # If a file suffix is given, redirect to log file
+then
+  ${PRIVATE_BINS}/_hev-findAnts -mc 1 | /bin/grep -v "Tools"  |  /bin/grep -v  "\-\-\-" | /bin/grep -v "^$" | tr "*" " " | sort | uniq > `date +%Y%m%d%H%M%S`.$1
+  wait                                # Wait hev-findAnts & to finish before continuing
+else                                  # Otherwise, write to sdtout
+  ${PRIVATE_BINS}/_hev-findAnts -mc 1 | /bin/grep -v "Tools"  |  /bin/grep -v  "\-\-\-" | /bin/grep -v "^$" | tr "*" " " | sort | uniq
+  wait
+fi
+
+exit

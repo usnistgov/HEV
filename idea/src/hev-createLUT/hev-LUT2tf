@@ -1,0 +1,70 @@
+#! /bin/bash
+
+# hev-LUT2tf - convert LUT format to tf format, see vol-visBuilder(1)
+
+# Steve, 2/20/2013
+
+function usage {
+
+cat <<EOF
+Usage: hev-LUT2tf [--help] funcName  < file.lut  > file.tf
+
+   convert a LUT file on stdin to .tf format on  stdout
+
+EOF
+exit 1
+
+}
+
+case $# in
+1)
+	case $1 in
+	    -h*|--h*)
+		usage
+		;;
+	    *)
+		FN=$1
+		;;
+	esac
+	;;
+*)
+	usage
+	;;
+esac
+
+
+
+cat <<EOF
+  FUNC RgbaLut1D ${FN}
+  COLOR_INTERP CIELAB
+  LIGHTING GRAD_OPAQUE
+  NORMALIZE true
+  TABLE_TYPE FLOAT
+  TABLE_LEN 256
+  COMBINE_RGBA true
+EOF
+
+
+grep -v "#" | sed '/^$/d' | awk '
+     BEGIN {n=0}
+{
+    i[n]=$1; r[n]=$2; g[n]=$3; b[n]=$4; a[n]=$5;
+    n++;
+}
+END {
+    print "  RGBLUT";
+    for (j=0; j<n; j++) {
+	print "  ", i[j]/255., r[j], g[j], b[j];
+    }
+    print "  END_RGBLUT";
+
+    print "  ALPHALUT";
+    for (j=0; j<n; j++) {
+	print "  ", i[j]/255., a[j];
+    }
+    print "  END_ALPHALUT";
+}'
+
+cat <<EOF
+END_FUNC ${FN}
+EOF

@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+# This script runs hev-findAnt with each option to 
+# make sure they all work. It prompts between runs.
+# This is innately interactive
+
+#WORK="${HEVROOT}"
+hfA="`which hev-findAnts`"                        # Full path to the hev-findAnts that is run in THIS env
+read -p "${hfA} [Defaults] (y/n/q)?" R                       # Use variable to specify which hev-findAnts is being run
+[ "${R}" == "y" ] && ${hfA}                       # If R is 'y', run (check) ${hfA}
+[ "${R}" == "q" ] && echo "Quiting..." && exit    # If R is 'r', notify then exit
+                                                  # Otherwise, go on the next one.
+read -p "${hfA} -c 4 [4 columns] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -c 4
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -u [User env] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -u
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -m [more pager] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -m
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -l [less pager] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -l
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -h [HEV tools] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -h
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -r [IRIS tools] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -r
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -s [SAVG tools] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -s
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -n [NETX tools] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -n
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -q [QVisDat] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -q
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -y [HydratiCA] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -y
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -o [Open SceneGraph] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -o
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -g [DGL] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -g
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -d [DTK tools] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -d
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -v [VTK tools] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -v
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -i [ITK tools] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -i
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -w [VRML tools] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -w
+[ "${R}" == "q" ] && echo "Quiting..." && exit
+
+read -p "${hfA} -a [Everything] (y/n/q)?" R
+[ "${R}" == "y" ] && ${hfA} -a
+[ "${R}" == "q" ] && echo "Quiting..." && exit

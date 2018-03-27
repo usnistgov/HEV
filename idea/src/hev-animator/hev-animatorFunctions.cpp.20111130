@@ -1,0 +1,669 @@
+#include <stdio.h>
+#include <FL/Fl.H>
+#include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Group.H>
+#include <FL/Fl_Light_Button.H>
+#include <FL/Fl_Button.H>
+#include <FL/Fl_Light_Button.H>
+#include <FL/Fl_Value_Input.H>
+#include <FL/Fl_Roller.H>
+#include <FL/Fl_Menu_Button.H>
+#include <FL/Fl_Menu_Item.H>
+
+#include <osg/Node>
+#include <osg/Group>
+#include <osg/Sequence>
+#include <osgDB/ReadFile>
+
+#include <dtk.h>
+#include <iris.h>
+
+static bool init(int argc, char** argv) ;
+static void usage() ;
+static void timer_callback(void*) ;
+
+static Fl_Double_Window* main_window ;
+static Fl_Double_Window* settings_window ;
+static Fl_Value_Input* frameValue ;
+static Fl_Roller* frameRoller ;
+static Fl_Value_Input* strideValue ;
+static Fl_Roller* strideRoller ;
+static Fl_Value_Input* firstValue ;
+static Fl_Roller* firstRoller ;
+static Fl_Value_Input* lastValue ;
+static Fl_Roller* lastRoller ;
+static Fl_Value_Input* frameTimeValue ;
+static Fl_Roller* frameTimeRoller ;
+static Fl_Button* jump_to_firstButton ;
+static Fl_Button* play_backwardButton ;
+static Fl_Button* step_backwardButton ;
+static Fl_Button* stopButton ;
+static Fl_Button* step_forwardButton ;
+static Fl_Button* play_forwardButton ;
+static Fl_Button* jump_to_lastButton ;
+static Fl_Button* swapButton ;
+static Fl_Group* childrenGroup ;
+static Fl_Light_Button* loopButton ;
+static Fl_Light_Button* syncButton ;
+static Fl_Light_Button* settingsButton ;
+static Fl_Light_Button* recButton ;
+static Fl_Menu_Button* grabPanes ;
+
+// separate out the fltk arguments from the others
+static int fltk_argc;
+static char** fltk_argv;
+static int other_argc;
+static char** other_argv;
+
+static dtkSharedMem* shm = NULL ;
+static std::vector< std::vector< std::string> > group_nodes ;
+static unsigned int children = 0 ;
+static unsigned int current = 0 ;
+static bool forward ;
+static bool playing = false ;
+static bool init_sync_frames = true ;
+static bool sync_frames = init_sync_frames ;
+static bool init_loop_frames = true ;
+static bool loop_frames = init_loop_frames ;
+static unsigned int init_stride = 1 ;
+static unsigned int stride = init_stride ;
+static unsigned int init_first = 0 ;
+static unsigned int first = init_first ;
+static unsigned int init_last = 0 ;
+static unsigned int last ;
+static float init_frameTime = .1 ;
+static float frameTime = init_frameTime ;
+static unsigned int saved_frame ;
+static bool descend = false ;
+static bool noescape = false ;
+static bool settingsState = false ;
+
+// added by jtk 6/11 for getting panes from iris
+static std::vector<std::string> panes ;
+static std::string paneList ;
+
+static void jump_to_first() ;
+static void play_backward() ;
+static void step_backward() ;
+static void stop() ;
+static void step_forward() ;
+static void play_forward() ;
+static void jump_to_last() ;
+static void frame(unsigned int) ;
+static void start() ;
+static void init_widgets() ;
+static void update_widgets() ;
+static void save_frame(unsigned int) ;
+static void swap_frames() ;
+static void settings(bool) ;
+static void reset() ;
+static void rec(bool) ;
+
+////////////////////////////////////////////////////////////////////////
+static bool init(int argc, char** argv)
+{
+    if (argc < 3) return false ;
+    
+    // use an ArgumentParser object to manage the program arguments.
+    iris::ArgumentParser args(&argc,argv);
+
+    int pos ;
+
+    if ((pos=args.findSubstring("--descend",3))>0)
+    {
+	descend = true ;
+	args.remove(pos) ;
+	dtkMsg.add(DTKMSG_INFO, "hev-animator: descending into scenegraph\n") ;
+    }
+
+    if ((pos=args.findSubstring("--noescape",3))>0)
+    {
+	noescape = true ;
+	args.remove(pos) ;
+	dtkMsg.add(DTKMSG_INFO, "hev-animator: disabling ESCAPE and window manager close button\n") ;
+    }
+
+    if ((pos=args.findSubstring("--first",3))>0 && args.argc()>pos+1)
+    {
+	int first_frame ;
+	if (!args.read(args.argv()[pos], osg::ArgumentParser::Parameter(first_frame)) || first_frame<0)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: illegal first frame number\n") ;
+	    return false ;
+	}
+	first = init_first = first_frame ;
+	current = first+1 ;
+    }
+
+    if ((pos=args.findSubstring("--last",3))>0 && args.argc()>pos+1)
+    {
+	int last_frame ;
+	if (!args.read(args.argv()[pos], osg::ArgumentParser::Parameter(last_frame)) || last_frame<=0)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: illegal last frame number\n") ;
+	    return false ;
+	}
+	last = init_last = last_frame ;
+    }
+
+    if ((pos=args.findSubstring("--time",3))>0 && args.argc()>pos+1)
+    {
+	float t ;
+	if (!args.read(args.argv()[pos], osg::ArgumentParser::Parameter(t)) || t<=0)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: illegal frame time\n") ;
+	    return false ;
+	}
+	frameTime = init_frameTime = t ;
+    }
+
+    if (args.findOption()!=0)
+    {
+	dtkMsg.add(DTKMSG_ERROR, "hev-animator: illegal options\n") ;
+	return false ;
+    }
+
+    if (args.argc()<=1)
+    {
+	dtkMsg.add(DTKMSG_ERROR, "hev-animator: shared memory name not given\n") ;
+	return false ;	
+    }
+
+    dtkMsg.add(DTKMSG_INFO, "hev-animator: using shared memory file %s\n",args[1]) ;
+    shm = new dtkSharedMem(sizeof(int), args[1]) ;
+    if (shm->isInvalid()) return false ;
+
+    {
+	std::string path ;
+	path = ".:"  ;
+	char* osgfilepath = getenv("OSG_FILE_PATH") ;
+	if (osgfilepath)
+	{
+	    path += ":" ;
+	    path += osgfilepath ;
+	}
+	osgDB::Registry::instance()->setDataFilePathList(path) ;
+    }
+
+
+    if (args.argc() == 2) // no files given
+    {
+	if (init_last == 0)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: no files given and --last not specified\n") ; 
+	    return false ;
+	}
+	if (init_last <= init_first)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: no files given and --last not greater than --first\n") ; 
+	    return false ;
+	}
+    }
+    else // load files
+    {
+	for (int j=2; j<args.argc(); j++)
+	{
+	    dtkMsg.add(DTKMSG_INFO, "hev-animator: reading file %s\n",argv[j]) ;
+	    osg::Node* n = osgDB::readNodeFile(std::string(argv[j]));
+	    if (!n)
+	    {
+		dtkMsg.add(DTKMSG_ERROR, "hev-animator: unable to open file %s\n",argv[j]) ; 
+		return false ;
+	    }
+	    osg::Group* g = dynamic_cast<osg::Group*>(n) ;
+	    if (!g)
+	    {
+		dtkMsg.add(DTKMSG_ERROR, "hev-animator: file %s is not based on osg::Group\n",argv[j]) ; 
+		return false ;
+	    }
+	    
+	    if (g->getNumChildren()==0)
+	    {
+		dtkMsg.add(DTKMSG_ERROR, "hev-animator: node has zero children- nothing to do!\n") ;
+		return false ;
+	    }
+	    
+	    if (descend)
+	    {
+		std::string scoot = "" ;
+		while (g->getNumChildren() == 1)
+		{
+		    dtkMsg.add(DTKMSG_INFO, "hev-animator: %snode has only one child, descending\n", scoot.c_str()) ;
+		    scoot += "  " ;
+		    g = dynamic_cast<osg::Group*>(g->getChild(0)) ;
+		    if (!g || g->getNumChildren()==0)
+		    {
+			dtkMsg.add(DTKMSG_ERROR, "hev-animator: node has zero children- nothing to do!\n") ;
+			return false ;
+		    }
+		}
+	    }
+	    
+	    if (j==2)
+	    {
+		children = g->getNumChildren() ;
+	    }
+	    else
+	    {
+		if (children != g->getNumChildren())
+		{
+		    dtkMsg.add(DTKMSG_ERROR, "hev-animator: %s does not have the same number of children as previous files\n",argv[j]) ; 
+		    return false ;
+		}
+	    }
+	    
+	    osg::Sequence* s = dynamic_cast<osg::Sequence*>(g) ;
+	    std::vector< std::string > nms ;
+	    std::string nm ; 
+	    if (s)
+	    {
+		dtkMsg.add(DTKMSG_WARNING, "hev-animator: %s is a sequence node, ignoring\n", argv[j]) ; 
+	    }
+	    else
+	    {
+		for (unsigned int k=0; k<children; k++)
+		{
+		    nm = g->getChild(k)->getName() ;
+		    if (nm == "") 
+		    {
+			dtkMsg.add(DTKMSG_INFO, "hev-animator: node has a blank node name\n") ;
+			return false ;
+		    }
+		    else
+		    {
+			if (k==0) printf("NODEMASK %s ON\n", nm.c_str()) ;
+			else printf("NODEMASK %s OFF\n", nm.c_str()) ;
+			nms.push_back(nm) ;
+		    }
+		}
+		group_nodes.push_back(nms) ;
+	    }
+	    
+	}
+	
+	if (children == 1)
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: node has only one child- nothing to do!\n") ;
+	    return false ;
+	}
+	else if (init_last >= children) // last out of bounds
+	{
+	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: node has fewer children than --last value\n") ; 
+	    return false ;
+	}
+    }
+
+    if (init_last == 0) // last not given on the command line
+    {
+	init_last = last = children-1 ;
+    }
+
+    dtkMsg.add(DTKMSG_INFO, "hev-animator: init_first = %d, first = %d, init_last = %d, last = %d, children = %d\n",init_first,first,init_last,last,children) ;
+
+    fflush(stdout) ;
+    return true ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void usage()
+{
+    fprintf(stderr,"Usage: hev-animator [ --first n ] [ --last n ] [ --time t ] [ --descend ] [ --noescape ] shm [ file ... ] \n") ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void jump_to_first() 
+{
+    //fprintf(stderr," jump_to_first() \n") ;
+    frame(first) ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void jump_to_last() 
+{
+    //fprintf(stderr," jump_to_last() \n") ;
+    frame(last) ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void play_backward() 
+{
+    //fprintf(stderr," play_backward() \n") ;
+    forward = false ;
+    start() ;
+    update_widgets() ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void step_backward() 
+{
+    int next = (int) current - (int) stride ;
+    if (loop_frames) 
+    {
+	if (next<(int)first)
+	{
+	    next = last - first + next + 1 ;
+	}
+	frame(next) ;
+    }
+    else if (next>=(int)first) frame(next) ;
+    else if (playing) stop() ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void stop() 
+{
+    //fprintf(stderr," stop() \n") ;
+    recButton->activate() ;
+    playing = false ;
+    update_widgets() ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void step_forward() 
+{
+    int next = current + stride ;
+    if (loop_frames) 
+    {
+	if (next>last) next = next - last + first - 1 ;
+	frame(next) ;
+    }
+    else if (next<=last) frame(next) ;
+    else if (playing) stop() ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void play_forward() 
+{
+    //fprintf(stderr," play_forward() \n") ;
+    forward = true ;
+    start() ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void frame(unsigned int f) 
+{
+    if (f != current)
+    {
+	//fprintf(stderr," frame(%d) \n",f) ;
+	for (unsigned int i=0; i<group_nodes.size(); i++)
+	{
+	    printf("NODEMASK %s OFF\n", ((group_nodes[i])[current]).c_str()) ;
+	    printf("NODEMASK %s ON\n", ((group_nodes[i])[f]).c_str()) ;
+	}
+	if (!sync_frames) printf("FRAME\n") ; 
+	fflush(stdout) ;
+	current = f ;
+	update_widgets() ;
+	shm->write(&current) ;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+static void start()
+{
+    playing = true ;
+    recButton->deactivate() ;
+    Fl::add_timeout(frameTime, timer_callback) ;
+}
+    
+////////////////////////////////////////////////////////////////////////
+static void timer_callback(void*)
+{
+
+    if (playing) Fl::repeat_timeout(frameTime, timer_callback) ;
+    if (forward) step_forward() ;
+    else step_backward() ;
+    //fprintf(stderr, "timer callback\n") ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void paneSelection(Fl_Widget* w)
+{
+    Fl_Menu_Button* mb = static_cast<Fl_Menu_Button*>(w) ;
+    // the value of the button is which item got selected
+    int v = mb->value() ;
+
+    const Fl_Menu_Item* mi = mb->menu() ;
+
+    paneList.clear() ;
+    for (unsigned int i=0; i<panes.size(); i++)
+    {
+	if (mi[i].value() != 0) paneList += panes[i] + " " ;
+    }
+    
+    if (paneList == "")
+    {
+	dtkMsg.add(DTKMSG_WARNING, "hev-animator: no panes selected\n") ;
+	recButton->deactivate() ;
+    }
+    else recButton->activate() ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void init_widgets()
+{
+    static std::string label = iris::IntToString(last-first+1) + " total frames" ;
+    childrenGroup->label(label.c_str()) ;
+
+    frameRoller->maximum(last) ;
+    strideRoller->maximum(last) ;
+    firstRoller->maximum(last) ;
+    lastRoller->maximum(last) ;
+
+    frameRoller->minimum(first) ;
+    strideRoller->minimum(1) ;
+    firstRoller->minimum(first) ;
+    lastRoller->minimum(first) ;
+
+    loopButton->value(init_loop_frames) ;
+    syncButton->value(init_sync_frames) ;
+    //frameValue->value(first) ;
+
+    frameValue->maximum(last) ;
+    strideValue->maximum(last) ;
+    firstValue->maximum(last) ;
+    lastValue->maximum(last) ;
+
+    frameValue->minimum(first) ;
+    strideValue->minimum(1) ;
+    firstValue->minimum(first) ;
+    lastValue->minimum(first) ;
+
+    frameTimeRoller->value(frameTime) ;
+    frameTimeValue->value(frameTime) ;
+
+    loopButton->value(loop_frames) ;
+    syncButton->value(sync_frames) ;
+
+    save_frame(last) ;
+
+    // get list of pane names
+    // this only needs to happen once, at startup
+    std::string panesFifoName("/tmp/hev-animator-"+std::string(getenv("USER"))+"-panesFifo") ;
+    iris::FifoReader panesFifo(panesFifoName) ;
+    panesFifo.open() ;
+    panesFifo.unlinkOnExit() ;
+    printf("QUERY %s PANES\n",panesFifoName.c_str()) ;
+    fflush(stdout) ;
+    std::string line ;
+    while (1)
+    {
+	if (panesFifo.readLine(&line))
+	{
+	    panes = iris::ParseString(line) ;
+	    panes.erase(panes.begin()) ;
+	    panes.erase(panes.begin()) ;
+	    break ;
+	}
+	usleep(iris::GetUsleep()) ;
+    }
+    Fl_Menu_Item* mi = new Fl_Menu_Item[panes.size()+1];
+    for (unsigned int i=0; i<panes.size(); i++) 
+    {
+	memset(&(mi[i]), 0, sizeof(Fl_Menu_Item)) ;
+	mi[i].label(panes[i].c_str()) ;
+	mi[i].flags = FL_MENU_TOGGLE ;
+	if (panes[i] == "perspective") 
+	{
+	    mi[i].set() ;
+	    paneList = panes[i] ;
+	}
+    }
+    // do a zero'd one at the end so FLTK will know it's the end of the array
+    memset(&(mi[panes.size()]), 0, sizeof(Fl_Menu_Item)) ;
+    grabPanes->menu(mi) ;
+
+    if (paneList == "")
+    {
+	dtkMsg.add(DTKMSG_WARNING, "hev-animator: no panes selected\n") ;
+	recButton->deactivate() ;
+    }
+    else recButton->activate() ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void update_widgets()
+{
+    if (playing)
+    {
+	stopButton->activate() ;
+	jump_to_firstButton->deactivate() ;
+	play_backwardButton->deactivate() ;
+	step_backwardButton->deactivate() ;
+	step_forwardButton->deactivate() ;
+	play_forwardButton->deactivate() ;
+	jump_to_lastButton->deactivate() ;
+    }
+    else
+    {
+	stopButton->deactivate() ;
+	jump_to_firstButton->activate() ;
+	play_backwardButton->activate() ;
+	step_backwardButton->activate() ;
+	step_forwardButton->activate() ;
+	play_forwardButton->activate() ;
+	jump_to_lastButton->activate() ;
+    }
+
+    if (stride>(last-first)) stride = last-first ;
+
+    if (current<first) frame(first) ;
+    else if (current>last) frame(last) ;
+
+    frameRoller->value((double)current) ;
+    frameValue->value(current) ;
+    
+    strideRoller->value((double)stride) ;
+    strideValue->value(stride) ;
+    
+    firstRoller->value((double)first) ;
+    firstValue->value(first) ;
+    firstRoller->maximum(last) ;
+    
+    lastRoller->value((double)last) ;
+    lastValue->value(last) ;
+    lastRoller->minimum(first) ;
+    
+    frameTimeRoller->value(frameTime) ;
+    frameTimeValue->value(frameTime) ;
+
+    loopButton->value(loop_frames) ;
+    syncButton->value(sync_frames) ;
+
+    if (!loop_frames)
+    {
+	if (current == first)
+	{
+	    jump_to_firstButton->deactivate() ;
+	    play_backwardButton->deactivate() ;
+	    step_backwardButton->deactivate() ;
+	}
+	else if (current == last)
+	{
+	    step_forwardButton->deactivate() ;
+	    play_forwardButton->deactivate() ;
+	    jump_to_lastButton->deactivate() ;
+	}
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+static void save_frame(unsigned int f)
+{
+    //fprintf(stderr, " save_frame %d\n",f) ;
+    saved_frame = f ;
+    static std::string label ;
+    label = iris::IntToString(saved_frame) ;
+    swapButton->label(label.c_str()) ;
+    Fl::redraw() ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void swap_frames()
+{
+    //fprintf(stderr, " swap_frames\n") ;
+    int c = current ;
+    frame(saved_frame) ;
+    save_frame(c) ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void settings(bool a)
+{
+    settingsState = a ;
+    if (a)
+    {
+	settings_window->show(fltk_argc, fltk_argv);
+    }
+    else
+    {
+	settings_window->hide();
+    }
+    
+}
+
+////////////////////////////////////////////////////////////////////////
+static void reset()
+{
+    stride = init_stride ;
+    frameTime = init_frameTime ;
+    loop_frames = init_loop_frames ;
+    sync_frames = init_sync_frames ;
+    first = init_first ;
+    last = init_last ;
+
+    update_widgets() ;
+}
+
+////////////////////////////////////////////////////////////////////////
+static void rec(bool b)
+{
+    int saveCurrent = current ;
+
+    frame(0) ;
+    if (b)
+    {
+
+	dtkMsg.add(DTKMSG_NOTICE, "hev-animator: starting recording...\n",b) ;
+	recButton->deactivate() ;
+	printf("DSO frameGrabber FRAMERATE 0\nDSO frameGrabber START %s\n",paneList.c_str()) ;
+	for (unsigned int i=first; i<=last; i+=stride)
+	{
+	    for (unsigned int j=0; j<group_nodes.size(); j++)
+	    {
+		if (i==first) printf("NODEMASK %s OFF\n", ((group_nodes[j])[last]).c_str()) ;
+		else printf("NODEMASK %s OFF\n", ((group_nodes[j])[i-1]).c_str()) ;
+		printf("NODEMASK %s ON\n", ((group_nodes[j])[i]).c_str()) ;
+	    }
+	    if (i<=last-stride) printf("FRAME\n") ; 
+	    shm->write(&i) ;
+	}
+	printf("DSO frameGrabber STOP\nDSO frameGrabber FLUSH\nFRAME\n") ;
+	fflush(stdout) ;
+	dtkMsg.add(DTKMSG_NOTICE, "hev-animator: recording finished ...\n",b) ;
+	recButton->activate() ;
+	recButton->value(0) ;
+    }
+
+    frame(saveCurrent) ;
+}

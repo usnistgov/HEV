@@ -1,0 +1,51 @@
+#!/bin/sh
+#trap "echo 1 terminate" 0
+
+isDeltaTime()
+{
+    #echo '$# = '$# 2>&1
+    if [ $# -gt 1 ]
+    then return 1
+    fi
+
+    # must be positive, so kick out if it has a "-" in it
+    if ( echo $1 | grep -q -e "-" )
+    then return 1
+    fi
+    # use printf to see if it's a valid float
+    if ( printf "%f" $1 >/dev/null 2>&1)
+    then return 0
+    else return 1
+    fi
+    
+}
+
+
+while echo -e -n "\nEnter delta time or comment${crot}: " 1>&2 && read t 
+do
+    # use old time value if CR pressed and an old time value exists
+    if [ -z "$t" -a -n "$ot" ]
+    then t=$ot
+    fi
+
+    # if no old time and CR pressed just loop
+    if [ -n "$t" ]
+    then if ( echo $t | grep -q -E '\w*#' ) # a comment
+	then echo -e "Wrote \"$t\" to stdout" 1>&2 
+	    echo $t
+	elif ( isDeltaTime $t ) # a delta time
+	then echo -e -n "\nPress <CR> for current position, or enter control command or position : " 1>&2 && read p
+	    ot=$t
+	    crot=" [$t]"
+	    if [ -z "$p" ]
+	    then l="$t `hev-readNav`"
+	    else l="$t $p"
+	    fi
+	    echo -e "Wrote \"$l\" to stdout" 1>&2 
+	    echo $l
+	else dtk-msgError -p "" "Invalid delta time" 1>&2
+	fi
+    fi
+done
+
+

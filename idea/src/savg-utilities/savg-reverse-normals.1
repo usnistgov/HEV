@@ -1,0 +1,20 @@
+.TH SAVG\-REVERSE-NORMALS 1 "31 March 2005"
+.SH NAME
+savg-reverse-normals 
+.SH SYNOPSIS
+.B savg-reverse-normals
+
+.SH DESCRIPTION
+.I savg-reverse-normals
+reverses the direction of normal vectors.  
+Takes input in .savg format on stdin and writes output in .savg format to stdout.
+
+There are no command line arguments or options.
+
+.SH EXAMPLES
+.TP
+.B savg-reverse-normals < surface.savg > surface.revNorm.savg
+Reverse the normals in the file surface.savg.
+
+.SH SEE ALSO
+savg-reverse, savg-rm-normals, savg-add-normals, savg-output-normals

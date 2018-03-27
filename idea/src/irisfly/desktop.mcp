@@ -1,0 +1,4 @@
+# commands are just echoed to stdout, which is $IRIS_CONTROL_FIFO, so they
+# are read by the running iris-viewer process
+READ desktopWand.mcp
+READ wiggle.mcp

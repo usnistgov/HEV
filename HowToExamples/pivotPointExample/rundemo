@@ -1,0 +1,3 @@
+#! /bin/bash
+
+irisfly demo.iris holodeck.mcp pivot.mcp

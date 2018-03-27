@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import os
+import stat
+import sys
+import optparse
+import subprocess
+import time
+import datetime
+import shutil
+import tempfile
+
+
+
+txtrUnitMap = dict()
+txtrUnitMap["VolTxtrSc0"] = 23;
+txtrUnitMap["foo"] = 42;
+
+print "voltxtrsc0 " + str (txtrUnitMap["VolTxtrSc0"])
+print "foo " + str (txtrUnitMap["foo"])
+# print "bar " + str (txtrUnitMap["bar"])
+print "bar " + str (txtrUnitMap.get("bar"))
+
+sys.exit (0)
+

@@ -1,0 +1,14 @@
+
+<hr width="95%" />
+
+<center>
+<a href="index.html">Top Page</a> |
+<a href="@DIVERSE_HOMEPAGE@">DTK</a> version @DTK_VERSION@,
+@DTK_RELEASE_DATE@ |
+@DTK_DOXYGEN_LINK@ |
+@DTK_DOXYGEN_FRAMES@
+
+</center>
+
+</body>
+</html>

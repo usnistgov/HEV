@@ -1,0 +1,4 @@
+LOAD      holodeck holodeck.osgt
+NOCLIP    holodeck
+NODEMASK  holodeck OFF
+ADDCHILD  holodeck scene

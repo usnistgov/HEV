@@ -1,0 +1,26 @@
+to compile the test
+./makeTestCase.sh
+
+to build the test
+./buildTestCase.sh
+
+to run the test
+./runTestCase.sh
+
+
+
+Files in this directory that you should look at:
+
+readme.shaderProcedure - this file
+GNUmakefile  - makefile
+makeTestCase.sh - compiles
+buildTestCase.sh  - builds
+runTestCase.sh  - runs
+shaderProcedureControls.iris - iris file from timeline file
+shaderProcedure.timeline - timeline file
+shaderProcedure.iris - iris file for test
+baseLine_000000.pam - reference image
+desktopWindowTraits512.iris - 512x512 window specification
+sphere4.frag - shader
+points4.savg - points
+

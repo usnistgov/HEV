@@ -1,0 +1,38 @@
+From kelso@nist.gov Thu Sep 13 15:46:23 2012
+Date: Thu, 13 Sep 2012 15:45:43 -0400
+From: John Kelso <kelso@nist.gov>
+To: "Satterfield, Steven G." <steven.satterfield@nist.gov>
+Cc: "Hagedorn, John G." <john.hagedorn@nist.gov>
+Subject: Re: doc/idea/overview
+
+This is an ugly hack that I knocked out as part of the student documentation
+that Judy wanted me to write a year or two ago..
+
+In that directory is the shell script "makeManPDFs.sh" which generate
+them. Also notice there's an index.html. Try loading
+file:///usr/local/HEV/doc/idea/overview/index.html
+
+In the idea to-do file $HEVROOT/idea/src/README.thingsToDo I have the
+comment:
+
+   modify the idea gnumakefile.include so it creates PDF versions of each man
+   page and builds a web page of all man pages. Modify the IDEA wiki to use
+   these PDFs
+
+"IDEA wiki" refers to the page
+http://snippet.cam.nist.gov:8000/rave/wiki/IRIS_IDEA_MainDoc, which has a
+pointer to the URL in the second paragraph, above.
+
+John
+
+On Wed, 12 Sep 2012, Steve Satterfield wrote:
+
+>
+> We just noticed $HEVROOOT/doc/idea/overview which has pdf versions of most
+> hev-commands dated 6/28/2011.
+>
+> What is this and how does it get generated?
+>
+> -Steve
+>
+>

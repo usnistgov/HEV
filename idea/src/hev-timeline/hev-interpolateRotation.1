@@ -1,0 +1,101 @@
+.TH hev-interpolateRotation 1 "November 2011"
+
+.SH NAME
+hev-interpolateRotation
+
+.SH SYNOPSIS 
+.B hev-interpolateRotation  [ --r0 \fIh p r\fB ] [ --r1 \fIh p r\fB ]  [ --absolute ] [ --startTime \fIt\fB ] [ --duration \fIt\fB ] [ --frameRate \fIr\fB ] [ --deltaRotation \fIa\fB ]
+
+.SH OPTIONS
+
+.IP "--r0 \fIh p r\fR"
+specifies the initial rotation in Euler angles. If not specified, 0, 0, 0, is used.
+
+.IP "--r1 \fIh p r\fR"
+specifies the final rotation in Euler angles. If not specified, 0, 0, 0, is used.
+
+.IP "--absolute"
+specifies that the times used in the IRIS control commands be absolute
+times. i.e. OSG reference times. The default is to use time values that are
+relative to the time the control command was processed.
+
+.IP "--startTime \fIt\fR"
+specifies the initial time offset in seconds to be added to all IRIS control
+commands.  The default value is 0.
+
+.IP "--duration \fIt\fR"
+specifies the number of seconds to rotate from r0 to r1. If not supplied,
+duration will be set to 1.0 second.
+
+.IP "--frameRate \fIr\fR"
+specifies the number of times per second \fBhev-interpolateRotation\fR
+will interpolate between the rotations.  If \fIframeRate\fR is not specified, 60 will be used.
+
+.IP "--deltaRotation \fIa\fR"
+specifies the amount that the navigation node's rotation value needs to
+change before command is written. The amount is the angle from the
+last written rotation.
+
+If \fIdeltaRotation\fR is not specified, it defaults to .1 degrees.
+
+If \fIdeltaRotation\fR is set to zero a command containing a rotation
+value will be written \fIframeRate\fR times a second.
+
+.SH DESCRIPTION
+
+\fBhev-interpolateRotation\fR will write IRIS control commands that will
+modify the navigation node's rotation to go from \fIr0\fR to
+\fIr1\fR over the course of \fIduration\fR seconds, writing up to \fIframerate\fR commands
+per second.
+
+\fBhev-interpolateRotation\fR liberally comments the control commands it
+generates. Like any IRIS control command file, the results can be edited with any text
+editor.
+
+.SH EXAMPLE
+
+hev-interpolateRotation --r0 -45 -45 -45 --r1 45 45 45 --start 10 --duration 2.5 --frameRate 4  > /tmp/scoot.iris
+
+will generate and store in the file /tmp/scoot.iris:
+
+AFTER TIME 10.000000 NAV ORIENTATION -45.000000 -45.000000 -45.000000
+.br
+AFTER TIME 10.250000 NAV ORIENTATION -26.800400 -45.143848 -26.800400
+.br
+AFTER TIME 10.500000 NAV ORIENTATION -9.922147 -41.380863 -9.922147
+.br
+AFTER TIME 10.750000 NAV ORIENTATION 3.841135 -34.502022 3.841135
+.br
+AFTER TIME 11.000000 NAV ORIENTATION 14.417210 -25.500029 14.417210
+.br
+AFTER TIME 11.250000 NAV ORIENTATION 22.500000 -15.141508 22.500000
+.br
+AFTER TIME 11.500000 NAV ORIENTATION 28.811312 -3.920380 28.811312
+.br
+AFTER TIME 11.750000 NAV ORIENTATION 33.895695 7.860523 33.895695
+.br
+AFTER TIME 12.000000 NAV ORIENTATION 38.129871 20.013964 38.129871
+.br
+AFTER TIME 12.250000 NAV ORIENTATION 41.771431 32.420364 41.771431
+.br
+AFTER TIME 12.500000 NAV ORIENTATION 45.000000 45.000000 45.000000
+
+Note that the first interpolated Euler angle generated might appear to be
+quite different from the initial and final Euler angles; this is due to the fact
+that there are several equivalent Euler angles that can specify the same
+orientation.
+
+.SH SEE ALSO
+
+hev-timeline, hev-navigationToTimeline, hev-timelineToIris,
+hev-interpolateScale, hev-interpolateTranslation, hev-readNav
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+November 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

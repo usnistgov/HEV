@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/yokeLE
+END
+help.sh
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/yokeLE/help.sh
+END
+yokeLE.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/yokeLE/yokeLE.cpp
+END
+configure.sh
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/yokeLE/configure.sh
+END
+config.h
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/yokeLE/config.h
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/yokeLE/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/yokeLE/README
+END
+demo.sh
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/yokeLE/demo.sh
+END

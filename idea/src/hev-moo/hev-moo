@@ -1,0 +1,388 @@
+#! /usr/bin/perl
+#
+# hev-moo    Create a .iris file which will implement a GUI to turn loadable
+#             model files on and off
+#
+#
+# steve@nist.gov
+#
+# Inspired by a bash script by John Kelso
+
+
+#$version="20110503";
+#$version="20111019";
+#$version="20111205";
+#$version="20120830";
+$version="20140610";
+
+
+use Getopt::Long;
+use File::Basename;
+
+####################
+# Usage subroutine #
+####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage:  hev-moo [options]  file ...
+
+Version= $version
+
+  "file ..."    one or more loadable files must be specified
+                See below for details.
+
+  --id string   A unique string used to ensure internal node names are unique.
+                Default is 'moo${USER}$$' ie. moo followed by user name and
+                current PID
+
+  --examine     Causes "EXAMINE world" to be initiated after all files are
+                loaded.  See documentation for the IRIS control
+                command. See also --examine in the iris-viewer man
+                page.
+
+  --on          Causes all model files to be initially on. If not specified,
+                all models are off.
+
+  --separator string  when specified, used to identify a special prefix
+                      on filenames which will be used as button
+                      labels. Normally the usual file basename is used
+                      as the label.
+
+                      For example: specifying ':' as a separator
+
+                      foo:bar.osg
+
+                      will load bar.osg, and give it a label of "foo"
+
+  --xsize x     specifies the X size of all buttons in pixels.
+                The default is 75.
+
+  --ysize y     specifies the Y size of all buttons in pixels.
+                The default is 20.
+
+
+  --columns c  specifies the  number of columns used in the menu.
+               The default is 3. 
+
+
+
+   Files Names
+
+        There are four special keywords which can be specified
+        intermixed with filename.  These keywords are case
+        sensitive.
+
+          radioStart       Starts a radio button group
+          radioEnd         Terminates a radio button group
+
+          menuStart-LABEL  Starts a labeled menu button for subsequent buttons.
+                           Replace "LABEL" with your desired button label.
+          menuEnd          Terminates a menu button.
+
+          Refer to RADIO, MENU, END command of hev-masterControlPanel(1)                    
+
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+########################
+# Base name subroutine #
+########################
+
+
+sub myBasename {
+    my($ext, $filename, $directories, $suffix);
+    
+    if ($_[0] eq "radioStart" ) {return $_[0];}
+    if ($_[0] eq "radioEnd" )   {return $_[0];}
+    if (index($_[0],"menuStart-") > -1)  {return $_[0];}
+    if ($_[0] eq "menuEnd" )    {return $_[0];}
+
+    # extract the suffix for use with fileparse
+    ($ext) = $_[0] =~ /(\.[^.]+)$/;
+    #print STDERR "ext= $ext \$_[0]= $_[0]\n";
+    if ($ext eq "") {
+	print STDERR "Bad file name: $_[0]\n";
+	usage();
+    }
+
+
+
+    # to get filename only
+    ($filename, $directories, $suffix) = fileparse($_[0],$ext);
+    #print STDERR "<$filename>  <$directories>  <$suffix> \n";
+
+    # $filename is normal basename here.
+    # Do we have the special case for user specified labels?
+
+    if ($separator ne "") {
+	$where=index($filename, $separator);
+	if ($where > -1) {
+	    $filename=substr($filename, 0, $where);
+	}
+
+    }
+    
+    return $filename;
+}
+
+sub stripPrefix {
+    my ($filename);
+
+    $filename=$_[0];
+    
+    if ($separator ne "") {
+	$where=index($filename, $separator);
+	if ($where > -1) {
+	    $where++;
+	    $filename=substr($filename, $where);
+	}
+
+    }
+    
+    return $filename;
+}
+
+
+# End of myBasename
+
+
+####################
+# Main Begins here #
+####################
+
+if ($ENV{"HEVROOT"} eq "") {
+    print STDERR "HEVROOT is not defined\n";
+    exit(1);
+}
+
+
+############################
+# Process the command line #
+############################
+
+# Default values
+$debug=0;
+$help=0;
+$userName=$ENV{'USER'};
+$ID="moo_${userName}_$$";
+$examine=0;
+$separator="";
+$buttonX=75;
+$buttonY=20;
+$columns=3;
+$allOn=0;
+
+#print STDERR "\@ARGV= @ARGV\n";
+
+# reconstruct the command line
+$cmd="hev-moo";
+for ($i=0; $i<$#ARGV; $i++) {
+    $cmd=$cmd." ".$ARGV[$i];
+}
+
+GetOptions("debug"         => \$debug,
+	   "help"          => \$help,
+	   "examine"       => \$examine,
+	   "on"            => \$allOn,
+	   "separator:s"   => \$separator,
+	   "xsize:i"       => \$buttonX,
+	   "ysize:i"       => \$buttonY,
+	   "columns:i"     => \$columns,
+           "id:s"          => \$ID
+);
+
+
+usage() if ($help);
+
+# At least one file is required
+usage() if (@ARGV < 1);
+
+$n=@ARGV;
+
+#$debug=0;    # set to 1 to print values
+# --debug is a hidden option that will set this
+if ($debug) {
+    print STDERR "version= $version\n";
+    print STDERR "examine= $examine\n";
+    print STDERR "allOn= $allOn\n";
+    print STDERR "separator= $separator\n";
+    print STDERR "xsize= $buttonX\n";
+    print STDERR "ysize= $buttonY\n";
+    print STDERR "columns= $columns\n";
+    print STDERR "ID= $ID\n";
+
+    print STDERR "$n Files: ";
+    for ($i=0; $i<$n; $i++) {
+	print STDERR "@ARGV[$i] ";
+    }
+    print STDERR "\n";
+}
+
+# seprator must be a single character
+$l=length $separator;
+if ($l > 1 ) {
+    die "separator must be a single character\n";
+}
+
+
+#####################
+# Output .iris file #
+#####################
+
+$d=`date`;
+chop $d;
+
+print <<EOF
+#
+# Created: $d
+# With command: $cmd
+#
+# Example Usage: irisfly --ex file.iris
+#
+EOF
+;
+
+
+print <<EOF
+
+###########################################################
+# Load objects and create scenegraph switch models on/off #
+###########################################################
+
+EOF
+;
+
+
+for ($i=0; $i<$n; $i++) {
+    $flong=stripPrefix($ARGV[$i]);
+
+    $fshort=myBasename($ARGV[$i]);
+    $node="${ID}-$fshort";
+
+    if ($fshort eq "radioStart" ) {next;}
+    if ($fshort eq "radioEnd" )   {next;}
+    if (index($fshort,"menuStart-")>-1)  {next;}
+    if ($fshort eq "menuEnd" )    {next;}
+
+    #print STDERR "fshort = $fshort\n";
+    #print STDERR "flong = $flong\n";
+
+    print "LOAD $node $flong\n";
+    print "NODEMASK $node OFF\n";
+    print "ADDCHILD $node world\n";
+}
+
+
+if ($examine) {
+    print "\nEXAMINE\n";
+}
+
+
+print <<EOF
+
+###################################################
+# Create the "MOO" mcp file to turn models on/off #
+###################################################
+
+EOF
+;
+
+$tmp1='/tmp/moo_${USER}${PPID}.mcp';
+print "WAIT echo > $tmp1\n";
+
+for ($i=0; $i<$n; $i++) {
+    $flong=stripPrefix($ARGV[$i]);
+
+    $fshort=myBasename($ARGV[$i]);
+    $node="${ID}-$fshort";
+
+    if ($fshort eq "radioStart" ) {
+	print "WAIT echo RADIO >> $tmp1\n";
+	next;
+    }
+    if ($fshort eq "radioEnd" ) {
+	print "WAIT echo END >> $tmp1\n";
+	next;
+    }
+
+    $msIndex=index($fshort,"menuStart-");
+    if ($msIndex > -1) {
+	$msIndex=$msIndex+10;
+	$lab=substr($fshort,$msIndex);
+	print "WAIT echo MENU $lab >> $tmp1\n";
+	next;
+    }
+    if ($fshort eq "menuEnd" ) {
+	print "WAIT echo END >> $tmp1\n";
+	next;
+    }
+
+    print "WAIT echo SIZE $buttonX $buttonY  >> $tmp1\n";
+    print "WAIT echo COLUMNS $columns  >> $tmp1\n";
+    
+    print "WAIT echo BUTTON $fshort  >> $tmp1\n";
+    if ($allOn) {
+	print "WAIT echo INIT  >> $tmp1\n";
+    }
+
+    print "WAIT echo ON  NODEMASK $node ON  >> $tmp1\n";
+    print "WAIT echo OFF NODEMASK $node OFF >> $tmp1\n";
+}
+
+print "WAIT echo RESET hide show COLOR .7 .8 1  >> $tmp1\n";
+
+
+
+
+print <<EOF
+
+################################################
+# Create a file to add a button to irisfly MCP #
+################################################
+
+EOF
+;
+
+
+$tmp2='/tmp/mooAddToMCP_${USER}${PPID}.mcp';
+
+print "WAIT echo BUTTON MOO > $tmp2\n";
+
+print "WAIT echo FIRST EXEC hev-masterControlPanel -title MOO --noescape  $tmp1 \\\> \\\$IRIS_CONTROL_FIFO >> $tmp2\n";
+
+print "WAIT echo ON  EXEC hev-showWindow MOO >> $tmp2\n";
+print "WAIT echo OFF EXEC hev-hideWindow MOO >> $tmp2\n";
+
+print "# Add to MCP\n";
+print "WAIT irisfly-addToMCP $tmp2\n";
+
+
+
+print <<EOF
+
+#########################################
+# Clean up tmp files when irisfly exits #
+#########################################
+
+EOF
+;
+
+
+print "AFTER CLEANUP EXEC rm $tmp1\n";
+print "AFTER CLEANUP EXEC rm $tmp2\n";
+
+
+
+############
+# All done #
+############

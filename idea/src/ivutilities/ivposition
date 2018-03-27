@@ -1,0 +1,134 @@
+#! /bin/sh
+
+#
+# ivposition - append a matrix to position the input along a line segment
+#              defined by two end points
+#
+# Steve Satterfield
+# NIST/ITL/MCSD/SAVG
+# November 24, 2007
+#
+# This script is based on ivstick
+#
+
+case $# in
+6)
+    #echo $1 $2 $3 $4 $5 $6
+    ;;
+*)
+    echo "Usage: ivposition x1 y1 z1  x2 y2 z2" > /dev/tty
+    echo > /dev/tty
+    echo "  Position the input glyph along the line specified segement."
+    echo "  The input is assumed to be of length 0 to 1 along the Y axis."
+    echo "  A typical applicaiton is with the ivarrow command".
+
+    exit
+    ;;
+esac
+
+
+awk -v p1x=$1 -v p1y=$2 -v p1z=$3 -v p2x=$4 -v p2y=$5 -v p2z=$6 '
+#
+# return the length of a vector
+#
+function v3length(v3) {
+	return sqrt( (v3[x]*v3[x])+(v3[y]*v3[y])+(v3[z]*v3[z])  );
+}
+#
+# normalize the input vector and return it
+#
+function v3normalize(v3) 
+{
+    len = v3length(v3);
+    if (len != 0.0) { v3[x]=v3[x]/len;  v3[y]=v3[y]/len; v3[z]=v3[z]/len; }
+}
+BEGIN {
+    x=0;y=1;z=2;
+    radius=.05;
+
+    print "#Inventor V2.0 ascii";
+    print "Separator {";
+
+    p1[x]=p1x; p1[y]=p1y; p1[z]=p1z;
+    p2[x]=p2x; p2[y]=p2y; p2[z]=p2z;
+
+    # convert to a vector
+    for (i=0; i<3; i++) {
+        v1[i]=p2[i]-p1[i];
+    }
+
+    blength=sqrt(v1[x]*v1[x]+v1[y]*v1[y]+v1[z]*v1[z]);
+
+    # print "# v1:",v1[x],v1[y],v1[z];
+    v3normalize(v1);
+    # print "# v1(n):"v1[x],v1[y],v1[z];
+
+
+#    Identity for debugging
+#    r0[0]=1;     r0[1]=0;  r0[2]=0;    r0[3]=0;
+#    r1[0]=0;     r1[1]=1;  r1[2]=0;    r1[3]=0;
+#    r2[0]=0 ;    r2[1]=0;  r2[2]=1;    r2[3]=1;
+#    r3[0]=p1[x]; r3[1]=p1[y]; r3[2]=p1[z]; r3[3]=1;
+
+    # YX Rotation
+    a=v1[x]; b=v1[y]; c=v1[z];
+    d=sqrt(b*b+c*c);
+    #bl=blength/2;
+    bl=0;
+    if (d == 0) {
+	printf("# a=%d b=%g c=%g d=%g\n",a,b,c,d);
+#        r0[0]=1;        r0[1]=0;        r0[2]=0;        r0[3]=0;
+#        r1[0]=0;        r1[1]=1;        r1[2]=0;        r1[3]=0;
+#        r2[0]=0;        r2[1]=0;        r2[2]=1;        r2[3]=0;
+#        r3[0]=p1[x]+bl; r3[1]=p1[y];    r3[2]=p1[z];    r3[3]=1;
+
+##         r0[0]=0;        r0[1]=1;     r0[2]=0;      r0[3]=0;
+##         r1[0]=-1;       r1[1]=0;     r1[2]=0;      r1[3]=0;
+##         r2[0]=0;        r2[1]=0;     r2[2]=1;      r2[3]=0;
+         r0[0]=0;        r0[1]=-a;    r0[2]=0;      r0[3]=0;
+         r1[0]=+a;       r1[1]=0;     r1[2]=0;      r1[3]=0;
+         r2[0]=0;        r2[1]=0;     r2[2]=1;      r2[3]=0;
+         r3[0]=p1[x]+bl; r3[1]=p1[y]; r3[2]=p1[z]; r3[3]=1;
+    }
+    else {
+        e=c/-d;
+        f=b/d;
+        #bl=-blength/2;
+        bl=0;
+
+#    Just the YX Rotation
+#    r0[0]=d;     r0[1]=a*-f;  r0[2]=a*e;    r0[3]=0;
+#    r1[0]=0;     r1[1]=e;     r1[2]=f;      r1[3]=0;
+#    r2[0]=-a;    r2[1]=d*-f;  r2[2]=d*e;    r2[3]=0;
+#    r3[0]=p1[x]; r3[1]=p1[y]; r3[2]=p1[z]; r3[3]=1;
+
+
+#   Cylinder is defined along Y centered at 0,0,0 so rotate 90
+#    r0[0]=d;     r0[1]=a*-f;  r0[2]=a*e;    r0[3]=0;
+#    r1[0]=-a;    r1[1]=d*-f;  r1[2]=d*e;    r1[3]=0;
+#    r2[0]=0;     r2[1]=-e;    r2[2]=-f;     r2[3]=0;
+#    r3[0]=p1[x]; r3[1]=p1[y]; r3[2]=p1[z]; r3[3]=1;
+
+    # For ivstick,
+    # the actual matrix needed includes above plus a translation
+    # to account for the cylinder definition
+    r0[0]=d;     r0[1]=a*-f;  r0[2]=a*e;    r0[3]=0;
+    r1[0]=-a;    r1[1]=d*-f;  r1[2]=d*e;    r1[3]=0;
+    r2[0]=0;     r2[1]=-e;    r2[2]=-f;     r2[3]=0;
+    r3[0]=bl*(-a)+p1[x]; r3[1]=bl*(d*-f)+p1[y]; r3[2]=bl*(d*e)+p1[z]; r3[3]=1;
+    }
+
+    print "MatrixTransform {";
+    printf("matrix %10.6g %10.6g %10.6g %10.6g\n",r0[0],r0[1],r0[2],r0[3]);
+    printf("       %10.6g %10.6g %10.6g %10.6g\n",r1[0],r1[1],r1[2],r1[3]);
+    printf("       %10.6g %10.6g %10.6g %10.6g\n",r2[0],r2[1],r2[2],r2[3]);
+    printf("       %10.6g %10.6g %10.6g %10.6g\n",r3[0],r3[1],r3[2],r3[3]);
+    print "}";
+
+
+    printf("# Cylinder {radius %g height %g}\n",radius,blength);
+    cmd=sprintf("ivscale 1 %g 1",blength);
+    system(cmd);
+
+    print "}";
+}'

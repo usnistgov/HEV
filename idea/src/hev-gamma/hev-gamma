@@ -1,0 +1,50 @@
+#! /bin/bash
+
+# hev-gamma   convenience script to run xgamma on 3 RAVE screens
+#
+# steve@nist.gov
+# 2/26/09
+#
+
+case $1 in
+-h*|--h*)
+    echo "Usage: hev-gamma [value]"
+    echo
+    echo "   Set the screen gamma to 'value'"
+    echo "   If no value is specified, then print the current gamma."
+    echo
+    echo "   Gamma of 1.0 is the typical default value."
+    echo "   Higher values such as 1.4 can boos to overall screen brightness."
+    echo "   Higgher values may also wash out X11 menus."
+    exit
+esac
+
+d=$(hev-identifyImmersive)
+
+case $d in
+rave)
+    s="1 2 3"
+    ;;
+desktop)
+    # 5/27/2011 change
+    #s="0 1"
+    s="0"
+    ;;
+powerwall)
+    s="1"
+    ;;
+esac
+
+case $# in
+1)
+     G="-gamma $1"
+     ;;
+*)
+     G=""
+     ;;
+esac
+
+for i in  $s
+do
+    xgamma -screen $i $G
+done

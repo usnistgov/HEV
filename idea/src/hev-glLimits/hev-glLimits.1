@@ -1,0 +1,77 @@
+.TH HEV-GLLIMITS 1 "2 June 2010"
+
+
+.SH NAME
+
+hev-glLimits
+
+
+.SH SYNOPSIS
+
+.B hev-glLimits
+
+
+.SH DESCRIPTION
+
+\fBhev-glLimits\fR reports a variety of shader-related limits for the
+current graphics card.
+
+.P
+Many of the limits are reported in components. In these cases, a float
+would be one component, a vec3 would be 3 componentes, mat4 would be
+16 componenents, etc.
+
+The following are reported:
+.TP
+.B uniforms
+Number of uniform components that can be passed into the vertex,
+geometry or fragment shader. This includes user-defined uniforms, as
+well as any built-in uniforms used by the shader (e.g. light
+positions, transformation matrices, etc.)
+
+.TP
+.B attribs
+Per-vertex attributes. Built-in attributes such as texture
+coordinates, per-vertex color, normals, etc. count against this total.
+
+.TP
+.B geometry output
+Limits for number of vertices and total components that can be
+produced by a geometry shader. The total number of components is the
+number of components per vertex times the number of vertices.
+
+.TP
+.B varyings
+There are limits on the number of varying components that can be
+passed from vertex shader to geometry shader, from geometry shader to
+fragment shader, or, if no geometry shader is used, from vertex shader
+to fragment shader.
+
+.TP
+.B texture units
+Maximum number of unique textures that can be accessed by each type of
+shader. This does not limit the total number of texture calls, since a
+single shader may have multiple accesses to different locations in the
+same texture.
+
+.TP
+.B texture sizes
+Limits on the maximum sizes for 2D and 3D textures.
+
+.SH BUGS
+
+Should really only be used from the console of the machine in question.
+
+.SH AUTHOR
+
+Marc Olano
+
+.PP
+June 2010
+
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

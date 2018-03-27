@@ -1,0 +1,58 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0110 
+header_name {.h} 
+code_name {.cxx}
+Function {make_main_window()} {open
+} {
+  Fl_Window {} {
+    label cube open selected
+    xywh {2775 207 175 105} type Double visible
+  } {
+    Fl_Group {} {open
+      xywh {10 5 165 103}
+    } {
+      Fl_Round_Button {} {
+        label XYZ
+        callback {uniformScalingButton->deactivate() ;
+translation = true ;
+rotation = false ;
+scale = false ;
+insideScale = NONE ;}
+        xywh {15 15 88 15} type Radio down_box ROUND_DOWN_BOX value 1
+      }
+      Fl_Round_Button {} {
+        label HPR
+        callback {uniformScalingButton->deactivate() ;
+translation = false ;
+rotation = true ;
+scale = false ;
+insideScale = NONE ;}
+        xywh {15 35 88 15} type Radio down_box ROUND_DOWN_BOX
+      }
+      Fl_Round_Button {} {
+        label {XYZ/HPR}
+        callback {uniformScalingButton->deactivate() ;
+translation = true ;
+scale = false ;
+rotation = true ;
+insideScale = NONE ;}
+        xywh {15 55 88 15} type Radio down_box ROUND_DOWN_BOX
+      }
+      Fl_Round_Button {} {
+        label scale
+        callback {uniformScalingButton->activate() ;
+translation = false ;
+scale = true ;
+rotation = false ;
+inside = false ;}
+        xywh {15 75 88 15} type Radio down_box ROUND_DOWN_BOX
+      }
+      Fl_Light_Button {} {
+        label uniform
+        callback {uniformScaling = o->value() ;}
+        xywh {90 75 75 20} deactivate
+        code0 {uniformScalingButton = o ;}
+      }
+    }
+  }
+} 

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/diverse/!svn/ver/730/trunk/dtk/examples/dtk/more/tcpEchoService
+END
+tcpEcho.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/730/trunk/dtk/examples/dtk/more/tcpEchoService/tcpEcho.cpp
+END
+Makefile.orig
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/more/tcpEchoService/Makefile.orig
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/diverse/!svn/ver/730/trunk/dtk/examples/dtk/more/tcpEchoService/CMakeLists.txt
+END

@@ -1,0 +1,40 @@
+.TH hev-writeButtons 1 "April 2011"
+.SH NAME
+
+hev-writeButtons
+
+.SH SYNOPSIS
+
+\fBhev-writeButtons [ -c N ] shmName [ button ... ]
+
+.SH DESCRIPTION
+
+\fBhev-writeButtons\fR writes unsigned chars to the specified DTK shared
+memory file.
+.PP
+Unless -c is specified, the specified shared memory must exist prior to executing the command.
+.PP
+If \fIbutton\fR is not supplied on the command line, unsigned chars will be
+read from stdin and written to \fIshmName\fR until EOF.
+.PP
+If the -c option is specified, the shared memory file will be created, sized
+to store N buttons.
+
+.SH NOTE
+The number of unsigned chars must match the size of the shared memory file.
+If in doubt about the shared memory file's size, use \fBdtk-getSize\fR.
+
+.SH "SEE ALSO"
+.BR dtk-writeShm "(no man page currently available)"
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

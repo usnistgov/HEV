@@ -1,0 +1,63 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-stray 1 "February 2015" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+hev-stray - check for stray HEV processes
+
+.SH SYNOPSIS
+
+\fBhev-stray [-v] [-l] [string ...]\fR 
+
+.SH OPTIONS
+.TP
+.B "-v"
+Verbose
+
+.TP
+.B "-l"
+Print the built in search strings
+
+
+
+.SH DESCRIPTION
+
+\fBhev-stray\fR is used to check for \fIstray\fR process that are some times
+left running when an HEV application crashes.
+
+.PP
+It is up to the user to determine if the reported processes are legitimate or
+stray and if possible kill any stray processes discovered. When
+processes belonging to another user is discovered, please ask the owner to kill
+them.
+
+.PP
+Basically, this is a convenience script that uses \fBps\fR and \fBgrep\fR
+using a series of built in strings, such as \fIhev, dtk, etc.\fR. You can
+optionally specify additional search strings that might be user specific.
+
+.PP
+The HEV applications are increasingly becoming a collection of separate
+processes. It is important for proper operation and performance that all
+processes are properly killed when an application exits. However, situations
+do occur that will leave stray processes running. Unexpected behavior of
+production applications and demos can be caused by stray processes.
+
+.PP
+\fBNotice:\fR it is normal for \fIdtk-server\fR to be running on the
+RAVE and PowerWall machines. This background process controls the
+tracking. If you kill it, then you will need to restart the tracker,
+see: \fBhev-tracker(1)\fR.
+
+.PP
+This command will not report \fIdtk-server\fR and a few other normal
+commands unless the \fB-v\fR (verbose) option is specified.
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov
+.br
+http://www.nist.gov/itl/math/hpcvg
+

@@ -1,0 +1,1229 @@
+<html>
+
+<head>
+<title>
+hev-lightEditor - An interactive tool for specifying lights
+</title>
+
+<style type="text/css">
+  dl {margin-left: 60px;}
+  dt {margin-left: -30px;}
+  img {margin-left: 60px;}
+</style>
+
+</head>
+
+
+
+<body>
+
+<center>
+<H1>
+hev-lightEditor 
+</H1>
+<H2>
+An Interative Tool For Specifying Lights
+</H2>
+</center>
+
+
+<p><a href="#quickStart">
+Quick Start
+</a></p>
+
+<p><a href="#overview">
+Overview
+</a></p>
+
+<p><a href="#interface">
+Interface
+</a>
+<ul>
+	<li><a href="#lightSourcesPanel">Light Sources</a></li>
+	<li><a href="#lightModelPanel">Light Model</a></li>
+	<li><a href="#globalPanel">Global Settings</a></li>
+	<li><a href="#filesPanel">Files</a></li>
+</ul>
+</p>
+
+<p><a href="#usage">
+Running hev-lightEditor
+</a></p>
+
+<p><a href="#future">
+Future Development
+</a></p>
+
+<p><a href="#lightsAndMaterials">
+Some Comments on Lighting and Material Specification
+</a></p>
+
+<br>
+<br>
+
+<hr>
+
+
+<a name="quickStart"
+<H2>Quick Start</H2>
+</a>
+<p>
+If you want to get started quickly with hev-lightEditor
+without reading all of this documentation, try this:
+</p>
+<ul>
+<li>
+Startup irisfly in desktop mode with some models that
+you're familiar with.
+You can even run one of the standard demos.
+</li>
+<li>
+After irisfly has started up, run the following command:
+<pre><code>
+    hev-lightEditor > $IRIS_CONTROL_FIFO
+</code></pre>
+The light editor GUI should appear.
+</li>
+</ul>
+
+
+<p>
+The program can also be run in the immersive environment, 
+but to do that requires a different startup procedure.
+For more details about how to run hev-lightEditor, see
+<a href="#usage">Running hev-lightEditor</a>.
+</p>
+
+<br><br>
+
+
+<a name="overview"
+<H2>Overview</H2>
+</a>
+
+
+<p>
+hev-lighteditor works by sending IRIS control commands to modify the
+scene graph.  
+This provides interactive control for the following lighting tasks:
+</p>
+
+<ul>
+
+<li>
+	 creating light sources and placing them in the scene graph
+</li>
+
+<li>
+	 specifying light source colors and intensity
+</li>
+
+<li>
+	 specifying light source type (infinite, omni-directional, spot light)
+</li>
+
+<li>
+	 specifying light source location, direction, etc.
+</li>
+
+<li>
+	 specifying light source attenuations
+</li>
+
+<li>
+	 reading and writing light source files
+</li>
+</ul>
+
+
+<p>
+In the future, hev-lightEditor will enable the user to interactively
+control the characteristics of the light model.
+</p>
+
+<p>
+Here's a typical way that hev-lightEditor could be used:
+</p>
+
+<pre><code>
+    hev-lightEditor > $IRIS_CONTROL_FIFO
+</code></pre>
+
+<p>
+The section <a href="#usage">Running hev-lightEditor</a> describes
+how to invoke hev-lightEditor in more detail.
+</p>
+
+
+
+
+
+
+<p>
+For more information about the meaning of the various lighting parameters
+used by hev-lightEditor, you can look at:
+</p>
+
+<pre>
+    OpenGL Programming Guide, Second Edition
+    Mason Woo, Jackie Neider, and Tom Davis.
+</pre>
+
+<p>
+Chapter 5 is all about lighting and material surface properties.
+This chapter will make it clear that lighting, as such, is only
+part of the story.  
+The other side of the coin is the specification of surface material
+properties.  These properties interact with the lighting environment
+to determine how polygons and other entities are rendered.
+hev-lightEditor does not deal with material properties.
+</p>
+
+<p>
+hev-lightEditor is designed to be used either on the desktop
+or in the immersive environment.  
+In order to accomplish this, the design might not be ideal for
+either environment.  
+The program controls lighting by means of a GUI with standard
+user interface widgets, 
+so the controls of light location and direction are interactive
+but they are indirect.  To move a light, you manipulate widgets that
+specify the position of the light; as you work with those widgets,
+the position of the light in the virtual scene is continuously updated.
+</p>
+
+<br>
+<br>
+
+<a name="interface">
+<H2>Description of the Interface</H2>
+</a>
+
+
+
+<p>
+The hev-lightEditor GUI is currently divided into four tabbed panels:
+</p>
+
+<ul>
+	<li><a href="#lightSourcesPanel">Light Sources</a></li>
+	<li><a href="#lightModelPanel">Light Model</a></li>
+	<li><a href="#globalPanel">Global Settings (unimplemented)</a></li>
+	<li><a href="#filesPanel">Files</a></li>
+
+</ul>
+
+<strong>A Note on Numeric Fields in the GUI</strong>
+<div style="margin-left: 60px; margin-right: 60px;">
+<p>
+hev-lightEditor uses many standard user interface widgets: drop down
+menus, on/off buttons, radio buttons, sliders, and so on.
+There is one type of widget that is slightly unusual; it is
+a combination of a numeric text entry field and a slider.
+All of the numeric fields that you see in this interface
+are widgets of this type.  
+</p>
+<p>
+You can click on any numeric field
+and enter a value by typing it in, or you can click down on
+the field and drag your pointer to the left and right.
+As you drag your pointer
+to the left or right, it acts like a slider, continuously
+changing the value in the field.  When used with a 3-button
+mouse, dragging with the left mouse button changes the
+value with the smallest increment; the middle mouse button
+changes the value with a larger increment and the right
+mouse button changes it with a still larger increment.
+</p>
+
+<p>
+In many cases, this type of numeric field is accompanied
+by a slider or some other manipulator that has similar functionality.
+We include these multiple methods (and multiple widgets) 
+in order to provide alternatives to the user.  
+One other substantial advantage of the
+numeric text entry / slider combination widget
+is that it conserves screen space, which is particularly
+important when used in the immersive environment..  
+</p>
+</div>
+
+
+<a name="lightSourcesPanel">
+<H3>Light Sources Panel</H3>
+
+<p>
+At the top of the light sources panel, there are a few widgets that
+apply to all types of light sources:
+</p>
+
+<p>
+<img src="lseLSTop.png" alt="GUI: Top of Light Source Panel">
+</p>
+
+<p>
+Here is a description of each widget:
+</p>
+
+<dl>
+	<dt> Light ID - menu</dt>
+		<dd>
+		This allows the user to select one of the eight
+		available light sources.  All other widgets on
+		this panel will affect the light specified here.
+		<br> <br>
+		</dd>
+
+	<dt> On / Off - button  </dt>
+		<dd>
+		Specifies whether the light is turned on or off.
+		<br> <br>
+		</dd>
+
+	<dt> Node - menu </dt>
+		<dd>
+		This menu enables the user to place the light source
+		under any of the standard scene graph nodes.
+		Here is a diagram showing the hierarchy of these
+		nodes:
+		<p>
+		<img src="diverseSceneGraph.png" alt="Standard scene graph nodes.">
+		</p>
+		A description of these nodes and their
+		associated coordinate systems is beyond the scope 
+		of this documentation.
+
+		<br> <br>
+	
+		</dd>
+
+	<dt> Edit mode:  Color | Position etc. </dt>
+		<dd>
+		This choice specifies whether the user wishes to 
+		edit the the color parameters of the light source
+		or the positional parameters.  The user can switch
+		back and forth between the modes at any time.
+		This selection determines the widgets that are
+		presented in the lower panel of the GUI
+		<br> <br>
+		</dd>
+
+</dl>
+
+<H4> Edit Mode: Color </H4>
+
+<p>
+When you have selected the Color edit mode, 
+hev-lightEditor displays a set of widgets that enable you to 
+manipulate the color(s) of the light source:
+</p>
+
+
+<p>
+<img src="lseColorGray.png" alt="GUI: Color Edit Mode">
+</p>
+
+
+<p>
+The widgets:
+</p>
+
+
+<dl>
+	<dt> Reset - button </dt>
+		<dd>
+		Resets the color parameters to default values.
+		<br> <br>
+		</dd>
+
+	<dt> Link Ambient, Diffuse, and Specular Together - button</dt>
+		<dd>
+		Indicates whether you want to control all three
+		light color types at the same time.
+		When you change any one of the three, 
+		the other two change in proportion.
+		<br> <br>
+		</dd>
+
+	<dt> Edit R, G, and B Independently - button</dt>
+		<dd>
+		Specifies whether you want to edit just the intensity
+		of a neutral colored light or whether you want to 
+		change the red, green, and blue components separately.
+		<br> <br>
+		</dd>
+
+	<dt> Ambient - button</dt>
+		<dd>
+		Indicates that you want to change the ambient color.
+		<br> <br>
+		</dd>
+
+	<dt> Diffuse - button</dt>
+		<dd>
+		Indicates that you want to change the diffuse color.
+		<br> <br>
+		</dd>
+
+	<dt> Specular - button</dt>
+		<dd>
+		Indicates that you want to change the specular color.
+		<br> <br>
+		</dd>
+
+	<dt> Color Value - slider</dt>
+		<dd>
+		Allows interactive manipulation of the intensity of
+		the color component in the range from 0 to 1.
+		<br><br>
+		</dd>
+
+</dl>
+
+
+<p>
+When you have selected "Edit R, G, and B Independently", then the
+interface is slightly reconfigured:
+</p>
+
+<p>
+<img src="lseColorRGB.png" alt="GUI: Color Edit Mode">
+</p>
+
+<p>
+In this case, you have sliders that let you
+change the red, green, and blue components
+of each color independenty.  Additionally, the wheel widget in 
+the lower right corner becomes operational, 
+which enables you to scale R, G, and B at the same time.
+</p>
+
+<br>
+
+
+<H4> Edit Mode: Postion </H4>
+
+
+
+<p>
+When you have selected the Position edit mode, 
+hev-lightEditor displays a set of widgets that enable you to 
+manipulate the light's location, direction, and related settings.
+The Light Type widget lets you specify what type of light
+you want:
+<dl>
+	<dt>Infinite Light Source</dt>
+	<dd>
+		A light source that is infinitely far away; it has 
+		a direction, but not a location.
+		<br><br>
+	</dd>
+
+
+	<dt>Omni-Directional Light Source</dt>
+	<dd>
+		A light source that has a location in the scene,
+		but shines in all directions.
+		<br><br>
+	</dd>
+
+	<dt>Spot Light Source</dt>
+	<dd>
+		A light source that has a location in the scene,
+		and shines in a particular direction with a specified
+		cone of light.
+		<br><br>
+	</dd>
+
+</dl>
+
+</p>
+
+<p>
+Here's the interface for the <strong>infinite</strong> light source:
+</p>
+
+<p>
+<img src="lsePosInf.png" alt="GUI: Position Edit Mode - Infinite Light">
+</p>
+
+<p>
+The widgets:
+</p>
+
+<dl>
+	<dt> Reset - button </dt>
+	<dd>
+		Resets the positional settings of the light source.
+		<br><br>
+	</dd>
+
+	<dt> Direction Type - menu </dt>
+	<dd>
+		Indicates how you want to specify the light direction:
+			<br><br>
+
+		<dl>
+		  <dt> Angles </dt>
+		    <dd>
+			Specify direction in the form of two angles.  
+			These two angles can be thought of Heading and Pitch, 
+			as Theta and Phi (spherical coordinates), 
+			or as Latitude and Longitude.  
+			These are expressed in degrees.
+			<br><br>
+		    </dd>
+
+		  <dt> X Y Z </dt>
+		    <dd>
+			Specify direction in the form of  vector in 3 space.
+			<br><br>
+		    </dd>
+		</dl>
+
+	</dd>
+
+
+	<dt> Direction - button </dt>
+	<dd>
+		When this button is pressed, an auxiliary window is displayed
+		that enables the user to interactively manipulate the direction.
+		The appearance of this auxiliary window depends on the 
+		setting of the Direction Type menu:
+		<br> <br>
+
+		<dl>
+		  <dt> Angles - auxiliary window:</dt>
+		    <dd>
+			<br>
+			<img src="lseHPDir.png" alt="GUI: Specifying direction as two angles.">
+			<br><br>
+		    </dd>
+
+		  <dt> X Y Z - auxiliary window:</dt>
+		    <dd>
+			<br>
+			<img src="lseXYZDir.png" alt="GUI: Specifying direction as an XYZ vector.">
+			<br><br>
+		    </dd>
+		</dl>
+
+
+		<br><br>
+	</dd>
+
+
+</dl>
+
+
+
+
+<p>
+Here's the interface for the <strong>omni-directional</strong> light source:
+</p>
+
+
+
+<p>
+<img src="lsePosOmni.png" alt="GUI: Position Edit Mode - Omni-Directional Light">
+</p>
+
+<p>
+The widgets:
+</p>
+
+<dl>
+	<dt> Reset - button </dt>
+	<dd>
+		Resets the positional settings of the light source.
+		<br><br>
+	</dd>
+
+
+	<dt> Location - button </dt>
+	<dd>
+		When this button is pressed, an auxiliary window is displayed
+		that enables the user to interactively manipulate the location
+		of the light source in 3 space:
+		<br> <br>
+		<img src="lseLocation.png" alt="GUI: Specifying location in XYZ.">
+		<br><br>
+	</dd>
+
+</dl>
+
+
+<br> <br>
+
+<p>
+Here's the interface for the <strong>spot</strong> light source:
+</p>
+
+<p>
+<img src="lsePosSpot.png" alt="GUI: Position Edit Mode - Spot Light">
+</p>
+
+
+<p>
+The widgets:
+</p>
+
+<dl>
+	<dt> Reset - button </dt>
+	<dd>
+		Resets the positional settings of the light source.
+		<br><br>
+	</dd>
+
+
+	<dt> Location - button </dt>
+	<dd>
+		When this button is pressed, an auxiliary window is displayed
+		that enables the user to interactively manipulate the location
+		of the light source in 3 space.  This auxiliary window is
+		identical to the location window used for the omni-directional
+		light source.
+		<br><br>
+	</dd>
+
+	<dt> Direction Type - menu </dt>
+	<dd>
+		This enables you to specify the spot light direction either
+		as angles or as an XYZ vector.  This operates identically
+		to the Direction Type menu of the infinite light source.
+		<br><br>
+	</dd>
+
+	<dt> Direction - button </dt>
+	<dd>
+		When this button is pressed, an auxiliary window is displayed
+		that enables the user to interactively manipulate the direction.
+		These auxialiary windows are identical to those used for
+		the infinite light source.
+		<br><br>
+	</dd>
+
+	<dt> Spread Angle - slider </dt>
+	<dd>
+		The angle of the spread of the cone of light of the spot light.
+		Beyond this angle the light has no effect.
+		<br><br>
+	</dd>
+
+	<dt> Exponent - slider </dt>
+	<dd>
+		The exponent used to determine the distribution of light
+		within the cone of the spot light. 
+		When set to zero, the light is even across the entire
+		spread of the light.  When it is greater than zero, the
+		light is stronger at center line of the cone and diminishes
+		as you move away from the center line.
+		<br><br>
+	</dd>
+
+</dl>
+
+
+<br> <br>
+
+<p>
+<strong>Attenuation</strong> of the omni-directional and spot light sources
+ an be specified by the three widgets at the bottom of the panel:
+</p>
+
+<p>
+<img src="lseAtten.png" alt="GUI: Attenuation settings.">
+</p>
+
+
+<p>
+These three attenuations (constant, linear, and quadratic) are described
+in detail in the OpenGL Programming Guide.
+They determine how the brightness of omni-directional and
+spot lights drop off as objects move away from the light sources.
+</p>
+
+
+<br><br>
+
+
+<a name="lightModelPanel">
+<H3>Light Model Panel</H3>
+</a>
+
+
+<p>
+The Light Model panel enables the user to manipulate the 
+characteristics of the global lighting model.  
+The lighting model is described in detail in the OpenGL Programming Guide.
+Here's the interface for the light model as it first appears:
+</p>
+
+<p>
+<img src="lseLMGray.png" alt="GUI: Light Model - neutral color.">
+</p>
+
+<p>
+The widgets:
+</p>
+
+<dl>
+	<dt>Reset - button</dt>
+	<dd>
+		Resets the light model parameters to default values
+		<br><br>
+	</dd>
+	<dt>Edit R, G, and B Independently - button</dt>
+	<dd>
+		Specifies whether you want to edit the global ambient
+		lighting as just a neutral color or whether you want 
+		to change the red, green, and blue components separately.
+		<br><br>
+	</dd>
+
+	<dt>Brightness - slider</dt>
+	<dd>
+    		Allows interactive manipulation of the intensity of 
+		the global ambient lighting in the range from 0 to 1.
+		<br><br>
+	</dd>
+
+	<dt>Two Sided - button</dt>
+	<dd>
+		Enable / disable two-sided lighting.
+		<br><br>
+	</dd>
+
+	<dt>Local Viewer - button</dt>
+	<dd>
+		Enable / disable local viewer calculations.
+		This affects the rendering of specular highlights.
+		<br><br>
+	</dd>
+
+	<dt>Separate Specular</dt>
+	<dd>
+		Enable / disable separate specular color calculations.
+		See
+<a href="http://opengl.org/sdk/docs/man/xhtml/glLightModel.xml">
+http://opengl.org/sdk/docs/man/xhtml/glLightModel.xml</a>
+for a description of this calculation.
+		<br><br>
+	</dd>
+
+	<dt></dt>
+	<dd>
+	</dd>
+
+
+
+</dl>
+
+
+
+<p>
+When you have selected "Edit R, G, and B Independently", then the
+interface is slightly reconfigured:
+</p>
+
+<p>
+<img src="lseLMRGB.png" alt="GUI: Light Model - RGB.">
+</p>
+
+<p>
+In this case, you have sliders that let you
+change the red, green, and blue components
+of each color independenty.  Additionally, the wheel widget 
+to the right becomes operational, 
+which enables you to scale R, G, and B at the same time.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+
+
+<a name="globalPanel">
+<H3>Global Settings Panel</H3>
+</a>
+
+<p>
+The Global panel is currently unimplemented.
+See <a href="#future"> Future Development</a>.
+</p>
+<br><br>
+
+
+<a name="filesPanel">
+<H3>Files Panel</H3>
+</a>
+
+
+<p>
+The <strong>Files</strong> panel enables you to read and write
+files for light sources and the light model.
+All light source files are in OSG text format; light model files are
+in IRIS format.
+The widget at top of this panel lets you specify
+whether you want to read or write the files.  
+</p>
+
+<p>
+When <em>Read</em> has been selected, the interface looks like this:
+</p>
+
+<p>
+<img src="lseFilesRead.png" alt="GUI: Reading light files.">
+</p>
+
+<p>
+The widgets:
+</p>
+
+<dl>
+	<dt> Input file name / template - text entry and buttons</dt>
+	<dd>
+		<p>
+		The text entry box specifies the name or
+		name template for the file (or files) to be read.
+		If "%ID" appears in the file name, then it is
+		a template for generating file names for reading
+		multiple files.  
+		If it is present, "%ID" is replaced either by a single
+		digit 0 through 7 corresponding to the index
+		of the light source being read, 
+		or by "Model" if a light model file is being read.
+		</p>
+		<p>
+		The "File Browser..." button will bring up 
+		a file browser in a separate window that you 
+		can use to select the desired file name.
+		</p>
+		<p>
+		The "Add Light ID Template" button is available
+		whenever "%ID" does not appear in the file name.
+		Pressing this button will convert the file name
+		into a template by adding "%ID" in an appropriate
+		place in the file name.
+		</p>
+		<p>
+		Typically, ".osgt" should be at the end of the file name.
+                If you are reading a light model file, the final ".osgt"
+                will be removed and ".iris" will be substituted.
+		</p>
+	</dd>
+
+	<dt> Select Lights - buttons </dt>
+	<dd>
+		The numbered "Light" buttons and the "Light Model" button 
+		let you select the the light IDs that you want to read.  
+		Pressing the "Select All" button selects all 
+		nine of the light buttons.
+		<br><br>
+	</dd>
+
+	<dt> Read File(s) - button </dt>
+	<dd>
+		Pressing this button causes hev-lightEditor to 
+		read the specified file(s) into the selected light ID(s).
+		<br><br>
+	</dd>
+</dl>
+
+
+
+
+
+
+
+<br>
+<p>
+When <em>Write</em> has been selected, the interface looks like this:
+</p>
+
+<p>
+<img src="lseFilesWrite.png" alt="GUI: Writing light files.">
+</p>
+
+<p>
+The widgets:
+</p>
+
+
+<dl>
+	<dt> Select Lights - buttons </dt>
+	<dd>
+		The numbered "Light" buttons and the "Light Model" button
+		let you select the the light IDs that you want to write.  
+		Pressing the "Select All" button selects all 
+		nine of the lights.
+		<br><br>
+	</dd>
+
+	<dt> Output file name / template - text entry and buttons</dt>
+	<dd>
+		<p>
+		The text entry box specifies the name or
+		name template for the file (or files) to be written.
+		If "%ID" appears in the file name, then it is
+		a template for generating file names for writing
+		multiple files.  
+		If it is present, "%ID" is replaced either by a single
+		digit 0 through 7 corresponding to the index
+		of the light source being written, 
+		or by "Model" if a light model file is being written.
+		</p>
+		<p>
+		The "File Browser..." button will bring up 
+		a file browser in a separate window that you 
+		can use to select the desired file name.
+		</p>
+		<p>
+		The "Add Light ID Template" button is available
+		whenever "%ID" does not appear in the file name.
+		Pressing this button will convert the file name
+		into a template by adding "%ID" in an appropriate
+		place in the file name.
+		</p>
+		<p>
+		Typically, ".osgt" should be at the end of the file name.
+                If you are writing a light model file, the final ".osgt"
+                will be removed and ".iris" will be substituted.
+		</p>
+	</dd>
+
+	<dt> Write File(s) - button </dt>
+	<dd>
+		Pressing this button causes hev-lightEditor to 
+		write the specified light ID(s) into the selected file(s).
+		<br><br>
+	</dd>
+</dl>
+
+
+
+<br>
+<br>
+<br>
+
+
+
+
+
+<a name="usage">
+<H2>Running hev-lightEditor</H2>
+</a>
+
+<p>
+hev-lightEditor runs in concert with irisfly.
+As the user manipulates the hev-lightEditor GUI, IRIS commands
+are generated to reflect these interactions.  
+These IRIS commands are written to standard output.  
+In order to transmit these commands the output of hev-lightEditor
+should be redirecty to $IRIS_CONTROL_FIFO.
+</p>
+
+<pre><code>
+    hev-lightEditor > $IRIS_CONTROL_FIFO
+</code></pre>
+
+</p>
+But it is important to note that irisfly must
+already be running for this to work properly.  
+So, typically, you will need to have started up irisfly
+before issuing the command above.
+</p>
+
+<p>
+It is also important to know that IRIS sends data back to hev-lightEditor
+through a FIFO named /tmp/hev-lightEditor-fifo-<em>USER</em>, 
+where USER is replaced by your user name.
+This communication back from IRIS occurs during
+initialization of hev-lightEditor; 
+it is used to enable hev-lightEditor to control
+lights that were created or loaded before it was started.  
+</p>
+
+
+
+
+
+
+
+
+<p>
+If you want to run hev-lightEditor in stand-alone mode 
+(without communicating with IRIS) 
+you can do so by invoking it this way:
+
+<pre><code>
+    hev-lightEditor > /dev/null
+</code></pre>
+
+<p>
+The program will operate normally, but it will take about six (6) seconds
+to start up.  This delay occurs while the program is trying to establish
+two-way communication with IRIS.  Eventually this attempt times out and
+the program will function normally.
+</p>
+
+hev-lightEditor has the following <strong>command line arguments</strong>:
+
+<dl>
+	<dt>-e</dt>
+	<dd>
+	This argument causes the program to echo all 
+	communications with IRIS to standard error.  
+	It also sends a command to IRIS echo all received commands.
+	This is intended as a debugging tool.
+	<br><br>
+	</dd>
+
+
+
+	<dt>-h</dt>
+	<dd>
+	Causes the program to display a brief help message and exit.
+	</dd>
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+<br>
+<br>
+<br>
+
+
+<a name="future">
+<H2>Future Development</H2>
+</a>
+
+<div style="{margin-left: 30px;}">
+
+<H3>Light Sources</H3>
+Implement the display of 3D glyphs to provide
+continuous visual feedback of the 
+location, direction, and (possibly) other characteristics
+of the light sources.
+(The implementation of this task is likely to be time consuming.)
+<br>
+
+
+
+
+
+
+<H3>Global Settings</H3>
+
+<p>
+Scale all light intensities simultaneously.  This would allow the user
+to uniformly lighten or darken the entire scene at the same time.
+It would maintain the balance among all light sources and the
+light model without the need of manipulating each individually.
+</p>
+
+<p>
+Display IRIS scene graph node names associated with each light source.
+</p>
+
+
+
+</div>
+
+<br>
+
+
+<br>
+<br>
+
+
+<a name="lightsAndMaterials">
+<H2>Some Comments on Lighting and Material Specification</H2>
+</a>
+
+<p>
+The effect of lighting on an object rendered by OpenGL and OSG is
+determined by the interaction of light sources, the light model,  
+and the material properties of the object.  
+Both light sources and materials specify ambient, diffuse, and
+specular rendering effects, and 
+the light model specifies an ambient component.
+This results in a myriad of approaches for achieving desired
+lighting effects 
+and I have often gotten confused by the many options.
+
+</p>
+
+<p>
+I would like to suggest an approach to specifying materials and
+lighting that might simplify the situation.  
+This simplification means that some possible rendering effects
+are not possible, but it provides an initial framework
+for working with lights and materials.
+You can always break out of this framework if you need different
+types of effects.
+</p>
+
+<p>
+The specific suggestions are based on the following general ideas:
+</p>
+
+<ul>
+
+<li>
+     Material colors (ambient, diffuse, and specular) should 
+	generally be specified as bright colors.
+</li>
+
+<li>
+     The balance of brightness of ambient, diffuse, and specular
+        is achieved by modulating the corresponding components of
+        the light sources and light model (not surface materials).
+</li>
+
+<li>
+     All ambient lighting comes from the light model, none from
+        the individual light sources.
+</li>
+
+</ul>
+
+
+<p>
+Here are some more specific suggestions on specifying materials and lights
+that are based on these ideas:
+</p>
+
+
+<H4>Materials:</H4>
+
+<ul>
+	<li>
+	Set the diffuse and ambient to the same colors.
+	</li>
+
+	<li>
+	Set the specular color:
+	   <ul>
+		<li>
+		(0,0,0) for no shiny highlights
+		</li>
+		<li>
+		(1,1,1) for white highlights (this gives a sort of plastic appearance)
+		</li>
+		<li>
+		same as diffuse - for highlights that correspond to the 
+			base color of the object 
+			(this tends to give a vaguely metallic appearance).
+		</li>
+	   </ul>
+	</li>
+
+	<li>
+	If you use specular color, a shininess exponent of 25 is generally good.
+	</li>
+</ul>
+
+<H4>Light Model:</H4>
+<ul>
+	<li>Setting the ambient to something like 
+			(0.1, 0.1, 0.1) or (0.2, 0.2, 0.2) 
+			is generally reasonable.
+
+	<li>Setting the ambient lighting to (0,0,0) can give 
+			a more dramatic lighting effect, 
+			particularly when there are only one or 
+			two lights in the scene.
+</ul>
+
+<H4>Light Sources:</H4>
+
+<ul>
+	<li>You generally want neutral color lights; 
+			let the objects specify their own colors with 
+			their material properties.
+	</li>
+
+	<li>Set ambient color to 0; let the light model handle ambient light.
+	</li>
+
+	<li>
+	Set diffuse and specular lighting to similar values 
+			with diffuse >= specular
+	</li>
+
+	<li>Sum of all components of a single light should be <= 1
+	</li>
+
+	<li>Sum of all components of a single light should be 
+			reduced as you introduce more lights into 
+			the scene.  
+			(This is particularly true when using 
+			infinite and omni-directional lights.)
+	</li>
+
+</ul>
+
+
+<p>
+As you specify material and light properties and add multiple
+lights to a scene, 
+it is important to understand a major difference between lighting
+in the real world and lighting in the virtual world.  
+In the real world, as you add more lights to a scene,
+objects will get brighter and brighter.
+This is also true in the virtual world, but only up to a point.
+In the virtual world, we can think of colors as being 
+represented as RGB components each of which ranges from 0 to 1.
+When you add another light to the virtual scene, the RGB components
+will get higher, but they can't go above 1.
+</p>
+
+<p>
+Furthermore, one of the red, green, or blue components might
+saturate to 1.0 before the others.  So the others can still
+increase while the other is pegged at 1.0.  This can result in 
+color shifts when adding lighting.  And when the color of an
+object (or a portion of an object) reaches the maximum of full
+white (1,1,1) then you lose the continuous light source shading
+that is critical for revealing the shape of the surface.
+So if you see objects getting washed out, or see color shifts
+when you add more lights, you should think about reducing the
+intensities of some or all of your light sources.
+</p>
+
+
+
+
+<br>
+<br>
+
+<hr>
+<hr>
+
+<br>
+<br>
+
+
+
+
+
+</body>
+</html>
+

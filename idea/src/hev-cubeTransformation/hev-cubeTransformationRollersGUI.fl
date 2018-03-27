@@ -1,0 +1,161 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0110 
+header_name {.h} 
+code_name {.cxx}
+Function {make_main_window()} {open
+} {
+  Fl_Window {} {
+    label cube open
+    xywh {2745 176 320 440} type Double box BORDER_BOX align 80
+    code0 {//o->label(transformationShmName.c_str()) ;} visible
+  } {
+    Fl_Button {} {
+      label RESET
+      callback {reset() ;}
+      xywh {210 410 70 20} color 7
+    }
+    Fl_Group {} {
+      label translation open
+      xywh {10 10 300 110} box BORDER_BOX align 21
+    } {
+      Fl_Roller {} {
+        label {X:}
+        callback {updateX((double)o->value()) ;}
+        xywh {35 30 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002
+        code0 {xRoller = o ;}
+        code1 {o->value(xyz.x()) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Roller {} {
+        label {Y:}
+        callback {updateY((double)o->value()) ;}
+        xywh {35 60 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002
+        code0 {yRoller = o ;}
+        code1 {o->value(xyz.y()) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Roller {} {
+        label {Z:}
+        callback {updateZ((double)o->value()) ;}
+        xywh {35 90 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002
+        code0 {zRoller = o ;}
+        code1 {o->value(xyz.z()) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Input {} {
+        callback {updateX(atof((char*)o->value())) ;}
+        xywh {200 30 100 20} when 8
+        code0 {xText = o ;}
+      }
+      Fl_Input {} {
+        callback {updateY(atof((char*)o->value())) ;}
+        xywh {200 60 102 20} when 8
+        code0 {yText = o ;}
+      }
+      Fl_Input {} {
+        callback {updateZ(atof((char*)o->value())) ;}
+        xywh {200 90 100 20} when 8
+        code0 {zText = o ;}
+      }
+    }
+    Fl_Group {} {
+      label rotation open
+      xywh {10 125 300 110} box BORDER_BOX align 21
+    } {
+      Fl_Roller {} {
+        label {H:}
+        callback {updateH((double)o->value()) ;}
+        xywh {35 145 160 20} type Horizontal align 4 minimum -180 maximum 180 step 0.2
+        code0 {hRoller = o ;}
+        code1 {o->value(hpr[0]) ;}
+        code2 {o->step(.1) ;}
+      }
+      Fl_Roller {} {
+        label {P:}
+        callback {updateP((double)o->value()) ;}
+        xywh {35 175 160 20} type Horizontal align 4 minimum -180 maximum 180 step 0.2
+        code0 {pRoller = o ;}
+        code1 {o->value(hpr[1]) ;}
+        code2 {o->step(.1) ;}
+      }
+      Fl_Roller {} {
+        label {R:}
+        callback {updateR((double)o->value()) ;}
+        xywh {35 205 160 20} type Horizontal align 4 minimum -180 maximum 180 step 0.2
+        code0 {rRoller = o ;}
+        code1 {o->value(hpr[2]) ;}
+        code2 {o->step(.1) ;}
+      }
+      Fl_Input {} {
+        callback {updateH(atof((char*)o->value())) ;}
+        xywh {200 145 100 20} when 8
+        code0 {hText = o ;}
+      }
+      Fl_Input {} {
+        callback {updateP(atof((char*)o->value())) ;}
+        xywh {200 175 100 20} when 8
+        code0 {pText = o ;}
+      }
+      Fl_Input {} {
+        callback {updateR(atof((char*)o->value())) ;}
+        xywh {200 205 100 20} when 8
+        code0 {rText = o ;}
+      }
+    }
+    Fl_Group {} {
+      label scale open
+      xywh {10 240 301 150} box BORDER_BOX align 21
+    } {
+      Fl_Roller {} {
+        callback {updateXs((double)o->value()) ;}
+        xywh {35 260 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002 value 1
+        code0 {xsRoller = o ;}
+        code1 {o->value(scale.x()) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Roller {} {
+        label {Y:}
+        callback {updateYs((double)o->value()) ;}
+        xywh {35 290 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002 value 1
+        code0 {ysRoller = o ;}
+        code1 {o->value(scale.y()) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Roller {} {
+        label {Z:}
+        callback {updateZs((double)o->value()) ;}
+        xywh {35 320 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002 value 1
+        code0 {zsRoller = o ;}
+        code1 {o->value(scale.z()) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Input {} {
+        callback {updateXs(atof((char*)o->value())) ;}
+        xywh {200 260 100 20} when 8
+        code0 {xsText = o ;}
+      }
+      Fl_Input {} {
+        callback {updateYs(atof((char*)o->value())) ;}
+        xywh {200 290 100 20} when 8
+        code0 {ysText = o ;}
+      }
+      Fl_Input {} {
+        callback {updateZs(atof((char*)o->value())) ;} selected
+        xywh {200 320 100 20} when 8
+        code0 {zsText = o ;}
+      }
+      Fl_Group {} {
+        label {X:} open
+        xywh {15 261 24 20} align 21
+        code0 {xLabel = o ;}
+      } {}
+      Fl_Light_Button {} {
+        label {uniform scaling}
+        callback {setUniformScaling((bool)o->value()) ;}
+        xywh {35 360 160 20}
+        code0 {o->value(uniformScaling) ;}
+        code1 {uniformScalingButton = o ;}
+      }
+    }
+  }
+} 

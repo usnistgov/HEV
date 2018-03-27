@@ -1,0 +1,4 @@
+BUTTON Holodeck
+
+ON    NODEMASK    holodeck ON
+OFF   NODEMASK    holodeck OFF

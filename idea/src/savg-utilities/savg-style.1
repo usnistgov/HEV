@@ -1,0 +1,38 @@
+.TH SAVG\-STYLE 1 "24 March 2005"
+.SH NAME
+savg-style \- SAVG ToolBox: basic option style
+.SH SYNOPSIS
+.B savg-style
+[-style val]
+.SH DESCRIPTION
+.I Savg-style
+is used to change the style of savg files from filled to wireframe or vice versa.
+It accepts the object from
+.I stdin
+and outputs to 
+.I stdout.
+Exactly one command line argument must be present or 
+a usage message will appear and the program will 
+terminate, either "wire" or "filled." 
+
+.SH OPTIONS
+.TP
+.B \-style val
+This option either creates a wireframe from a filled geometry or
+vice versa.
+.SH EXAMPLES
+.TP
+.B cat sample.savg | savg-style -style wire > sample_wireframe.savg
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Spring 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

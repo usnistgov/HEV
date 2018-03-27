@@ -1,0 +1,138 @@
+.TH iris 1 "February 2011"
+
+.SH NAME
+IRIS
+
+.SH DESCRIPTION
+
+\fBIRIS\fR, the \fBI\fRnteractive \fBR\fRuntime \fBI\fRmmersive
+\fBS\fRystem, is a set of C++ classes that use OpenSceneGraph (OSG) and the
+DIVERSE ToolKit (DTK) to facilitate the creation of modular, device
+independent, multi-process. interactive graphical simulations.  IRIS
+directly supports multiple multi-threaded head-tracked immersive stereo
+displays as seen in CAVE\*[Tm] and RAVE\*[Tm] systems, as well as simple
+desktop displays in either stereo or mono.
+
+IRIS documentation (except for man pages like this one) is written using the
+\fCdoxygen(1)\fR system.  IRIS's "main page" is at the local URL
+.ce
+\fBfile:///usr/local/HEV/iris/doc/html/index.html\fR
+
+IRIS creates a simple scenegraph that is used to load model files into the
+graphics applications.  Different nodes in the scenegraph have different
+properties- navigated or non-navigated, model units or normalized units.
+Other nodes for clipping and lighting are created and available to be loaded
+into the scenegraph as needed.
+
+IRIS comes with several utility programs built with these classes.  One goal
+of IRIS's design is that these utilities will be sufficient for implementing
+as many applications as possible.  IRIS tries to achieve these goals by use
+of IRIS \fIcontrol commands\fR and \fBD\fRynamic \fBS\fRhared \fBO\fRbjects
+(DSOs).
+
+Control commands are text commands that are sent to a running IRIS program
+by use of a \fCfifo(7)\fR, or named pipe, by a separate process.  Being a
+separate process means that it does not effect the graphics loop, and on
+multi-core systems can run on a different processor than the IRIS process.  
+
+The environment variable \fC$IRIS_CONTROL_FIFO\fR defines the name of the
+fifo that IRIS uses.  Any program can send control commands to an IRIS
+program by opening and writing to the pipe, or by simply using the shell to
+redirect its standard output to the fifo, as in:
+.IP 
+\fCmyapplicaton>$IRIS_CONTROL_FIFO\fR 
+
+.P
+Each IRIS class or DSO can define its own set of control commands specific
+to its functionality.  Control commands can be used to build and modify the
+IRIS scenegraph and the geometry in the scenegraph, load DSOs, modify
+navigations and graphical displays and query the IRIS system.  In addition,
+the \fCEXEC\fR control command can be used to run any shell command as a
+forked process, and the forked process will be killed when IRIS exits.
+
+Control commands can be put into an \fIiris\fR file, that is a file
+whose extension is \fC.iris\fR, and read by OSG like any other model file.
+An iris file can load other iris files.
+
+Control commands are processed as soon as they are read.  In addition, any
+control command can be preceded by a \fIwhen command\fR which specifies when
+to run the command, as in:
+.IP
+\fCAFTER REALIZE EXEC myapplicaton>$IRIS_CONTROL_FIFO\fR
+
+.P
+which means "after the graphics windows are realized run the command
+\fCmyapplicaton>$IRIS_CONTROL_FIFO\fR."
+
+One reason you might want to run \fCmyapplicaton\fR after the graphics
+windows are created is so \fCmyapplicaton\fR's GUI window will not be
+covered by the IRIS graphics windows.
+
+Another example:
+.IP
+\fCBEFORE FRAME 100 LOAD myFile.iris\fR
+
+.P
+which loads the control commands in \fC myFile.iris\fR just before the 100th
+graphics frame is generated.
+
+A when command can itself be another when command,
+as in:
+.IP 
+\fCAFTER REALIZE AFTER TIME 5 NODEMASK myNode ON
+
+.P
+which means "5 seconds after the graphics windows are realized make the node
+named \fCmyNode\fR visible".
+
+A list of all control commands can be found at the local URL:
+.ce
+\fBfile:///home/wng2/Active/HEV-local/iris/iris-v1.4/installed/doc/html/control.html\fR
+
+DSOs are separately compiled C++ programs based on the \fCiris::Augment\fR
+class.  A DSO is loaded by the \fCiris::SceneGraph\fR class and its code is
+immediately executed.  DSOs can create OSG event and node callbacks so they
+have the capability of continuously modifying the behavior of the IRIS
+program that loaded them.  A straightforward example of a DSO is
+\fCtrackballNav\fR, which creates an event handler to read mouse and
+keyboard events (when an IRIS window has focus) every graphics frame and
+then modifies the transformation in the \fCnav\fR node to effect a
+navigation.  
+
+Since DSOs can add extra processing to the graphics loop they
+should never be used if the same objective can be met using control commands.
+
+In addition to fifos IRIS uses DTK shared memory files to share data between
+applications.  In general, it's best to use fifos for small text string
+commands and DTK shared memory files for binary state information.  For
+example, the \fCiris::ShmMatrixTransform\fR node keeps the data for a
+\fCosg::MatrixTransform\fR in a DTK shared memory file.  Any program can
+modify the node's transformation by simply modifying the data in the DTK
+shared memory file.
+
+As a convenience, IRIS maintains the environment variable IRIS_SLEEP, and
+the associated utilty funtions SetSleep(), GetSleep(), GetUsleep().  The
+purpose of IRIS_SLEEP is to allow programs that loop to all use the same
+looping rate, and provide a simple global way to change the loop rate.  See
+the timTest and queryPing examples, the iris-readState, iris-readFifo and
+iris-wandMouse programs for examples.
+
+Should the supplied IRIS programs not suffice, IRIS comes with several
+simple example programs, each in its own directory, which can be starting
+point for new IRIS programs.  The example's \fCGNUMakefiles\fR are written so that each
+example directory can be copied into a different location and rebuilt.
+
+IRIS is still very much a work in progress, and probably always will be as
+long as it's being used.  If you need a feature you don't see please ask for it.
+It'll get added to the to-do list if it's not on it already.  If you see a
+feature that you think is a bug, please report it.
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+ 

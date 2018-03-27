@@ -1,0 +1,22 @@
+#! /bin/sh
+
+case $# in
+0)
+    r=1; h=2;
+    ;;
+2)
+    r=$1; h=$2;
+    ;;
+*)
+    echo "Usage: ivcone [radius height]"
+    echo "   default is 1 2"
+    exit
+    ;;
+esac
+
+
+echo "#Inventor V2.0 ascii"
+echo "Separator {"
+echo "Cone { bottomRadius" $r "height" $h "}"
+echo "}"
+

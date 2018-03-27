@@ -1,0 +1,217 @@
+#! /usr/bin/perl
+#
+# hyv-img2phase - see usage message below
+#
+# steve@nist.gov
+#
+
+#$version="20081009";
+$version="20140619";
+
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hyv-img2phase [--parallel n] [-ext string] phaseNumber exprString dataDir | imgFile
+
+  Convert all *.img files found in the data directory into phase files.
+
+  --parallel n  specifies how many concurrent processes to be used convert
+                in parallel. On a 2 CPU machine, n of 2 is a good number.
+
+  --ext string  is an optional parameter that changes the .extension
+                portion of the generated file names. When not specified,
+                files are named as ".phase".
+
+  phaseNumber   is an integer used to identify the phase being created.
+
+  exprString    is an expression specifying which column is selected or
+                how multiple columns are combined.
+
+		The expression follows perl syntax for arrays where the
+		first element of the array is $c[1] refers to column 1.
+		Thus column 2 is \$c[2], etc.
+		
+		To extract column 3 from the img file into a phase file
+		the parameter would be '\$c[3]'.
+
+		Columns can be combined, for example: '\$c[2]+\$c[4]'
+		Other typical operations can be performed,
+		for example '(\$c[1]+2*\$c[3])/2'
+
+		The expression must result in a single value.
+
+  dataDir       is an existing directory containing the img file.
+                The resulting phase files are written to dataDir
+		with names in the form of *_{P}.phase where {P} is the
+		specified phaseNumber.
+
+  imgFile       if an img file is specified rather than a directory name,
+                then the single specified img file is converted to
+                a phase file in the current directory.
+
+  
+  Each output phase file is a single column of numbers.
+  The command is invoked multiple times to generate multiple phases.
+
+
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+$parallel=1;
+$ext="phase";   # default extension
+
+GetOptions("debug"       => \$debugFlag,
+	   "ext:s"       => \$ext,
+           "parallel:i"  => \$parallel);
+
+usage() if (@ARGV != 3);
+$phaseNumber= shift;
+$exprString= shift;
+$data= shift;
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "parallel= $parallel\n";
+    print STDERR "phaseNumber= $phaseNumber\n";
+    print STDERR "exprString= $exprString\n";
+    print STDERR "ext= $ext\n";
+    print STDERR "data= $data\n";
+}
+
+
+
+# Is the input data a single file or directory of file?
+if ( -d $data ) {
+    #print STDERR "$data is a directory\n";
+    processDirImgFiles();
+    #print STDERR "All Done\n";
+} else {
+    #print STDERR "$data is a file\n";
+    processSingleImgFile()
+
+}
+
+
+#############################
+# Process a single IMG file #
+#############################
+
+sub processSingleImgFile {
+    print STDERR "Process a single IMG file: $data\n";
+	
+    ($basename, $dirname, $suffix) = fileparse($data, ('.img'));
+
+    $phaseName=$basename."_".$phaseNumber."."."$ext";
+    if ($debugFlag) {
+	print STDERR "data= $data\n";
+	print STDERR "basename= $basename\n";
+	print STDERR "path= $path\n";
+	printf(STDERR "suffix= '%s'\n",$suffix);
+	print STDERR "phaseName= $phaseName\n";
+    }
+    if ($suffix eq '') {die("'$data' is not a img file or directory\n");}
+
+    open(IMG,"<$data") || die("Can not open file: $data\n");
+    open(PHASE,">$phaseName") || die("Can not open file: $phaseName\n");
+    
+
+    while (<IMG>) {
+	@c=split(' ', $_, -1);
+	#print "$c[0] $c[1] $c[2] $c[3] $c[4] $c[5]\n";
+	unshift(@c,-111);
+	#print "$c[0] $c[1] $c[2] $c[3] $c[4] $c[5]\n";
+	$out=eval($exprString);
+
+	#printf(STDOUT "%s: %g\n",$exprString,$out);
+	#print STDOUT "$out\n";
+
+	# If eval returns a blank, then assume a 0 value.
+	# This might also be considered an error, but there is a special case
+	# of computing pH were data of 0 means pH undefined, so we'll
+	# output a pH of 0 to indicate undefined
+	if ( $out eq '') {
+	    print PHASE "0\n";
+	} else {
+	    print PHASE "$out\n";
+	}
+
+    }
+
+    close(PHASE);
+
+    # This here for debugging
+    #print STDERR "Process sleeping: $$\n";
+    #sleep 1;
+    #print STDERR "Process continuing: $$\n";
+
+	
+}
+
+
+####################################
+# Process a directory of IMG files #
+####################################
+
+sub processDirImgFiles {
+    print STDERR "Process a directory of IMG files: $data\n";
+
+    chdir($data) || die("Can not chdir to: $data\n");
+
+    ($debugFlag) ? ($debugOption="--debug") : ($debugOption="");
+
+    $pcount=$parallel;
+
+    while ($imgFile = <*.img> ) {
+
+	$cmd="hyv-img2phase $debugOption --ext $ext $phaseNumber '$exprString' $imgFile";
+	if ($pid = fork) {
+	    # parent here
+	    #print STDERR "Parent\n";
+	    $pcount--;
+	    if ($pcount == 0) {
+		while (wait != -1) {
+		    #print STDERR "waiting\n";
+		}
+		$pcount=$parallel;
+	    }
+	} else {
+	    # child here
+	    #print STDERR "Child: $cmd\n";
+	    exec($cmd);
+	    exit 0;
+	}
+
+
+    }
+
+    while (wait != -1) {
+	#print STDERR "waiting\n";
+    }
+}
+
+

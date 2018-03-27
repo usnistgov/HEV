@@ -1,0 +1,86 @@
+Geode {
+  UniqueID Geode_0
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  StateSet {
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+    GL_LIGHTING PROTECTED|OFF
+  }
+  num_drawables 1
+  Geometry {
+    DataVariance STATIC
+    useDisplayList FALSE
+    useVertexBufferObjects TRUE
+    PrimitiveSets 6
+    {
+      DrawElementsUInt LINE_STRIP 5
+      {
+        0 1 2 3 4 
+      }
+      DrawElementsUInt LINE_STRIP 2
+      {
+        5 6 
+      }
+      DrawElementsUInt LINE_STRIP 2
+      {
+        7 8 
+      }
+      DrawElementsUInt LINE_STRIP 5
+      {
+        9 10 11 12 13 
+      }
+      DrawElementsUInt LINE_STRIP 2
+      {
+        14 15 
+      }
+      DrawElementsUInt LINE_STRIP 2
+      {
+        16 17 
+      }
+    }
+    VertexArray Vec3Array 18
+    {
+      -0.5 0 -0.5
+      0.5 0 -0.5
+      0.5 0 0.5
+      -0.5 0 0.5
+      -0.5 0 -0.5
+      0 0 -0.3
+      0 0 0.3
+      -0.3 0 0
+      0.3 0 0
+      -0.5 0.1 -0.5
+      0.5 0.1 -0.5
+      0.5 0.1 0.5
+      -0.5 0.1 0.5
+      -0.5 0.1 -0.5
+      0 0.1 -0.3
+      0 0.1 0.3
+      -0.3 0.1 0
+      0.3 0.1 0
+    }
+    ColorBinding PER_VERTEX
+    ColorArray Vec4Array 18
+    {
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+      0.5 0.5 0.5 1
+    }
+  }
+}

@@ -1,0 +1,37 @@
+#! /bin/sh
+
+case $# in
+
+0)
+   a=1;  b=0;  c=0;  d=0;
+   e=0;  f=1;  g=0;  h=0;
+   i=0;  j=0;  k=1;  l=0;
+   m=0;  n=0;  o=0;  p=1;
+   ;;
+16)
+   a=$1;    b=$2;    c=$3;    d=$4;
+   e=$5;    f=$6;    g=$7;    h=$8;
+   i=$9;    j=${10}; k=${11}; l=${12};
+   m=${13}; n=${14}; o=${15}; p=${16};
+   ;;
+*)
+   echo "Usage: ivmatrixtransform  [4x4Matrix_in_row_order]"
+   echo
+   echo "    The paraneters are 16 numbers representing a 4x4"
+   echo "    transformation matrix. The numbers are in row order."
+   echo "    With no parameters, an identity matrix is output."
+   echo
+   echo "  Example: The following creates an identity."
+   echo
+   echo "     ivmatrixtransform 1 0 0 0   0 1 0 0   0 0 1 0   0 0 0 1"  
+   echo
+   exit
+   ;;
+esac
+
+
+echo "#Inventor V2.0 ascii"
+echo "Separator {"
+echo "MatrixTransform { matrix $a $b $c $d $e $f $g $h $i $j $k $l $m $m $o $p}"
+iv_stdin_out
+echo "}"

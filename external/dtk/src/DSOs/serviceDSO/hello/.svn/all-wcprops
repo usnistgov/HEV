@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/hello
+END
+hello.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/669/trunk/dtk/DSOs/serviceDSO/hello/hello.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/hello/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/hello/README
+END
+demo.sh
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/hello/demo.sh
+END

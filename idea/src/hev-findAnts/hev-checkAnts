@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+#export 
+PRIVATE_BINS="${HEV_IDEA_DIR}/etc/hev-findAnts/bin"
+
+#DEBUG echo "hev-checkAnts: PRIVATE_BINS: "${PRIVATE_BINS}
+
+Diff=""                                            # T = Log files are different, F = files the same
+NewLog='n'
+Cont='n'
+LogDir="/dev/shm/hev-checkAntLogs"                 # Where to save logs
+TDStamp=`date +%Y%m%d%H%M%S`                       # Current date and time
+CurrLogFile=${LogDir}/"checkAnts."${TDStamp}       # Full path of new log file
+FileGlob=${LogDir}/"checkAnts.*"                   # Regex for all log files
+
+# Make log directory, if necessary
+if [ ! -d "${LogDir}" ]
+then
+  mkdir -p ${LogDir}
+fi
+
+# Find most recent previous file
+PrevLogFile=`\ls -tC1 ${FileGlob} 2> /dev/null | head -1`       # list files by time, get neame of mostrecent
+
+if [ -z ${PrevLogFile} ]                           # No log files means this is the first run
+then
+  read -p "No log file found. Continue to create a new logfile (y/n)? " NewLog
+  if [ "${NewLog}" != 'y' ]                        # Unless the answer is 'y', exit.
+  then
+    exit
+  fi
+fi
+
+#DEBUG echo "hev-checkAnts: CurrLogFile: "${CurrLogFile}
+
+echo "HEVROOT: "${HEVROOT}       >  ${CurrLogFile} # Save $HEVROOT...
+echo "PATH   : "${PATH}          >> ${CurrLogFile} # ...$PATH
+echo "Shell  : "${SHELL}         >> ${CurrLogFile} # and $SHELL vars
+
+# List of commands
+CMDS=`${PRIVATE_BINS}/hev-listAnts`                                # Make a list of ants in a clean env
+
+# List with full paths
+let i=0                                            # Init count
+for C in ${CMDS}                                   # Get full path for each command
+do
+  if [ "${C0:5}" != "Setti" ] &&                   # Filter HEV profile output, if exists
+     [ "${C0:5}" != "Using" ]
+  then
+    echo `which ${C}`                              # Output paths
+    let i=${i}+1                                   # Increment count
+  fi
+done                             >> ${CurrLogFile} # Paths to log file
+echo "Number of commands: "${i}  >> ${CurrLogFile} # Cmd count to log file
+
+echo ""
+
+# Now compare to last time this was run.
+
+if [ "${NewLog}" == "y" ]                          # If this is a new log, output to stdout
+then
+  more ${CurrLogFile}
+else                                               # Otherwise check if current is different than previous log file
+  if cmp -s ${CurrLogFile} ${PrevLogFile};         # cmp "fails" if files are different...
+  then                                             # ...files are the same
+    Diff="F"                                       # Reset flag...
+    read -p "Log files are identical. Delete old log: ${PrevLogFile} (y/n)? " Cont
+    if [ "${Cont}" == "y" ]
+    then
+      echo "Deleting ${PrevLogFile}..."
+      rm ${PrevLogFile}                            # ...Remove old file, after prompt.
+    fi
+  else                                             # ...files are different
+    Diff="T"                                       # Set flag...
+    echo "${CurrLogFile}<  > ${PrevLogFile}"       # Get details of differences and keep both files
+    diff -EwbBsy --suppress-common-lines ${CurrLogFile} ${PrevLogFile}
+  fi
+fi

@@ -1,0 +1,65 @@
+.TH hev-grid 1 "January 29, 2009"
+.SH NAME
+
+hev-grid
+
+.SH SYNOPSIS
+
+\fBhev-grid\fR [ shm ]
+
+.SH DESCRIPTION
+
+\fBhev-grid\fR is a GUI that sends IRIS control commands to dislay a grid of objects
+around a specified normalized coordinate.  In addition to points, an axis and set
+of nested wireframe cubes can be displayed.
+
+.SH OPTIONS
+
+
+.IP \fIshm\fR
+specifies the name of a dtk shared memory file containing a matrix
+transformation representing a position in normalized coordinates.  If
+\fIshm\fR is not given "wandMatrix" is used.
+
+.SH ENVVARS
+
+\fBHEV_GRID_NEAREST_OBJECT\fR is the name of a model file to be displayed at
+the nearest grid point to the picker.  If not specified,
+"hev-nearestObject.osg" is used.
+
+\fBHEV_GRID_PROXIMITY_OBJECT\fR is the name of a model file to be displayed
+proximal to the picker.  If not specified, "hev-proximityObject.osg" is
+used.
+
+\fBHEV_GRID_PICKER_OBJECT\fR is the name of a model file to be displayed
+at the position of the picker.  If not specified, "hev-pickerObject.osg" is
+used.
+
+\fBHEV_GRID_CUBE_OBJECT\fR is the name of a model file representing a cube
+to be displayed at the position of the picker.  If not specified,
+"hev-cubeObject.osg" is used.
+
+\fBHEV_GRID_AXES_OBJECT\fR is the name of a model file representing an axis
+to be displayed at the position of the picker.  If not specified,
+"hev-axesObject.osg" is used.
+
+\fBHEV_GRID_BACKGROUND_OBJECT\fR is the name of a model file representing a
+grid of points to be displayed at the position of the picker.  If not
+specified, "hev-backgroundObject.osg" is used.
+
+
+.SH EXAMPLE
+
+cd $HEVROOT/idea/src/hev-grid
+.br
+irisfly --ex tape.osg grid.mcp
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/acmd/hpcvg/\fR
+

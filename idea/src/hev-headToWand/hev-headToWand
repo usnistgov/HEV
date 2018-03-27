@@ -1,0 +1,67 @@
+#! /bin/bash
+
+# hev-headToWand 
+
+# May 15, 2013
+# Steve
+
+usage () {
+
+cat <<EOF
+
+Usage: hev-headToWand [--help] 
+
+   A convenience command to read the current wand position and stuff
+   the values into the head shared memory.
+
+   Typically used when using a tripod mounted video camera to record
+   video of a RAVE user session. Place the wand at the camera and click
+   the left wand button. Click the right button to exit. This usage
+   only makes sense when the head tracking has been disabled.
+
+   Example command sequence:
+
+        hev-tracker haltClient
+
+        hev-tracker startClientWandOnly
+
+        hev-headToWand
+
+
+   To restore normal head tracking:
+
+        hev-tracker startClient
+
+
+EOF
+exit
+
+}
+
+
+case $# in
+0)
+	;;
+*)
+	usage
+	;;
+esac
+
+while [ /bin/true ]
+do
+	echo "Position wand, left button to set, right button to exit" 
+	b=$( hev-readButtons -1  buttons )
+
+	set $b
+	case $1 in
+	    1)
+		h=$( hev-readFloats -1 wand )
+		hev-writeFloats head $h
+		aplay -q $HEVROOT/idea/etc/hev-headToWand/data/pop.wav &
+		;;
+	    4)
+		exit
+		;;
+	esac
+
+done

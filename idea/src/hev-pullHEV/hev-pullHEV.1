@@ -1,0 +1,49 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-pullHEV 1 "June 2015" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+hev-pullHEV
+
+.SH SYNOPSIS
+
+The \fBhev-pullHEV [--excludeDemos] --dry-run | --copy  [dest]\fR 
+
+.SH DESCRIPTION
+
+\fIhev-pullHEV\fR is used to pull the \fIHEV\fR production tree to the local
+system in /usr/local/HEV.
+
+.PP
+This command is intended only for users that manually manage their HEV tree.
+This command will not pull if you are not the owner of /usr/local/HEV.
+HPCVG systems are automatically updated.
+
+
+.SH OPTIONS
+.TP
+.B --excludeDemo
+This option will skip the pulling of the \fBdemos\fR directory.
+
+.TP
+.B --dry-run
+Print the files that need to be updated, but don't actually copy.
+
+.TP
+.B --copy
+Perform the file copy and print the files being updated.
+
+.TP
+.B dest
+Specify an alternate destination for the copy. \fB/usr/local/HEV/\fR is the default and should typically be used.
+
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov (based on a script by Don Koss)
+.br
+http://www.nist.gov/itl/math/hpcvg/
+
+

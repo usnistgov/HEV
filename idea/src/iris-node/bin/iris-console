@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+// vim: ft=javascript
+
+/**
+ * \file iris-console a terminal console for interacting with IRIS.
+ * @see doc/iris-console.1
+ */
+
+"use strict"
+var path = require("path"),
+    fs = require("fs");
+
+var lib = path.join(path.dirname(fs.realpathSync(__filename)), "../lib");
+require(lib+"/iris.js").console()
+

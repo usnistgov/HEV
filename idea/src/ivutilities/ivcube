@@ -1,0 +1,20 @@
+#! /bin/sh
+
+case $# in
+0)
+    w=2; h=2; d=2;
+    ;;
+3)
+    w=$1; h=$2; d=$3;
+    ;;
+*)
+    echo "Usage: ivcube [width height depth]"
+    echo "   default is 2 2 2"
+    exit
+esac
+
+
+echo "#Inventor V2.0 ascii"
+echo "Separator {"
+echo "Cube { width" $w "height" $h "depth" $d "}"
+echo "}"

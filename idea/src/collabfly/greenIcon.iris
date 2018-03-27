@@ -1,0 +1,10 @@
+# iris-DCS applied the following options to create the DCS:
+#  nodeName = "greenIcon"
+#  center 0.000000 0.000000 0.000000
+# and loaded the following files:
+#  "greenIcon.savg" with node name "greenIcon.savg"
+#center: radius = 0.086603, center = 0.000000 0.000000 0.000000
+DCS "greenIcon" 
+LOAD "greenIcon.savg" "greenIcon.savg"
+ADDCHILD "greenIcon.savg" "greenIcon"
+RETURN "greenIcon"

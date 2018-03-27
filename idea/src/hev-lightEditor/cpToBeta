@@ -1,0 +1,4 @@
+
+cp -f hev-lightEditor /usr/local/HEV-beta/idea/bin
+cp -f lightEditor.mcp /usr/local/HEV-beta/idea/data
+cp -f lightEditor.iris /usr/local/HEV-beta/idea/data

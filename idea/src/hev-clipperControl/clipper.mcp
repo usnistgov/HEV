@@ -1,0 +1,6 @@
+BUTTON clip
+  FIRST exec hev-clipperControl -title clipper inFrontOfWand world buttons  > $IRIS_CONTROL_FIFO
+  FIRST WAIT irisfly-addAndShowWindow clipper
+  ON WAIT irisfly-addAndShowWindow clipper
+  OFF WAIT irisfly-removeAndHideWindow clipper
+

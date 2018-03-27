@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+#Each edge in graph must have capacity. If no capacity given, capacity
+#for that edge is considered to be infinite.
+#arg1: edge-list file
+#arg2: 'd' or 'u' for directed/undirected graph
+#arg3: name of source node for the flow
+#arg4: name of sink node for the flow
+
+import networkx as nx
+import sys
+
+if(len(sys.argv)==5):
+    myFile = open(sys.argv[1], 'r')
+else:
+    print("Error: wrong number of arguments.")
+    sys.exit()
+
+lines = []
+for edge in myFile:
+    lines.append(tuple(edge.split()))
+
+if(sys.argv[2]=='u'):
+    G = nx.Graph()
+elif(sys.argv[2]=='d'):
+    G=nx.DiGraph()
+else:
+    print("Error: graph type not correct. Use 'd' for directed graphs, 'u' for undirected graphs.")
+    sys.exit()
+
+for item in lines:
+    if(len(item)==2):
+        G.add_edge(item[0],item[1])
+    elif(len(item)==3):
+        G.add_edge(item[0],item[1],capacity=float(item[2]))
+    elif(len(item)>=4):
+        G.add_edge(item[0],item[1],capacity=float(item[3]))
+    else:
+        print("Error in input file. Wrong number of elements per line.")
+        sys.exit()
+
+myFile.close()
+
+print(nx.min_cut(G, sys.argv[3], sys.argv[4],capacity='capacity'))

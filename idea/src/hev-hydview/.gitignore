@@ -1,0 +1,6 @@
+hev-hydview
+hydview.so
+*.moc.cpp
+*.ui.h
+res.cpp
+.vscode

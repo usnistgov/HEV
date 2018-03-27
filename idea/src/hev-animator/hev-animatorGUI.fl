@@ -1,0 +1,193 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+Function {make_main_window()} {open
+} {
+  Fl_Window {} {open
+    xywh {2985 150 485 40} type Double align 10 visible
+  } {
+    Fl_Button {} {
+      label {@|<}
+      callback {jump_to_first() ;}
+      tooltip {jump to first frame} xywh {0 0 25 20}
+      code0 {jump_to_firstButton = o ;}
+    }
+    Fl_Button {} {
+      label {@<}
+      callback {play_backward() ;}
+      tooltip {play backwards} xywh {25 0 25 20}
+      code0 {play_backwardButton = o ;}
+    }
+    Fl_Button {} {
+      label {@<|}
+      callback {step_backward() ;}
+      tooltip {step backwards} xywh {50 0 25 20}
+      code0 {step_backwardButton = o ;}
+    }
+    Fl_Button {} {
+      label {@||}
+      callback {stop() ;}
+      tooltip stop xywh {75 0 25 20}
+      code0 {stopButton = o ;}
+    }
+    Fl_Button {} {
+      label {@|>}
+      callback {step_forward() ;}
+      tooltip {step forward} xywh {100 0 25 20}
+      code0 {step_forwardButton = o ;}
+    }
+    Fl_Button {} {
+      label {@>}
+      callback {play_forward() ;}
+      tooltip {play forward} xywh {125 0 25 20}
+      code0 {play_forwardButton = o ;}
+    }
+    Fl_Button {} {
+      label {@>|}
+      callback {jump_to_last() ;}
+      tooltip {jump to last frame} xywh {155 0 25 20}
+      code0 {jump_to_lastButton = o ;}
+    }
+    Fl_Button {} {
+      label save
+      callback {save_frame(current) ;}
+      tooltip {save the frame number} xywh {240 0 55 20}
+    }
+    Fl_Button {} {
+      callback {swap_frames() ;}
+      tooltip {swap  between the current and saved frames} xywh {295 0 55 20}
+      code0 {swapButton = o ;}
+    }
+    Fl_Group {} {
+      xywh {3 22 5 20} align 8
+      code0 {childrenGroup = o ;}
+    } {}
+    Fl_Roller {} {
+      label frame
+      callback {frame((unsigned int) o->value()) ;}
+      tooltip {set the frame number} xywh {180 0 20 20} type Horizontal align 6 maximum 999 step 0.1
+      code0 {frameRoller = o ;}
+    }
+    Fl_Value_Input {} {
+      callback {unsigned int foo = (unsigned int) o->clamp(o->value()) ;
+o->value(foo) ;
+frame(foo) ;}
+      tooltip {set the frame number} xywh {200 0 40 20} maximum 999
+      code0 {frameValue = o ;}
+      code1 {o->type(FL_INT_INPUT) ;}
+    }
+    Fl_Group {} {
+      label {jump to} open
+      xywh {292 22 68 15} align 20
+    } {}
+    Fl_Light_Button {} {
+      label Set
+      callback {settings(bool(o->value()));}
+      tooltip {open/close the settings window} xywh {350 0 74 20}
+      code0 {settingsButton = o ;}
+      code1 {o->value(settingsState) ;}
+    }
+    Fl_Light_Button {} {
+      label grab
+      callback {rec(o->value()) ;}
+      tooltip {Grab all frames from first to last, by stride, into image files.} xywh {425 0 56 20} selection_color 1
+      code0 {recButton = o ;}
+    }
+  }
+} 
+
+Function {make_settings_window()} {open
+} {
+  Fl_Window {} {open
+    xywh {2918 270 515 40} type Double visible
+  } {
+    Fl_Roller {} {
+      label stride
+      callback {stride = (unsigned int) o->value() ;
+update_widgets() ;}
+      tooltip {set stride} xywh {0 0 20 20} type Horizontal align 6 minimum 1 maximum 999 step 0.1
+      code0 {strideRoller = o ;}
+    }
+    Fl_Value_Input {} {
+      callback {stride = (unsigned int) o->clamp(o->value()) ;
+o->value(stride) ;
+update_widgets() ;}
+      tooltip {set stride} xywh {25 0 40 20} maximum 999
+      code0 {strideValue = o ;}
+      code1 {o->type(FL_INT_INPUT) ;}
+    }
+    Fl_Roller {} {
+      label {frame time}
+      callback {frameTime = o->value() ;
+update_widgets() ;}
+      tooltip {set the time per frame in seconds} xywh {65 0 20 20} type Horizontal align 6 minimum 0.01 maximum 2 step 0.01 value 1
+      code0 {frameTimeRoller = o ;}
+    }
+    Fl_Value_Input {} {
+      callback {frameTime = o->clamp(o->value()) ;
+o->value(frameTime) ;
+update_widgets() ;}
+      tooltip {set the time per frame in seconds} xywh {90 0 40 20} minimum 0.01 maximum 2 value 1
+      code0 {frameTimeValue = o ;}
+      code1 {o->type(FL_FLOAT_INPUT) ;}
+    }
+    Fl_Light_Button {} {
+      label loop
+      callback {loop_frames = (bool) o->value() ;
+update_widgets() ;}
+      tooltip {loop animation} xywh {130 0 55 20}
+      code0 {o->value(loop_frames) ;}
+      code1 {loopButton = o ;}
+    }
+    Fl_Light_Button {} {
+      label sync
+      callback {sync_frames = (bool) o->value() ;}
+      tooltip {try to sync frames to realtime if checked, or show all frames if not checked} xywh {185 0 55 20}
+      code0 {o->value(sync_frames) ;}
+      code1 {syncButton = o ;}
+    }
+    Fl_Roller {} {
+      label first
+      callback {first = (unsigned int) o->value() ;
+update_widgets() ;}
+      tooltip {set the first frame to display} xywh {240 0 20 20} type Horizontal align 6 maximum 999 step 0.1
+      code0 {firstRoller = o ;}
+    }
+    Fl_Value_Input {} {
+      callback {first = (unsigned int) o->clamp(o->value()) ;
+if (first<0) first = 0 ;
+else if (first>=last) first = last-1 ;
+o->value(first) ;
+update_widgets() ;}
+      tooltip {set the first frame to display} xywh {260 0 40 20} maximum 999
+      code0 {firstValue = o ;}
+      code1 {o->type(FL_INT_INPUT) ;}
+    }
+    Fl_Roller {} {
+      label last
+      callback {last = (unsigned int) o->value() ;
+update_widgets() ;}
+      tooltip {set the last frame to display} xywh {300 0 20 20} type Horizontal align 6 maximum 999 step 0.1
+      code0 {lastRoller = o ;}
+    }
+    Fl_Value_Input {} {
+      callback {last = (unsigned int) o->clamp(o->value()) ;
+update_widgets() ;}
+      tooltip {set the last frame to display} xywh {320 0 40 20} maximum 999
+      code0 {lastValue = o ;}
+      code1 {o->type(FL_INT_INPUT) ;}
+    }
+    Fl_Button {} {
+      label reset
+      callback {reset();}
+      tooltip {set all values in this window to their initial  values} xywh {445 0 70 20} color 48
+    }
+    Fl_Menu_Button {} {
+      label panes
+      callback {paneSelection(o) ;} open selected
+      tooltip {choose which panes to grab} xywh {360 0 75 20}
+      code0 {grabPanes = o ;}
+    } {}
+  }
+} 

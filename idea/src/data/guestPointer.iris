@@ -1,0 +1,48 @@
+# Create offsetTree2
+#   shared memory matrix, like the default offsetWand
+
+# other applications can overwrite idea/tree2OffsetDistance
+WAIT hev-writeFloats -c 1 idea/tree2OffsetDistance 0
+
+# read from trakcer device tree2, update tree2Matrix
+WAIT hev-writeDoubles -c 16 tree2Matrix 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+#WAIT hev-writeDoubles -c 16 tree2Matrix   1  0  0  0   0  0  1  0   0 -1  0  0   0  0  0  1
+# 90 degree rotation to account for mounting position of device Tree 2
+# see https://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations
+#   1  0  0  0
+#   0  0  1  0
+#   0 -1  0  0
+#   0  0  0  1
+EXEC iris-xyzhprToMatrix tree2 tree2Matrix
+
+
+# idea/offsetTree2 is a matrix
+WAIT hev-writeDoubles -c 16 idea/tree2Wand 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+EXEC hev-offsetY tree2Matrix idea/tree2OffsetDistance idea/offsetTree2
+
+# matrix in shm with idea/offsetTree2 in world coords
+WAIT hev-writeDoubles -c 16 idea/worldOffsetTree2 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+EXEC hev-sceneToWorld idea/offsetTree2 idea/worldOffsetTree2
+
+# matrix in shm with tree2 in world coords
+WAIT hev-writeDoubles -c 16 idea/worldTree2 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+EXEC hev-sceneToWorld tree2Matrix idea/worldTree2
+
+# and a node under that follows the probe
+SHMMATRIXTRANSFORM offsetTree2 idea/offsetTree2
+ADDCHILD offsetTree2 scene
+
+####
+SCS guestPointerGlyph 0 0 0   0 0 0   1
+LOAD guestPointerGlyph0  guestPointerGlyph.osg
+NOCLIP guestPointerGlyph0
+ADDCHILD guestPointerGlyph0 guestPointerGlyph
+####
+
+
+#SCS guestPointerGlyph0 0 0 0   0 -90 0   1
+#LOAD guestPointerGlyph0  guestPointerGlyph.osg
+#
+#SCS guestPointerGlyph 0 0 0   0 0 0   1
+#ADDCHILD guestPointerGlyph0 guestPointerGlyph
+

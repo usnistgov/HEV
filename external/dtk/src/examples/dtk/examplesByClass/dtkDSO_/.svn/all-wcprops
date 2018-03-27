@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/examplesByClass/dtkDSO_
+END
+barDSO.h
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkDSO_/barDSO.h
+END
+load.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkDSO_/load.cpp
+END
+fooDSO.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkDSO_/fooDSO.cpp
+END
+barDSO.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkDSO_/barDSO.cpp
+END
+Makefile.orig
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/examplesByClass/dtkDSO_/Makefile.orig
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/examplesByClass/dtkDSO_/CMakeLists.txt
+END

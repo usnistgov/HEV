@@ -1,0 +1,194 @@
+#! /usr/bin/perl
+
+# hev-savgCylinder - create an "efficient" cylinder in savg file format
+#
+#                    
+#
+# Steve Satterfield
+
+$version="20100918";
+
+use Math::Trig;
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hev-savgCylinder [--sides int] [--arc float] [--cap string] [--help]
+   or  hev-savgCone     [--sides int] [--arc float] [--cap string] [--help]
+
+
+    --sides   int  is an integer > 3                default = 16
+                   The number of flat polygons used
+                   to approximate the cylinder.
+
+    --arc float    is a float in range 0 to 360     default = 360
+
+    --cap string   is a string: "top","bottom","both","none"  default="both"
+                   Specify the end caps to include or not.
+		   "top"  is invalid with hev-savgCone.
+
+    --help         print usage message
+
+ 
+   Creates a cylinder oriented along the Z axis with a length of 2 radius
+   of 1 to stdout.  Use have-savgTransformation to change orientation or size.
+
+   In the case of hev-savgCone, the base radius is 1.
+
+
+EOF
+;
+exit(1)
+}
+
+ 
+
+
+# Default values
+$debugFlag=0;
+$helpFlag=0;
+$radius=1;
+$height=2;
+$sides=16;
+$arc=360;
+$cap="both";
+
+
+# Get my name (like argv0 in C)
+# from http://www.perlmonks.org/?node_id=242842 
+$myname= (split /\//, $0)[-1];
+
+
+# Command line
+if (! GetOptions("debug"         => \$debugFlag,
+           "help"          => \$helpFlag,
+           "sides:i"       => \$sides,
+           "arc:f"         => \$arc,
+	   "cap:s"        => \$cap)) {
+     usage;
+}
+
+
+
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "helpFlag= $helpFlag\n";
+    print STDERR "myname = $myname\n";
+    print STDERR "radius= $radius\n";
+    print STDERR "height= $height\n";
+    print STDERR "sides= $sides\n";
+    print STDERR "arc= $arc\n";
+    print STDERR "cap= $cap\n";
+} 
+
+if ($sides <= 0) {usage;}
+if (($arc <= 0) || ($arc > 360)) {usage;}
+if ($cap eq "top") {
+    if ($myname eq "hev-savgCone") {
+	print STDERR "\n --cap top invalid for hev-savgCone\n";
+	usage;
+    }
+} elsif( $cap eq "bottom") {
+} elsif( $cap eq "both") {
+} elsif( $cap eq "none") {
+} else { usage; }
+
+
+usage() if (@ARGV != 0);
+usage() if ($helpFlag != 0);
+
+
+
+# degree to rad
+$radArc=$arc*0.01745329;
+
+$theta=0;
+$incr=$radArc/($sides-1);
+
+$zpos=$height/2.;
+$zneg=$height/2.*(-1);
+
+$style="tristrips";
+#$style="lines";
+
+print "# hev-savgCylinder: $sides sides, $arc degree arc\n";
+print "nooptimize\n";
+
+# Cylinder
+print "# cylinder sides\n";
+print "$style\n";
+while ($theta <= $radArc) {
+
+    #print "--> $theta  $radArc <--\n";
+    # compute coordinate
+    $x=$radius * cos($theta);
+    $y=$radius * sin($theta);
+
+    # compute normal
+    $l=sqrt($x*$x + $y*$y);
+    $xn=$x/$l;
+    $yn=$y/$l;
+
+
+    if ($myname eq "hev-savgCone") {
+	print "0 0 $zpos $xn $yn 0\n";
+	print "$x $y $zneg $xn $yn 0\n";
+    } else{
+	print "$x $y $zpos $xn $yn 0\n";
+	print "$x $y $zneg $xn $yn 0\n";
+    }
+
+    $theta=$theta + $incr;
+}
+
+
+$style="polygon";
+#$style="lines";
+
+
+# Close the top (if its a cylinder)
+if ($myname eq "hev-savgCylinder") {
+    if (($cap eq "both" ) || ($cap eq "top")) {
+	print "\n# cylinder top\n";
+	print "$style\n";
+	$theta=0;
+	while ($theta <= $radArc) {
+
+	    # compute coordinate
+	    # its important that the 
+	    $x=$radius * cos($theta);
+	    $y=$radius * sin($theta);
+
+	    # normal is easy
+	    print "$x $y $zpos 0 0 1\n";
+
+	    $theta=$theta + $incr;
+	}
+    }
+}
+
+
+# Close the bottom
+if (($cap eq "both" ) || ($cap eq "bottom")) {
+    print "\n# cylinder bottom\n";
+    print "$style\n";
+
+    $theta=$radArc;
+    while ($theta >= 0) {
+
+	# compute coordinate
+	$x=$radius * cos($theta);
+	$y=$radius * sin($theta);
+
+	# normal is easy
+	print "$x $y $zneg 0 0 -1\n";
+
+	$theta=$theta - $incr;
+    }
+}

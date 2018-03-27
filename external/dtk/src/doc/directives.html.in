@@ -1,0 +1,96 @@
+<html>
+<head>
+   <title>DTK Directives</title>
+</head>
+
+<body>
+
+<center>
+<h2>The DIVERSE Toolkit Directives</h2>
+</center>
+
+<br>
+
+Here's a ordered list of objectives that are part of the DIVERSE
+Toolkit (DTK) software design philosophy, as written and maintained by
+Lance Arsenault and with contrubutions to the original version from
+John Kelso.&nbsp; A modified version of this has been adopted by <a
+href="http://diverse.sourceforge.net/">DIVERSE</a>.
+
+<p>
+Some people ask: "Why'd ya make it that way."&nbsp; The answer can
+usually be derived from the DIVERSE Toolkit Directives:
+
+<ol>
+
+<li>
+<b>Works by Default (The prime directive)</b>
+
+<blockquote>
+
+Reasonable default behaviors are needed by any good software.  We try
+to make the default to be the case that is most used or the least
+damaging, if the most used case can cause harm.  "Works by Default"
+also implies that the software should be robust or work all the time.
+
+</blockquote>
+
+</li>
+
+
+<li>
+<b>Stay Out of the Users Way</b>
+
+<blockquote>
+
+For API's this means stay out of the application programmers
+way.&nbsp; We have noticed that some softwares can get in your way and
+keep you from doing interesting things.&nbsp; They are designed to be
+a central part of whatever you're doing.&nbsp; We say that they have
+that "center of the universe" design paradigm.&nbsp;
+
+<p> We assume that the user knows better how to design and structure
+what the user is doing.&nbsp; This software is designed to augment
+without imposing a particular structure.&nbsp; This gives users
+freedom in design.
+
+</blockquote>
+</li>
+
+
+<li>
+<b>Easy to Use</b>
+
+<blockquote>
+
+At the surface this one's a no-brainer.  It's also a generalization of
+1.&nbsp; Sometimes 3 conflicts with 2, but since 2 fosters innovation
+and flexibility we lean a little more towards 2.
+
+</blockquote>
+
+</li>
+<li>
+<b>Short Termers Don't Count</b>
+
+<blockquote>
+
+Sometimes there are design decisions to be made.&nbsp; Any design
+decisions that affect interfaces will be made with the interest of the
+project for the long haul.&nbsp; Put another way: interface design
+decisions must be made with foresight.
+
+<p>
+
+This may seem obvious, but this is helpful in providing reasons for
+telling half-wit know-it-alls, and sloppy-coders, "NO!, We're doing
+it this way."
+
+</blockquote>
+
+
+</ol>
+
+<hr>
+
+</body>

@@ -1,0 +1,73 @@
+ivutilities:  see ./ivutilities.3
+and ./Doc
+./Doc/Inventor_Nodes_007-2469-001.pdf
+is especially useful
+
+-Steve Satterfield
+
+
+To Do
+-----
+
+June 30
+
+  I found the following notes in an old email. Maybe something to look at:
+
+  Look at ivstick.
+
+        length function not used
+        why have line count
+        is multiple separators needed. Isn't this a peformer hold over
+
+
+
+
+June 19, 2008
+
+  Fixed ivtexture to use a single polygon. It now works with current HEV (DGL,
+  OSG based)
+
+  ./test_ivstick is test current test and development area 
+
+  ivtexture is just a very basic quick implementation. There are lots of other
+  paratmers and commands that should be looked at. For example, what about
+  texturing onto geometry other than a single polygon.
+
+  There is now an ivlightmodel command. 
+
+  The .ivu extension resolves issues with coordinate system and ivpffix is
+  not so much needed
+
+  The commands ivdirectionalight, ivpointlight, ivspotlight when used
+  cause the .iv loader to segfault. I seem to remember this is an issue
+  that needs some looking into. I believe I tried once and gave up.
+
+
+
+
+
+
+December 12, 2007
+
+  Fix ivtexture to work in Dgl (OSG) by changing it to use a single polygon
+  rather around a cube. See: ~steve/ivFifles/ivtextureBug or ./ivtextureBug
+
+  The current ivtexture is really just a quick hack.
+  There are a number of commands related to texture. I relly need to look
+  at a series of iv texture commands to properly inplement texture.
+
+
+
+Date: Tue, 11 Dec 2007 19:20:48 -0500 (EST)
+From: Steve Satterfield <steve@nist.gov>
+To: Steve Satterfield <steve@nist.gov>
+Subject: ivutilities
+
+ivutilities: Look at enhancement to ivtext to allow extruded text. Need to
+add "parts ALL" after the string.
+Fix ivtexture to work in Dgl (OSG) by changing it to use a single polygon
+rather around a cube. See: ~steve/ivFifles/ivtextureBug
+Add a "ivlightmodel" command.
+Rename ivpfivfix to something, perhaps ivivu or ivufix.
+Add an ivutext command to do the text with up appropriate for OSG.
+

@@ -1,0 +1,470 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 12. Sensors</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch11.html" title="Chapter 11. File Format"><link rel="next" href="ch13.html" title="Chapter 13. Engines"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 12. Sensors</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch13.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5489132"></a>Chapter 12. <a name="id20078"></a>Sensors</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Describe the different types of sensors that can be used in a scene graph and give possible uses for each type</p>
+</li>
+<li><p>Understand how sensors are scheduled in the delay queue and the timer queue and when they are processed</p>
+</li>
+<li><p>Write callback functions for use by data and timer sensors</p>
+</li>
+<li><p>Set the priority of a delay-queue sensor</p>
+</li>
+</ul></div><p>This chapter describes how to add sensors to the scene graph. A sensor is an Inventor object that watches for various types of events and invokes a user-supplied callback function when these events occur. Sensors fall into two general categories: <a name="idch121"></a><i>data sensors<a name="idch122"></a></i>, which respond to changes in the data contained in a node's fields, in a node's children, or in a path; and <a name="idch123"></a><i>timer sensors</i>, which respond to certain scheduling conditions.</p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5489220"></a>Introduction to Sensors</h2></div></div>
+<p>Sensors are a special class of objects that can be attached to the database. They respond to database changes or to certain timer events by invoking a user-supplied callback function. Data sensors (derived from <a name="idch124"></a><span class="bold"><b>SoDataSensor</b></span>) monitor part of the database and inform the application when that part changes. Timer sensors (such as <span class="bold"><b>SoAlarmSensor</b></span> and <a name="idch125"></a><span class="bold"><b>SoTimerSensor</b></span>) notify the application when certain types of timer events occur. Note that timer &#8220;events&#8221; occur within Inventor and are not part of the event model described in <a href="ch10.html#id10433">Chapter 10</a>. See <a href="ch12.html#id34625">Figure 12-1</a> for a diagram of the portion of the class tree that includes sensors.</p>
+<p><div class="figure"><p><a name="id5489306"></a><b>Figure 12-1. <a name="id34625"></a><a name="idch126"></a>Sensor Classes</b></p>
+<div class="mediaobject"><img src="figures/12.1.sensors.gif"></div></div><br>
+</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5489368"></a>Sensor Queues<a name="idch127"></a></h3></div></div>
+<p>As the class tree in <a href="ch12.html#id34625">Figure 12-1</a> suggests, sensors are placed in one of two queues:</p>
+<div class="itemizedlist"><ul type="disc"><li><p><i>Timer queue<a name="idch128"></a></i>, which is called when an alarm or timer sensor is scheduled to go off</p>
+</li>
+<li><p><i>Delay queue<a name="idch129"></a></i>, which is called whenever the CPU is idle  (that is, there are no events or timer sensors to handle) or after a user-specifiable time-out</p>
+</li>
+</ul></div><p>When processing of either queue begins, all sensors in that queue are processed once, in order (see <a href="ch12.html#id84063">&#8220;Using a Field Sensor&#8221;</a>).</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5489490"></a>Key Terms</h3></div></div>
+<p>The following discussion of data and timer sensors uses a few new terms. </p>
+<div class="itemizedlist"><ul type="disc"><li><p><i>Triggering<a name="idch1210"></a></i> a sensor means calling its user-defined callback function and removing it from the queue. </p>
+</li>
+<li><p><i>Scheduling<a name="idch1211"></a></i> a sensor means adding it to a queue so that it can be triggered at some future time. If a sensor is already scheduled, scheduling it again has no effect. <i>Unscheduling</i> a sensor means removing it from the queue without processing it.</p>
+</li>
+<li><p><i>Notifying<a name="idch1212"></a></i> a data sensor means letting it know that the node (or field or path) to which it is attached has changed. A data sensor automatically schedules itself when it is notified of a change.</p>
+</li>
+</ul></div></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5489558"></a>Data Sensors</h2></div></div>
+<p>There are three types of data sensors:</p>
+<div class="itemizedlist"><ul type="disc"><li><p><span class="bold"><b>SoFieldSensor</b></span>, which is attached to a field<a name="idch1213"></a></p>
+</li>
+<li><p><span class="bold"><b>SoNodeSensor</b></span>, which is attached to a node<a name="idch1214"></a></p>
+</li>
+<li><p><span class="bold"><b>SoPathSensor</b></span>, which is attached to a path<a name="idch1215"></a></p>
+</li>
+</ul></div><p>An <a name="idch1216"></a><span class="bold"><b>SoFieldSensor</b></span> is notified whenever data in a particular field changes. An <span class="bold"><b>SoNodeSensor<a name="idch1217"></a></b></span> is notified when data changes within a certain node, when data changes within any of the child nodes underneath that node, or when the graph topology changes under the node. An <a name="idch1218"></a><span class="bold"><b>SoPathSensor </b></span>is notified whenever data within any of the nodes in a certain path changes, or when nodes are added to or deleted from that path. A node is considered to be <i>in the path</i> if traversing the path would cause the node to be traversed.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Setting the value of a field to the same value it had before (for example,<br>
+<br>
+<tt>field.setValue(field.getValue())</tt>)<br>
+<br>
+is considered a change.  Calling the <a name="idch1219"></a><span class="bold"><b>touch()</b></span> method of a field or node is also considered a change.
+</td></tr></table><hr noshade="noshade"></div><p>A render area attaches a node sensor to the root of the scene graph so that it can detect when you make any changes to the scene. It then automatically renders the scene again.<a name="idch1220"></a><a name="idch1221"></a></p>
+<p>Data sensors are also useful if you want to monitor changes in part of a scene and communicate them to another element in the scene.  For example, suppose you have a material in the scene graph with an editor attached to it. If the material changes, the editor needs to change the values of its sliders to reflect the new material. An <a name="idch1222"></a><span class="bold"><b>SoNodeSensor</b></span> supplies this feedback to the material editor. </p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Field-to-field connections are another way of keeping different parts of the scene graph in sync.  See <a name="idch1223"></a><a href="ch13.html#id11499">Chapter 13</a>.
+</td></tr></table><hr noshade="noshade"></div><br><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5489828"></a>General Sequence for Data Sensors</h3></div></div>
+<p>The following sequence describes the necessary steps for setting up a data sensor:<a name="idch1224"></a></p>
+<div class="orderedlist"><ol type="1"><li><p>Construct the sensor.</p>
+</li>
+<li><p>Set the callback function (see the next section).</p>
+</li>
+<li><p>Set the priority of the sensor (see <a href="ch12.html#id88333">&#8220;Priorities&#8221;</a>).</p>
+</li>
+<li><p>Attach the sensor to a field, node, or path.</p>
+</li>
+<li><p>When you are finished with the sensor, delete it.</p>
+</li>
+</ol></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5489894"></a><a name="id79207"></a>Callback Function</h3></div></div>
+<p><i>Callback functions<a name="idch1225"></a></i>, as their name suggests, allow Inventor to call back to the application when some predefined event occurs. A callback function usually takes a single argument of type <span class="bold"><b>void*</b></span> that can be used to pass extra user-defined data to the function. Callback functions used by sensors also have a second argument of type <span class="bold"><b>SoSensor*</b></span>. This argument is useful if the same callback function is used by more than one sensor. The argument is filled with a pointer to the sensor that caused the callback.</p>
+<p>In C++, a sensor callback function can be declared as a static member function of a class. In this case, because static functions have no concept of <a name="idch1226"></a><span class="bold"><b>this</b></span>, you need to explicitly pass an instance of the class you want to modify as user data:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+colorSensor-&gt;setData(this);
+</pre></td></tr></table><p>Nonstatic C++ member functions are not suitable for use as callback functions.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5490001"></a><a name="id88333"></a>Priorities</h3></div></div>
+<p>Classes derived from <span class="bold"><b>SoDelayQueueSensor</b></span> use 
+
+
+priorities to maintain sorting in the delay queue. The following methods are used to set and obtain the priority of a given sensor:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>setPriority</b></span>(<i>priority</i>) </span></td><td width="10"> </td><td><p><br>
+assigns a priority to the sensor. All delay queue sensors have a default priority of 100. Sensors are sorted in the queue in order of their priority, with lower numbers first.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>getPriority()</b></span></span></td><td width="10"> </td><td><p>obtains the priority of a given sensor.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>getDefaultPriority()</b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+<br>
+</b></span>obtains the default priority (100) for a sensor.</p>
+
+</td></tr></table></div><p>A sensor with a priority of 0 has the highest priority.  It triggers as soon as the change to the scene graph is complete. If two sensors have the same priority, there is no guarantee about which sensor will trigger first.</p>
+<p>The 
+
+
+<span class="bold"><b>SoXtRenderArea</b></span> has a redraw data sensor with a default priority of 10000.  You can schedule other sensors before or after the redraw by choosing appropriate priorities.  </p>
+<p>For example, to set the priority of a sensor so that it is triggered right before redraw:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoNodeSensor   *s;
+SoRenderArea   *renderArea;
+s-&gt;setPriority(renderArea-&gt;getRedrawPriority() - 1);
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5490156"></a>Triggering a Data Sensor</h3></div></div>
+<p>When 
+
+
+data in the sensor's field, node, or path changes, the following things happen:</p>
+<div class="orderedlist"><ol type="1"><li><p>The sensor is notified that the data changed.</p>
+</li>
+<li><p>The sensor is 
+
+
+<i>scheduled</i>&#8212;that is, it is added to the delay queue, according to its priority.</p>
+</li>
+<li><p>At some future time, the queue is processed and all sensors in it are triggered.</p>
+</li>
+<li><p>When triggered, the sensor is removed from the queue, and it invokes its callback function.</p>
+</li>
+<li><p>The callback function executes. This function can access the 
+
+
+trigger field, trigger node, or trigger path responsible for the original notification (see <a href="ch12.html#id90435">&#8220;Using the Trigger Node and Field&#8221;</a>).</p>
+</li>
+</ol></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5490249"></a>Using a <a name="id84063"></a>Field Sensor</h3></div></div>
+<p><a href="ch12.html#id19744">Example 12-1</a> shows attaching a 
+
+
+field sensor to the <span class="bold"><b>position</b></span> field of a viewer's camera.  A callback function reports each new camera position.</p>
+<div class="example"><p><a name="id5490280"></a><b>Example 12-1. <a name="id19744"></a>Attaching a Field Sensor</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+#include &lt;Inventor/nodes/SoCamera.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/sensors/SoFieldSensor.h&gt;
+
+// Callback that reports whenever the viewer's position changes.
+static void
+cameraChangedCB(void *data, SoSensor *)
+{
+   SoCamera *viewerCamera = (SoCamera *)data;
+
+   SbVec3f cameraPosition = viewerCamera-&gt;position.getValue();
+   printf(&quot;Camera position: (%g,%g,%g)\n&quot;,
+            cameraPosition[0], cameraPosition[1],
+            cameraPosition[2]); 
+}
+
+main(int argc, char **argv)
+{
+   if (argc != 2) {
+      fprintf(stderr, &quot;Usage: %s filename.iv\n&quot;, argv[0]);
+      exit(1);
+   }
+
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) exit(1);
+
+   SoInput inputFile;
+   if (inputFile.openFile(argv[1]) == FALSE) {
+      fprintf(stderr, &quot;Could not open file %s\n&quot;, argv[1]);
+      exit(1);
+   }
+   
+   SoSeparator *root = SoDB::readAll(&amp;inputFile);
+   root-&gt;ref();
+
+   SoXtExaminerViewer *myViewer =
+            new SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;Camera Sensor&quot;);
+   myViewer-&gt;show();
+
+   // Get the camera from the viewer, and attach a 
+   // field sensor to its position field:
+   SoCamera *camera = myViewer-&gt;getCamera();
+   SoFieldSensor *mySensor = 
+            new SoFieldSensor(cameraChangedCB, camera);
+   mySensor-&gt;attach(&amp;camera-&gt;position);
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5490364"></a><a name="id90435"></a>Using the Trigger Node and Field <i>(Advanced)</i></h3></div></div>
+<p>You can use one of the following methods to obtain the field, node, or path that initiated the notification of any data sensor:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>getTriggerField()</p>
+</li>
+<li><p>getTriggerNode()</p>
+</li>
+<li><p>getTriggerPath()</p>
+</li>
+</ul></div><p>These methods work only for immediate (priority 0) sensors.<a name="idch1227"></a></p>
+<p>The <a name="idch1228"></a><i>trigger path</i> is the chain of nodes from the last node notified down to the node that initiated notification.  To obtain the trigger path, you must first use <span class="bold"><b>setTriggerPathFlag() </b></span>to set the trigger-path flag to TRUE since it's expensive to save the path information. You must make this call before the sensor is notified. Otherwise, information on the trigger path is not saved and <a name="idch1229"></a><span class="bold"><b>getTriggerPath()</b></span> always returns NULL. (By default, this flag is set to FALSE.) The trigger field and trigger node are always available. Note that <span class="bold"><b>getTriggerField()</b></span> returns NULL if the change was not to a field (for example, <span class="bold"><b>addChild()</b></span> or <span class="bold"><b>touch()</b></span> was called).</p>
+<p><a href="ch12.html#id37610">Example 12-2</a> shows using <a name="idch1230"></a><span class="bold"><b>getTriggerNode()</b></span> and <span class="bold"><b>getTriggerField()</b></span> in a sensor callback function that prints a message whenever changes are made to the scene graph.</p>
+<div class="example"><p><a name="id5490524"></a><b>Example 12-2. <a name="id37610"></a>Using the Trigger Node and Field</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/nodes/SoCube.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoSphere.h&gt;
+#include &lt;Inventor/sensors/SoNodeSensor.h&gt;
+
+// Sensor callback function:
+static void
+rootChangedCB(void *, SoSensor *s)
+{
+   // We know the sensor is really a data sensor:
+   SoDataSensor *mySensor = (SoDataSensor *)s;
+    
+   SoNode *changedNode = mySensor-&gt;getTriggerNode();
+   SoField *changedField = mySensor-&gt;getTriggerField();
+    
+   printf(&quot;The node named '%s' changed\n&quot;,
+            changedNode-&gt;getName().getString());
+
+   if (changedField != NULL) {
+      SbName fieldName;
+      changedNode-&gt;getFieldName(changedField, fieldName);
+      printf(&quot; (field %s)\n&quot;, fieldName.getString());
+   } 
+   else 
+      printf(&quot; (no fields changed)\n&quot;);
+}
+
+main(int, char **)
+{
+   SoDB::init();
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+   root-&gt;setName(&quot;Root&quot;);
+
+   SoCube *myCube = new SoCube;
+   root-&gt;addChild(myCube);
+   myCube-&gt;setName(&quot;MyCube&quot;);
+
+   SoSphere *mySphere = new SoSphere;
+   root-&gt;addChild(mySphere);
+   mySphere-&gt;setName(&quot;MySphere&quot;);
+
+   SoNodeSensor *mySensor = new SoNodeSensor;
+
+   mySensor-&gt;setPriority(0);
+   mySensor-&gt;setFunction(rootChangedCB);
+   mySensor-&gt;attach(root);
+
+   // Now, make a few changes to the scene graph; the sensor's
+   // callback function will be called immediately after each
+   // change.
+   myCube-&gt;width = 1.0;
+   myCube-&gt;height = 2.0;
+   mySphere-&gt;radius = 3.0;
+   root-&gt;removeChild(mySphere);
+}
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5490582"></a>Other Delay-Queue Sensors</h2></div></div>
+<p>In addition to data sensors, two other types of sensors are added to the delay queue: the <a name="idch1231"></a><span class="bold"><b>SoOneShotSensor</b></span> and the <a name="idch1232"></a><span class="bold"><b>SoIdleSensor</b></span>.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5490632"></a>General Sequence for One-Shot and Idle Sensors</h3></div></div>
+<p>The following sequence describes the necessary steps for setting up one-shot and idle sensors:<a name="idch1233"></a></p>
+<div class="orderedlist"><ol type="1"><li><p>Construct the sensor.</p>
+</li>
+<li><p>Set the callback function (see <a href="ch12.html#id79207">&#8220;Callback Function&#8221;</a>).</p>
+</li>
+<li><p>Set the priority of the sensor (see <a href="ch12.html#id88333">&#8220;Priorities&#8221;</a>).</p>
+</li>
+<li><p>Schedule the sensor using the <span class="bold"><b>schedule()</b></span> method.</p>
+</li>
+<li><p>When you are finished with the sensor, delete it. </p>
+</li>
+</ol></div><p>Note that these sensors must be scheduled explicitly. Use the <a name="idch1234"></a><span class="bold"><b>unschedule()</b></span> method to remove a sensor from the queue.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5490760"></a>SoOneShotSensor</h3></div></div>
+<p>An <a name="idch1235"></a><span class="bold"><b>SoOneShotSensor</b></span> invokes its callback once whenever the delayed sensor queue is processed. This sensor is useful for a task that does not need to be performed immediately or for tasks that <i>should</i> not be performed immediately (possibly because they are time-consuming). For example, when handling events for a device that generates events quickly (such as the mouse), you want to be able to process each event quickly so that events don't clog up the event queue. If you know that a certain type of event is time-consuming, you can schedule it with a one-shot sensor.  For example:<a name="idch1236"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+handleEvent(SoHandleEventAction *action)
+{ 
+   //Check for correct event type ...
+   .
+   .
+   .
+   // Remember information from event for later processing
+   currentMousePosition = event-&gt;getPosition();
+
+   // Schedule a one-shot sensor to do hard work later
+   SoOneShotSensor oneShot = new SoOneShotSensor(
+         OneShotTriggerCallback, NULL);
+   oneShot-&gt;schedule();
+}
+void OneShotTriggerCallback(void *userData, SoSensor *) 
+{
+   // Do lengthy operation based on current mouse position;
+}
+</pre></td></tr></table><p>Note that sensors that invoke their callback one time only, such as <span class="bold"><b>SoOneShotSensor</b></span>, <span class="bold"><b>SoIdleSensor</b></span>, and <span class="bold"><b>SoAlarmSensor</b></span>, continue to exist after their callback has been executed, but they do not trigger again unless they are rescheduled. Use the <a name="idch1237"></a><a name="idch1238"></a><span class="bold"><b>unschedule()</b></span> method to stop any sensor from invoking its callback when it is scheduled.</p>
+<p>The following example uses an <span class="bold"><b>SoOneShotSensor</b></span> to delay rendering until the CPU is idle.</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoOneShotSensor *renderTask;
+
+main() {
+   ...
+   renderTask = new SoOneShotSensor(doRenderCallback, NULL);
+   // ... set up events, UI, which will call changeScene()
+   // routine.
+}
+
+void
+changeScene()
+{
+   // ... change scene graph ...
+   renderTask-&gt;schedule();
+}
+
+void
+doRenderCallback(void *userData, SoSensor *)
+{
+   // ... does rendering ...
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5490962"></a>SoIdleSensor</h3></div></div>
+<p>An <a name="idch1239"></a><span class="bold"><b>SoIdleSensor</b></span> invokes its callback once whenever the application is idle (there are no events or timers waiting to be processed). Use an idle sensor for low-priority tasks that should be done only when there is nothing else to do. Call the sensor's <span class="bold"><b>schedule()</b></span> method in its callback function if you want it to go off repeatedly (but beware, since this keeps the CPU constantly busy). Note that idle sensors may never be processed if events or timers happen so often that there is no idle time; see <a href="ch12.html#id14263">&#8220;Processing the Sensor Queues&#8221;</a> for details.</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5491039"></a>Timer-Queue Sensors<a name="idch1240"></a></h2></div></div>
+<p>Timer-queue sensors, like data sensors, can be used to invoke user-specified callbacks. Instead of attaching a timer-queue sensor to a node or path in the scene graph, however, you simply <i>schedule</i> it, so that its callback is invoked at a specific time. (Timer-queue sensors are sorted within the timer queue by time rather than by priority.) Inventor includes two types of timer-queue sensors: <a name="idch1241"></a><span class="bold"><b>SoAlarmSensor</b></span> and <span class="bold"><b>SoTimerSensor</b></span>.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5491080"></a>General Sequence for Timer-Queue Sensors</h3></div></div>
+<p>The following sequence describes the necessary steps for setting up timer-<br>
+queue sensors:<a name="idch1242"></a></p>
+<div class="orderedlist"><ol type="1"><li><p>Construct the sensor.</p>
+</li>
+<li><p>Set the callback function (see <a href="ch12.html#id79207">&#8220;Callback Function&#8221;</a>).</p>
+</li>
+<li><p>Set the timing parameters for the sensor.</p>
+</li>
+<li><p>Schedule the sensor using the <span class="bold"><b>schedule()</b></span> method.</p>
+</li>
+<li><p>When you are finished with the sensor, delete it. </p>
+</li>
+</ol></div><p>Timing parameters (when and how often the sensor is triggered) should not  be changed while a sensor is scheduled. Use the <a name="idch1243"></a><span class="bold"><b>unschedule()</b></span> method to remove a sensor from the queue, change the parameter(s), and then schedule the sensor again.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5491194"></a>SoAlarmSensor</h3></div></div>
+<p>An <a name="idch1244"></a><span class="bold"><b>SoAlarmSensor</b></span>, like an alarm clock, is set to go off at a specified time. When that time is reached or passed, the sensor's callback function is invoked. A calendar program might use an <span class="bold"><b>SoAlarmSensor</b></span>, for example, to put a flag on the screen to indicate that it's time for your scheduled 2 o'clock meeting.</p>
+<p>Use one of the following methods to set the time for this sensor:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>setTime<a name="idch1245"></a></b></span>(<i>time</i>)</span></td><td width="10"> </td><td><p>schedules a sensor to occur at <i>time</i></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setTimeFromNow<a name="idch1246"></a></b></span>(<i>time</i>)</span></td><td width="10"> </td><td><p><br>
+schedules a sensor to occur at a certain amount of <i>time</i> from now</p>
+
+</td></tr></table></div><p>The time is specified using the <a name="idch1247"></a><span class="bold"><b>SbTime</b></span> class, which provides several different formats for time. Use the <a name="idch1248"></a><span class="bold"><b>getTime()</b></span> method of <span class="bold"><b>SoAlarmSensor</b></span> to obtain the scheduled time for an alarm sensor.</p>
+<p><a href="ch12.html#id35633">Example 12-3</a> shows using an <span class="bold"><b>SoAlarmSensor</b></span> to raise a flag on the screen when one minute has passed.</p>
+<div class="example"><p><a name="id5491396"></a><b>Example 12-3. <a name="id35633"></a>Using an Alarm Sensor
+
+
+</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+static void
+raiseFlagCallback(void *data, SoSensor *)
+{
+   // We know data is really a SoTransform node:
+   SoTransform *flagAngleXform = (SoTransform *)data;
+   
+   // Rotate flag by 90 degrees about the z axis:
+   flagAngleXform-&gt;rotation.setValue(SbVec3f(0,0,1), M_PI/2);
+}
+
+{
+   ...
+
+   SoTransform *flagXform = new SoTransform;
+
+   // Create an alarm that will call the flag-raising callback:
+   SoAlarmSensor *myAlarm =
+       new SoAlarmSensor(raiseFlagCallback, flagXform);
+   myAlarm-&gt;setTimeFromNow(60.0);
+   myAlarm-&gt;schedule();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5491444"></a>SoTimerSensor</h3></div></div>
+<p>An <a name="idch1249"></a><span class="bold"><b>SoTimerSensor</b></span> is similar to an <span class="bold"><b>SoAlarmSensor</b></span>, except that it is set to go off at regular intervals&#8212;like the snooze button on your alarm clock. You might use an <span class="bold"><b>SoTimerSensor</b></span> for certain types of animation, for example, to move the second hand of an animated clock on the screen. You can set the interval and the base time for an <span class="bold"><b>SoTimerSensor</b></span> using these methods:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>setInterval<a name="idch1250"></a></b></span>(<i>interval</i>)</span></td><td width="10"> </td><td><p><br>
+	schedules a sensor to occur at a given <i>interval</i>, for example, every minute. The default interval is 1/30 of a second.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>setBaseTime<a name="idch1251"></a></b></span>(<i>time</i>)</span></td><td width="10"> </td><td><p><br>
+	schedules a sensor to occur starting at a given<i> time</i>. The default base time is right now&#8212;that is, when the sensor is first scheduled.</p>
+
+</td></tr></table></div><p>Before changing either the interval or the base time, you must first unschedule the sensor, as shown in <a href="ch12.html#id35412">Example 12-4</a>.</p>
+<p><a href="ch12.html#id35412">Example 12-4</a> creates two timer sensors.  The first sensor rotates an object. The second sensor goes off every 5 seconds and changes the interval of the rotating sensor.  The rotating sensor alternates between once per second and ten times per second. (This example is provided mainly for illustration purposes. It would be better (and easier) to use two engines to do the same thing (see <a href="ch13.html#id11499">Chapter 13</a>).</p>
+<div class="example"><p><a name="id5491658"></a><b>Example 12-4. <a name="id35412"></a><a name="idch1252"></a>Using a Timer Sensor</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// This function is called either 10 times/second or once every
+// second; the scheduling changes every 5 seconds (see below):
+static void
+rotatingSensorCallback(void *data, SoSensor *)
+{
+   // Rotate an object...
+   SoRotation *myRotation = (SoRotation *)data;
+   SbRotation currentRotation = myRotation-&gt;rotation.getValue();
+   currentRotation = SbRotation(SbVec3f(0,0,1), M_PI/90.0) *
+            currentRotation;
+   myRotation-&gt;rotation.setValue(currentRotation);
+}
+
+// This function is called once every 5 seconds, and
+// reschedules the other sensor.
+static void
+schedulingSensorCallback(void *data, SoSensor *)
+{
+   SoTimerSensor *rotatingSensor = (SoTimerSensor *)data;
+   rotatingSensor-&gt;unschedule();
+   if (rotatingSensor-&gt;getInterval() == 1.0)
+      rotatingSensor-&gt;setInterval(1.0/10.0);
+   else 
+      rotatingSensor-&gt;setInterval(1.0);
+      rotatingSensor-&gt;schedule();
+}
+
+{
+   ...
+
+   SoRotation *myRotation = new SoRotation;
+   root-&gt;addChild(myRotation);
+
+   SoTimerSensor *rotatingSensor =
+      new SoTimerSensor(rotatingSensorCallback, myRotation);
+   rotatingSensor-&gt;setInterval(1.0); //scheduled once per second
+   rotatingSensor-&gt;schedule();
+
+   SoTimerSensor *schedulingSensor =
+   new SoTimerSensor(schedulingSensorCallback, rotatingSensor);
+   schedulingSensor-&gt;setInterval(5.0); // once per 5 seconds
+   schedulingSensor-&gt;schedule();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5491736"></a><a name="id14263"></a>Processing the Sensor Queues <i>(Advanced)</i></h3></div></div>
+<p>The following descriptions apply only to applications using the Inventor Component Library with the Xt toolkit.  Other window system toolkits may have a different relationship between processing of the different queues. If you aren't interested in the details of how timers are scheduled, you can skip this section.<a name="idch1253"></a><a name="idch1254"></a></p>
+<p>The general order of processing is event queue, timer queue, delay queue. A slight deviation from this order arises because the delay queue is also processed at regular intervals, whether or not there are timers or events pending. The sequence can be described as follows:</p>
+<p><span class="bold"><b>SoXt<a name="idch1255"></a></b></span> main loop calls XtAppMainLoop:<a name="idch1256"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+BEGIN:
+If there's an event waiting:
+Process all pending timers.
+Process the delay queue if the delay queue time-out is
+         reached.
+Process the event.
+Go back to BEGIN.
+else (no event waiting)
+if there are timers,
+   Process timers.
+   Go back to BEGIN.
+else (no timers or events pending)
+Process delay queue.
+Go back to BEGIN.
+</pre></td></tr></table><p>When the timer queue is processed, the following conditions are guaranteed:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>All timer or alarm sensors that are scheduled to go off before or at the time processing of the queue ends are triggered, in order.</p>
+</li>
+<li><p>When timer sensors are rescheduled, they are all rescheduled at the same time, after they have all been triggered.</p>
+</li>
+</ul></div><p>For example, in <a href="ch12.html#id53659">Figure 12-2</a>, at time <i>A</i> after the redraw, the timer queue is processed.  Three timers have been scheduled in the queue (timers 0, 1, and 2). Timers 0 and 1 are ready to go off (their trigger time has already passed). Timer 2 is set to go off sometime in the future.  The sequence is as follows:</p>
+<div class="orderedlist"><ol type="1"><li><p>Timer 0 is triggered.</p>
+</li>
+<li><p>Timer 1 is triggered.</p>
+</li>
+<li><p>The scheduler checks the timer queue (the time is now <i>B</i>) and notices that timer 2's time has passed as well , so it triggers timer 2.</p>
+</li>
+<li><p>Timers 0, 1, and 2 are rescheduled at time <i>C</i>.</p>
+</li>
+<li><p>The scheduler returns to the main event loop to check for pending events.<a name="idch1257"></a></p>
+<p><div class="figure"><p><a name="id5491958"></a><b>Figure 12-2. <a name="id53659"></a>Triggering and Rescheduling Timers</b></p>
+<div class="mediaobject"><img src="figures/12-2.gif"></div></div><br>
+</p>
+</li>
+</ol></div><p>The delay queue is processed when there are no events or timer sensors pending or when the delay queue's time-out interval elapses. By default, the delay queue times out 30 times a second. You can change this interval with the <a name="idch1258"></a><span class="bold"><b>SoDB::setDelaySensorTimeout()</b></span> method. Idle sensors are ignored when the delay sensor causes processing of the delay queue (because the CPU is not really idle under this condition). <a name="idch1259"></a></p>
+<p>When the delay queue is processed, the following conditions are guaranteed:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>All sensors in the delay queue are triggered, in order of priority.</p>
+</li>
+<li><p>Each sensor is triggered once and only once, regardless of whether the sensor reschedules itself.</p>
+</li>
+</ul></div></div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch13.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 11. File Format </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 13. Engines </td></tr></table></div></body></html>

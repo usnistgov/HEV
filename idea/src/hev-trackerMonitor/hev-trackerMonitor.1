@@ -1,0 +1,57 @@
+.TH hev-trackerMonitor 1 "August 2012"
+.SH NAME
+
+hev-trackerMonitor
+
+.SH SYNOPSIS
+
+\fBhev-trackerMonitor [ --head T R ] [ --wand T R ] [ --joystick T ]
+
+.SH DESCRIPTION
+
+\fBhev-trackerMonitor\fR reads head, wand and joystick tracking data from
+shared memory and prints a message to stdout of any of their component
+values change more than a specified amount.
+
+.SH OPTIONS
+
+.IP "\fB--head\fR"
+specifies that the "head" tracker should be read and a message should be
+written if any XYZ component changes by more than a \fIT\fR amount, or any
+HPR component changes by more than an \fIR\fR amount.
+
+.IP "\fB--wand\fR"
+specifies that the "wand" tracker should be read and a message should be
+written if any XYZ component changes by more than a \fIT\fR amount, or any
+HPR component changes by more than an \fIR\fR amount.
+
+.IP "\fB--joystick\fR"
+specifies that the "joystick" tracker should be read and a message should be
+written if any component changes by more than a \fIT\fR amount.
+
+.SH NOTE
+If \fBno\fR options are given, \fBhev-trackerMonitor\fR uses the defaults --head .1
+1.8 --wand .1 1.8 --joystick .9.
+If \fBany\fR options are given only the specified devices are sampled.
+
+.SH EXAMPLES
+
+.P
+echo EXEC xterm -e hev-trackerMonitor > $IRIS_CONTROL_FIFO
+
+.P
+hev-trackerMonitor --head .2 3 | hev-messageBox --dynamic --rows 5 --col 80
+
+.SH "SEE ALSO"
+The -t option to irisfly(1)
+
+.SH AUTHOR
+.PP
+John Kelso <kelso@nist.gov>
+.br
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/acmd/hpcvg/\fR
+

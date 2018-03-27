@@ -1,0 +1,570 @@
+Thu Dec 17 14:14:28 PST 2009
+Version ibis1.1.5
+-- fix compilation problem with gcc 4.4 (idirekte.cpp neglected to
+   include typeinfo (reported by Luca Deri)
+-- change the test in array_t<>::nosharing to leave the content managed
+   by the fileManager as read-only (to address an issue raised by
+   Alexandre Maurel)
+-- update query parsing function in examples/ibis.cpp to correctly
+   handle order by clauses (to address problem reported by Jan Hapke)
+-- change the associativities of unary operators from left to right to
+   address the parser problem reported by Andrew Olson
+-- treat the quoted strings as string literal (and therefore remove
+   the possibility of treating it as a column name) to fix a problem
+   reported by Alexandre Maurel
+-- all string values to be used for group by operations
+-- add contrib directory to include the file fbmerge.cpp contributed by
+   Luca Deri and Valeria Lorenzetti
+-- add tests and data contributed by Alexandre Maurel to check for the
+   problem with parsing string valued query conditions
+-- add support for operator LIKE for comparing strings
+-- allow aggregation functions (in the select clauses) to appear before
+   the group-by columns
+-- allow count(*) to be explicitly used in a select clause
+
+Tue Nov 10 14:17:41 PST 2009
+Version ibis1.1.4
+-- add code to switch bitmap offset between 4-byte and 8-byte integers.
+   This allows the index files to grow beyond 2GB, but the number of
+   rows in a data partition is still limited to 2 billion.
+-- apply patch from Jan Steemann to add new aggregation functions
+-- apply patch from Luca Deri to correct bundle computation
+-- fix functions segement in colValues.cpp after messing up the patch
+   from Alexandre Maurel
+-- fixes bugs discovered during regression testing
+
+Thu Sep 10 15:56:08 PDT 2009
+Version ibis1.1.3
+-- add function ibis::tablex::readSQLDump to read sql dump files, update
+   ibis::tablex::readCSV to output the extract data as it reads
+-- add column type ibis::BLOB (implementation as ibis::blob in
+   category.h and category.cpp, a feature request by Matthias Vallentin)
+-- add ibis::util::guard class as an implementation of ScopeGuard
+   (Andrei Alexandrescu and Petru Marginean, Generic: Change the Way You
+   Write Exception-Safe Code -- Forever, <http://www.ddj.com/cpp/184403758>)
+-- incorporate a bug fix from Alexandre Maurel to address problems in
+   function segment in ibis::colValues hierarchy (Alexandre's original
+   fix was for ibis::colFloats only)
+-- add function ibis::table::select that works with a list of data
+   partitions (to address a need raised by Andrew Olson)
+-- modify bitwise logical operations in bitvector.cpp to ensure the
+   lower level functions only operation on bit vectors representing the
+   same number of bits (to address a set of issues reported by David
+   Reynolds)
+-- update ibis::util::coarsen to make output more robust (make 1e-14 and
+   10e-15 be represented by exactly the same binary representation) 
+-- fix bug in idbak2.cpp line 998 that causes crashes
+
+Wed Aug  5 09:32:18 PDT 2009
+Version ibis1.1.2
+-- delay the reading of dictionary and index for categorical values to
+   speed up the start up
+-- add ibis::colStrings to enable group by operations involve string
+   valued sorting keys (a feature requested by Andrew Olson)
+-- query::doEvaluate, query::doScan, countQuery::doEvaluate and
+   countQuery::doScan handle empty query conditions incorrectly (a bug
+   reported by Jochen Schlosser)
+-- allow categorical values to be used as unsigned integers for
+   histogram functions
+-- adaptive binning functions computed an internal scaling factor
+   incorrectly and causes the bin number to be out of bounds (the cause
+   of error reported by Andrew Olson)
+-- change ibis::bak2::grain to use three bitvectors to store whether the
+   incoming value >, =, < than the target low-precision value.  This
+   allows for the binned index to resolve all possible range conditions
+   involving low-precision query boundaries
+-- add support for "count(*)" in select clause, allow aliases to be used
+   in the select clauses and in aggregation functions
+-- bug fixes: check for nil point in bundle.cpp, cast to char and
+   unsigned char (which are interpreted as 8-bit integers) to int before
+   printing, make sure the value of k in top-k and bottom-k are not 0
+
+Mon Jul  6 15:32:26 PDT 2009
+Version ibis1.1.1
+-- put array_t in namespace ibis (requested by Matthias Vallentin)
+-- check the state of the partition before truncating the data files (to
+   address a problem reported by Jochen Schlosser)
+-- in text::startPositioins test for the value fo currentDataDir()
+   before using it in strcmp (to avoid a crash reported by Jochen
+   Schlosser)
+-- in bitvector::subset, avoid accessing a void pointer (to address a
+   crash reported by Jochen Schlosser)
+-- in constructor of ibis::bord::part (and ibis::mensa::doSelect) avoid
+   allocating space to the same column name multiple times (to address a
+   problem reported by Shane Adams)
+-- allow purgeInactive to work with string valued columns
+-- add ibis::liga to provide ibis::table API for arbitrary collection of
+   ibis::part
+-- add code to address query boundaries out side of valid ranges of
+   column values (a problem noted by Jochen Schlosser when using
+   negative values with unsigned integer columns)
+
+Fri Jun 12 17:10:16 PDT 2009
+Version ibis1.1.0
+-- automate the line buffer management in function tafel::readCSV to
+   address a problem reported by Nicolae Mihalache <mache at abcpages
+   dot com>
+-- update ibis::tablex and ibis::tafel to work with a genomic
+   application, make it easier to derive from and extend
+-- add column::appendValues and appendStrings to directly work with
+   in-memory data (previous one has to prepare a data partition and then
+   append it to another one)
+-- consistently assign the state of data partition in all constructors
+   of ibis::part to address an issue raised by Jochen Schlosser
+-- fix issues in update column masks when repeated adding new data
+   (reported by Jochen Schlosser)
+-- fix a memory leak (losing the value of activeDir) in the constructor
+   ibis::part (reported by Jochen Schlosser)
+-- change tests to use sampled histograms in more cases in function
+   ibis::index::mapValues (a temporary work-around for issues with very
+   large std::map)
+-- use a mutex lock to protect the statements that access the value of
+   ibis::column::idx in constructor of ibis::column::indexLock and in
+   function ibis::loadIndex (to prevent use of ibis::column::idx while
+   the index is being computed.  In the previous implementation, there
+   could be a long delay between when idx is given a valid memory
+   address and the completion of the index construction, which can cause
+   a partially constructed index to be used by another thread)
+-- update some log messages
+
+Tue May 12 10:07:42 PDT 2009
+Version ibis1.0.9
+-- refine all estimateCost functions (wrong cost estimates have led to a
+   wrong choice for evaluation strategy, 1st reported by Prabhat and
+   Allen Sanderson)
+-- Change template ibis::column::getRawData to a virtual function named
+   ibis::column::getValuesArray to make it easier to override it by derived
+   classes (to addresss a problem first reported by Allen Sanderson)
+-- use the library function nextafter inside incrDouble and decrDouble
+   when available
+-- refine the code in templates ibis::part::doScan and
+   ibis::part::doCount to reduce the amount of computations
+-- add macro WITHOUT_FASTBIT_CONFIG_H as the opposite of HAVE_CONFIG_H
+   so that the user code does not need to define HAVE_CONFIG_H when
+   configure script can be run (this change assumes the FastBit
+   config.h file is present and removes the need for client code to 
+   define HAVE_CONFIG_H when including FastBit headers, a problem first
+   encountered by Hank Childs)
+-- integrate part::testRangeOperators as part of selfTest to exercise
+   all combinations of logical operators in a range expression
+-- clean up ibin.cpp, irange.cpp, imesa.cpp, icentre.cpp, ixambit.cpp,
+   ixpack.cpp, ixpale.cpp, and ixzone.cpp to address errors identified
+   through 'make full-check'
+
+Fri Apr 24 14:45:27 PDT 2009
+Version ibis1.0.8
+-- clean up implementation of ibis::tablex in ibis::tafel
+-- add support for all elementary data types to functions
+   ibis::query::getQualifiedTTTs and ibis::part::selectTTTs
+-- use references (instead of pointer) when retrieving a single values
+   through ibis::table::cursor
+-- clean up documentation about a number of functions
+-- update the detection rule on where to locate FlexLexer.h in configure
+   script
+-- use explicit type casting in the print statements of examples/tcapi.c
+   to avoid problem with print the wrong values (first saw on a Mac with
+   gcc 4.0.1)
+
+Wed Apr 15 16:42:04 PDT 2009
+Version ibis1.0.7
+-- fix a bug in ibis::qExpr::simplfy that returns a deleted query
+   expression (a bug reported by Hank Childs and Prabhat)
+-- rename the file for external Row IDentifiers from "rids" to "-rids"
+   to prevent name collision
+-- change getRIDs to return implicit/internal RIDs if external RIDs are
+   not provided (a feature requested by Jochen Schlosser)
+-- add functions to ibis::tablex interface: nRows, nColumns, capacity,
+   and reserveSpace
+-- add macro FASTBIT_SYNC_WRITE to control whether or not to wait for
+   write operations
+
+Tue Apr  7 21:44:08 PDT 2009
+Version ibis1.0.6
+-- implement functions to work with sorted data, add flags to indicate a
+   data column is sorted (a feature requested by Prabhat and Oliver
+   Ruebel)
+-- add functions to computed weighted histograms (a feature requested by
+   Oliver Ruebel)
+-- add ibis::countQuery as a simplified version of ibis::query
+-- extend ibis.cpp to exercise the new functions
+-- clean up some of the printing functions
+-- update error handling functions
+-- correct a bug in ibis::fileManager::buffer that records the wrong
+   size.  This causes FastBit to mismanage memory.
+-- change the definition of ibis::util::counter to use macro
+   HAVE_GCC_ATOMIC32 (to address a problem reported by Andrey Kolchanov)
+-- correct usage problems with olddesc in ibis::tafel::write
+
+Mon Mar  9 17:03:43 PDT 2009
+Version ibis1.0.5
+-- add FastBitStringReader, FastBitStringWriter and their assocaited
+   unite test function contributed by Andrey Kolchanov
+-- add new test cases 'check-marksdb' to 'make check'.  These tests make
+   use of data and queries contributed by David B. Marks
+-- fix a bug in the computation of the starting positions in function
+   ibis::text::startPositions (a problem reported by Andrey Kolchanov)
+-- sort incoming values using an array instead of std::set at the
+   sugestion of Alesandro Capucci
+-- update configuration scripts
+-- add an option to specify the maximum number of rows to expect to
+   ibis::tafel::readCSV to reduce the number of dynamic memory
+   allocations (a suggestion from Norbert Heusser)
+-- add code to produce sorted list of values for any column with
+   fixed-sized values
+-- make it possible to use aliases defined in select clause inside where
+   clauses (to address a case raised by David Marks)
+
+Fri Feb  6 12:00:26 PST 2009
+Version ibis1.0.4
+-- add example program rara.cpp as a minimalistic client code
+-- refine the macros for controlling the use of 64-bit atomic operations
+   on windows platforms
+-- add arguement to ibis::part::loadIndex to allow all bitmaps to be
+   read into memory in one-shot
+-- change the semantics of fastbit_get_qualified_longs to return the
+   starting positions of strings when it is called with the name of a
+   string-valued column (to address a request from Andrey Kolchanov)
+-- split src/parth3d.cpp into three files (one for each function that
+   requires massive number of instances of template function) and limit
+   the number of template instances.  The is to reduce the compilation
+   time under gcc.  The full slew of instances can still be generated if
+   the macro FASTBIT_EXPAND_ALL_TYPES is defined.
+-- update the parser to accept functions with a single number as the
+   argument (a bug reported by David Marks)
+-- add calls to free up memory after encountering failure to retrieve
+   file content (to address a problem encountered by Alessandro Capucci)
+
+Tue Jan 20 21:14:57 PST 2009
+Version ibis1.0.3
+-- add ibis::text::selectLongs to return the starting positions of the
+   string valued columns (to enable reading of strings for java
+   based applications, a hack in response to Andrey Kolchanov's
+   question)
+-- implement ibis::util::sharedInt32 and ibis::util::sharedInt64 using
+   GCC's atomic operations and Visual Studio's atomic operations.  This
+   should improve the speed of operations and make reference  counting
+   and tracking of memory usage more reliable on multi-threaded
+   applications
+-- add more test cases to ibis::part::selfTests to exercise query
+   evluation function in multi-thread mode
+-- add another set of binning functions, get1DBins, get2DBins, and
+   get3DBins that return std::vector<ibis::bitvector*>.  These functions
+   will return null pointers for empty bins, which can reduce memory
+   usage and execution time in cases there are many empty bins
+
+Mon Jan  5 12:32:07 PST 2009
+Version ibis1.0.2
+-- add another set of binning functions, get1DBins, get2DBins, and
+   get3DBins, that take (begin, end, stride) to specify the bin
+   boundaries instead choosing bin boundaries by the functions
+   themselves.  A feature requested by Oliver and Probhat.
+-- use the new version of binning functions to debug the existing
+   versions
+-- reduce the memory usage of the two versions of ibis::util::intersect
+   by explicitly compressing the results and copying the compressed ones
+-- make sure a bitvector has its own storage when it is being modified
+
+Thu Dec 18 10:47:05 PST 2008
+Version ibis1.0.1
+-- correct errors in two-level indexes that prevented them from actually
+   generating the coarse level
+-- update README file in various directories
+-- update Makefiles for MinGW and Visual Studio
+-- add option -output-with-header as a variant of -output as requested
+   by David Marks
+
+Tue Nov 25 18:27:56 PST 2008
+Version ibis1.0.0
+-- modify ibis.cpp to accommodate new output produced by arithmetic
+   expressions in select clauses
+-- add warning messages as suggested by Niklas Bulitta
+-- address errors involving short integers (reported by Niklas) and
+   other types of integer variables when creating unbinned (precise)
+   bitmap indexes
+-- update test scripts to catch the errors discovered by Niklas
+
+Mon Nov 10 21:26:14 PST 2008
+Version b0.9.9
+-- add adaptive binning for 3D histograms
+-- add histogram functions that output bitvectors instead of counts
+-- add print3DDistribution to examples/ibis.cpp and a test case in
+   check-ibis
+-- add function tableSelect to ibis.cpp to exercise querying through
+   ibis::table select function (which accepts arithmetic expressions in
+   the select clauses)
+
+Thu Oct 23 16:42:31 PDT 2008
+Version b0.9.8
+-- add arithmetic expression to the select clauses accepted by function
+   ibis::table::select
+-- update java example (correct issues raised by Niklas Bulitta)
+-- rewrite the parser for query expressions to use the C++ options of
+   bison and flex (predicate* changed to where*)
+-- add parsing code to handle arithmetic expression in select clauses
+-- reorganizes ibis::qExpr class hierarchy and move arithmetic
+   expressions under namespace ibis::math
+-- address an error report by David Kantowitz about
+   ibis::column::getString
+-- minor changes to print statement and code organizations
+
+Fri Sep 19 22:38:43 PDT 2008
+Version b0.9.7
+-- fix an error in mensa.cpp (involving the implementation of
+   ibis::mensa::cursor) spotted by David Kantowitz.  Fix two problems 
+   involving the same member variable elsewhere in the same file.
+-- change _USRDLL to CXX_USE_DLL in the project files to be consistent
+   with conditional macros in source code.  The DLL libraries can now be
+   compiled and run correctly.
+-- update visual studio project files for visual studio 2008
+-- increase the cap on the number of bins in adaptive2DBins to make sure
+   Prabhat's tests run without surprises
+
+Thu Aug 21 09:58:44 PDT 2008
+Version b0.9.6
+-- implement new adaptive binning functions for computing histograms of
+   1D and 2D that avoids binary searches.  The new functions are not
+   only faster, but because they use more fine bins internally the
+   output bins are closer to be equal-weight than before
+-- change the mensa::cursor class to read data one block at a time so
+   that ardea.cpp can print a few row of a large table without running
+   out of memory
+-- clean up the constructor of qDiscreteRange to eliminate duplicates
+   correctly (an error reported by Prabhat)
+
+Thu Jul 31 10:04:21 PDT 2008
+Version b0.9.5
+-- adjust definition of exact-width integers in const.h to avoid
+   potential conflict with VisIt (suggested by Gunther Weber)
+-- adjust scope of histogram in some constructors of two level indexes
+-- add option -x to thula.cpp to export content of tables
+-- add heap sort to sorting functions of array_t and ibis::util
+
+Fri Jun  6 15:24:18 PDT 2008
+Version b0.9.4
+-- add ibis::colValues::nosharing to address a seg fault when selecting
+   all values in a partition (reported by Ross Bates)
+-- add utilidor.h, utilidor.cpp, join.h, joinin.h, and joinin.cpp to
+   provide radix sorting and in-memory natural join (requested by
+   Matthias Vallentin)
+-- fix bug in ibis::part::writeTDC related to column shape statement
+   (reported by Xufei Qian)
+-- update testing code to match the change of option -j to -y for
+   ibis.cpp (-j is now for join)
+
+Wed May 28 07:38:11 PDT 2008
+Version b0.9.3
+-- update the range-equality encoding (ibis::bylt and ibis::pack) and
+   interval-equality encoding (ibis::fuge and ibis::fuzz) to use the new
+   default values for the numbers of coarse bins based on the neutral
+   space-time trade-off heuristics
+-- add option -f to examples/thula.cpp (requested by Jon Strabala)
+-- change ibis::util::userName to primarily use getpwuid (instead of
+   getlogin) following the suggestion of Ross Bates
+
+Wed Apr 16 08:28:46 PDT 2008
+Version b0.9.2
+-- remove the statements that deletes index::str in the function clear
+   of various derived classes, logical error, the file manager should call
+   the actual delete
+-- remove the use of variable ibis::bitvector::run::nWords when it is
+   not a fill
+-- correct typos in functions that perform computation on
+   qDiscreteRanges, an error first reported by Ross Bates
+
+Wed Apr  9 07:28:24 PDT 2008
+Version b0.9.1
+-- fix bugs found under PathScale and PGI compilers (mostly from working
+   with Prabhat)
+-- change starting positions file (.sp) to use int64_t explicitly
+   instead of long, this eliminates the annoying problem of duplicate
+   template instantiation of array_t
+-- add ibis::tablex::clearData to remove the current data of a tablex
+   object (in response to a request by Matthias)
+
+Tue Apr  1 08:11:09 PDT 2008
+Version b0.9.0
+-- fix bugs involving start and end values of getxDDistribution, first
+   observed by Prabhat
+-- change decisions regarding the option of using priority queue in
+   ibis::index::sumBits to reduces it use, to fix a performance
+   irregularity observed by Prabhat
+-- fix bug identified while computing histogram with very small number
+   of distinct values
+-- clean up the printing statements in fileManager.cpp
+-- allow multiple print statements to examples/ibis.cpp
+
+Mon Mar 24 11:15:41 PDT 2008
+Version b0.8.9
+-- update column.cpp to include <typeinfo> (from Matthias of ICSI)
+-- attempt to improve the speed of computing histograms by sorting input
+   data
+-- add assignment of nrows in ibis::bin::construct that takes an array
+   as input, a problem found by Prabhat
+-- correct html errors in indexSpec.html
+-- update decisions in column::selectValues to use the function read
+   when it anticipate that a small number of seeks will be needed.  This
+   should improve the speed of reading a small number of records.
+-- add an optional argument to unconditional version of
+   get2DDistribution to allow the caller to choose whether to use
+   indexes or data (requested by Prabhat)
+-- update test cases 7 and 8 of check-ibis to make them more robust
+-- add ibis::util::timer class
+
+Sun Mar 16 23:21:42 PDT 2008
+Version b0.8.8
+-- fix bugs in ibis::bitvector::flip and ibis::bitvector64::flip, a
+   problem encountered by Prabhat
+-- correct tests 7 and 8 of check-ibis in tests/Makefile.am 
+-- add test cases involving arithmetic expressions in
+   tests/scripts/query-count.list and src/part.cpp (ibis::part::quickTest)
+-- fix bugs reported by Mark Sordo (about JNI) and Matthias VAllentin
+   (about stdlib.h and PTHREAD_RWLOCK_INITIALIZER macro)
+
+Wed Mar 12 10:20:16 PDT 2008
+Version b0.8.7
+-- add try-catch blocks to various interval encoded indexes to free
+   memory in case of exception
+-- add a new variant of get2DDistribution requested by Oliver and Prabhat
+-- add a new count function to remove the need to invoke the bitwise
+   logical AND operations while computing histograms using indexes
+
+Sun Mar  9 07:52:50 PDT 2008
+Version b0.8.6
+-- add ibis::part::get1DDistribution and ibis::part::get2DDistribution
+   that accept user specified number of bins (Requested by Oliver Ruebel
+   and Prabhat)
+-- fix bugs in two-level indexes that cause dead-locks and wrong answers
+
+Tue Mar  4 08:43:42 PST 2008
+Version b0.8.5
+-- update doxygen documents to work around __declspec directives
+-- fix bug reported by Ross Bates <rbates@gmail.com> regarding printing
+   categorical values (key), add test cases to check for this error in
+   'make check' and 'make quick-check'
+-- fix bugs in histograming function ibis::part::count2DBins and
+   count3DBins, update the related documentation (bugs reported by Prabhat)
+-- in reponse to a question from Devin McNamara, modified readCSV to
+   allow arbitrary user-specified delimiters
+-- add a set of tests cases that works with very limited memory allowed
+   for file manager (invoked through 'make full-check'; inspired by
+   Jochen Schlosser).  This has revealed a number of serious problems as
+   follows:
+-- add ibis::column::softWriteLock to prevent deadlock during tight
+   memory situations,
+-- add checks for nil pointer of idx before using it,
+-- add function in array_t to tell users that it is attached to a file
+   or in-memory, this is needed so that ibis::bitvector::compress can
+   avoid modifying the ones in files (modifying such bitvector causes
+   segmentation faults)
+-- add destructors to ibis::bak::grain and ibis::bak2::grain.  If the
+   constructor of ibis::bak or ibis::bak2 fails, previous
+   implementation of grain do not automatically release the bitvectors
+   allocated
+-- replace function ibis::util::getBuffer with class ibis::util::buffer
+   to ensure the memory allocated is always freed
+
+Wed Feb 20 11:26:11 PST 2008
+Version b0.8.4
+-- replace ibis::part::doCompare and friends with templated functions
+-- add checks for the values returned by lseek and other I/O functions
+   to fix a segmentation fault observed by Jochen Schlosser of
+   University of Hamburg
+-- fix bugs in histogramming functions found by Prabhat: unchecked
+   pointers returned by selectInts and friends, uncheck empty arrays,
+   swapped string arguments
+-- add test cases for checking the histogramming functions in directory
+   tests
+-- add target check-all to the top-level makefile
+-- separate the index generation from their uses in tests (as part of
+   check-all) to exercise the index reconstruction functions, fix bug
+   revealed by this separation (ibis::fade and ibis::bin)
+
+Wed Feb  6 09:47:21 PST 2008
+Version b0.8.3
+-- fix a number of bugs reported by Jochen Schlosser of University of
+   Hamburg: (1) seg fault due to minimum actually being negative even
+   though the metadata indicate it is to be zero or positive, (2) when
+   index ibis::direkte is used to answer a query, it erroneously casts
+   negative integers numbers to unsigned values and produces incorrect
+   answers
+-- fix performance a problem reported by Prabhat: a long list in the
+   form of "A in (...)" is translated into a massive set of equality
+   conditions joined with OR.  Evaluate such a query condition as
+   qDiscreteRange.
+-- fix bugs in assigning bin boundaries for log-scaled bin on integer
+   values and low cardinality columns
+
+Wed Jan 16 12:37:24 PST 2008
+Version b0.8.2
+-- fix a number of bugs reported by Jochen Schlosser of University of
+   Hamburg: ibis::column::evaluateRange calls ibis::part::doScan
+   unnecessarily, a number of functions in ibis::fileManager::storage
+   class does not check for nil pointers before using them, ibis::part
+   has a number of funtions that neglected to free memory returned by
+   ibis::column::dataFileName
+-- change exception handler to not remove index files unless the index
+   files are really at fault
+-- add return values to query evaluation function so that a negative
+   number will be returned if it fails for any reason, previous version
+   neglects to return the error condition to the user
+
+Sun Dec 23 19:33:34 PST 2007
+Version b0.8.1
+-- add win/MinGW.mak for compiling code under MinGW/MSYS
+-- fix ibis::util::makeDir problem with execute bit in directory permission
+
+Tue Dec 11 15:36:04 PST 2007
+Version b0.8.0
+-- add DLLSPEC macro to invoke dllexport for building DLL on MS Windows
+-- update configuration script to better handle java stuff
+ 
+Wed Oct 24 17:18:51 PDT 2007
+Version a0.7.9
+-- add functions to C API to allow for input of data records to be
+   managed by FastBit
+-- add functions to JNI interface for input of data records
+-- fix a bug in ibis::tafel::write that leaves tdesc nil
+
+Thu Oct 18 18:53:45 PDT 2007
+Version a0.7.8
+-- add Jave Native Interface for some querying functions and a test program
+-- fix errors found on an intel-base Mac
+-- fix errors in the ardea.cpp (when run without any arguments)
+-- removed -DDEBUG from configuration option --enable-debug
+
+Tue Oct  9 16:52:55 PDT 2007
+Version a0.7.7 includes a couple of bug fixes and some minor clean up
+-- incorporates a bug fix from Matthias Vallentin to correct a wrong
+   function call in ibis::part::reactivate (src/parti.cpp:1261)
+-- add test cases for ibis::part::reactivate in ibis.cpp and
+   tests/Makefile.am
+-- add checks for array_t::m_begin to ensure it is valid before use
+-- renamed all functions named dataTable() to partition() to match the
+   name of the classes involved
+
+Sun Oct  7 17:21:16 PDT 2007
+Version a0.7.6 introduces a new logging mechanism
+-- the new class ibis::util::logger is introduced to allow the error
+   message to be redirected to a file.  To specify the name for this
+   file, use either the function ibis::util::getLofFile or specify
+   logfile in a RC file.
+
+Mon Sep 17 17:09:48 PDT 2007
+Version a0.7.5 introduces two new features.
+-- allow out-dated indexes to be used during query processing.  Since
+   the time needed to full update the indexes are typically longer than
+   the time need to answer the queries using the raw data, this option
+   improves the query response time for the queries that come right
+   after the arrival of new rows.
+-- allow for rows to be marked as inactive in a data partition.  These
+   inactive rows may eventually be re-activated or permenantly purged
+   from a data partition.
+
+Fri Jul 27 21:53:57 PDT 2007
+-- First public release, version a0.7.
+
+
+*NOTE* Versions not mentioned here contain bug fixes only.  A more
+       detailed revision history is available in file ChangeLog in the
+       source code distribution.  The lastest version of source code is
+       available at <http://sdm.lbl.gov/fastbit/src/>.

@@ -1,0 +1,12 @@
+0.0 DSO frameGrabber RESET
+0.0 DSO frameGrabber SETSEQNUM 0
+1.0 0 0 0 0 0 0 1
+1.0 1 1.84765625 0 0 0 0 1
+1.0 -0.69 1.85 -0.52 -89.7 39.6 46.1 1
+0.2 DSO frameGrabber SNAP 
+0.2 DSO frameGrabber FLUSH
+0.2 DSO frameGrabber RESET
+0.2 TERMINATE
+
+
+

@@ -1,0 +1,167 @@
+Tue May 15 18:00:00 EDT 2007  Patrick Shinpaugh  <pshinpaugh@users.sourceforge.net>
+	* === Release 2.4.18 ===
+	* Added configurable services
+	* Added service calibration functionality
+	* Updated dtk-server and dtk-loadService to load configuration files
+	* Fixed bugs with dtkSharedMem on 64 bit machines
+	* Added configurable service for Ascension Flock of Birds tracker
+	* John Kelso added dtkShmUtils, fixed scaling bug with dtkNav, added wandJoystickScaleNav
+	* Andrew Ray added support for USB gamepad and added dtkMatrix functionality
+	* Dan Larimer added dtk-noiseFloats program
+
+Fri Jul 28 18:00:00 EDT 2006  Patrick Shinpaugh  <pshinpaugh@users.sourceforge.net>
+	* === Release 2.4.17 ===
+	* Changed EXTRACT_ALL = YES for Doxyfile.in so warnings for undocumented 
+	  functionality would be omitted
+
+Mon Jul  7 16:23:33 EDT 2006  Dan Larimer  <dlarimer@users.sourceforge.net>
+	* Added argv/argc to dtkManager
+	* On Mac OS X some headers include AssertMacros.h which defines check(X)
+	  as a macro which conflicts with dtkManager::check()
+
+
+Fri Jun 23 13:47:18 EDT 2006  Patrick Shinpaugh  <pshinpaugh@users.sourceforge.net>
+	* Fixed bug 36 - DTK now respects DESTDIR automake variable for doc and examples.
+	* Fixed bug in dtk-caveDeviceSimulator
+	* Fixed bug in dtk-buttons
+
+
+Wed Feb 15 14:13:59 EST 2006  Patrick Shinpaugh  <pshinpaugh@users.sourceforge.net>
+	* === Release 2.4.16 ===
+	* Added -ffast-math for IA64 per John Kelso
+	* Fixed minor bug with Lance's solution for Mac OS X
+
+
+Sat Feb 11 01:51:26 EST 2006  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* Fixed a CPU sucking bug.  Each write to shared memory was
+	  doing a DNS lookup, or somehing like that.
+	* Fixed a minor NULL pointer initialization bug in the dtk-server.
+
+
+Thu Dec  1 09:17:35 EST 2005  Patrick Shinpaugh  <pshinpaugh@users.sourceforge.net>
+	* === Release 2.4.15 ===
+	* Fixed/removed unnecessary dependency in MS Windows projects
+
+
+Fri Nov 18 18:00:00 EST 2005  Patrick Shinpaugh  <pshinpaugh@users.sourceforge.net>
+	* === Release 2.4.14 ===
+	* Removed unnecessary glut dependency
+	* Added Cygwin support
+	* Fixed dtk-gnomonDisplay to work on OS X
+	* Dan Larimer modified code to improve Mac OS X port
+
+
+Mon Aug 15 17:33:05 EST 2005  Patrick Shinpaugh  <pshinpaugh@users.sourceforge.net>
+	* === Release 2.4.13 ===
+	* Added Windows code/projects
+
+
+Thu Feb 24 14:31:20 EST 2005  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* fixed the install of examples so that all the needed
+	  Makefiles get copied.
+
+
+Tue Jan 18 21:32:00 EST 2005  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.12 ==
+	* Added Pat Shinpaugh's OS X port changes (configure.ac).
+
+
+Tue Oct 12 14:07:14 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.9 ===
+	* fixed dtk-server argument parsing for options -n and -a.
+
+	
+Wed Oct  6 21:03:45 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.8 === tested on GNU/Linux and IRIX
+	* Added test compile and run for PTHREAD_PROCESS_SHARED like in
+	  pthread_rwlockattr_setpshared(&rwlockattr, PTHREAD_PROCESS_SHARED)
+	  to test if the pthreads sync functions will work to make shared memory
+	  inter-process sync functions.  If the test fails it will use system V
+	  semaphores to build shared memory inter-process sync functions
+
+	
+Tue Oct  5 11:13:51 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* added dtkConditional_*(), dtkSharedMem::blockingRead() and
+	  dtkSharedMem::blockingQRead()
+
+
+Thu Aug  5 15:48:48 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.7rc4 ===
+	* added --without-fltk configure option. Was using FLTK in the past
+	  to get X11 info.  Now we have more work to get the X11 compiler
+	  options in non-FLTK code, on all the different platforms.
+	* made with GL and X into seperate library and build/install
+	  make conditional
+	
+
+Fri Jul 30 15:23:21 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.7rc3 ===
+	* more fixes for the port to Mac OS X
+
+
+Thu Jul 29 21:32:47 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.7rc2 ===
+	* more fixes for the port to Mac OS X.  Thanks Andrew Ray.
+	
+
+Wed Jul 28 14:05:43 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.7rc1 === missed some files in 2.4.7rc0
+
+
+Wed Jul 28 11:28:38 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* started port to Mac OS X, thank you Chad Wingrave.
+	* === Release 2.4.7rc0 ===
+	* started naming versions with rc# to show that it's not fully tested
+
+
+Fri Jul 10 12:53:22 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* changed --with-irix-32with64 configure option to --enable-irix-32with64
+	  because it makes more sense.
+	* cleaned up configure.ac a little
+	* Fixed printf() extra args in line 56 of dtk-augmentManager.cpp
+
+
+Fri Jul  9 10:55:45 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.5 ===
+	* added --with-doxygen and --with-irix-32with64 option to configure
+	* added extern's to dtkRealtime.h
+	* edit to examples/dtk/examplesByClass/dtkAugment/Makefile
+
+	
+Sat Jun 26 12:24:17 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.4 === skipped 2.4.3
+	* Have IRIX port, see README for instructions
+	* no code changes, just updated build instructions for IRIX
+
+
+Fri Jun 25 16:23:06 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.2 ===
+	* failed to port to IRIX 6.5 with CC compiler, still works on GNU/Linux
+	* may work with IRIX using g++
+
+
+Tue Jun 22 00:56:04 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.1 ===
+	* edited tutorial
+	* added augmentDSO/lib_dtk/joystickXYtransNav navigation plug-in
+
+
+Sat Jun 19 20:38:54 EDT 2004  Lance Arsenault  <lanceman@users.sourceforge.net>
+	* === Release 2.4.0 ===
+	* Added the use of GNU Autotools, which restructures lots of the
+	  source.  Much easier and standard build and install.
+	* bumped the minor version number to reflect the source changes
+	* ported to GNU/Linux, no IRIX or MS Windows yet. Get older 2.3.1
+	  or 2.3.2 releases for IRIX and MS Windows.
+	* changed from -> to the name of some DTK public MACROS like:
+	  Linux -> DTK_ARCH_Linux   is defined on GNU/Linux systems
+	  IRIX  -> DTK_ARCH_IRIX    is defined on IRIX systems
+	  DEFAULT_DTK_SERVER_ADDRESS -> DTK_DEFAULT_SERVER_ADDRESS
+	  -- is more name-space like
+	  and a few others, most of which will not effect DTK API
+	  user code, but might for those who dig deep
+	* Added library interface numbering using GNU LibTool so
+	  the libraries numbers are like libdtk.so.0.0.0  They should
+	  be interface compatible with libdtk.so.2.3.2 from release dtk-2.3.2.
+	* plan on release 2.4.? to be ported to IRIX and then Windoz
+

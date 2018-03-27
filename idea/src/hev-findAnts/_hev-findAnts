@@ -1,0 +1,287 @@
+#!/usr/bin/env bash
+
+###############################
+#
+#   TJG 2/26/2015: Added -c to allow user to specify # of cols output
+#       3/19/2015: Added -u to run in users env. Default is clean env
+#
+#   hev-findAnts is now a wrapper around this script, _hev-findAnts
+#     This script contains all the functionality of the old
+#     hev-findAnts. The new hev-findAnts runs this script in
+#     clean environment using exec -c, in order to prevent listing
+#     non-official commands that may be in the user's path. If one
+#     wants to run in the user's environment, use hev-findAnts -u
+#     The -u option causes hev-findAnts to run this script without
+#     starting a clean environment.
+
+###############################
+# Set up default env, w/o user profile ???
+#. /etc/profile
+
+###############################
+# Set up HEV env
+
+#DEBUG echo "_HFA: HEIGHT (before profile): "${HEIGHT}
+#DEBUG echo "_HFA: HEVROOT (before profile): "${HEVROOT}
+
+
+#HPROF="/usr/local/HEV/profile iris"
+if [ "${HEV_PROFILE}" != "1" ]                     # If the "clean" shell has not set the HEV env...
+then
+  #. /usr/local/HEV/profile iris >/dev/null > /dev/null 2>&1  #... run the HEV profile.
+  . ${HEVROOT}/profile iris >/dev/null > /dev/null 2>&1  #... run the HEV profile.
+fi
+
+#DEBUG echo "_HFA: HEIGHT (after profile): "${HEIGHT}
+#DEBUG echo "_HFA: HEVROOT (after profile): ${HEVROOT}"
+#DEBUG echo "_HFA: PRIVATE_BINS (after profile): ${PRIVATE_BINS}"
+
+###############################
+# Initialize defaults
+
+#export WORK="/home/griffin/hev/idea/src/hev-findAnts"
+#export WORK="."
+#export WORK="${HEVROOT}"
+
+#Initialize...
+export COLS=3
+export KSTR=""
+PAGER="/usr/bin/less -z ${HEIGHT}"
+QUIT_CMD="echo Q to Quit; echo;"
+ANTS_CMD=""
+USED_OPTS=""
+ALL_ARGS=$@
+
+#DEBUG echo _HFA: ALL_ARGS: ${ALL_ARGS}
+#DEBUG echo _HFA: init PAGER: ${PAGER}
+#DEBUG echo _HFA: init KSTR: ${KSTR}
+
+###############################
+# Processes options
+
+
+# Scan opts looking for a -k
+while getopts ":k:" OPT1
+do
+  case $OPT1 in
+    k  ) KSTR="$OPTARG"
+         #DEBUG echo _HFA: k..
+         ;; # End Apropos string
+  esac
+done
+
+#DEBUG echo _HFA: KSTR: $KSTR
+
+# Go back to begining of opts
+OPTIND=0
+
+# Scan again looking for other options
+while getopts ":mlc:k:hrstnqyogdviwau" OPT1
+do
+  case $OPT1 in
+    m  ) PAGER="more -${HEIGHT}"
+         QUIT_CMD=""
+         #DEBUG echo _HFA: m..
+         ;; # End "more" case
+
+    l  ) PAGER="less -z ${HEIGHT};"
+         QUIT_CMD="echo \"Q to QUIT\"; echo;"
+         #DEBUG echo _HFA: l..
+         ;; # End 'less' case
+
+    c  ) #export COLS="$OPTARG"
+         COLS="$OPTARG"
+         #DEBUG echo _HFA: c..
+         ;; # End Columns
+
+    h  ) if [ $((`expr index "${USED_OPTS}" "h"`)) == 0 ]  # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/hev-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} h"
+           #DEBUG echo _HFA: h..
+         fi
+         ;; # End 'hev' case
+
+    r  ) if [ $((`expr index "${USED_OPTS}" "r"`)) == 0 ]  # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/iris-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} r"
+           #DEBUG echo _HFA: r..
+         fi
+         ;; # End 'iris' case
+
+    s  ) if [ $((`expr index "${USED_OPTS}" "s"`)) == 0 ] ;  # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/savg-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} s"
+           #DEBUG echo _HFA: s..
+         fi
+         ;; # End 'savg' case
+
+    t  ) if [ $((`expr index "${USED_OPTS}" "s"`)) == 0 ] ;  # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/srt-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} t"
+           #DEBUG 
+           echo _HFA: t..
+         fi
+         ;; # End 'test utils' case
+
+    n  ) if [ $((`expr index "${USED_OPTS}" "n"`)) == 0 ] ;  # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/netx-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} n"
+           #DEBUG echo _HFA: n..
+         fi
+         ;; # End 'netx' case
+
+    q  ) if [ $((`expr index "${USED_OPTS}" "q"`)) == 0 ]   # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/qvd-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} y"
+           #DEBUG echo _HFA: q..
+         fi
+         ;; # End 'qvd' case
+
+    y  ) if [ $((`expr index "${USED_OPTS}" "y"`)) == 0 ]   # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/hyv-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} y"
+           #DEBUG echo _HFA: y..
+         fi
+         ;; # End 'hyv' case
+
+    o )  if [ $((`expr index "${USED_OPTS}" "o"`)) == 0 ]   # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/osg-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} o"
+           #DEBUG echo _HFA: o..
+         fi
+         ;; # End 'osg' case
+
+    g  ) if [ $((`expr index "${USED_OPTS}" "g"`)) == 0 ]   # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/dgl-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} g"
+           #DEBUG echo _HFA: g..
+         fi
+         ;; # End 'dgl' case
+
+    d  ) if [ $((`expr index "${USED_OPTS}" "d"`)) == 0 ]   # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/dtk-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} d"
+           #DEBUG echo _HFA: d..
+         fi
+         ;; # End 'dtk' case
+
+    v  ) if [ $((`expr index "${USED_OPTS}" "v"`)) == 0 ]   # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/vtk-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} v"
+           #DEBUG echo _HFA: v..
+         fi
+         ;; # End 'vtk' casee "Army of Ants"  in $PATH. This
+
+    i  ) if [ $((`expr index "${USED_OPTS}" "i"`)) == 0 ]   # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/itk-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} i"
+           #DEBUG echo _HFA: i..
+         fi
+         ;; # End 'itk' case
+
+    w  ) if [ $((`expr index "${USED_OPTS}" "w"`)) == 0 ]   # Test for duplicates...
+         then
+           ANTS_CMD="${ANTS_CMD}  ${PRIVATE_BINS}/iv-ants ${KSTR};"
+           USED_OPTS="${USED_OPTS} w"
+           #DEBUG echo _HFA: w..
+         fi
+         ;; # End 'world (iv)' case
+
+   a  )  ANTS_CMD="${PRIVATE_BINS}/all-ants ${KSTR};"
+         USED_OPTS="${USED_OPTS} a"
+         #DEBUG echo _HFA: a..
+         break
+         ;; # End 'all' case
+
+    \? ) echo Got: ${OPT1}
+         echo -e "${USAGE}"
+         exit 1
+         ;; # End DEFAULT case
+  esac
+done
+
+#shift $(($OPTIND - 1))            # Shift over options and opt args
+
+SOME_ARGS=${ALL_ARGS//${KSTR}/}                     # Remove -k arg (apropos string) 
+
+#DEBUG echo _HFA: ALL_ARGS: ${ALL_ARGS}
+#DEBUG echo _HFA: ALL_ARGS-KSTR: ${SOME_ARGS}
+
+if [ -n "${SOME_ARGS}" ]                            # If there are command line args, and... 
+then
+  #DEBUG echo "_HFA: ALL_ARGS is not empty"
+  if [ $((`expr index "${SOME_ARGS}" h`)) == 0 ] && #  
+     [ $((`expr index "${SOME_ARGS}" r`)) == 0 ] && # ...they have none of these, 
+     [ $((`expr index "${SOME_ARGS}" s`)) == 0 ] && # then initialize ANTS_CMD to  
+     [ $((`expr index "${SOME_ARGS}" t`)) == 0 ] && # all_ants. These args effect  
+     [ $((`expr index "${SOME_ARGS}" n`)) == 0 ] && # which ants we search for.
+     [ $((`expr index "${SOME_ARGS}" y`)) == 0 ] && #
+     [ $((`expr index "${SOME_ARGS}" q`)) == 0 ] && # 
+     [ $((`expr index "${SOME_ARGS}" o`)) == 0 ] && # 
+     [ $((`expr index "${SOME_ARGS}" g`)) == 0 ] && # 
+     [ $((`expr index "${SOME_ARGS}" d`)) == 0 ] && #
+     [ $((`expr index "${SOME_ARGS}" v`)) == 0 ] && #
+     [ $((`expr index "${SOME_ARGS}" i`)) == 0 ] && #
+     [ $((`expr index "${SOME_ARGS}" w`)) == 0 ] &&
+     [ $((`expr index "${SOME_ARGS}" a`)) == 0 ] 
+  then
+    #DEBUG echo "_HFA: Found no ants arg"
+    ANTS_CMD="${PRIVATE_BINS}/all-ants ${KSTR};"
+  #DEBUG else
+    #DEBUG echo "_HFA: Found an ants arg"
+    #DEBUG echo _HFA: ALL_ARGS: $ALL_ARGS
+    #DEBUG echo _HFA: h: `expr index "${ALL_ARGS}" h`
+    #DEBUG echo _HFA: r: `expr index "${ALL_ARGS}" r`
+    #DEBUG echo _HFA: s: `expr index "${ALL_ARGS}" s`
+    #DEBUG echo _HFA: n: `expr index "${ALL_ARGS}" n`
+    #DEBUG echo _HFA: y: `expr index "${ALL_ARGS}" y`
+    #DEBUG echo _HFA: q: `expr index "${ALL_ARGS}" q`
+    #DEBUG echo _HFA: o: `expr index "${ALL_ARGS}" o`
+    #DEBUG echo _HFA: g: `expr index "${ALL_ARGS}" g`
+    #DEBUG echo _HFA: d: `expr index "${ALL_ARGS}" d`
+    #DEBUG echo _HFA: v: `expr index "${ALL_ARGS}" v`
+    #DEBUG echo _HFA: i: `expr index "${ALL_ARGS}" i`
+    #DEBUG echo _HFA: w: `expr index "${ALL_ARGS}" w`
+    #DEBUG echo _HFA: a: `expr index "${ALL_ARGS}" a`
+    #DEBUG echo
+  fi
+else
+  #DEBUG echo _HFA: SOME_ARGS is empty
+  ANTS_CMD="${PRIVATE_BINS}/all-ants ${KSTR};"
+fi
+
+
+#DEBUG echo _HFA: ALL_ARGS: $ALL_ARGS
+#DEBUG echo _HFA: COLS: $COLS
+#DEBUG echo _HFA: KSTR: $KSTR
+#DEBUG echo _HFA: PAGER: $PAGER
+#DEBUG echo _HFA: QUIT_CMD: $QUIT_CMD
+#DEBUG echo _HFA: ANTS_CMD: $ANTS_CMD
+#DEBUG echo _HFA: USED_OPTS: $USED_OPTS
+
+
+# Add the quit command:
+ANTS_CMD="${ANTS_CMD} ${QUIT_CMD}"
+# Trunc last ';'
+ANTS_CMD=${ANTS_CMD%;*}
+
+###############################
+# Do it!         
+
+#DEBUG echo "_HFA: less: "`which less`; 
+#DEBUG echo _HFA: ANTS_CMD: ${ANTS_CMD}
+#DEBUG echo _HFA: PAGER: ${PAGER}
+#DEBUG echo _HFA: running: "eval ${ANTS_CMD} | ${PAGER}"
+eval  "${ANTS_CMD}" |  ${PAGER}

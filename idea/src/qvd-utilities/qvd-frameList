@@ -1,0 +1,38 @@
+#! /usr/bin/perl
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: qvd-frameList start stop increment
+
+     Print a comma separated string of integers,
+     suitable for the qvd-extractFrames command.
+
+   Example:  qvd-frameList 1 20 3
+
+             will output:  1,4,7,10,13,16,19
+
+  
+EOF
+;
+
+exit(1);
+}
+
+usage() if (@ARGV != 3);
+
+$start=shift;
+$stop=shift;
+$increment=shift;
+
+$a="";
+for ($i=$start; $i<=$stop; $i=$i+$increment) {
+    $a=$a."$i,";
+}
+
+chop $a;
+print "$a\n";
+
+
+

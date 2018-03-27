@@ -1,0 +1,222 @@
+Geode {
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  StateSet {
+    rendering_hint TRANSPARENT_BIN
+    renderBinMode USE
+    binNumber 10
+    binName DepthSortedBin
+    GL_BLEND PROTECTED|ON
+  }
+  num_drawables 6
+  Geometry {
+    DataVariance STATIC
+    useDisplayList FALSE
+    useVertexBufferObjects TRUE
+    PrimitiveSets 1
+    {
+      DrawElementsUInt TRIANGLE_STRIP 4
+      {
+        0 1 2 3 
+      }
+    }
+    VertexArray Vec3Array 4
+    {
+      -1 1 -1
+      1 1 -1
+      -1 -1 -1
+      1 -1 -1
+    }
+    NormalBinding PER_VERTEX
+    NormalArray Vec3Array 4
+    {
+      0 0 -1
+      0 0 -1
+      0 0 -1
+      0 0 -1
+    }
+    ColorBinding PER_VERTEX
+    ColorArray Vec4Array 4
+    {
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+    }
+  }
+  Geometry {
+    DataVariance STATIC
+    useDisplayList FALSE
+    useVertexBufferObjects TRUE
+    PrimitiveSets 1
+    {
+      DrawElementsUInt TRIANGLE_STRIP 4
+      {
+        0 1 2 3 
+      }
+    }
+    VertexArray Vec3Array 4
+    {
+      1 1 1
+      -1 1 1
+      1 -1 1
+      -1 -1 1
+    }
+    NormalBinding PER_VERTEX
+    NormalArray Vec3Array 4
+    {
+      0 0 1
+      0 0 1
+      0 0 1
+      0 0 1
+    }
+    ColorBinding PER_VERTEX
+    ColorArray Vec4Array 4
+    {
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+    }
+  }
+  Geometry {
+    DataVariance STATIC
+    useDisplayList FALSE
+    useVertexBufferObjects TRUE
+    PrimitiveSets 1
+    {
+      DrawElementsUInt TRIANGLE_STRIP 4
+      {
+        0 1 2 3 
+      }
+    }
+    VertexArray Vec3Array 4
+    {
+      -1 1 1
+      1 1 1
+      -1 1 -1
+      1 1 -1
+    }
+    NormalBinding PER_VERTEX
+    NormalArray Vec3Array 4
+    {
+      0 1 0
+      0 1 0
+      0 1 0
+      0 1 0
+    }
+    ColorBinding PER_VERTEX
+    ColorArray Vec4Array 4
+    {
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+    }
+  }
+  Geometry {
+    DataVariance STATIC
+    useDisplayList FALSE
+    useVertexBufferObjects TRUE
+    PrimitiveSets 1
+    {
+      DrawElementsUInt TRIANGLE_STRIP 4
+      {
+        0 1 2 3 
+      }
+    }
+    VertexArray Vec3Array 4
+    {
+      -1 -1 -1
+      1 -1 -1
+      -1 -1 1
+      1 -1 1
+    }
+    NormalBinding PER_VERTEX
+    NormalArray Vec3Array 4
+    {
+      0 -1 0
+      0 -1 0
+      0 -1 0
+      0 -1 0
+    }
+    ColorBinding PER_VERTEX
+    ColorArray Vec4Array 4
+    {
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+    }
+  }
+  Geometry {
+    DataVariance STATIC
+    useDisplayList FALSE
+    useVertexBufferObjects TRUE
+    PrimitiveSets 1
+    {
+      DrawElementsUInt TRIANGLE_STRIP 4
+      {
+        0 1 2 3 
+      }
+    }
+    VertexArray Vec3Array 4
+    {
+      1 1 -1
+      1 1 1
+      1 -1 -1
+      1 -1 1
+    }
+    NormalBinding PER_VERTEX
+    NormalArray Vec3Array 4
+    {
+      1 0 0
+      1 0 0
+      1 0 0
+      1 0 0
+    }
+    ColorBinding PER_VERTEX
+    ColorArray Vec4Array 4
+    {
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+    }
+  }
+  Geometry {
+    DataVariance STATIC
+    useDisplayList FALSE
+    useVertexBufferObjects TRUE
+    PrimitiveSets 1
+    {
+      DrawElementsUInt TRIANGLE_STRIP 4
+      {
+        0 1 2 3 
+      }
+    }
+    VertexArray Vec3Array 4
+    {
+      -1 1 1
+      -1 1 -1
+      -1 -1 1
+      -1 -1 -1
+    }
+    NormalBinding PER_VERTEX
+    NormalArray Vec3Array 4
+    {
+      -1 0 0
+      -1 0 0
+      -1 0 0
+      -1 0 0
+    }
+    ColorBinding PER_VERTEX
+    ColorArray Vec4Array 4
+    {
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+      0.5 0.5 0.5 0.5
+    }
+  }
+}

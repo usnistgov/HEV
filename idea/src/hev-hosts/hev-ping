@@ -1,0 +1,10 @@
+#! /bin/bash
+
+case $# in
+0)
+	hev-hosts --ping --all
+	;;
+*)
+	echo "Usage: hev-ping"
+	;;
+esac

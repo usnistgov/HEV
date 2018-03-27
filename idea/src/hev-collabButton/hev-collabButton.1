@@ -1,0 +1,117 @@
+.TH hev-collabButton 1 "March 2011"
+
+.SH NAME
+hev-collabButton
+
+.SH SYNOPSIS 
+.B hev-collabButton 
+[ --noescape ] [ --label l ] [ --readShm ] [--shmName n] [ --height h ] [
+--width w ] [ --onString s ] [ --offString s ]
+
+.SH DESCRIPTION
+
+.B hev-collabButton 
+creates an FLTK light button, and associates with the
+button a DTK shared memory file. When the button changes state, the new
+button value is written to shared memory. If the shared memory changes
+value, the button is updated to reflect the new value.
+
+Multiple simultaneous copies of
+.B hev-collabButton 
+can be run using the same DTK shared memory file and all of the button's
+will be keep the same state. The multiple copies can be run on the same or
+different remote systems provided their DTK shared memory files can be
+connected.
+
+.SH OPTIONS
+
+.IP --noescape
+if supplied, specifies that the GUI can't be killed by pressing the window
+manager's close button, or by pressing escape in he GUI window.
+
+.IP "--label l"
+if supplied will be the button's label. The default label is "collab"
+
+.IP "--shmName n"
+if supplied will be the name of the DTK shared memory file to use for
+reading and writing button data. If not supplied, "idea/hev-collabButton"
+will be used.
+
+.IP "--readShm"
+if supplied indicates that 
+.B hev-collabButton 
+should initialize its button to the value in its DTK shared memory file. If
+this option isn't supplied, or the DTK shared memory file does not exist at
+startup, the DTK shared memory file and the button will be set to zero.
+
+.IP "--height h"
+if supplied specifies the height of the button. The default height is 20.
+
+.IP "--width w"
+if supplied specifies the width of the button. The default width is 50.
+
+.IP "--onString s"
+if supplied, the string \fIs\fR will printed to standard output when the
+button is turned on. if not specified, nothing will be written.
+
+.IP " --offString s"
+if supplied, the string \fIs\fR will printed to standard output when the
+button is turned off. if not specified, nothing will be written.
+
+
+.SH EXAMPLES
+
+Using two buttons on the same system:
+.br
+.IP "in window 1:"
+hev-collabButton --label 1 --onString "button 1 on" --offString "button 1 off"
+
+.IP "in window 2:"
+hev-collabButton --label 2 --onString "button 2 on" --offString "button 2 off"
+
+.P
+Using one button on two different systems, one in Gaithersburg and one in Boulder:
+
+.IP 1) 
+set up HEV for IRIS as usual
+
+.IP 2) 
+cd $HEVROOT/idea/src/hev-collabButton
+
+.IP 3) 
+assume the Gaithersburg system is named \fIG\fR and the Boulder system is named \fIB\fR, then:
+
+.IP
+The user in Gaithersburg types:
+.br
+      ./collabFlashlight.sh \fIB\fR.bitl.nist.gov \\
+.br
+        irisfly --ex tape.osg collabFlashlight.iris
+
+.IP
+The user in Gaithersburg types:
+.br
+      ./collabFlashlight.sh \fIG\fR.cam.nist.gov \\
+.br
+        irisfly --ex tape.osg collabFlashlight.iris
+
+.IP 4) 
+after some dtk messages, you should see irisfly show the tape measure, get
+the usual idea control panel, and a button labeled "spot".
+
+
+
+
+
+
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+April 2012
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR

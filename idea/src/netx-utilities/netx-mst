@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+import networkx as nx
+import sys
+
+G=nx.MultiGraph()
+
+if(len(sys.argv)>2):
+    myFile = open(sys.argv[1], 'r')
+    ccid = sys.argv[2]
+else:
+    print("Error: either no file or identifier given")
+    sys.exit()
+
+lines = []
+
+for edge in myFile:
+    lines.append(tuple(edge.split()))
+
+if(len(lines[0])>=3):
+    for item in lines:
+        G.add_edge(item[0],item[1], weight=float(item[2]))
+
+else:
+    for aline in range(len(lines)):
+        G.add_edge(lines[aline][0], lines[aline][1], weight=1)
+
+connComps = nx.connected_components(G)
+
+myConnComp = connComps[int(ccid)]
+
+nodeList = G.nodes()
+elimNodes = []
+
+x=0
+
+while x<len(nodeList):
+    z=0
+    isInCC = False
+    while(z<len(myConnComp)):
+        if(nodeList[x]==myConnComp[z]):
+            isInCC=True
+        z = z+1
+    if(isInCC==False):
+        elimNodes.append(nodeList[x])
+    x = x+1
+
+G.remove_nodes_from(elimNodes)
+
+mst = nx.minimum_spanning_tree(G)
+
+myFile.close()
+
+for count in mst.edges():
+    print(count[0],count[1])

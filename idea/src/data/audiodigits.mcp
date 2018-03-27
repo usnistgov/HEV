@@ -1,0 +1,25 @@
+# Create a menus of digits to speak
+
+SIZE 130 20
+
+MENU "Speak Digits"
+
+  BUTTON 0
+  ON EXEC echo 0 | hev-speakDigits
+
+  BUTTON 1
+  ON EXEC echo 1 | hev-speakDigits
+
+  BUTTON -2
+  ON EXEC echo -2 | hev-speakDigits
+
+  BUTTON +3
+  ON EXEC echo +3 | hev-speakDigits
+
+  BUTTON 100
+  ON EXEC echo 1.0e+2 | hev-speakDigits
+
+  BUTTON Pi
+  ON EXEC echo 3.14159265 | hev-speakDigits
+
+END

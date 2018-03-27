@@ -1,0 +1,88 @@
+# this file creates the infrastructure to allow objects placed to use motion
+# relative to the offset wand. If what it does doesn't suit your needs feel
+# free to copy and modify. Objects should be be sized in normalized
+# coordinates and in most cases can be loaded once, and added as child nodes
+# twice, under the nodes relativeMoveSceneNode-$(RELATIVE_MOVE) and
+# relativeMoveWorldNode-$(RELATIVE_MOVE)
+
+# when the left wand button is pressed objects move relative to wand
+# motions, and when the wand button is released objects move with
+# navigation. Note that when the button is pressed again the objects do not
+# jump, but move relative to new wand motions.
+
+# look in example for the files to be copied and modified to use the
+# structured created by this file
+
+# gory implementation details follow
+
+# start hev-relativeMove. The relative motion, in scene coordinates, is
+# written to the shared memory file idea/relativeMove/offsetWand-$(RELATIVE_MOVE). 
+# It uses the selector string $(RELATIVE_MOVE). The fifo, which is deleted
+# at exit, is used to send hev-relativeMove a RESET command when the wand
+# button is pressed
+  WAIT hev-writeDoubles -c 16 idea/relativeMove/offsetWand-$(RELATIVE_MOVE) 1 0 0 0  0 1 0 0  0 0 1 0  0 0 0 1
+  EXEC hev-relativeMove --inShm idea/offsetWand --outShm idea/relativeMove/offsetWand-$(RELATIVE_MOVE) --selectorStr $(RELATIVE_MOVE) --fifo /tmp/relativeMoveFIFO-$USER-$(RELATIVE_MOVE) # --verbose
+  AFTER CLEANUP EXEC dtk-destroySharedMem idea/relativeMove/offsetWand-$(RELATIVE_MOVE) 
+
+# convert the output of hev-relativeMove to world coordinates. When the
+# button is released the objects under the world node will be transformed so
+# they won't appear to move from the wand position.
+  WAIT hev-writeDoubles -c 16 idea/relativeMove/worldOffsetWand-$(RELATIVE_MOVE) 1 0 0 0  0 1 0 0  0 0 1 0  0 0 0 1
+  EXEC hev-sceneToWorld idea/relativeMove/offsetWand-$(RELATIVE_MOVE) idea/relativeMove/worldOffsetWand-$(RELATIVE_MOVE)
+  AFTER CLEANUP EXEC dtk-destroySharedMem idea/relativeMove/worldOffsetWand-$(RELATIVE_MOVE)
+
+# create nodes under the scene node
+
+# create a node that updates its transformation using values in shared
+# memory- it uses the shared memory that's the output of hev-relativeMove
+  SHMMATRIXTRANSFORM relativeMoveSceneOffsetWand-$(RELATIVE_MOVE) idea/relativeMove/offsetWand-$(RELATIVE_MOVE)
+
+# put it under the scene node as hev-relativMove writes "scene" coordinates
+  ADDCHILD relativeMoveSceneOffsetWand-$(RELATIVE_MOVE) scene
+
+# create a group node that can have its visibility toggled by the
+# application. Hang your scene nodes under this node.
+  GROUP relativeMoveSceneNode-$(RELATIVE_MOVE)
+  ADDCHILD relativeMoveSceneNode-$(RELATIVE_MOVE) relativeMoveSceneOffsetWand-$(RELATIVE_MOVE)
+
+# create nodes under the world node
+
+# create a node that updates its transformation using IRIS control
+# commands. It doesn't need to continually get updated, just set when the
+# button is released.
+  MATRIX relativeMoveWorldOffsetWand-$(RELATIVE_MOVE)
+
+# put it under the world node as it moves with navigation when the button's
+# released
+  ADDCHILD relativeMoveWorldOffsetWand-$(RELATIVE_MOVE) world
+
+# create a group node that can have its visibility toggled by the
+# application. Hang your world nodes under this node.
+  GROUP relativeMoveWorldNode-$(RELATIVE_MOVE)
+  ADDCHILD relativeMoveWorldNode-$(RELATIVE_MOVE) relativeMoveWorldOffsetWand-$(RELATIVE_MOVE)
+
+# the object under the world node should initially be at the same location
+# as the object under the scene node. it's necessary to wait for the scenegraph to be
+# travered once before setting. 
+  AFTER FRAME 0 WAIT echo MATRIX relativeMoveWorldOffsetWand-$(RELATIVE_MOVE) `hev-readDoubles -1 -i idea/relativeMove/worldOffsetWand-$(RELATIVE_MOVE)` > $IRIS_CONTROL_FIFO
+#If you have the object under the world node initially visible it might jump
+# the first frame- to eliminate this add these commands to your iris file-
+# see the example for more details
+  #NODEMASK relativeMoveWorldNode-$(RELATIVE_MOVE) OFF
+  #AFTER FRAME 0 NODEMASK relativeMoveWorldNode-$(RELATIVE_MOVE) ON
+
+# this DSO will calculate the transformation from the
+# relativeMoveWorldOffsetWand-$(RELATIVE_MOVE) node to the scene node so the
+# object can be moved from under the world node to under the scene node
+# without appearing to move, and hev-relativeWand can be told the new
+# starting position of the object. The transormation is written as a matrix
+# to the shared memory file idea/relativeMove/worldToSceneTranformation-$(RELATIVE_MOVE). 
+  WAIT hev-writeDoubles -c 16 idea/relativeMove/worldToSceneTranformation-$(RELATIVE_MOVE) 1 0 0 0  0 1 0 0  0 0 1 0  0 0 0 1
+  DSO shmChildParentTransformation INIT idea/relativeMove/worldToSceneTranformation-$(RELATIVE_MOVE) relativeMoveWorldOffsetWand-$(RELATIVE_MOVE) scene
+  DSO shmChildParentTransformation START idea/relativeMove/worldToSceneTranformation-$(RELATIVE_MOVE) 
+  AFTER CLEANUP EXEC dtk-destroySharedMem idea/relativeMove/worldToSceneTranformation-$(RELATIVE_MOVE)
+
+# this program will catch the change in button value and execute the
+# commands to switch between following the relative wand and navigation.
+  EXEC $($HEV_IDEA_DIR)/etc/hev-relativeMove/bin/relativeMoveOnOff.sh $(RELATIVE_MOVE)
+

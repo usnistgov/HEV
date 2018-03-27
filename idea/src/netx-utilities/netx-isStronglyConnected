@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+#Graph must be directed
+
+import networkx as nx
+import sys
+
+if(len(sys.argv)==2):
+    myFile = open(sys.argv[1], 'r')
+else:
+    print("Error: wrong number of arguments.")
+    sys.exit()
+
+lines = []
+for edge in myFile:
+    lines.append(tuple(edge.split()))
+
+G = nx.MultiDiGraph()
+
+if(len(lines[0])==2):
+    G.add_edges_from(lines)
+elif(len(lines[0])>=3):
+    for item in lines:
+        G.add_weighted_edges_from([(item[0],item[1],float(item[2]))])
+else:
+    print("Error in input file. Wrong number of elements per line.")
+    sys.exit()
+
+myFile.close()
+
+print(nx.is_strongly_connected(G))

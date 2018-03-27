@@ -1,0 +1,14 @@
+cd $HEVROOT/external/bulletphysics/bullet-2.76
+cmake -G "Unix Makefiles"
+./autogen.sh
+./configure
+make clean
+make -j `getconf _NPROCESSORS_ONLN`
+
+cd $HEVROOT/external/bulletphysics/bullet-2.76/Demos/AllBulletDemos
+./AllBulletDemo  # you will get X errors but that's OK
+
+cd $HEVROOT/external/bulletphysics
+chmod -R g+w . ; \
+ find . -type d -print0 | xargs -0 chmod g+s ; \
+ chgrp -R diverse .

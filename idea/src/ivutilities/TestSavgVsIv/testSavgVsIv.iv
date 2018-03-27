@@ -1,0 +1,52 @@
+#Inventor V2.0 ascii
+Separator {
+Translation { translation 0 0 0 }
+Separator {
+Material {
+diffuseColor 1 1 1
+transparency 0
+}
+Separator {
+Cube { width 2 height 2 depth 2 }
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+Translation { translation 8 0 0 }
+Separator {
+Material {
+diffuseColor 1 0 0
+transparency 0
+}
+Separator {
+Cube { width 2 height 2 depth 2 }
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+Translation { translation 0 8 0 }
+Separator {
+Material {
+diffuseColor 0 1 0
+transparency 0
+}
+Separator {
+Cube { width 2 height 2 depth 2 }
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+Translation { translation 0 0 8 }
+Separator {
+Material {
+diffuseColor 0 0 1
+transparency 0
+}
+Separator {
+Cube { width 2 height 2 depth 2 }
+}
+}
+}

@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/examplesByClass/dtkTCPSocket
+END
+client.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkTCPSocket/client.cpp
+END
+demoUNIX.sh
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkTCPSocket/demoUNIX.sh
+END
+server.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkTCPSocket/server.cpp
+END
+Makefile.orig
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/examplesByClass/dtkTCPSocket/Makefile.orig
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/examplesByClass/dtkTCPSocket/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkTCPSocket/README
+END
+demoINET.sh
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkTCPSocket/demoINET.sh
+END

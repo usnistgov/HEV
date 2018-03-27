@@ -1,0 +1,15 @@
+#! /bin/sh
+
+# iv_stdin_out - used by other ivutilities to read from stdin
+#                and insert it into output of the current command.
+#
+#                Since most Invntor command start with a header string,
+#                this utlitiy removes the header to prevent "header build up"
+#
+# Steve Satterfield
+# April 2, 2003
+# November 23, 2007
+# NIST/ITL/MCSD/SAVG
+#
+
+/bin/sed '/^#Inventor/d'

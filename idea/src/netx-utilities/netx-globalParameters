@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+#Graph must be a distance-regular graph
+# (distance-1, distance, distance+1)
+
+import networkx as nx
+import sys
+
+if(len(sys.argv)==2):
+    myFile = open(sys.argv[1], 'r')
+else:
+    print("Error: wrong number of arguments.")
+    sys.exit()
+
+lines = []
+for edge in myFile:
+    lines.append(tuple(edge.split()))
+G = nx.Graph()
+
+if(len(lines[0])==2):
+    G.add_edges_from(lines)
+elif(len(lines[0])>=3):
+    for item in lines:
+        G.add_weighted_edges_from([(item[0],item[1],float(item[2]))])
+else:
+    print("Error in input file. Wrong number of elements per line.")
+    sys.exit()
+
+b,c = nx.intersection_array(G)
+p = list(nx.global_parameters(b,c))
+for item in range(len(p)):
+    print("Distance:", item, "Global Parameters:", p[item])
+
+myFile.close()

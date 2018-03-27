@@ -1,0 +1,15 @@
+
+9/1/2005
+
+Most of the code in the subdirectories VrMath and SphereMean were
+downloaded from 
+
+  http://www.math.ucsd.edu/~sbuss/ResearchWeb/spheremean/
+
+See that page for some additional information.
+
+I added some wrapper code in SphereMean
+
+jgh
+
+

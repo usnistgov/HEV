@@ -1,0 +1,9 @@
+#! /bin/sh
+#
+# Undo the "helpful' rotation applied by the Inventor loader.
+# See uvitilities.3 for a discussion.
+#
+# Original: John Hagedorn
+# Minor modifications: Steve Satterfield
+
+ivrotate 1 0 0 1.57079632679

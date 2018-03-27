@@ -1,0 +1,575 @@
+#!/bin/bash
+#
+# hev-tracker
+#
+# Renamed to hev-tracker June, 2017
+#
+# hev-trackerOptical
+# Steve Satterfield, October  2016
+# Based on hev-tracker by John Kelso, 4/2007
+#
+#      
+# What are all the bit&pieces of the CAVE tracker?
+#
+#     With regard to the HEV CAVE tracking, the following definitions apply:
+#
+#
+#     hev-tracker   is the primary user interface for HEV CAVE tracking based
+#                          on ART optical tracker.
+#
+#     hev-tracker          is the primary user interface for HEV CAVE tracking based
+#                          on Ascension tracker. When the Ascension is taken out
+#                          of service, hev-tracker will be renamed to
+#                          hev-tracker.
+#
+#     ART Controller     - the embedded computer that controls tracker cameras and
+#                          other hardware. We normally keep this running 24/7
+#                          sending tracking data to the private network.
+#
+#     dalek.cam.nist.gov - tracker host during installation transition period.
+#     tardis.cam.ist.gov - post-installation production tracker host.
+#                          The HEV tracker host that sends tracking data to CAVE
+#                          hosts via DTK shared memory.
+#
+#     dtk-server         - DTK server daemon running on tracking hosts that creates
+#                          and manages the DTK shared memory used to transfer tracker
+#                          data, via client side dtk-server, to HEV application.
+#
+#     hev-artTracker     - HEV daemon which reads tracker data from ART controller
+#                          and writes to DTK shared memory for the application via
+#                          DTK shared memory.
+#                          We normally keep this running 24/7.
+#                          Started and stopped in conjunction with dtk-server by
+#                          hev-tracker.
+#
+#     hev-artController  - HEV utility which can start and stop the ART controller.
+#                          We normally keep this running 24/7.
+#
+#     DTrack2            - ART sys admin tool supplied by Mechdyne,
+#                          provides full control for configuring and updating
+#                          the ART controller.
+#                          This not normally used in daily operation.
+#
+#     DTK Shared memory segments -
+#                                   wand
+#                                   head
+#                                   hand1
+#                                   hand2
+#                                   tree1
+#                                   tree2
+#                                   tree3
+#
+#     CAVE hosts (current) - gallifrey (production host),
+#                            tylium (backup host, previous generation),
+#                            nickel (experimental).
+#
+#                            These are the clients where the applications run.
+#
+#
+# What's Happening During Normal Operation?
+#
+#     A private hardwired network (192.168.5.x) connects the ART Controller (192.168.5.161)
+#     to the HEV tracker server (192.168.5.2). Tracker server is also connected to NIST 
+#     campus net. Firewall on tracker server limits private net traffic to only between ART
+#     controller and tracker host on port 5000.
+#
+#     The ART controller is running and sending tracking data to the HEV tracker server
+#     daemon..
+#
+#     dtk-server is running to maintain the tracker remote shared memory between tracker
+#     server and clients.
+#
+#     hev-artTracker daemon is running  and relaying data from ART controller to keep shared
+#     memory up to date.
+#
+# How does the tracker normal operation get started?
+#     
+#     In general, tracker operation will be started when the Tracker server is booted and
+#     should be running continuously. CAVE users typically don't need to anything
+#
+#     However, if you suspect tracking is not functioning enter the following
+#     commands on the CAVE host:
+#
+#         hev-tracker stop
+#         hev-tracker start
+#
+#
+#
+#     
+#
+############################################################################################
+
+# Return code when exiting
+rc=0
+
+# Setuo HEV environment
+DTK_SHAREDMEM_DIR_sav=DTK_SHAREDMEM_DIR
+unset DTK_SHAREDMEM_DIR
+source $HEVROOT/profile iris
+export DTK_SHAREDMEM_DIR=DTK_SHAREDMEM_DIR_sav
+
+
+# name of this program
+prog=hev-tracker
+
+# full pathname to this program
+fullPathProg="${HEVROOT}/idea/bin/${prog}"
+
+# default server hostname
+#serverHost=dalek.cam.nist.gov
+serverHost=tardis.cam.nist.gov
+
+# ART controller
+artHost="192.168.5.161"
+
+# hostname of local system
+localHost=`hostname`
+
+
+# default server hostname
+serverHost=tardis.cam.nist.gov
+
+
+# List of shm segments in use
+   Shm_Segments=(wand buttons joystick head hand1 hand2 tree1 tree2 tree3)
+Shm_Segment_Siz=(24   1       8        24     24    24    24    24    24)
+Shm_Segment_Num=9
+# Note: startClientWandOnly needs to know which elements
+#       refer to wand, buttons, joystick
+wEl=0
+#wEl=3  # debugging
+bEl=1
+jEl=2
+
+
+########################################################################
+
+_usage() {
+    echo "Usage: $prog [-v] "
+    echo "    start [ server ] "
+    echo "    stop [ server ] "
+    echo "    status [ server ] "
+    echo "    pause "
+    echo "    resume"
+    echo "    startClient "
+    echo "    startClientWandOnly "
+    echo "    stopClient "
+    echo "    haltClient "
+    echo "    statusClient "
+    echo "    startServer [ server ] "
+    echo "    stopServer [ server ] "
+    echo "    statusServer [ server ] "
+    echo "    startArtTracker [ server ] "
+    echo "    stopArtTracker [ server ] "
+
+    rc=1
+    exit $rc
+}
+
+_in() {
+    if [ "$verbose" == "-v" ]
+    then
+	echo "In $1 on $(hostname)"
+    fi
+}
+
+_onServer() {
+    #_in _onServer
+    if [ "`host $localHost | tail -1`" = "`host $serverHost | tail -1`" ] ; then
+	return 0
+    else
+	return 1
+    fi
+x
+}
+
+_statusClient() {
+    _in _statusClient
+    if ( ! _onServer ) ; then
+	if ( dtk-pingServer > /dev/null ) ; then
+	    echo "dtk-server is running on $localHost"
+	else
+	    echo "dtk-server is NOT running on $localHost"
+	    rc=1
+	fi
+
+	for segment in ${Shm_Segments[*]} ; do
+	    if (  dtk-getSize $segment >/dev/null ) ; then
+		echo "dtk segment \"$segment\" exists on $localHost"
+	    else
+		echo "dtk segment \"$segment\" DOES NOT exist on $localHost"
+		rc=1
+	    fi
+	done
+    else
+	echo "Skipping client command on server"
+    fi
+}
+
+_statusServer() {
+    _in _statusServer
+    if (  _onServer ) ; then 
+	# dtk-server: DTK Daemon
+	if ( dtk-pingServer > /dev/null ) ; then
+	    echo "dtk server is running on $serverHost"
+	else
+	    echo "dtk server NOT is running on $serverHost"
+	    rc=1
+	fi
+
+	# hev-statusArtTracker: ART Tracker daemon
+	if ( _statusArtTracker ) ; then
+	    echo "hev-artTracker is running on $serverHost"
+	else
+	    echo "hev-artTracker NOT is running on $serverHost"
+	    rc=1
+	fi
+
+	# ART Controller
+	ping -c 1 -n -q -w 2 $artHost > /dev/null
+	artCtrlStatus=$?
+
+	if [ "$artCtrlStatus" == "0" ]
+	then
+	    echo "ART Controller is UP (pingable from $localHost private net)"
+	else
+	    echo "ART Controller is DOWN (from $localHost private net)"
+	    rc=1
+	fi
+
+    else
+	echo "skipping server command on client"
+    fi
+
+}
+
+_status() {
+    echo
+    echo "Tracker Status:"
+    echo
+    _in _status
+    if (  _onServer ) ; then
+	_statusServer
+    else
+	_statusClient
+	echo connecting to $serverHost via ssh
+
+        echo ssh -t $serverHost  HEVROOT=$HEVROOT $fullPathProg $verbose statusServer $serverHost
+	     ssh -t $serverHost  HEVROOT=$HEVROOT $fullPathProg $verbose statusServer $serverHost
+    fi
+    echo
+}
+
+_stopArtTracker() {
+    _in _stopArtTracker
+    if ( _onServer ) ; then 
+
+	echo Stopping hev-artTracker on $localHost
+	if [ -p /dev/shm/hev-artTracker-CmdFifo ]
+	then
+
+	    if ( _statusArtTracker ) ; then
+       		echo exit >  /dev/shm/hev-artTracker-CmdFifo &
+	    fi
+	fi
+
+    else
+	echo connecting to $serverHost via ssh
+	echo ssh -t $serverHost  HEVROOT=$HEVROOT $fullPathProg $verbose stopArtTracker $serverHost
+	     ssh -t $serverHost  HEVROOT=$HEVROOT $fullPathProg $verbose stopArtTracker $serverHost
+    fi
+
+}
+_stopServer() {
+    _in _stopServer
+    if ( _onServer ) ; then 
+
+	_stopArtTracker
+
+	echo Stopping dtk server on $localHost
+	if (  dtk-pingServer > /dev/null ) ; then # shut down running server
+	     dtk-shutdownServer
+	fi
+
+	 dtk-destroySharedMem -r
+
+    else
+	echo "Skipping server command on client"
+    fi
+
+}
+
+_stopClient() {
+    _in _stopClient
+    if ( ! _onServer ) ; then 
+	echo Stopping dtk server on $localHost
+	if (  dtk-pingServer > /dev/null ) ; then # shut down running server
+	     dtk-shutdownServer
+	fi
+	 dtk-destroySharedMem -r
+    else
+	echo "Skipping client command on server"
+    fi
+}
+
+_haltClient() {
+    _in _haltClient
+    if ( ! _onServer ) ; then 
+	echo Stopping dtk-server on localHost
+	if (  dtk-pingServer > /dev/null ) ; then # shut down running server
+	     dtk-shutdownServer
+	fi
+    else
+	echo "Skipping client command on server"
+    fi
+}
+
+# stop dtk server on both local and server
+_stop() {
+    _in _stop
+    if ( _onServer ) ; then 
+	_stopServer
+    else
+	_stopClient
+	echo Connecting to $serverHost via ssh
+	echo ssh -t $serverHost  HEVROOT=$HEVROOT $fullPathProg $verbose stopServer $serverHost
+	     ssh -t $serverHost  HEVROOT=$HEVROOT $fullPathProg $verbose stopServer $serverHost
+    fi
+}
+
+_statusArtTracker(){
+   _in _statusArtTracker
+   artTrackerStatus=$(ps cax | grep hev-artTracker > /dev/null)
+   return $artTrackerStatus
+}
+
+_startArtTracker() {
+    _in _startArtTracker
+    if ( _onServer ) ; then 
+	echo Starting hev-artTracker on "$serverHost"
+
+	artCtrlStatus=$(ping -c 1 -n -q -w 2 $artHost > /dev/null)
+	if $artCtrlStatus ; then
+	    echo "ART Controller is up"
+
+	    if ( _statusArtTracker ) ; then
+		echo "hev-artTracker is already running."
+	    else
+		echo "Starting hev-artTracker -d"
+		$HEVROOT/idea/bin/hev-artTracker -d 
+	    fi
+
+        else
+	    echo "ART Controller is down!!!!!!"
+	    echo "Use 'hev-artController' on $serverHost to start it"
+	    rc=1
+	    exit $rc
+	fi
+
+    else
+	echo Connecting to $serverHost via ssh
+	echo ssh -t $serverHost  HEVROOT=$HEVROOT $fullPathProg $verbose startArtTracker $serverHost
+	     ssh -t $serverHost  HEVROOT=$HEVROOT $fullPathProg $verbose startArtTracker $serverHost
+    fi
+
+}
+
+_startServer() {
+    _in _startServer
+    if ( _onServer ) ; then 
+	echo Starting dtk-server on "$serverHost"
+
+	 dtk-server -d
+
+	for ((i=0; i<$Shm_Segment_Num; i=i+1))
+	do
+	     dtk-getSharedMem ${Shm_Segment_Siz[$i]} ${Shm_Segments[$i]}
+	done
+
+	_startArtTracker
+
+    else
+	echo "Skipping server command on client"
+    fi
+
+}
+
+_startClient() {
+    _in _startClient
+    if ( ! _onServer ) ; then 
+	echo Starting dtk-server on $localHost
+	 dtk-server -d
+
+	for ((i=0; i<$Shm_Segment_Num; i=i+1))
+	do
+	     dtk-getSharedMem ${Shm_Segment_Siz[$i]} ${Shm_Segments[$i]}
+	done
+
+	echo Connecting to dtk shared memory on $serverHost
+	for segment in ${Shm_Segments[*]} ; do
+	    echo dtk-connectRemoteSharedMem $segment $serverHost
+	     dtk-connectRemoteSharedMem $segment $serverHost
+	done
+    else
+	echo "Skipping client command on server"
+    fi
+}
+
+_startClientWandOnly() {
+    _in _startClientWandOnly
+    if ( ! _onServer ) ; then 
+	echo starting dtk server on $localHost
+	 dtk-server -d
+
+	 dtk-getSharedMem ${Shm_Segment_Siz[$wEl]} ${Shm_Segments[$wEl]}
+	 dtk-getSharedMem ${Shm_Segment_Siz[$bEl]} ${Shm_Segments[$bEl]}
+	 dtk-getSharedMem ${Shm_Segment_Siz[$jEl]} ${Shm_Segments[$jEl]}
+
+	echo Connecting to dtk shared memory on $serverHost
+	for segment in ${Shm_Segments[$wEl]} ${Shm_Segments[$bEl]} ${Shm_Segments[$jEl]} ; do
+	     dtk-connectRemoteSharedMem $segment $serverHost
+	done
+
+    else
+	echo "skipping client command on server"
+    fi
+}
+
+# start dtk server on both local and server
+_start() {
+    _in _start
+    if ( _onServer ) ; then 
+	_startServer
+    else
+	echo Connecting to $serverHost via ssh
+	echo ssh -t $serverHost  HEVROOT=$HEVROOT $fullPathProg $verbose startServer $serverHost
+	     ssh -t $serverHost  HEVROOT=$HEVROOT $fullPathProg $verbose startServer $serverHost
+	_startClient
+    fi
+}
+
+# send a STOP signal to dtk-server
+# assumes you own the process
+# you can do this by stopping and starting it
+_pause () {
+    _in _pause
+    if (  dtk-pingServer > /dev/null ) ; then
+	echo "Pausing the dtk server"
+	killall -STOP dtk-server
+    else
+	echo "No dtk server running"
+    fi
+
+
+}
+
+# send a CONT signal to dtk-server
+# assumes you own the process
+# you can do this by stopping and starting it
+_resume () {
+    _in _resume
+    if (  dtk-pingServer > /dev/null ) ; then
+	<echo "Resuming the dtk server"
+	killall -CONT dtk-server
+    else
+	echo "no dtk server running"
+    fi
+}
+
+########################################################################
+#
+#  Main
+#
+########################################################################
+
+echo hev-tracker running on `hostname`
+
+verbose=""
+if [ "$1" == "-v" ]
+then
+    verbose="-v"
+    shift
+fi
+
+if [ $# -lt 1 ]
+    then
+    _usage
+fi
+
+if [ $# -eq 2 ] ; then
+    serverHost=$2
+fi
+
+# convert to lower case
+arg=`echo $1 | tr A-Z a-z`
+
+args="$*"
+shift $#
+
+if [ "$HEVROOT" == "" ] ; then
+    echo "$(hostname): HEVROOT Undefined, exiting."
+    rc=1
+    exit $rc
+fi
+
+
+
+# where we put tracker data for all users
+export DTK_SHAREDMEM_DIR=/dev/shm/dtkSharedMem
+
+
+if [ "$verbose" == "-v" ]
+then
+    echo "HEVROOT=" $HEVROOT "DTK_SHAREDMEM_DIR=" $DTK_SHAREDMEM_DIR
+fi
+
+if [ "$arg" = "start" ]
+    then
+    _start $args
+elif [ "$arg" = "startclient" ]
+    then
+    _startClient $args
+elif [ "$arg" = "startclientwandonly" ]
+    then
+    _startClientWandOnly $args
+elif [ "$arg" = "startserver" ]
+    then
+    _startServer $args
+elif [ "$arg" = "startarttracker" ]
+    then
+    _startArtTracker $args
+elif [ "$arg" = "stoparttracker" ]
+    then
+    _stopArtTracker $args
+elif [ "$arg" = "stop" ]
+  then
+    _stop $args
+elif [ "$arg" = "stopclient" ]
+    then
+    _stopClient $args
+elif [ "$arg" = "haltclient" ]
+    then
+    _haltClient $args
+elif [ "$arg" = "stopserver" ]
+    then
+    _stopServer $args
+elif [ "$arg" = "status" ]
+    then
+    _status $args
+elif [ "$arg" = "statusclient" ]
+    then
+    _statusClient $args
+elif [ "$arg" = "statusserver" ]
+    then
+    _statusServer $args
+elif [ "$arg" = "pause" ]
+    then
+    _pause $args
+elif [ "$arg" = "resume" ]
+    then
+    _resume $args
+else
+    _usage 
+fi
+
+exit $rc

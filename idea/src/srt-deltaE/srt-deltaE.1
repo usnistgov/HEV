@@ -1,0 +1,53 @@
+.TH srt-deltaE 1 "August 2016" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+srt-deltaE
+
+.SH SYNOPSIS
+.BR srt-deltaE
+[--map FN] [--hist H [--size Width] [--num N]] ref dst
+
+.SH DESCRIPTION
+\fBsrt-deltaE\fR computes the mean DeltaE between \fIref\fR and \fIdst\fR.The smaller the number, the closer the images are to each other.
+
+.P
+\fIref\fR and \fIdst\fR are the baseline (reference) and generated (destination) image files.
+
+.SH OPTIONS
+
+.IP -m,--map FM
+Specify a filename to write the DeltaE map to. FN is a string containg then 
+name of the output file to which the map image is written. It must have an 
+extension that corresponds to the image type. The map image shows the distribution
+of the differneces across the image.
+
+.IP -h,--hist H
+Print a histogram of the per-pixel DeltaE values. H is a boolean. 'true' makes 
+the histogram, anything else make none.
+
+.IP -s,--size width
+Specify the histogram bin size (width). Width is a float with a default of 2.
+
+.IP -n,--num N
+Specify the number of histogram bins. N is an integer with default of 100.
+
+.SH INFORMATION
+
+The CIE Lab DeltaE color difference metric is (roughly) the Euclidean distance
+between two colors in the CIE Lab color space. The CIE Lab color space is a
+perceptually uniform color space. \fBsrt-deltaE\fR uses the CIE94 definition
+of the metric.
+
+More information about the CIE Lab color space can be found at the Wikipedia
+page:
+.P
+https://en.wikipedia.org/wiki/Lab_color_space
+
+More information about color differencing and the CIE Lab DeltaE metric can be
+found at the Wikipedia page:
+.P
+https://en.wikipedia.org/wiki/Color_difference
+
+.SH AUTHOR
+Wesley Griffin <wesley.griffin@nist.gov>
+

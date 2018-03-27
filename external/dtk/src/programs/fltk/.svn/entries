@@ -1,0 +1,82 @@
+10
+
+dir
+995
+https://diverse.svn.sourceforge.net/svnroot/diverse/trunk/dtk/programs/fltk
+https://diverse.svn.sourceforge.net/svnroot/diverse
+
+
+
+2012-08-09T21:26:59.050819Z
+995
+pshinpaugh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+507ea766-9cfe-0310-9089-a533cff91c67
+
+timeControl
+dir
+
+prog2app.in
+file
+
+
+
+
+2011-01-24T20:43:30.000000Z
+4bf9b8c79b7ad505556d184310b2164e
+2007-10-23T18:26:16.119750Z
+772
+pshinpaugh
+
+launcher
+dir
+
+usbProbe
+dir
+
+gnomonDisplay
+dir
+
+configServices
+dir
+
+scope
+dir
+
+CMakeLists.txt
+file
+
+
+
+
+2011-01-24T20:43:30.000000Z
+1f24f004b6ea3768fbbee8adaecef956
+2007-08-23T21:34:01.005560Z
+700
+pshinpaugh
+
+buttons
+dir
+
+caveDeviceSimulator
+dir
+
+demoRunner
+dir
+
+floatOutputGUIs
+dir
+

@@ -1,0 +1,38 @@
+#Ascii Scene 
+#Version 90 
+#Generator OpenSceneGraph 3.1.0 
+
+osg::Node {
+  UniqueID 1 
+  Name "volPrep.volRenderingState.osg" 
+  StateSet TRUE {
+    osg::StateSet {
+      UniqueID 2 
+      DataVariance STATIC 
+      ModeList 2 {
+        GL_CULL_FACE ON 
+        GL_BLEND ON 
+      }
+      AttributeList 2 {
+        osg::CullFace {
+          UniqueID 3 
+          DataVariance STATIC 
+        }
+        Value OFF 
+        osg::BlendFunc {
+          UniqueID 4 
+          DataVariance STATIC 
+          SourceRGB ONE 
+          SourceAlpha ONE 
+          DestinationRGB ONE_MINUS_SRC_ALPHA 
+          DestinationAlpha ONE_MINUS_SRC_ALPHA 
+        }
+        Value OFF 
+      }
+      RenderingHint 2 
+      RenderBinMode USE_RENDERBIN_DETAILS 
+      BinNumber 10 
+      BinName "DepthSortedBin" 
+    }
+  }
+}

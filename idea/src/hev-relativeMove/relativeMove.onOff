@@ -1,0 +1,6 @@
+# these commands are run when the wand button is pressed and released.
+  ON WAIT echo RESET `hev-matrixToCoord --xyzhprs idea/relativeMove/worldToSceneTranformation-$(RELATIVE_MOVE)` > /tmp/relativeMoveFIFO-$USER-$(RELATIVE_MOVE)
+  ON FRAME
+
+  OFF WAIT echo MATRIX relativeMoveWorldOffsetWand-$(RELATIVE_MOVE) `hev-readDoubles -1 -i idea/relativeMove/worldOffsetWand-$(RELATIVE_MOVE)` > $IRIS_CONTROL_FIFO
+  OFF FRAME

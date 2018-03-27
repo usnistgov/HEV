@@ -1,0 +1,22 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-readWorld 1 "November, 2011" "NIST/MCSD" "MCSD HEV"
+.SH NAME
+hev-readWorld
+- writes the current world transformation
+
+
+.SH DESCRIPTION
+.B "hev-readWorld"
+writes the current world transformation to standard output in the form
+of a "xyz hpr s" coordinate . The transformation is read from the DTK shared
+memory file iris/state/world, and converted from a matrix to a coordinate
+using the hev-matrixToCoord(1) utility.
+
+.SH SEE ALSO
+hev-matrixToCoord
+
+.SH AUTHOR
+
+John Kelso, kelso@nist.gov,  NIST/ITL/MCSD
+

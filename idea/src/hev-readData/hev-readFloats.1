@@ -1,0 +1,52 @@
+.TH hev-readFloats 1 "April 2011"
+.SH NAME
+
+hev-readFloats
+
+.SH SYNOPSIS
+
+\fBhev-readFloats [-d] [-i] [-N] [-u t] shmName
+
+.SH DESCRIPTION
+
+\fBhev-readFloats\fR
+reads the specified DTK shared memory. This command is similar to the
+the \fBdtk-readFloats\fR with less options. The advantage of this command is that
+the values printed to
+.I stdout
+are flushed making it usable with redirection to a pipe.
+.PP
+The specified shared memory must exist prior to executing the command.
+
+.SH OPTIONS
+
+.IP \fB-d\fR
+Discard consecutive duplicate values
+
+.IP \fB-i\fR
+Print the initial value.
+
+.IP \fB-N\fR
+Print the first \fBN\fR values, then exit.  \fBN\fR must be a integer
+greater thn zero. 
+
+.IP \fB-u\ t\fR
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.SH OUTPUT
+
+Output to stdout when a float changes is a series of floats, one for each in
+the segment
+
+
+.SH "SEE ALSO"
+.BR dtk-readFloats "(no man page currently available)"
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>, Steve Satterfield <steve@nist.gov>
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

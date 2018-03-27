@@ -1,0 +1,83 @@
+hyv-utilities Notes
+-------------------
+
+
+July 3, 2008
+
+Data Flow (top to bottom) description of commands for HydratiCA Visualization
+
+ This document is a snapshot of work in progress. This description is not
+ complete and is subject to change as the software develops.
+ -Steve
+
+
+Arbitary Directory   *.img
+                     contains the img file produced by hyratiCA runs
+                     multicolumn data
+
+      |
+      |    hyv-selection      selection tool to pick a subset cp or symlinks
+      |
+      V
+
+IMG                *.img
+                   Subset of img files of interest to work with
+      		   This is a subdirectory of the current directory
+		      as are the following direcories
+      		   multi-column data
+      |      
+      |
+      |    hyv-img2phase   pick column/combine columns to 1
+      |                    execute multiple time for multiple phases
+      |
+      V
+
+Phase              *_{P}.phase       desired phases
+                   P is the phase number
+   |   |
+   |   |
+   |   |    hyv-phase2vtk  convert to vtk format
+   |   |
+   |   V
+   |
+   |        hyv-phase2iso  compute an iso value for each phase file
+   |                       necessary to compute the isosurface
+   V
+
+VTK	           *_{P}.vtk        VTK represetation of phase
+      |
+   |  |
+   |  |      hyv-vtk2ivu    run the isosurface command
+   |  |
+   |  |
+      V
+ ISO               *_{P}.iso
+
+   |  |
+   |  |
+   |  |
+   V  V
+
+IVU                *_{P}.ivu        isosurface in ivu format
+
+      |
+      |
+      |     hyv-ivu2ive         optimize and conver to ive
+      |
+      V
+
+IVE                *_{P}.ive        isosurfaces in ive format
+
+
+
+
+All commands have a "-parallel N" option (modeled after hev-osgOptimize)
+Perhaps the basic structure can be
+
+	cmd -parallel N {other specific options} inDir outDir
+
+so that everything moves from directory to directory.
+Do I assume the target is empty? 
+Or I could require that it not exist and create it.
+
+Or should I force everything to be in a single directory.

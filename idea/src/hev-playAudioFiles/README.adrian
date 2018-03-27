@@ -1,0 +1,14 @@
+Added Capabilities
+
+Blocking
+Blocked audio files play sequentially; non-blocked audio files play simultaneously. A parent process constantly reads input and spawns a child process to play an audio file. If blocked, the parent will wait for the child to finish before spawning a new child.
+
+
+Channel Volume Control
+The volume of each channel (left and right in a stereo sound system) can either be independently set or inversely linked (add up to 100%). A copy of the floating point numbers array is modified by multipling by the user-defined percentage of the current volume setting. In a wav file, the audio samples are interleaved, meaning that the left and right channel samples alternate. Appropriate modifications are done. 
+
+Audio Fading
+Audio fading is when one channel changes in volume while the other channel experiences the opposite change in volume. A example of this is an ambulance car blaring its siren. When the car is approaches from the left, the left ear hears the siren louder than the left. But when the car moves to the right, the left ear hears less and the right ear hears more. Two modes are implemented in this utility (left-to-right and right-to-left). The channel that decreases in volume fades to silence and the channel that increases in volume increases to max volume. This is accomplished through the same modifications made by channel volume control. 
+
+Memory
+Originally, the audio file data had to be accessed from the file directory every time an audio file played. Now, upon execution, audio files are accessed from the file directory and the necessary data are loaded into an array that is saved in memory. Every time an audio file is played now, the utility accesses the data array stored in the program instead of accessing audio files from the file directory.  

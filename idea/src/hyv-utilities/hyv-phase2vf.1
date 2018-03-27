@@ -1,0 +1,99 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hyv-phase2vf 1 "May 25, 2010" "NIST/MCSD/SAVG" "SAVG HEV"
+.SH NAME
+hyv-phase2vf
+- convert *.phase files to *.vf files
+
+.SH SYNOPSIS
+.B "hyv-phase2vf"
+[--parallel n]   [--non-zero] [--vfdivisor value] dataDir | phaseFile
+
+.SH DESCRIPTION
+.PP
+.I
+hyv-phase2vf
+will convert all
+.B *.phase
+files found in the data directory into
+.B *.vf
+files needed to generate the full volume plot.
+
+
+
+.SH OPTIONS
+.IP "\fB--parallel n\fR"
+specifies how many concurrent processes to be used convert
+in parallel. On a 2 CPU machine, n of 2 is a good number.
+
+.IP "\fB--non-zero\fR"
+Currently, the algorithm for computing volume fraction is
+the average of the phase valuse. Phase values greater
+than 1 are assumed to be equal 1.0.
+.IP
+If the --non-zero paramater is specified, the only the
+non-zero values are included in the volume fraction
+computation.
+
+.IP "\fB--vfdivisor value\fR"
+If specified, then the value is used as the
+divisor in the volume fraction computation. This provides an
+alternative volume fraction algorithm.
+.IP
+This value is computed externally. For example, the sum of the
+solid phases.
+
+
+.IP "\fBdataDir\fR"
+is an existing directory containing the 
+.B phase
+file.
+The resulting
+.B vf
+files are written to
+.B dataDir
+with names in the form of 
+.B *_{P}.vf
+where
+.B {P}
+is the specified
+.B phaseNumber.
+
+.IP "\fBphaseFile\fR"
+if a
+.B phase
+file is specified rather than a directory name,
+then the single specified
+.B phase
+file is converted to a
+.B vf
+file in the current directory.
+
+
+
+.SH EXAMPLE
+
+.PP
+Run with 2 parallel processes creating iso files
+
+.IP
+hyv-phase2iso --parallel 2  C3Ssmall
+
+
+
+
+
+
+.SH SEE ALSO
+.I
+hyv-utilities(3)
+
+
+
+.SH AUTHOR
+
+Steven G. Satterfield, steve@nist.gov,
+.br
+NIST/ITL/MCSD/SAVG
+
+

@@ -1,0 +1,41 @@
+Test cases for hev-moo
+April 29, 2011
+August 30, 2012
+Steve
+
+I use `cat test1.txt` to keep the command line short
+
+Test 1
+
+     hev-moo --ex `cat test1.txt` > test1.iris
+     irisfly --ex test1.iris
+
+
+   variation
+
+     hev-moo --xsize 150 --ysize 40 --columns 4 --ex `cat test1.txt` > test1.iris
+     irisfly --ex test1.iris
+
+
+
+Test 2
+
+     hev-moo --ex --sep ':' `cat test2.txt` > test2.iris
+     irisfly --ex test2.iris
+
+
+Test 3
+
+     hev-moo --ex --sep ':' `cat test3.txt` > test3.iris
+     irisfly --ex test3.iris
+
+
+Test 4
+
+     repeat for each of the above
+
+          irisfly NULL &
+	  
+	  hev-moo --ex --sep ':' `cat test3.txt`  > $IRIS_CONTROL_FIFO
+
+     

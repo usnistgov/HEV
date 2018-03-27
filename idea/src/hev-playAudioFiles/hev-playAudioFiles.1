@@ -1,0 +1,115 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-playAudioFiles 1 "February 2016" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-playAudioFiles
+- Play a series of specified audio files.
+
+
+.SH SYNOPSIS
+.B hev-playAudioFiles [OPTIONS] 
+soundFile ...
+
+.SH DESCRIPTION
+.PP
+.I hev-playAudioFiles
+is a utility to play audio files. The files are specified on the
+command line. Integers, 0 to n-1, are read on stdin and the
+corresponding audio file is played.
+
+.PP
+The typical use case is this command is executed on the end of a pipe
+allowing the controlling program to randomly select the file to be
+played.
+
+.PP
+The current implementation plays each file in the background so each
+bit of audio will overlap if integers are feed to stdin quickly. This 
+behavior is refered to as non-blocking of audio files. This program also 
+provides the ability to turn on blocking mode, which prevents the next 
+file from playing until the current file finishes playing.
+
+.SH OPTIONS
+
+.TP 
+.B -a [filename]
+Add - add the file to the roster of loaded files
+
+.TP
+.B -b
+Blocking - toggles blocking, the default behavior is off
+
+.TP
+.B -c [filename]
+Config - load a config file for the settings, enables "-k" or keep mode
+
+.TP
+.B -k 
+Keep - keep the previously entered settings when playing a file. ie. entering 
+"0 0.7 0.3 +f" followed by "1" would play the second file as though the user 
+entered "1 0.7 0.3 +f", default behavior is off
+
+.SH INPUT SPECIFICATIONS
+.PP 
+The generic framework for input is a stream if integers, 'i', each one 
+cooresponding with a file, 0 representing the first file passed as a command 
+arg, 1 representing the second and so on.
+
+.PP
+Each integer 'i' can be passed with up to 3 additional flags dictating various behaviours. 
+
+.TP
+.B i l
+The first possible format is to pass 'i' followed by one decimal 'l' ranging from 0 to 1. 'l' represents the percentage of volume that the file should be played out of the left channel, while (1 - 'l') is the percentage played out of the right channel.
+
+.TP
+.B i l r
+The second format is to pass 'i' followed by two decimals, 'l' and 'r' ranging from 0 to 1. 'l' and 'r' represent the volume percentage played out of the left and right channels respectively.
+
+.TP
+.B i l r f
+The third format is to pass 'i' followed by decimals 'l' and 'r' for the left and right channels and a string 'f', either containing "+f" to indicate fade of left to right or "-f" to indicate fade of right to left.
+
+.PP
+Additionally, all the aforementioned options can be either entered on the 
+command line upon the execution of the program or as standard input while 
+the program is running, with the exception of -a which only is necessary 
+as the program is running.
+
+.SH EXAMPLE
+.IP
+cd ${HEVROOT}/idea/src/hev-playAudioFiles
+.br
+hev-playAudioFiles wav/*.wav
+.br
+0
+.br
+-b
+.br
+5 0.7 0.7
+.br
+3 0.6 0.4 +f
+.br
+-k
+.br
+20 0.1 0.9 -f
+.br
+11                   (this file would be played as though it was entered '11 0.1 0.9 -f')
+
+.SH SEE ALSO
+hev-playAudioFilesGui
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov, adapted the code to the HEV environment.
+.br
+Yusuf Van Gieson, yusuf.vangieson@nist.gov, added the additional command line options
+.br
+Adrian Ly, adrian.ly@nist.gov, added channel volume control, fading implementation, and memory optimization
+.br
+See the source code for the actual author
+
+
+
+
+\"  LocalWords:  playAudioFiles NIST HEV hev soundFile stdin cd HEVROOT br wav
+\"  LocalWords:  IP

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/tests/dtkDSO_
+END
+base.h
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tests/dtkDSO_/base.h
+END
+load.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tests/dtkDSO_/load.cpp
+END
+foo.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tests/dtkDSO_/foo.cpp
+END
+base.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tests/dtkDSO_/base.cpp
+END
+Makefile.orig
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/tests/dtkDSO_/Makefile.orig
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/tests/dtkDSO_/CMakeLists.txt
+END

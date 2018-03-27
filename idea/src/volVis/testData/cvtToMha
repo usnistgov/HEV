@@ -1,0 +1,5 @@
+
+hev-convertDataArray --nd 3 --dim 21 20 19 --inty float32 --infmt bin bdry.*.raw boundary.%03d.mha
+
+hev-convertDataArray --nd 3 --dim 21 20 19 --inty float32 --infmt bin noBdry.*.raw noBoundary.%03d.mha
+

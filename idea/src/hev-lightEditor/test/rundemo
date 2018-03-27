@@ -1,0 +1,11 @@
+#! /bin/sh
+
+
+
+irisfly testScene.osg &
+
+sleep 3
+
+../hev-lightEditor > $IRIS_CONTROL_FIFO
+
+

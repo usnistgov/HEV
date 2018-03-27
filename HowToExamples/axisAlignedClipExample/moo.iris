@@ -1,0 +1,52 @@
+#
+# Created: Thu Jul 16 16:11:24 EDT 2015
+# With command: hev-moo grid.iris
+#
+# Example Usage: irisfly --ex file.iris
+#
+
+###########################################################
+# Load objects and create scenegraph switch models on/off #
+###########################################################
+
+LOAD moo_steve_7623-grid grid.iris
+NODEMASK moo_steve_7623-grid OFF
+ADDCHILD moo_steve_7623-grid world
+LOAD moo_steve_7623-pcl pcl.iris
+NODEMASK moo_steve_7623-pcl OFF
+ADDCHILD moo_steve_7623-pcl world
+
+###################################################
+# Create the "MOO" mcp file to turn models on/off #
+###################################################
+
+WAIT echo > /tmp/moo_${USER}${PPID}.mcp
+WAIT echo SIZE 75 20  >> /tmp/moo_${USER}${PPID}.mcp
+WAIT echo COLUMNS 3  >> /tmp/moo_${USER}${PPID}.mcp
+WAIT echo BUTTON grid  >> /tmp/moo_${USER}${PPID}.mcp
+WAIT echo ON  NODEMASK moo_steve_7623-grid ON  >> /tmp/moo_${USER}${PPID}.mcp
+WAIT echo OFF NODEMASK moo_steve_7623-grid OFF >> /tmp/moo_${USER}${PPID}.mcp
+WAIT echo SIZE 75 20  >> /tmp/moo_${USER}${PPID}.mcp
+WAIT echo COLUMNS 3  >> /tmp/moo_${USER}${PPID}.mcp
+WAIT echo BUTTON pcl  >> /tmp/moo_${USER}${PPID}.mcp
+WAIT echo ON  NODEMASK moo_steve_7623-pcl ON  >> /tmp/moo_${USER}${PPID}.mcp
+WAIT echo OFF NODEMASK moo_steve_7623-pcl OFF >> /tmp/moo_${USER}${PPID}.mcp
+WAIT echo RESET hide show COLOR .7 .8 1  >> /tmp/moo_${USER}${PPID}.mcp
+
+################################################
+# Create a file to add a button to irisfly MCP #
+################################################
+
+WAIT echo BUTTON MOO > /tmp/mooAddToMCP_${USER}${PPID}.mcp
+WAIT echo FIRST EXEC hev-masterControlPanel -title MOO --noescape  /tmp/moo_${USER}${PPID}.mcp \> \$IRIS_CONTROL_FIFO >> /tmp/mooAddToMCP_${USER}${PPID}.mcp
+WAIT echo ON  EXEC hev-showWindow MOO >> /tmp/mooAddToMCP_${USER}${PPID}.mcp
+WAIT echo OFF EXEC hev-hideWindow MOO >> /tmp/mooAddToMCP_${USER}${PPID}.mcp
+# Add to MCP
+WAIT irisfly-addToMCP /tmp/mooAddToMCP_${USER}${PPID}.mcp
+
+#########################################
+# Clean up tmp files when irisfly exits #
+#########################################
+
+AFTER CLEANUP EXEC rm /tmp/moo_${USER}${PPID}.mcp
+AFTER CLEANUP EXEC rm /tmp/mooAddToMCP_${USER}${PPID}.mcp

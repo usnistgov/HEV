@@ -1,0 +1,6 @@
+BUTTON wiggle
+  FIRST AFTER REALIZE EXEC hev-wiggleNav -title wiggle --noescape > $IRIS_CONTROL_FIFO
+
+  FIRST WAIT irisfly-addAndShowWindow wiggle
+  ON WAIT irisfly-addAndShowWindow wiggle
+  OFF WAIT irisfly-removeAndHideWindow wiggle

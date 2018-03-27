@@ -1,0 +1,126 @@
+.TH iris-convert 1 "February 2011"
+
+.SH NAME
+iris-convert
+
+.SH SYNOPSIS 
+.B iris-convert
+[ --help ] [ --verbose ] [ --setname nodename ] 
+[ --clobberName ] [ --normals ] 
+[ --static ] 
+[ --copyprimitives ] 
+[ --nostatesets ] [ --nolighting ] 
+[ --optimize [ optimization ] 
+infile [ ... ]
+outfile
+
+.SH DESCRIPTION
+
+\fBiris-convert\fR reads one or more IRIS readable files, applies the specified conversions, and writes the results to a single output file. The output file type is any OSG writable file.
+
+.SH OPTIONS
+
+.TP
+--help
+.br
+Print the usage message and exit
+
+.TP
+--verbose
+.br
+Sets the dtkMessage spewage level to INFO if the dtkMessage severity is
+greater than INFO (such as the default, NOTICE), causing scenegraph
+and optimization statistics to be printed to standard error.
+
+.TP
+--setname \fInodeName\fR
+.br
+Sets the name of the node at the top of the returned scenegraph to
+\fInodeName\fR if its node name is not set.
+
+.TP
+--clobbername 
+.br
+Always sets the name of the node at the top of the returned
+scenegraph.  The --setname parameter is used, or the name of the output
+file if the --setname option wasn't given.
+
+.TP
+--normals
+.br
+Calls the osgUtil::SmoothingVisitor to add/replace the normals in the scenegraph
+
+.TP
+--static
+.br
+Changes the datavariance of the scenegraph to STATIC.  This can result in
+faster frame rates.
+
+.TP
+--copyprimitives
+.br
+Copy all primitives, as opposed to copying instances of primitives
+
+.TP
+--nostatesets
+.br
+Removes all osg::StateSets from the scenegraph.
+
+.TP
+--nolighting
+.br
+Removes all lighting from the scenegraph.
+
+.TP
+--optimize \fIoptimization\fR
+.br
+Calls iris::Optimizer with the specified options, in the order given. For a
+list of optimizations see the osgUtil::Optimizer class reference via the URL
+http://www.openscenegraph.org/documentation/OpenSceneGraphReferenceDocs/classes.html.
+Optiizations can be passed as either a colon separated list, or a space
+separated list if the optimizations are enclosed in quotes so they
+parse as a single parameter.
+
+\fBNote that the optimizations are appplied only after the other specified
+conversions are applied.\fR
+
+.TP 
+infile ...
+.br
+A list of one or more input files
+
+.TP
+outfile
+.br
+The file to which the scenegraph is written.  Any OSG writable file type is
+supported, such as osga or osgb.
+
+.SH NOTE
+Setting the DTK_SPEW enviornment variable to info will generate additional
+information about the optimizations being performed.
+
+.SH EXAMPLE
+
+This command will convert the file foo.savg to foo.osgb, converting the
+data variance of all nodes in the file to STATIC and then applying the
+MERGE_GEOMETRY optimization. Additional information about the optimization
+will be generated.
+
+env DTK_SPEW=info iris-convert --static --optimize MERGE_GEOMETRY foo.savg foo.osgb
+
+This command will convert the file foo.savg to foo.osgb, applying the default
+optimizations.
+
+iris-convert --optimize DEFAULT foo.savg foo.osgb
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+ 

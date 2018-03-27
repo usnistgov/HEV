@@ -1,0 +1,16 @@
+#!/bin/sh
+
+###############################
+# itk-ants - a script to generate a list
+# of commands in the ITK family of
+# the "Army of Ants"  in $PATH. This
+# calls one or more helper script(s) so
+# the calling environment must be correctly
+# set to find them, usually by modifying
+# the PATH env var.
+
+echo
+echo "ITK Tools: " $@
+echo ---------
+${PRIVATE_BINS}/compc itk- $@
+echo

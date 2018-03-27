@@ -1,0 +1,32 @@
+
+rm explog.asc.mha
+rm explog.asc.raw
+rm bin_10_11_12.bin.same.raw
+rm noStruct.bin.raw         
+rm noStruct.asc.raw         
+rm noStruct.bin.mha
+rm noStruct.asc.mha
+rm nanInf.asc.out.inf.nan.bin.raw
+rm nanInf.asc.out.inf.nan.raw
+rm nanInf.asc.out.infneg.raw
+rm nanInf.asc.out.infpos.raw
+rm nanInf.asc.infSub.noNanSub.raw
+rm log.norm.asc.mha.mha
+rm int.norm.mha.mha
+rm log.clamp.asc.mha
+rm int.clamp.mha
+rm log.norm.asc.mha
+rm int.norm.mha
+rm exp10.asc.mha
+rm log.asc.mha
+rm asc_5_2_11_3_4_int.asc.mha
+rm asc_5_2_11_12_int.asc.mha
+rm asc_10_11_int.asc.mha
+rm asc_10_int.asc.mha
+rm bin_10_11_12_uch2flt.asc.mha
+rm bin_10_11_12_flt2uch.asc.mha
+rm bin_10_11_12_uch.raw.asc.mha
+rm bin_10_11_12_flt.raw.asc.mha
+rm asc_10_11_12_int.raw.onePerLine
+rm asc_10_11_12_int_neg.raw.onePerLine
+

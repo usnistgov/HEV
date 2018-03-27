@@ -1,0 +1,87 @@
+.TH hev-vtkSmoothMesh
+.SH NAME
+hev-vtkSmoothMash - smooth a polygonal mesh
+
+.SH SYNOPSIS
+.B hev-vtkSmoothMesh [ options ] inFName outFName
+
+.SH DESCRIPTION
+.B hev-vtkSmoothMesh
+Runs a smoothing filter on a polygonal mesh. Input and Output is polygonal data.
+
+.PP
+
+.SH OPTIONS
+.TP
+.B --smooth or --s METHOD
+Smoothing method. METHOD being one of the following:
+                laplacian
+                sinc
+
+Default is "sinc"
+
+.TP
+.B --iter or --i N
+# of iterations
+
+.TP
+.B --fes or --fe ON|OFF
+Feature edge smoothing on or off. Default is "on".
+
+.TP
+.B --fang or --fa ANGLE
+Feature angle. Default is "45".
+
+.TP
+.B --eang or --ea ANGLE
+Edge angle. Default is "45".
+
+.TP
+.B --bs or --b ON|OFF
+Boundary smoothing on or off. Default is "on".
+
+.TP
+.B --relax or --r FACTOR
+Relaxation factor (only for laplacian, will be ignored if smoothing method is "sinc"). Default is "3".
+
+.TP
+.B --nms ON|OFF
+Non-manifold smoothing on or off. (only for sinc, will be ignored of smoothing method is "laplacian"). Default is "on".
+
+
+.SH PARAMETERS
+.TP
+.B inFName
+Location/filename of input file.
+This file has to be in VTK format.
+.TP
+.B outFName
+Location/filename of output file. 
+This file is written in VTK format.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program. You should always be able to use
+the output of hev-vtkContourFilter as input for this program.
+
+For example:
+
+  hev-vtkSmoothMesh --iter 50 --smooth laplacian co2.iso5.vtk co2.smooth.vtk
+
+Apply Laplacian smoothing for 50 iterations to polygonal mesh in co2.iso5.vtk to
+generate smoothed mesh in co2.smoothed.vtk.
+
+
+.SH SEE ALSO
+
+hev-vtkGaussianSmooth, vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+May 15th 2012

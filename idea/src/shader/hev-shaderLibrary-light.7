@@ -1,0 +1,105 @@
+.TH HEV-SHADERLIBRARY-LIGHT 7 "May 2013" "NIST/ACMD" "HCPVG HEV"
+
+.SH NAME
+hev-shaderLibrary-light
+- common GLSL lighting functions includeable in other shaders.
+
+.SH SYNOPSIS
+\fB#include <light.glsl>\fR
+.PP
+(\fI1\fR) \fBfloat diffuse(vec3\fR \fIN\fR\fB, vec3\fR \fIL\fR\fB);\fR
+.br
+(\fI1\fR) \fBfloat specular(vec3\fR \fIN\fR\fB, vec3\fR \fIL\fR\fB, vec3\fR \fIV\fR\fB, float\fR \fIshininess\fR\fB);\fR
+.PP
+(\fI2\fR) \fBvec4 diffuse(gl_LightSourceParameters\fR \fIlgt\fR\fB,
+        gl_MaterialParameters\fR \fImtl\fR\fB, vec3\fR \fINe\fR\fB, vec4\fR \fIPe\fR\fB);\fR
+.br
+(\fI2\fR) \fBvec4 specular(gl_LightSourceParameters\fR \fIlgt\fR\fB,
+        gl_MaterialParameters\fR \fImtl\fR\fB, vec3\fR \fINe\fR\fB, vec4\fR \fIPe\fR\fB);\fR
+.br
+(\fI2\fR) \fBvec4 light(gl_LightSourceParameters\fR \fIlgt\fR\fB,
+        gl_MaterialParameters\fR \fImtl\fR\fB, vec3\fR \fINe\fR\fB, vec4\fR \fIPe\fR\fB);\fR
+.PP
+\fBvec4 light(gl_MaterialParameters\fR \fImtl\fR\fB, vec3\fR \fINe\fR\fB, vec4\fR \fIPe\fR\fB);\fR
+.PP
+\fBvec4 physLight(gl_LightSourceParameters\fR \fIlgt\fR\fB, gl_MaterialParameters\fR \fImtl\fR\fB,
+        vec3\fR \fINe\fR\fB, vec4\fR \fIPe\fR\fB);\fR
+.PP
+\fBvec4 fakeEnv(vec4\fR \fIbaseColor\fR\fB, vec3\fR \fINe\fR\fB, vec4\fR \fIPe\fR\fB);\fR
+.PP
+\fBvec4 selectBlink(vec4\fR \fIcolor0\fR\fB, vec4\fR \fIcolor1\fR\fB, float\fR \fItime\fR\fB);\fR
+
+.SH DESCRIPTION
+
+The
+.BR diffuse ()
+and
+.BR specular ()
+functions labeled (\fI1\fR) compute lighting with all vectors passed into the function.
+.IR N ,
+.IR L ,
+and
+.IR V
+should all be normalized and in the same space.
+.IR N
+is the unit normal vector,
+.IR L
+is the unit light vector, and
+.IR V
+is the unit view vector.
+.IR shininess
+is the specular exponent.
+.PP
+The
+.BR diffuse (),
+.BR specular (),
+and
+.BR light()
+functions labeled (\fI2\fR) compute lighting for a specific OpenGL light,
+.IR lgt ,
+where
+.IR mtl
+is the OpenGL material parameters and
+.IR Ne
+and
+.IR Pe
+are the normal and surface positions in eye space.
+.PP
+The function
+.BR light ()
+computes the combined lighting for all of the fixed function pipeline OpenGL
+lights (\fBgl_MaxLights\fR). The lights are controlled via the
+\fBiris_LightEnabled\fR uniform, which is a \fBbool\fR array for the lights.
+.PP
+The function
+.BR physLight ()
+computes physically plausible lighting contribution for an OpenGL light and
+material based on Lazarov, "Physically-based Lighting in \fICall of Duty:
+Black Ops\fR", \fIAdvances in Real-Time Rendering in Games Course\fR, SIGGRAPH
+2011.
+.PP
+The function
+.BR fakeEnv ()
+computes simple fake high dynamic range Fresnel environment lighting, with
+ground brown and below 1, sky bluish and brighter than 1.
+.PP
+The function
+.BR selectBlink ()
+blends back and forth between two colors to indicate selection.
+
+.SH OPTIONAL STATE
+\fBbool uniform iris_LightEnabled[8];\fR
+.IP
+A boolean flag for each light indicating its enabled status.
+
+.SH BUGS
+The lighting functions do not include the spot light or distance attenuation
+terms.
+
+.SH AUTHOR
+Marc Olano
+
+.SH SEE ALSO
+.BR hev-shaders (7),
+.BR hev-shaderLibrary (7).
+

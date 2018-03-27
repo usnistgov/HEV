@@ -1,0 +1,17 @@
+BUTTON Collab
+  # the name of the clipper GUI window
+    FIRST SET hev-collab collab
+
+  # starts collabfly GUI
+  # $HEV_COLLAB_OPTIONS is an envvar set by collabfly to pass arguments into hev-collab 
+    FIRST EXEC hev-collab $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS -title '$(hev-collab)' --noescape $($HEV_COLLAB_OPTIONS) > $IRIS_CONTROL_FIFO
+    FIRST WAIT irisfly-addAndShowWindow '$(hev-collab)'
+    FIRST WAIT irisfly-select '$(hev-collab)'
+
+  # show and activate the collaboration window when the button in MCP is turned on
+    ON WAIT irisfly-addAndShowWindow '$(hev-collab)'
+    ON WAIT irisfly-select '$(hev-collab)'
+
+  # hide and deactivate the collaboration window when the button in MCP is turned off
+    OFF WAIT irisfly-removeAndHideWindow '$(hev-collab)'
+    OFF WAIT irisfly-deselect

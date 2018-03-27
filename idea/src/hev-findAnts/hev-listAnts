@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# hev-listAnts <file_ext>
+#
+# One optional parameter, <file_ext>, can be
+# any string, including extra extensions. It
+# is appended to a time/date stamp after a
+# dot to make the output filename.
+
+# Call helper script in a clean env and pass all parameters.
+# There should be zero or one paramter, but _hev-listAnts
+# will ignore all but the first, if there are more.
+
+export PRIVATE_BINS="${HEV_IDEA_DIR}/etc/hev-findAnts/bin"
+
+ENV_VARS="HEIGHT=${HEIGHT} TERM=${TERM} HEVROOT=${HEVROOT} PRIVATE_BINS=${PRIVATE_BINS}"
+
+exec -c env -i ${ENV_VARS}  bash --norc --noprofile -c "${PRIVATE_BINS}/_hev-listAnts $@" & 
+wait

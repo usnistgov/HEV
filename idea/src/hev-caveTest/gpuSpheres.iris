@@ -1,0 +1,12 @@
+GROUP gpuSpheres
+LOAD gpuSphere.iris
+MERGESTATE gpuSphere gpuSpheres
+UNLOAD gpuSphere
+CULLING gpuSpheres OFF
+
+LOAD d gpuSpheres.savg
+ADDCHILD d gpuSpheres
+
+UNIFORM gpuSpheres fatpointSize -1
+
+return gpuSpheres

@@ -1,0 +1,923 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 3. Nodes and Groups</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch02.html" title="Chapter 2. An Inventor Sampler"><link rel="next" href="ch04.html" title="Chapter 4. Cameras and Lights"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 3. Nodes and Groups</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5441738"></a>Chapter 3. <a name="id18184"></a>Nodes and Groups</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Build scene graphs using shape, property, and group nodes</p>
+</li>
+<li><p>Explain how nodes inherit values in the scene graph</p>
+</li>
+<li><p>Describe why separator nodes are useful</p>
+</li>
+<li><p>Explain the advantages of shared instancing of nodes in the scene graph</p>
+</li>
+<li><p>Define the term <i>path</i> and explain why paths are needed</p>
+</li>
+<li><p>Set and query field values</p>
+</li>
+<li><p>Ignore specified fields in a node</p>
+</li>
+<li><p>Explain how nodes are deleted in Open Inventor</p>
+</li>
+<li><p>Use Inventor's runtime type-checking mechanism</p>
+</li>
+</ul></div><p>This chapter illustrates how to construct scene graphs from shape, property, and group nodes. It explains general rules for traversing a scene graph, focusing on GL rendering traversal. The concepts of database actions and traversal state are introduced.</p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5441881"></a>The Scene Database</h2></div></div>
+<p>The Inventor <a name="idch031"></a><i>scene database</i> consists of information representing one or more 3D scenes. This database, <a name="idch032"></a><span class="bold"><b>SoDB</b></span>, can contain several <i>scene graphs</i>, as shown in <a href="ch03.html#id32567">Figure 3-1</a>. Each scene graph consists of a related set of 3D objects and attributes. In <a name="idch033"></a><a href="ch03.html#id32567">Figure 3-1</a>, for example, the scene graphs might represent a car, a small house, another car, a large house, and a person. </p>
+<p><div class="figure"><p><a name="id5441932"></a><b>Figure 3-1. <a name="id32567"></a>An Inventor Database</b></p>
+<div class="mediaobject"><img src="figures/3-1.gif"></div></div><br>
+</p>
+<p>You can perform two basic operations, or <i>methods</i>, directly on the scene database. First, you <a name="idch034"></a><i>initialize</i> it:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoDB::init()   
+</pre></td></tr></table><p>This must be the first Inventor call you make. If you use the Inventor Component Library, the database is initialized automatically when you call <a name="idch035"></a><span class="bold"><b>SoXt::init()</b></span> (see <a href="ch16.html#id37269">Chapter 16, &#8220;Inventor Component Library&#8221;</a>). If you are not using components, but you are using interaction or node kits, or both, call <a name="idch036"></a><span class="bold"><b>SoInteraction::init()</b></span>, which initializes the database, interaction, and node kits.</p>
+<p>Second, you can <i>read</i> from a file into the scene database, which adds new scene graphs to it:<a name="idch037"></a><a name="idch038"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoSeparator<span class="bold"><b> readAll<a name="idch039"></a></b></span>(SoInput <i>*in</i>)
+or
+SbBool <span class="bold"><b>read</b></span>(SoInput *<i>in</i>, SoNode *&amp;<i>rootNode</i>) const
+</pre></td></tr></table><p><i>or</i></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SbBool <span class="bold"><b>read</b></span>(SoInput *<i>in</i>, SoPath *&amp;<i>path</i>) const
+</pre></td></tr></table><p>Using the first syntax, Inventor reads all graphs from a file specified by <i>in</i> and returns a pointer to a separator that contains the root nodes of all the scene graphs in the file. Using the second syntax, Inventor reads from a file specified by <i>in</i> and returns a pointer to the resulting root node (<a name="idch0310"></a><i>rootNode</i>). Using the third syntax, Inventor reads a file specified by <i>in</i> and returns a pointer to the resulting path (<i>path</i>). (See <a href="ch03.html#id11203">&#8220;Paths&#8221;</a>.) If an error occurs, the methods return FALSE. (Also see <a href="ch11.html#id13752">Chapter 11, &#8220;File Format&#8221;</a> for more information on <a name="idch0311"></a><span class="bold"><b>SoInput</b></span>.)</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5442247"></a>Scene Graphs</h2></div></div>
+<p>A scene graph consists of one or more <a name="idch0312"></a><i>nodes</i>, each of which represents a geometry, property, or grouping object. Hierarchical scenes are created by adding nodes as children of grouping nodes, resulting in a <a name="idch0313"></a><i>directed acyclic graph.</i></p>
+<div class="note"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/note.png"></td><td align="left" valign="top"><b>Note: </b>	Although Inventor nodes are organized into graphs, Inventor has no enforced policy on how the scene database is organized. You could, for example, create your own nodes that are organized into structures that are not graphs. (See <i>The Inventor Toolmaker</i> for more information on extending the Open Inventor toolkit.)	
+</td></tr></table><hr noshade="noshade"></div><p><a href="ch03.html#id32567">Figure 3-1</a> shows a simple database containing five scene graphs. The top node of a scene graph is called a root node (nodes A through E). Notice how node H is connected to two different parent nodes. This is called <a name="idch0314"></a><a name="idch0315"></a><i>shared instancing. </i>Also note that node E is not connected to any other node in the database. Usually this is a temporary state, and the node is attached to other nodes as you build the scene graph. </p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5442313"></a>Types of Nodes</h2></div></div>
+<p>A <a name="idch0316"></a><i>node</i> is the fundamental element of a scene graph. It contains data and methods that define some specific 3D shape, property, or grouping. When a node is created, it is automatically inserted into the database as a root node. Usually, you connect the node to other nodes in the database to construct a hierarchy.</p>
+<p>Nodes are divided into three basic categories:<a name="idch0317"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p><i>Shape nodes<a name="idch0318"></a></i>, which represent 3D geometric objects</p>
+</li>
+<li><p><i>Property nodes<a name="idch0319"></a></i>, which represent appearance and other qualitative characteristics of the scene</p>
+</li>
+<li><p><i>Group nodes<a name="idch0320"></a></i>, which are containers that collect nodes into graphs</p>
+</li>
+</ul></div><p>These categories are not strict and are used only to help you learn about Inventor classes.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5442437"></a>Creating Nodes</h3></div></div>
+<p>Use the <a name="idch0321"></a><span class="bold"><b>new</b></span> operator to create nodes. For example:<a name="idch0322"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoSphere *headSphere = new SoSphere;
+</pre></td></tr></table><p>Do not allocate nodes in arrays. (See <a href="ch03.html#id24722">&#8220;How Nodes Are Deleted&#8221;.</a>)</p>
+<div class="note"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/note.png"></td><td align="left" valign="top"><b>Note: </b>	Although you create nodes using the <span class="bold"><b>new</b></span> operator, you cannot delete them using <span class="bold"><b>delete</b></span>. See <a href="ch03.html#id24722">&#8220;How Nodes Are Deleted&#8221;</a> for a description of how and when nodes are deleted in Inventor. An understanding of reference counting is vital to your use of Inventor, since you must be aware of the conditions under which a node is automatically deleted.	 <a name="idch0323"></a><a name="idch0324"></a>
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5442531"></a>What's in a Node?</h3></div></div>
+<p>Each node is composed of a set of data elements, known as <a name="idch0325"></a><i>fields</i>, that describe the parameters of the node. For example, a point light-source node (of class <a name="idch0326"></a><span class="bold"><b>SoPointLight</b></span>) contains four fields: <i>intensity</i>, <i>color</i>, <i>location</i>, and <i>on</i>. The <span class="bold"><b>intensity</b></span> field contains a value from 0.0 (no illumination) to 1.0 (maximum illumination). The <span class="bold"><b>color</b></span> field specifies a Red/Green/Blue illumination color for the light source. The <span class="bold"><b>location</b></span> field specifies the position of the light. The <span class="bold"><b>on</b></span> field specifies whether the light is on.</p>
+<p>Inventor defines a number of field types. Each field type has unique methods to get and set its values. Within each node, the fields are named according to their usage. For example, here are a few nodes and their fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>Node</b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+	Fields</b></span></p>
+
+</td></tr><tr valign="top"><td><span class="term">SoCoordinate3<a name="idch0327"></a></span></td><td width="10"> </td><td><p>	point</p>
+
+</td></tr><tr valign="top"><td><span class="term">SoNormal<a name="idch0328"></a></span></td><td width="10"> </td><td><p>	vector</p>
+
+</td></tr><tr valign="top"><td><span class="term">SoMaterial<a name="idch0329"></a></span></td><td width="10"> </td><td><p>	ambientColor<br>
+	diffuseColor<br>
+	specularColor<br>
+	emissiveColor<br>
+	shininess<br>
+	transparency<br>
+</p>
+
+</td></tr><tr valign="top"><td><span class="term">SoPerspectiveCamera<a name="idch0330"></a></span></td><td width="10"> </td><td><p>	<br>
+viewportMapping<br>
+position<br>
+orientation<br>
+aspectRatio<br>
+nearDistance<br>
+farDistance<br>
+focalDistance<br>
+heightAngle</p>
+
+</td></tr></table></div><p>Note that fields that contain multiple values, such as the <span class="bold"><b>point</b></span> field in <span class="bold"><b>SoCoordinate3</b></span>, have singular names.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5442826"></a>What Happens When You Apply an Action to a Node? <i>(Advanced)</i></h3></div></div>
+<p>Each node implements its own action behavior. When you want to perform a particular action on a scene, you create an instance of the action class (for example, <a name="idch0331"></a><span class="bold"><b>SoGLRenderAction<a name="idch0332"></a></b></span> or <a name="idch0333"></a><span class="bold"><b>SoGetBoundingBoxAction</b></span>) and then apply it to the root node of the scene graph. For each action, the database manages a <a name="idch0334"></a><i>traversal state</i>, which is a collection of elements or parameters in the action at a given time. Typically, executing an action involves traversing the graph from top to bottom and left to right. During this traversal, nodes can modify the traversal state, depending on their particular behavior for that action. </p>
+<p>This chapter focuses on the<a name="idch0335"></a><i> OpenGL </i><a name="idch0336"></a><i>rendering action</i>, since one of the primary reasons for constructing a 3D database is to view and manipulate </p>
+<p>objects. The rendering traversal state consists of a set of elements, each of which can be altered by a given class of nodes. When a rendering action is applied, each element is used and interpreted in a specified manner. A few of the elements in the traversal state include the following:<a name="idch0337"></a><a name="idch0338"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>Current geometric transformation</p>
+</li>
+<li><p>Current material components</p>
+</li>
+<li><p>Current lighting model</p>
+</li>
+<li><p>Current drawing style</p>
+</li>
+<li><p>Current text font</p>
+</li>
+<li><p>Current coordinates</p>
+</li>
+<li><p>Current normals</p>
+</li>
+<li><p>Current lights </p>
+</li>
+<li><p>Current viewing specification</p>
+</li>
+</ul></div><p>An <a name="idch0339"></a><span class="bold"><b>SoMaterial</b></span> node, for example, sets the current values in the various material elements of the traversal state. An <a name="idch0340"></a><span class="bold"><b>SoDrawStyle</b></span> node sets the current value in the drawing-style element of the traversal state. Shape nodes, such as <a name="idch0341"></a><span class="bold"><b>SoSphere</b></span>, are especially important in rendering traversal, since they cause their shape to be drawn, using the current values in the traversal state.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5443055"></a>Shape Nodes</h3></div></div>
+<p><i>Shape nodes<a name="idch0342"></a></i> represent 3D geometric objects. They are unique because they describe physical matter that is affected by property and group nodes, and during a rendering action, they actually cause their shape to be drawn on the screen. Classes of shape nodes include <span class="bold"><b>SoSphere</b></span>, <a name="idch0343"></a><span class="bold"><b>SoIndexedFaceSet</b></span>, and <a name="idch0344"></a><span class="bold"><b>SoText3</b></span>. <a href="ch03.html#id23048">Figure 3-2</a> shows the portion of the class tree that contains the shape-node classes.</p>
+<p><div class="figure"><p><a name="id5443125"></a><b>Figure 3-2. <a name="id23048"></a><a name="idch0345"></a>Shape-Node Classes</b></p>
+<div class="mediaobject"><img src="figures/3.2ShapeNodes.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5443145"></a>Property Nodes</h3></div></div>
+<p><i>Property nodes<a name="idch0346"></a></i> represent appearance and qualitative characteristics of the scene, such as surface material, drawing style, or geometric transformation. <a href="ch03.html#id37551">Figure 3-3</a> shows the portion of the class tree that contains the property-node classes. Since property nodes fall naturally into several subgroupings, the scene graph diagrams use three different icons for property nodes:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>The <a name="idch0347"></a><i>transform</i> icon is used for nodes that perform transformations, such as <span class="bold"><b>SoTransform</b></span>, <span class="bold"><b>SoRotation</b></span>, <span class="bold"><b>SoScale</b></span>, <span class="bold"><b>SoTranslation</b></span>, <span class="bold"><b>SoRotationXYZ</b></span>, and <span class="bold"><b>SoResetTransform</b></span>. These nodes are all derived from <a name="idch0348"></a><span class="bold"><b>SoTransformation</b></span>.</p>
+</li>
+<li><p>The <a name="idch0349"></a><i>appearance</i> icon is used forodes that <i>modify an o</i>bject's appearance, such as <span class="bold"><b>SoMaterial</b></span>, <span class="bold"><b>SoMaterialBinding</b></span>, <span class="bold"><b>SoBaseColor</b></span>, <span class="bold"><b>SoComplexity</b></span>, <span class="bold"><b>SoDrawStyle</b></span>, <span class="bold"><b>SoLightModel</b></span>, and <span class="bold"><b>SoFont</b></span>.</p>
+</li>
+<li><p>The <a name="idch0350"></a><i>metrics</i> icon is used for nodes that contain coordinate, normal, and other geometric information, such as <span class="bold"><b>SoCoordinate3</b></span>, <span class="bold"><b>SoCoordinate4</b></span>, <span class="bold"><b>SoProfileCoordinate2</b></span>, <span class="bold"><b>SoProfileCoordinate3</b></span>, <span class="bold"><b>SoNormal</b></span>, and  <span class="bold"><b>SoNormalBinding</b></span>.</p>
+</li>
+</ul></div><p>In general, a property node <a name="idch0351"></a><i>replaces</i> the values in a corresponding element of the traversal state with its own new values. Geometric transformations are one exception to this rule. They <a name="idch0352"></a><i>concatenate</i> with the current transformation.</p>
+<p>Let's take the material node as an example. This node represents the surface and spectral (color) properties of an object. To create a bronze material, first create the material node and then set the field values appropriately:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoMaterial *bronze = new SoMaterial;
+
+// set field values
+bronze-&gt;ambientColor.setValue(.33, .22, .27);
+bronze-&gt;diffuseColor.setValue(.78, .57, .11);
+bronze-&gt;specularColor.setValue(.99, .94, .81);
+bronze-&gt;shininess = .28;
+</pre></td></tr></table><p>If you do not explicitly set the field values for a particular node, Inventor uses the default values for those fields (see the <a name="idch0353"></a><i>Open Inventor C++ Reference Manual</i> for individual nodes). For example, in the preceding example, transparency remains 0.0.</p>
+<p><span class="bold"><b>SoTransform<a name="idch0354"></a></b></span> nodes, which produce geometric transformations, include fields for scaling, rotating, and translating. The following code defines a transform node that translates -1 in the <i>y</i> direction: </p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoTransform *myXform = new SoTransform;
+
+// set field value
+myXform-&gt;translation.setValue(0.0, -1.0, 0.0);
+</pre></td></tr></table><p>In order for this translation to take effect, it must be inserted appropriately into a scene graph (that is, <i>before</i> the shape node to translate).</p>
+<p><div class="figure"><p><a name="id5443578"></a><b>Figure 3-3. <a name="id37551"></a><a name="idch0355"></a>Property-Node Classes</b></p>
+<div class="mediaobject"><img src="figures/3.3PropertyNode.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5443599"></a>Groups</h3></div></div>
+<p>A <a name="idch0356"></a><i>group node</i> is a container for collecting child objects. Groups collect property, shape, and other group nodes into graphs. <a href="ch03.html#id18302">Figure 3-4</a> shows the portion of the class tree that contains the group-node classes. There are a variety of different group-node classes, each with a specialized grouping characteristic.</p>
+<p>When a group node is created, it has no children. The base class for all group nodes is<a name="idch0357"></a><span class="bold"><b> SoGroup</b></span>, and all nodes derived from it have an <a name="idch0358"></a><span class="bold"><b>addChild()</b></span> method.<a name="idch0359"></a></p>
+<p><div class="figure"><p><a name="id5443653"></a><b>Figure 3-4. <a name="id18302"></a><a name="idch0360"></a>Group-Node Classes</b></p>
+<div class="mediaobject"><img src="figures/3.4NodeClasses.gif"></div></div><br>
+</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5443694"></a>Creating Groups</h2></div></div>
+<p>Suppose you want to combine the transform node, the material node, and the sphere node created earlier into a single group, the &#8220;head&#8221; group for a robot object. First, create the <a name="idch0361"></a><span class="bold"><b>SoGroup</b></span>. Then use the <span class="bold"><b>addChild()</b></span> method for each child node, as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoGroup *head = new SoGroup;
+
+head-&gt;addChild(myXform); 
+head-&gt;addChild(bronze); 
+head-&gt;addChild(headSphere); 
+</pre></td></tr></table><p><a href="ch03.html#id39735">Figure 3-5</a> shows a diagram of this group. All scene graph diagrams use the icons shown in <a name="idch0362"></a><a href="pr01.html#id31464">Figure In-1</a>. By convention, all figures show the first child in the group on the left, and ordering of children is from left to right.</p>
+<p><div class="figure"><p><a name="id5443788"></a><b>Figure 3-5. <a name="id39735"></a>Simple Group</b></p>
+<div class="mediaobject"><img src="figures/3-5.gif"></div></div><br>
+</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5443808"></a>Ordering of Children<a name="idch0363"></a></h3></div></div>
+<p>The<span class="bold"><b> addChild()</b></span> method adds the specified node to the <i>end</i> of the list of children in the group, as shown in the preceding code. Each child added to the group has an associated index. The first child in a group has an index of 0, the second child in a group has an index of 1, and so on.<a name="idch0364"></a></p>
+<p>The <a name="idch0365"></a><span class="bold"><b>insertChild(</b></span>) method<a name="idch0366"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+void   		<span class="bold"><b>insertChild</b></span>( SoNode *<i>child</i>, int <i>newChildIndex</i>);
+</pre></td></tr></table><p>inserts a child node into a group at the location specified by <i>newChildIndex</i>. For example,</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoDrawStyle *wireStyle;
+
+wireStyle = new SoDrawStyle;
+wireStyle-&gt;style = SoDrawStyle::LINES;
+// Insert as child 1 (the node right after the first child,
+// which is child 0.
+body-&gt;insertChild(wireStyle, 1);
+</pre></td></tr></table><p>inserts a wireframe drawing-style node as the second child of the body group.</p>
+<p>Other group methods allow you to find out how many children are in a group, to find the index of a particular child, to access the child with a given index, and to remove children.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5443943"></a>Why Is Order Important?</h3></div></div>
+<p>Each node class has its own way of responding to a given database action. For  this discussion, assume you are dealing only with the <a name="idch0367"></a><a name="idch0368"></a><i>GL rendering</i> action (here called simply <i>rendering</i>).</p>
+<div class="itemizedlist"><ul type="disc"><li><p>If the node to be rendered is a <i>group</i> <i>node</i>, it invokes the rendering action on each of its children in order, typically from left to right in the scene graph. <a name="idch0369"></a><a name="idch0370"></a></p>
+</li>
+<li><p>Each child node in turn executes its own rendering method, which then affects the traversal state in some way (see <a href="ch09.html#id14375">Chapter 9, &#8220;Applying Actions&#8221;</a>). If the child node is a <i>property node</i>, it modifies one or more elements in the traversal state, such as the value used for diffuse color, the value used for scaling an object, or the value used for line width. Most property nodes simply <a name="idch0371"></a><i>replace</i> the values for an element in the traversal state. <br>
+(A bronze material node replaces values in the material element with its own new values.) Geometric transformations are exceptions because they <i>combine</i> with each other to make composite transformations.</p>
+</li>
+<li><p>If the child node is a <i>shape node</i>, it draws itself using the current traversal state. </p>
+</li>
+</ul></div><p>During rendering, the scene graph is traversed, starting from the root node, from left to right and from top to bottom. Nodes to the right (and down) in the graph inherit the traversal state set by nodes to the left (and above).</p>
+<p><a href="ch03.html#id34286">Figure 3-6</a> shows how nodes inherit state. When the <i>waterMolecule</i> node is rendered, it visits its first child, <i>oxygen</i>. The <i>oxygen</i> group then visits each of its children, as follows:</p>
+<div class="orderedlist"><ol type="1"><li><p>The material node (<i>redPlastic</i>) changes the material element to a shiny red surface.</p>
+</li>
+<li><p>The sphere node (<i>sphere1</i>) causes a sphere to be rendered using the current traversal state. A shiny red sphere is drawn at the origin.</p>
+</li>
+</ol></div><p>The graph traversal continues to the next group on the right,<i> hydrogen1</i>, which in turn visits each of its children in order from left to right:</p>
+<div class="orderedlist"><ol type="1"><li><p>The transform node (<i>hydrogenXform1</i>) modifies the transformation matrix (let's say it scales by a factor of 0.75 in <i>x</i>, <i>y</i>, and<i> z</i>). It also modifies the transformation matrix by adding a translation of 0.0, -1.2, 0.0 (in <i>x</i>, <i>y</i>, and <i>z</i>).</p>
+</li>
+<li><p>The material node (<i>whitePlastic</i>) changes the material element to a shiny white surface.</p>
+</li>
+<li><p>The sphere node (<i>sphere2</i>) causes another sphere to be rendered using the modified traversal state. This sphere is white. Additionally, <i>sphere2</i> appears in a new location and is scaled down in size, the result of the <span class="bold"><b>SoTransform</b></span> node in its group.</p>
+</li>
+</ol></div><p>Next, the <i>hydrogen2</i> group visits its children, from left to right:</p>
+<div class="orderedlist"><ol type="1"><li><p>The transform node (<i>hydrogenXform2</i>) modifies the transformation matrix, translating in the <i>+x</i> and <i>+y</i> directions.</p>
+</li>
+<li><p>The sphere node (<i>sphere3</i>) causes the third sphere to be rendered using the modified traversal state. This sphere is still white and scaled by 0.75 because it inherits these attributes from the <i>hydrogen1</i> group.  </p>
+<p><div class="figure"><p><a name="id5444355"></a><b>Figure 3-6. <a name="id34286"></a>Combining Groups</b></p>
+<div class="mediaobject"><img src="figures/3-6.gif"></div></div><br>
+</p>
+</li>
+</ol></div><p><a href="ch03.html#id55965">Example 3-1</a> shows the code to create this molecule.</p>
+<div class="example"><p><a name="id5444393"></a><b>Example 3-1. <a name="id55965"></a>Molecule.c++</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Construct all parts
+SoGroup *waterMolecule = new SoGroup;      // water molecule
+
+SoGroup *oxygen = new SoGroup;             // oxygen atom
+SoMaterial *redPlastic = new SoMaterial;
+SoSphere *sphere1 = new SoSphere;
+
+SoGroup *hydrogen1 = new SoGroup;          // hydrogen atoms
+SoGroup *hydrogen2 = new SoGroup;
+SoTransform *hydrogenXform1 = new SoTransform;
+SoTransform *hydrogenXform2 = new SoTransform;
+SoMaterial *whitePlastic = new SoMaterial;
+SoSphere *sphere2 = new SoSphere;
+SoSphere *sphere3 = new SoSphere;
+
+// Set all field values for the oxygen atom
+redPlastic-&gt;ambientColor.setValue(1.0, 0.0, 0.0);  
+redPlastic-&gt;diffuseColor.setValue(1.0, 0.0, 0.0); 
+redPlastic-&gt;specularColor.setValue(0.5, 0.5, 0.5);
+redPlastic-&gt;shininess = 0.5;
+   
+// Set all field values for the hydrogen atoms
+hydrogenXform1-&gt;scaleFactor.setValue(0.75, 0.75, 0.75);  
+hydrogenXform1-&gt;translation.setValue(0.0, -1.2, 0.0);  
+hydrogenXform2-&gt;translation.setValue(1.1852, 1.3877, 0.0);
+whitePlastic-&gt;ambientColor.setValue(1.0, 1.0, 1.0);  
+whitePlastic-&gt;diffuseColor.setValue(1.0, 1.0, 1.0); 
+whitePlastic-&gt;specularColor.setValue(0.5, 0.5, 0.5);
+whitePlastic-&gt;shininess = 0.5;
+
+// Create a hierarchy
+waterMolecule-&gt;addChild(oxygen);   
+waterMolecule-&gt;addChild(hydrogen1);   
+waterMolecule-&gt;addChild(hydrogen2);
+
+oxygen-&gt;addChild(redPlastic);
+oxygen-&gt;addChild(sphere1);
+hydrogen1-&gt;addChild(hydrogenXform1);
+hydrogen1-&gt;addChild(whitePlastic);
+hydrogen1-&gt;addChild(sphere2);
+hydrogen2-&gt;addChild(hydrogenXform2);
+hydrogen2-&gt;addChild(sphere3);
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5444460"></a>Separators<a name="idch0372"></a></h3></div></div>
+<p>To isolate the effects of nodes in a group, use an <a name="idch0373"></a><span class="bold"><b>SoSeparator</b></span> node, which is a subclass of <span class="bold"><b>SoGroup</b></span>. Before traversing its children, an <span class="bold"><b>SoSeparator</b></span> saves the current traversal state. When it has finished traversing its children, the <span class="bold"><b>SoSeparator</b></span> restores the previous traversal state. Nodes within an <span class="bold"><b>SoSeparator</b></span> thus do not affect anything above or to the right in the graph.</p>
+<p><a href="ch03.html#id42598">Figure 3-7</a>, for example, shows the body and head for a robot. The <i>body</i> group, a separator, contains <span class="bold"><b>SoTransform</b></span> and <span class="bold"><b>SoMaterial</b></span> nodes that affect the traversal state used by the cylinder in that group. These values are restored when all children in the <i>body</i> group have been visited, so the <i>head</i> group is unaffected by the <i>body</i>-group nodes. Because the <i>head</i> group is also a separator group, the traversal state is again saved when group traversal begins and restored when group traversal finishes.</p>
+<p>Separators are inexpensive to use and help to structure scene graphs. You will probably use them frequently.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	The root node of a scene graph should be a separator if you want the state to be reset between successive renderings.<a name="idch0374"></a>
+</td></tr></table><hr noshade="noshade"></div><p><div class="figure"><p><a name="id5444674"></a><b>Figure 3-7. <a name="id42598"></a>Separator Groups</b></p>
+<div class="mediaobject"><img src="figures/3-7.gif"></div></div><br>
+</p>
+<p>Code for the robot body and head groups is shown below:<a name="idch0375"></a><a name="idch0376"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// create body parts
+SoTransform *xf1 = new SoTransform;        
+xf1-&gt;translation.setValue(0.0, 3.0, 0.0);
+
+SoMaterial *bronze = new SoMaterial;
+bronze-&gt;ambientColor.setValue(.33, .22, .27);
+bronze-&gt;diffuseColor.setValue(.78, .57, .11);
+bronze-&gt;specularColor.setValue(.99, .94, .81);
+bronze-&gt;shininess = .28;
+
+SoCylinder *myCylinder = new SoCylinder;
+myCylinder-&gt;radius = 2.5;
+myCylinder-&gt;height = 6;
+
+// construct body out of parts
+SoSeparator *body = new SoSeparator;  
+body-&gt;addChild(xf1);       
+body-&gt;addChild(bronze);
+body-&gt;addChild(myCylinder);
+
+// create head parts
+SoTransform *xf2 = new SoTransform;   
+xf2-&gt;translation.setValue(0, 7.5, 0);
+xf2-&gt;scaleFactor.setValue(1.5, 1.5, 1.5);
+
+SoMaterial *silver = new SoMaterial;
+silver-&gt;ambientColor.setValue(.2, .2, .2);
+silver-&gt;diffuseColor.setValue(.6, .6, .6);
+silver-&gt;specularColor.setValue(.5, .5, .5);
+silver-&gt;shininess = .5;
+
+SoSphere *mySphere = new SoSphere;
+
+// construct head out of parts
+SoSeparator *head = new SoSeparator;  
+head-&gt;addChild(xf2);       
+head-&gt;addChild(silver);
+head-&gt;addChild(mySphere);
+   
+// add head and body
+SoSeparator *robot = new SoSeparator;  
+robot-&gt;addChild(body);               
+robot-&gt;addChild(head);
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5444763"></a>Other Subclasses of SoGroup<a name="idch0377"></a></h3></div></div>
+<p>In addition to <span class="bold"><b>SoSeparator</b></span>, other subclasses of <span class="bold"><b>SoGroup</b></span> include the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>SoSwitch<a name="idch0378"></a></p>
+</li>
+<li><p>SoLevelOfDetail<a name="idch0379"></a></p>
+</li>
+<li><p>SoSelection (see <a name="idch0380"></a><a href="ch10.html#id10433">Chapter 10, &#8220;Handling Events and Selection&#8221;</a>)</p>
+</li>
+</ul></div><p>In the robot example, <span class="bold"><b>SoSeparator</b></span> nodes are used to contain the effects of nodes within a particular group in the scene graph; you do not want the head to inherit the transformation or material attributes from the body group. Conversely, the molecule example uses <span class="bold"><b>SoGroup</b></span> nodes to accumulate a set of properties to apply to other nodes later in the graph.</p>
+<div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5444877"></a>SoSwitch</h4></div></div>
+<p>An <span class="bold"><b>SoSwitch</b></span> node is exactly like an <span class="bold"><b>SoGroup</b></span> except that it visits only one of its children. It  contains one field, <span class="bold"><b>whichChild</b></span>, which specifies the index of the child to traverse. For example, the following code specifies to visit node <i>c</i> of switch <i>s</i>:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoSwitch *s = new SoSwitch;
+s-&gt;addChild(a);							// this child has an index of 0
+s-&gt;addChild(b);							// this child has an index of 1
+s-&gt;addChild(c);							// this child has an index of 2
+s-&gt;addChild(d);							// this child has an index of 3
+s-&gt;whichChild = 2;							// specifies to visit child(c)
+</pre></td></tr></table><p>The default setting of <span class="bold"><b>whichChild</b></span> is SO_SWITCH_NONE, which specifies to traverse none of the group's children.</p>
+<p>You can use an <span class="bold"><b>SoSwitch</b></span> node to switch between several different camera nodes for viewing a scene. You can also use an <span class="bold"><b>SoSwitch</b></span> node for rudimentary animation. By cycling through a series of groups, you can, for example, make the wings on a duck flap up and down or make a robot walk across the screen. <a name="idch0381"></a><span class="bold"><b>SoBlinker</b></span>, derived from <span class="bold"><b>SoSwitch</b></span>, cycles among its children (see <a href="ch13.html#id11499">Chapter 13, &#8220;Engines&#8221;</a>) and provides some additional controls useful for animation.</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5445033"></a>SoLevelOfDetail<a name="idch0382"></a></h4></div></div>
+<p>The SoLevelOfDetail node allows you to specify the same object with varying levels of detail. The children of this node are arranged from highest to lowest level of detail. The size of the objects when projected into the viewport determines which child to use. This node is very useful for applications requiring the fastest rendering possible. It has one field:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>screenArea</b></span> (SoMFFloat)</span></td><td width="10"> </td><td><p><br>
+areas on the screen to use for comparison with the bounding box of the level-of-detail group. By default, this value is 0.0, so the first child in the group is traversed.</p>
+
+</td></tr></table></div><p>To determine which child to traverse, Inventor computes the 3D bounding box of all children in the level-of-detail group.  It projects that bounding box onto the viewport and then computes the area of the screen-aligned rectangle that surrounds the bounding box. This area is then compared to the areas stored in the <span class="bold"><b>screenArea</b></span> field. For example, <a href="ch03.html#id21838">Figure 3-8</a> shows a level-of-detail node with three children. Suppose the <span class="bold"><b>screenArea</b></span> field contains the values [400.0, 100.0].  If the bounding-box projection of the group is 390.0 square pixels (that is, less than 400.0 but greater than 100.0), then <i>childB</i> is traversed.  If the bounding-box projection of the group is 450.0 pixels (that is, greater than 400.0, then <i>childA</i> is traversed. If the bounding-box projection is less than 100.0, <i>childC</i> is traversed.</p>
+<p>The<span class="bold"><b> SoComplexity<a name="idch0383"></a></b></span> node, discussed in <a href="ch05.html#id16293">Chapter 5, &#8220;Shapes, Properties, and Binding&#8221;</a>, also affects the child selection for the level-of-detail node. If complexity is 0.0 or is of type BOUNDING_BOX, the last child in<span class="bold"><b> SoLevelOfDetail</b></span> is always traversed. If complexity is 1.0, the first child is always used. If the complexity value is greater than 0.0 and less than 0.5, the computed size of the bounding rectangle is scaled down appropriately to use a less detailed representation. If the complexity value is greater than 0.5, the size of the bounding rectangle is scaled up appropriately. If the complexity is 0.5, Inventor uses the computed size of the bounding rectangle as is.</p>
+<p><a href="ch03.html#id33238">Figure 3-9</a> shows an object modeled with different levels of detail. Each group of candlesticks is arranged with the most detailed model at the left, a medium level of detail in the middle, and the least detailed model at the right. When the candlestick is close to the camera (as in the first group at the left of <a href="ch03.html#id33238">Figure 3-9</a>), the most detailed model would be used.  This model uses a texture on the base of the candlestick and has a detailed candle with a wick. When the object is farthest away, the least detailed model can be used since the details are not visible anyway. When the object is mid-range (the center group of <a href="ch03.html#id33238">Figure 3-9</a>), the middle model would be used.</p>
+<p><div class="figure"><p><a name="id5445287"></a><b>Figure 3-8. <a name="id21838"></a>Scene Graph with Level-of-Detail Node</b></p>
+<div class="mediaobject"><img src="figures/3-8.gif"></div></div><br>
+<div class="figure"><p><a name="id5445305"></a><b>Figure 3-9. <a name="id33238"></a>Different Levels of Detail for an Object</b></p>
+<div class="mediaobject"><img src="figures/3.9.LOD.gif"></div></div><br>
+</p>
+</div></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5445330"></a>Shared Instancing of Nodes<a name="idch0384"></a></h2></div></div>
+<p>You can add any node to more than one group. A bicycle, for example, might use the same basic wheel group for both the front and rear wheels, with slight modifications for size and location of the two wheels. The term <i>shared instancing</i> refers to such cases, where a single node has more than one parent.</p>
+<p>The robot example can instance the <i>leg</i> group twice to form a left and right leg, as shown in <a href="ch03.html#id11503">Figure 3-10</a>. The basic <i>leg</i> group contains nodes for a cylinder (the thigh), a transformed cylinder (the calf), and a transformed cube (the foot). The left and right leg groups (the parents:<i> rightLeg</i> and <i>leftLeg</i>) each contain an additional <span class="bold"><b>SoTransform</b></span> node to position the complete legs correctly onto the robot's body.</p>
+<p>Any change made within the <i>leg</i> group is reflected in all instances of it. Here, for example, if the height of the cube in the <i>foot</i> node is doubled, both the left and right feet double in height.</p>
+<p>Shared instancing offers database and program economy, since objects can be reused without duplicating them. You save both time and space by reusing nodes (and groups) when possible.</p>
+<p>Do not, however, create cycles within a given scene graph. A node can connect to multiple parents but should not be a child of itself or any of its descendants.</p>
+<p><div class="figure"><p><a name="id5445422"></a><b>Figure 3-10. <a name="id11503"></a>Scene Graph Showing Shared Instancing of the Leg Group</b></p>
+<div class="mediaobject"><img src="figures/3-10.gif"></div></div><br>
+</p>
+<p><a href="ch03.html#id84199">Example 3-2</a> shows the code for the robot as described up to this point. The rendered image is shown in <a href="ch03.html#id17983">Figure 3-11</a>.</p>
+<div class="example"><p><a name="id5445486"></a><b>Example 3-2. <a name="id84199"></a>Robot.c++</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Robot with legs
+
+// Construct parts for legs (thigh, calf and foot)
+SoCube *thigh = new SoCube;     
+thigh-&gt;width = 1.2;
+thigh-&gt;height = 2.2;
+thigh-&gt;depth = 1.1;
+
+SoTransform *calfTransform = new SoTransform;
+calfTransform-&gt;translation.setValue(0, -2.25, 0.0);
+
+SoCube *calf = new SoCube;
+calf-&gt;width = 1;
+calf-&gt;height = 2.2;
+calf-&gt;depth = 1;
+
+SoTransform *footTransform = new SoTransform;
+footTransform-&gt;translation.setValue(0, -2, .5);
+
+SoCube *foot = new SoCube;
+foot-&gt;width = 0.8;
+foot-&gt;height = 0.8;
+foot-&gt;depth = 2;
+
+// Put leg parts together
+SoGroup *leg = new SoGroup;      
+leg-&gt;addChild(thigh);
+leg-&gt;addChild(calfTransform);
+leg-&gt;addChild(calf);
+leg-&gt;addChild(footTransform);
+leg-&gt;addChild(foot);
+
+SoTransform *leftTransform = new SoTransform;
+leftTransform-&gt;translation = SbVec3f(1, -4.25, 0);
+
+// Left leg
+SoSeparator *leftLeg = new SoSeparator;   
+leftLeg-&gt;addChild(leftTransform);
+leftLeg-&gt;addChild(leg);
+
+SoTransform *rightTransform = new SoTransform;
+rightTransform-&gt;translation.setValue(-1, -4.25, 0);
+
+// Right leg
+SoSeparator *rightLeg = new SoSeparator;   
+rightLeg-&gt;addChild(rightTransform);
+rightLeg-&gt;addChild(leg);
+
+// Parts for body
+SoTransform *bodyTransform = new SoTransform;    
+bodyTransform-&gt;translation.setValue(0.0, 3.0, 0.0);
+
+SoMaterial *bronze = new SoMaterial;
+bronze-&gt;ambientColor.setValue(.33, .22, .27);
+bronze-&gt;diffuseColor.setValue(.78, .57, .11);
+bronze-&gt;specularColor.setValue(.99, .94, .81);
+bronze-&gt;shininess = .28;
+
+SoCylinder *bodyCylinder = new SoCylinder;
+bodyCylinder-&gt;radius = 2.5;
+bodyCylinder-&gt;height = 6;
+
+// Construct body out of parts 
+SoSeparator *body = new SoSeparator;  
+body-&gt;addChild(bodyTransform);      
+body-&gt;addChild(bronze);
+body-&gt;addChild(bodyCylinder);
+body-&gt;addChild(leftLeg);
+body-&gt;addChild(rightLeg);
+
+// Head parts
+SoTransform *headTransform = new SoTransform;   
+headTransform-&gt;translation.setValue(0, 7.5, 0);
+headTransform-&gt;scaleFactor.setValue(1.5, 1.5, 1.5);
+
+SoMaterial *silver = new SoMaterial;
+silver-&gt;ambientColor.setValue(.2, .2, .2);
+silver-&gt;diffuseColor.setValue(.6, .6, .6);
+silver-&gt;specularColor.setValue(.5, .5, .5);
+silver-&gt;shininess = .5;
+
+SoSphere *headSphere = new SoSphere;
+
+// Construct head
+SoSeparator *head = new SoSeparator;      
+head-&gt;addChild(headTransform);
+head-&gt;addChild(silver);
+head-&gt;addChild(headSphere);
+   
+// Robot is just head and body
+SoSeparator *robot = new SoSeparator;  
+robot-&gt;addChild(body);               
+robot-&gt;addChild(head);
+</pre></td></tr></table><br><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	When constructing a complicated scene graph, you may want to define the graph using the Inventor file format (see <a name="idch0385"></a><a href="ch11.html#id13752">Chapter 11, &#8220;File Format&#8221;</a>) and read the graph from a file or from a string in memory.  This approach can be easier and less error-prone than constructing the scene graph programmatically.
+</td></tr></table><hr noshade="noshade"></div><p><div class="figure"><p><a name="id5445583"></a><b>Figure 3-11. <a name="id17983"></a>  Rendered Image of the Robot</b></p>
+<div class="mediaobject"><img src="figures/3.11.robot.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5445604"></a><a name="id11203"></a>Paths</h2></div></div>
+<p><i>Paths<a name="idch0386"></a></i> are used to isolate particular objects in the scene graph. Suppose you want to refer to the left foot of the robot. Which node in <a href="ch03.html#id11503">Figure 3-10</a> represents the left foot? You can't refer simply to the <i>foot</i> node, since that node is used for both the left and right feet. The answer is that the left foot is represented by the path, or chain, starting at the <i>robot</i> node (the root), and leading all the way down the graph to the <i>foot</i> node. <a href="ch03.html#id31082">Figure 3-12</a> indicates the path for the left <i>foot</i> node.</p>
+<p>A path contains references to a chain of nodes, each of which is a child of the previous node. A path represents a scene graph or subgraph (part of a scene graph). In scene graph diagrams in this book, a path is represented by a heavy line that connects the chain of nodes.<a name="idch0387"></a></p>
+<p><div class="figure"><p><a name="id5445728"></a><b>Figure 3-12. <a name="id31082"></a><a name="idch0388"></a>Path Representing the Left Foot</b></p>
+<div class="mediaobject"><img src="figures/3-12.gif"></div></div><br>
+</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5445752"></a>Where Do Paths Come From?</h3></div></div>
+<p>Paths are returned by a <a name="idch0389"></a><i>picking</i> or <a name="idch0390"></a><i>search</i> action, and you can construct your own path. (See <a href="ch09.html#id14375">Chapter 9, &#8220;Applying Actions,&#8221;</a> for a detailed description of interactive picking.) The user of an interactive application might click the mouse over an object on the screen, causing the object to be picked, and then perform an operation on that object&#8212;for example, moving it, changing its color, or deleting it. The selection node manages a list of paths as the currently selected objects.<a name="idch0391"></a></p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5445802"></a>What Are Paths Used For?</h3></div></div>
+<p>All actions that can be performed on a node can also be performed on a path. These actions include calculating a bounding box and origin for the path, accumulating a transformation matrix for it, and writing the path to a file.<a name="idch0392"></a></p>
+<p>How you use the information included in a path depends on your application. You may use the whole path, or only part of the path. If your user clicks the mouse on the robot's left foot, is the user selecting the whole robot, the left leg, or just the left foot? (Perhaps one click selects the whole robot, and subsequent clicks select parts of the robot that are lower in the graph, such as the left leg and foot.)</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5445852"></a><a name="id32936"></a>Fields within a Node<a name="idch0393"></a></h2></div></div>
+<p>When you create a node, its fields are already set to predefined values. Afterward, you can change the values in its fields directly. The syntax for setting the value of a field depends on the type of the field and whether it is a single-value or multiple-value field. The following example creates a drawing-style node and sets its fields:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoDrawStyle *d = new SoDrawStyle;
+d-&gt;style.setValue(SoDrawStyle::LINES) ; 
+d-&gt;lineWidth.setValue(3) ;
+d-&gt;linePattern.setValue(0xf0f0);
+</pre></td></tr></table><p>The current drawing style is now nonfilled, dashed outlines, with a line width of 3 pixels. If you do not set the field values explicitly, Inventor uses the default values for that node. Default values for <a name="idch0394"></a><span class="bold"><b>SoDrawStyle</b></span> nodes are as follows:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>Field</b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+Default Values</b></span></p>
+
+</td></tr><tr valign="top"><td><span class="term">style</span></td><td width="10"> </td><td><p>SoDrawStyle::FILLED</p>
+
+</td></tr><tr valign="top"><td><span class="term">lineWidth</span></td><td width="10"> </td><td><p>1</p>
+
+</td></tr><tr valign="top"><td><span class="term">linePattern</span></td><td width="10"> </td><td><p>0xffff (solid)</p>
+
+</td></tr></table></div><p>pointSize	1</p>
+<p>The following sections discuss setting and getting values for different types of fields.  See also <a href="ch13.html#id11499">Chapter 13, &#8220;Engines,&#8221;</a>, which discusses field-to-field connections as well as several special types of fields&#8212;<i>global</i> fields and <i>trigger</i> fields.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5446089"></a>Why Fields? <i>(Advanced)</i></h3></div></div>
+<p>You may be wondering why Inventor nodes have fields instead of simple member variables.  This section outlines a few of the mechanisms provided by fields. <a name="idch0395"></a><i>The Inventor Toolmaker</i> provides additional background on these topics.</p>
+<p>First, fields provide consistent methods for setting and inquiring values, as described in the following sections and in the<i> Open Inventor C++ Reference Manual</i>. Second, fields provide a mechanism for Inventor to detect changes to the database. Third, you can connect fields in one node to fields in another node, as described in <a name="idch0396"></a><a href="ch13.html#id11499">Chapter 13, &#8220;Engines,&#8221;</a>. Finally, fields provide a consistent and automatic way to read and write node values.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5446143"></a>Single- versus Multiple-Value Fields</h3></div></div>
+<p>A single-value field has one value of a given type. Single-value fields include the letters <a name="idch0397"></a><span class="bold"><b>SF</b></span> in their class name. For example:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>SoSFBool</b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b></b></span>contains an <span class="bold"><b>SbBool</b></span></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SoSFFloat</b></span></span></td><td width="10"> </td><td><p>contains a single <span class="bold"><b>float</b></span></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SoSFRotation</b></span></span></td><td width="10"> </td><td><p><br>
+contains an <span class="bold"><b>SbRotation</b></span></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SoSFName</b></span></span></td><td width="10"> </td><td><p>contains an <span class="bold"><b>SbName</b></span></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SoSFColor</b></span></span></td><td width="10"> </td><td><p>contains a single <span class="bold"><b>SbColor</b></span> </p>
+
+</td></tr></table></div><p>Single-value fields are used for nodes that have no use for arrays of values, such as a line pattern, a translation value, a rotation value, or a camera aspect ratio.</p>
+<p>A multiple-value field contains an array of values. Multiple-value fields include the letters <a name="idch0398"></a><span class="bold"><b>MF</b></span> in their class name&#8212;for example, <span class="bold"><b>SoMFBool</b></span>, <span class="bold"><b>SoMFFloat</b></span>, <span class="bold"><b>SoMFVec3f</b></span>, and <span class="bold"><b>SoMFColor</b></span>. Multiple-value fields are used for coordinate points and normal vectors. They are also used for materials, so that you can assign different colors to different vertices. Most fields have both <span class="bold"><b>SF</b></span> and <span class="bold"><b>MF</b></span> forms. See the <i>Open Inventor C++ Reference Manual</i> for descriptions of fields within each node class.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5446412"></a>Single-Value Fields: Setting and Getting Values</h3></div></div>
+<p>The examples earlier in this chapter show how to declare and create nodes. This section provides additional examples of the syntax for setting and getting values for single-value fields within the nodes. (Most fields have a <a name="idch0399"></a><a name="idch03100"></a><span class="bold"><b>setValue()</b></span> and <a name="idch03101"></a><span class="bold"><b>getValue()</b></span> method and can also use the = operator to set values.)<a name="idch03102"></a></p>
+<div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5446475"></a>Floats, Longs, and Shorts</h4></div></div>
+<p>This first example sets the value in the <span class="bold"><b>height</b></span> field of an <a name="idch03103"></a><span class="bold"><b>SoOrthographicCamera</b></span> node through use of the <span class="bold"><b>setValue() </b></span>method. This field is of type <a name="idch03104"></a><span class="bold"><b>SoSFFloat</b></span>:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoOrthographicCamera *cam = new SoOrthographicCamera;
+cam-&gt;height.setValue(1.);
+</pre></td></tr></table><p>or</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+cam-&gt;height = 1.; // = operator has been defined for this field
+</pre></td></tr></table><p>To get the value for this field, use the <span class="bold"><b>getValue()</b></span> method:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+float result = cam-&gt;height.getValue();
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5446599"></a>Vectors<a name="idch03105"></a></h4></div></div>
+<p>You can specify an <a name="idch03106"></a><span class="bold"><b>SoSFVec3f</b></span> field in several different formats.  Each defines a 3D vector:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>You can set it from a vector (an <span class="bold"><b>SbVec3f</b></span>).</p>
+</li>
+<li><p>You can set it from three floats (either a vector or three separate values).</p>
+</li>
+<li><p>You can set it from an array of three floats.</p>
+</li>
+</ul></div><p>The following examples show how to set values for <span class="bold"><b>SoSFVec3f</b></span> fields.<br>
+An <span class="bold"><b>SoTransform</b></span> node has a field, <span class="bold"><b>translation</b></span>, which is an <span class="bold"><b>SoSFVec3f</b></span> field that contains one value of type <span class="bold"><b>SbVec3f</b></span>. The variable <i>xform</i> is a transform-node instance.</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoTransform *xform = new SoTransform;
+
+//(1) Setting the field from a vector
+
+	SbVec3f vector;
+	vector.setValue(2.5, 3.5, 0.0);
+xform-&gt;translation.setValue(vector);
+	// or: xform-&gt;translation = vector;
+	
+	
+//(2a) Setting the field from a vector of three floats
+ 	
+	xform-&gt;translation.setValue(SbVec3f(2.5, 3.5, 0.0));
+	// or: xform-&gt;translation = SbVec3f(2.5, 3.5, 0.0);
+	
+	
+//(2b) Setting the field from three floats
+	
+	float x = 2.5, y = 3.5, z = 0.0;
+xform-&gt;translation.setValue(x, y, z);
+	
+	
+	//(3) Setting the field from an array of three floats
+	
+	float floatArray[3];
+floatArray[0] = 2.5;
+floatArray[1] = 3.5;
+floatArray[2] = 0.0;
+xform-&gt;translation.setValue(floatArray);
+</pre></td></tr></table><p>Use the <span class="bold"><b>getValue()</b></span> method to get values for a field. This example copies the vector, changes it, and copies it back:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SbVec3f t = xform-&gt;translation.getValue();
+
+t[0] += 1.0;
+xform-&gt;translation.setValue(t);
+// or: xform-&gt;translation = t;
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5446782"></a>Rotations</h4></div></div>
+<p>A rotation field specifies a rotation in 3D space. Since an <a name="idch03107"></a><a name="idch03108"></a><span class="bold"><b>SbRotation</b></span> represents rotation around an axis by an angle, you can set its value by specifying the axis and angle:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SbRotation r;
+SbVec3f axis(0., 1., 0.);
+float angle = M_PI; //from math.h
+r.setvalue(axis, angle);
+// or SbRotation r(SbVec3f(0., 1., 1.), M_PI);
+</pre></td></tr></table><p>You can also define a rotation to rotate one direction vector into another, as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SbRotation r(SbVec3f(0.0, 0.0, 1.0), SbVec3f(0.0, 1.0, 0.0));
+</pre></td></tr></table><p>To set the value of the <span class="bold"><b>rotation</b></span> field of an <span class="bold"><b>SoTransform</b></span> node:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoTransform *xform = new SoTransform;
+xform -&gt;rotation = r;
+</pre></td></tr></table><p>You can also use <span class="bold"><b>setValue()</b></span> to set the value of a <span class="bold"><b>rotation</b></span> field and supply an axis and angle, a quaternion, or two vectors.</p>
+<p>The = (assignment) operator can be used to set a field's value from another field of the same type. As with vectors, <a name="idch03109"></a><span class="bold"><b>getValue()</b></span> returns the value of the field. </p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	If you want to specify a rotation as an axis/angle, you must pass an <span class="bold"><b>SbVec3f</b></span> and a float.  Passing four floats specifies a quaternion.
+</td></tr></table><hr noshade="noshade"></div><br></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5446966"></a>Multiple-Value Fields: Setting and Getting Values<a name="idch03110"></a></h3></div></div>
+<p>The <a name="idch03111"></a><span class="bold"><b>SoMaterial</b></span> node contains the following fields:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>Field Name</b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+Class</b></span></p>
+
+</td></tr><tr valign="top"><td><span class="term">ambientColor</span></td><td width="10"> </td><td><p>SoMFColor</p>
+
+</td></tr><tr valign="top"><td><span class="term">diffuseColor</span></td><td width="10"> </td><td><p>SoMFColor</p>
+
+</td></tr><tr valign="top"><td><span class="term">specularColor</span></td><td width="10"> </td><td><p>SoMFColor</p>
+
+</td></tr><tr valign="top"><td><span class="term">emissiveColor</span></td><td width="10"> </td><td><p>SoMFColor</p>
+
+</td></tr><tr valign="top"><td><span class="term">shininess</span></td><td width="10"> </td><td><p>SoMFFloat</p>
+
+</td></tr><tr valign="top"><td><span class="term">transparency</span></td><td width="10"> </td><td><p>SoMFFloat</p>
+
+</td></tr></table></div><p>These examples show different styles for setting the fields of an <span class="bold"><b>SoMaterial</b></span> node. The <span class="bold"><b>transparency</b></span> field is of type <span class="bold"><b>SoMFFloat</b></span>, so it contains one or more values of type<span class="bold"><b> float</b></span>. The <span class="bold"><b>diffuseColor</b></span> field is of type <span class="bold"><b>SoMFColor</b></span>, so it contains one or more values of type <span class="bold"><b>SbColor</b></span>. The syntax for setting multiple values in an <span class="bold"><b>SoMFFloat</b></span> field is as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+<i>nodeName</i><span class="bold"><b>-&gt;</b></span><i>fieldName</i><span class="bold"><b>.setValues</b></span>(<i>starting index, number of values, pointer 							   	to array of values</i>);
+</pre></td></tr></table><p>For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoMaterial *mtl;
+float vals[3];
+vals[0] = 0.2;
+vals[1] = 0.5;
+vals[2] = 0.9;
+mtl-&gt;transparency.setValues(0, 3, vals);
+</pre></td></tr></table><p>Space for the array is reallocated when necessary. The values are copied in from the array. An example of setting a multiple-value field that uses an <span class="bold"><b>Sb</b></span> type is as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoMaterial *mtl;
+SbVec3f vals[3];
+
+vals[0].setValue(1.0, 0.0, 0.0);
+vals[1].setValue(0.0, 1.0, 0.0);
+vals[2].setValue(0.0, 0.0, 1.0);
+mtl-&gt;diffuseColor.setValues(0, 3, vals);
+</pre></td></tr></table><p>If you want to set only one value in an <span class="bold"><b>SoMFFloat</b></span> field, you can use the following shorthand method:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+<i>nodeName</i>-&gt;<i>fieldName</i>.<span class="bold"><b>setValue</b></span>(<i>value1</i>);
+</pre></td></tr></table><p>For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+mtl-&gt;transparency.setValue(.25); 
+//or mtl-&gt;transparency = .25;
+<a name="idch03112"></a></pre></td></tr></table><p>This short method sets the number of values equal to 1 and sets the field to the specified value. However, it also throws away any subsequent values that were previously set in the array, so you should use it only to set the field to have one value. Use the longer method (<a name="idch03113"></a><span class="bold"><b>setValues</b></span>) or the  <a name="idch03114"></a><span class="bold"><b>set1Value()</b></span> method if you want to change one value in the array and preserve the rest of the values.</p>
+<p>You can use the [ ] operator to get a particular value within a multiple-value field as follows:<a name="idch03115"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+f = myMtl-&gt;transparency[13]; // get 14th value of array
+</pre></td></tr></table><p>You can also create loops to access all values in the field:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+for (i = 0; i &lt; myMtl-&gt;transparency.getNum(); i++) {
+      printf(&quot;transparency value %d is %g\n&quot;, i, 
+               myMtl-&gt;transparency[i]);
+}
+</pre></td></tr></table><p>To insert values in the middle of a field:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+float newValues[2];
+newValues[0] = 0.1;
+newValues[1] = 0.2;
+
+// First, make space; after this, myMtl-&gt;transparency[10] 
+// and myMtl-&gt;transparency[11] will have arbitrary values:
+
+myMtl-&gt;transparency.insertSpace(10, 2);
+
+// Set the space created to the right values:
+
+myMtl-&gt;transparency.setValues(10, 2, newValues);
+</pre></td></tr></table><p>To delete values from a field:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Delete myMtl-&gt;transparency[8] and myMtl-&gt;transparency[9];
+// the values in myMtl-&gt;transparency[10] on up will be moved
+// down to fill in the missing space, and the transparency
+// array will have two fewer values.
+
+myMtl-&gt;transparency.deleteValues(8, 2);
+</pre></td></tr></table><p>See the <i>Open Inventor C++ Reference Manual</i> for additional methods used to edit <span class="bold"><b>MF</b></span> fields.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5447525"></a>Ignore Flag <i>(Advanced)</i></h3></div></div>
+<p>Every field has an Ignore flag associated with it. Use the <a name="idch03116"></a><a name="idch03117"></a><span class="bold"><b>setIgnored()</b></span> method to set or reset the Ignore flag. When this flag is set, the field is disregarded. This flag enables you to ignore certain fields in a node and to use others. For example, to ignore the specular color field in a material node so the value is inherited from the previous material:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoMaterial *bronze = new SoMaterial;
+
+bronze-&gt;ambientColor.setValue(.33, .22, .27);
+bronze-&gt;diffuseColor.setValue(.78, .57, .11);
+bronze-&gt;specularColor.setIgnored(TRUE);
+bronze-&gt;shininess = .28;
+</pre></td></tr></table><p>To turn the Ignore flag off:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+bronze-&gt;specularColor.setIgnored(FALSE);
+</pre></td></tr></table><p>The <a name="idch03118"></a><span class="bold"><b>isIgnored()</b></span> method returns TRUE if the Ignore flag for this field is set:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+if (bronze-&gt;specularColor.isIgnored()) {
+   printf(&quot;Yes, specular is ignored\n&quot;);
+}
+</pre></td></tr></table><p>Some fields are not inherited and are thus not affected by the Ignore flag.  Examples of fields that are <i>not</i> inherited are the fields of shape nodes, light-source nodes, some groups, and cameras, as well as the fields in the <span class="bold"><b>SoEnvironment<a name="idch03119"></a></b></span> node. If you set the Ignore flag for a field whose values are not inherited, Inventor simply uses the field's default values.</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5447662"></a>Override Flag <i>(Advanced)</i></h2></div></div>
+<p>Every node has an Override flag associated with it. The Override flag is a powerful mechanism typically used (sparingly) near the top of a scene graph. When this flag is set, any nodes of the same type encountered later in the graph are ignored even if they also have their Override flag set. For example, you might insert a line-style <a name="idch03120"></a><a name="idch03121"></a><span class="bold"><b>SoDrawStyle</b></span> node at the top of a graph to ensure that the whole scene is drawn as wireframe objects, regardless of drawing styles specified lower in the scene graph. Use the <a name="idch03122"></a><span class="bold"><b>setOverride()</b></span> method to set and reset the Override flag. The <a name="idch03123"></a><span class="bold"><b>isOverride()</b></span> method returns the state of the Override flag. </p>
+<p>For example: </p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// This function toggles the given draw-style node between 
+// overriding any other draw-style nodes below it in the scene 
+// graph, and not having any effect at all on the scene graph.
+//
+void
+toggleWireframe(SoDrawStyle *myDrawStyle)
+{
+   if (myDrawStyle-&gt;isOverride()) {
+      myDrawStyle-&gt;style.setIgnored(TRUE);
+      myDrawStyle-&gt;setOverride(FALSE);
+   } else {
+      myDrawStyle-&gt;style = SoDrawStyle::LINES;
+      myDrawStyle-&gt;style.setIgnored(FALSE);
+      myDrawStyle-&gt;setOverride(TRUE);
+   }
+}
+</pre></td></tr></table><p>Normally, the Override flag is not used within a scene graph for modeling. Use it in applications where you need to specify a temporary change to the whole graph. </p>
+<div class="note"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/note.png"></td><td align="left" valign="top"><b>Note: </b>	The Override flag is not written to a file (see <a name="idch03124"></a><a href="ch11.html#id13752">Chapter 11, &#8220;File Format,&#8221;</a>).
+</td></tr></table><hr noshade="noshade"></div><p>Setting the Override flag on a node whose field values are not inherited (for example, on a sphere with a radius of 7) has no effect on other nodes in the graph of that type.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5447829"></a>References and Deletion</h2></div></div>
+<p>Although nodes are created in the usual C++ fashion, the procedure for deleting nodes differs from the C++ style. The following discussion explains how a node counts references to itself and when these references are incremented and decremented. It outlines the proper procedure for unreferencing a node, which results in the node's deletion.<a name="idch03125"></a></p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5447847"></a>Reference Counting<a name="idch03126"></a></h3></div></div>
+<p>Each node stores the number of references made to that node within the database. There are several different types of references for nodes:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Parent-child link</p>
+</li>
+<li><p>Path-node link<a name="idch03127"></a></p>
+</li>
+</ul></div><p>Engines also store a reference count (see <a href="ch13.html#id11499">Chapter 13, &#8220;Engines,&#8221;</a>).  This count is incremented when the output of an engine is connected to a field. You can also increment or decrement the reference count manually, by calling <a name="idch03128"></a><span class="bold"><b>ref()</b></span> or <span class="bold"><b>unref()</b></span>.</p>
+<p><a href="ch03.html#id11102">Figure 3-13</a> shows the reference counts for nodes in a small subgraph. Whenever you create a reference to a node, you increment its count. The action</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+A-&gt;addChild(B)
+</pre></td></tr></table><p>adds node B to node A and also increments the reference count for node B by 1. In <a href="ch03.html#id11102">Figure 3-13</a> node C has a reference count of 2 because it has been added to two different parent groups. At this point, nodes A and D contain 0 references.</p>
+<p><div class="figure"><p><a name="id5447980"></a><b>Figure 3-13. <a name="id11102"></a>Reference Counts</b></p>
+<div class="mediaobject"><img src="figures/3-13.gif"></div></div><br>
+</p>
+<p>Referencing a node in a path also increments the node's reference count, as shown in <a href="ch03.html#id30433">Figure 3-14</a>. The reference count for node A now becomes 1, and the reference count for node B becomes 2.</p>
+<p><div class="figure"><p><a name="id5448018"></a><b>Figure 3-14. <a name="id30433"></a><a name="idch03129"></a>Incrementing the Reference Count</b></p>
+<div class="mediaobject"><img src="figures/3-14.gif"></div></div><br>
+</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Be sure to reference the root of the scene graph:  root-&gt;ref(). This node is not referenced by being a child of anything else.<a name="idch03130"></a>
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5448089"></a><a name="id24722"></a>How Nodes Are Deleted</h3></div></div>
+<p>Inventor uses a reference-counting mechanism to delete nodes and subgraphs of nodes. To understand how nodes are deleted, you need to know how a node's reference count is incremented and decremented, as detailed in this section. </p>
+<p>When you remove a reference to a node, its reference count is decremented. Removing a child decrements the reference count. When a node's count returns to 0, it is deleted from the database. Consider the following cases, however, where deleting a node causes problems (refer to <a name="idch03131"></a><a name="idch03132"></a><a href="ch03.html#id11102">Figure 3-13</a> for this discussion):</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><i>Problem 1: </i></span></td><td width="10"> </td><td><p>If you remove node B from node A, the reference count for node B goes to 0 and the node is deleted. But what if you still want to use node B?</p>
+
+</td></tr><tr valign="top"><td><span class="term"><i>Problem 2:</i></span></td><td width="10"> </td><td><p>How do you delete node A? Its reference count has always been 0.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><i>Problem 3:</i></span></td><td width="10"> </td><td><p>What if someone applies an action to a node that has a reference count of 0? The action creates a path, which references the node.  When the action finishes, the path is removed, and the node is deleted.</p>
+
+</td></tr></table></div><p>The solution to these problems is that when you want to prevent a node from being deleted, you reference it:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+B-&gt;ref();
+</pre></td></tr></table><p>Referencing a node increments its count by 1 and ensures that the node is not accidentally deleted. After you have explicitly referenced node B, you can safely remove it as a child of A without fear of deleting node B<br>
+(Problem 1).</p>
+<p>Similarly, to prevent node A from being deleted (Problem 3), you <br>
+reference it:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+A-&gt;ref();
+</pre></td></tr></table><p>If you want to delete A (Problem 2), you can unreference it, which decrements the reference count. Node A is now deleted, since you were the only one with a reference to it:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+A-&gt;unref();
+</pre></td></tr></table><p>When a group is deleted, all of its children are removed and their reference counts are decremented by 1. In <a href="ch03.html#id18536">Figure 3-15</a>, for example, if you specify </p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+P-&gt;unref(); // reference count for P goes to 0
+</pre></td></tr></table><p>the reference counts for the child nodes are decremented as follows:</p>
+<p>1.  Q goes to 0</p>
+<p>                                        2. S goes to 1</p>
+<p>3. R goes to 0</p>
+<p>                                        4. S goes to 0</p>
+<p>Since all reference counts now equal 0, all nodes are deleted.</p>
+<p><div class="figure"><p><a name="id5448357"></a><b>Figure 3-15. <a name="id18536"></a><a name="idch03133"></a>Decrementing the Reference Count</b></p>
+<div class="mediaobject"><img src="figures/3-15.gif"></div></div><br>
+</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Do not allocate nodes, paths, or engines in arrays.  This creates problems when one reference count goes to 0 and Inventor tries to free the space allocated for one object in the array.<a name="idch03134"></a>
+</td></tr></table><hr noshade="noshade"></div><p>When you apply an action to a node, the action automatically creates a path that references the node. When the action finishes, it automatically removes the path, and thus decrements the node's reference count. Here again, if the node originally has a reference count of 0, it is deleted when the action finishes.<a name="idch03135"></a></p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	Random memory errors are often caused by unreferenced nodes that have been deleted. If such errors occur, check your program to be sure that it is not trying to use nodes that have been deleted. The debugging version of the Inventor library catches many common reference-<br>
+counting mistakes.<a name="idch03136"></a>
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5448476"></a>Nodes with Zero References<a name="idch03137"></a></h3></div></div>
+<p>A node, path, or engine should be created only with <span class="bold"><b>new</b></span> and never declared on the stack. These objects should be freed only when their reference count goes to 0, not when they go out of scope.</p>
+<p>A newly created node has a reference count of 0. This does not mean that it immediately disappears, since a node is deleted only when the reference count is <i>decremented</i> to 0. Sometimes it is important to be able to restore a </p>
+<p>node to its original state (that is, reference count equals 0, but it still exists). For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Create a sphere of a certain radius and returns its bounding
+// box. NOTE: BUGGY VERSION; provided for discussion only!
+
+SoSphere *makeSphere(float radius, SbBox3f &amp;box)
+{
+   sphere = new SoSphere;	// reference count of 0
+   sphere-&gt;radius.setValue(radius);
+
+   ba = new SoGetBoundingBoxAction;
+   ba-&gt;apply(sphere);	// does a ref/unref
+   box = ba-&gt;getBoundingBox();
+
+   return  sphere;	 // ERROR! returning node that
+	       // was deleted when ref count
+	       // went back to zero!
+}
+</pre></td></tr></table><p>In this example, the sphere node is referenced and unreferenced by <span class="bold"><b>SoGetBoundingBoxAction</b></span>. When unreferenced, the sphere's reference count goes to 0, and it is deleted. The sphere needs to be referenced before the action is applied.</p>
+<p>You can use the <a name="idch03138"></a><span class="bold"><b>unrefNoDelete()</b></span> method in cases such as this one, where you want to return the sphere to its original &#8220;fresh&#8221; state, with a reference count of 0 (but not deleted). Here is an example of using <span class="bold"><b>unrefNoDelete()</b></span>:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Create a sphere of a certain radius and returns its bounding
+// box. NOTE: CORRECT VERSION
+
+SoSphere *makeSphere(float radius, SbBox3f &amp;box)
+{
+   sphere = new SoSphere;	// reference count of 0
+   sphere-&gt;ref();	// we want it to stay around
+   sphere-&gt;radius.setValue(radius);
+
+   ba = new SoGetBoundingBoxAction;
+   ba-&gt;apply(sphere);	// does a ref/unref
+   box = ba-&gt;getBoundingBox();
+
+   sphere-&gt;unrefNoDelete();	// ref count goes to zero,
+	// but sphere stays around
+   return  sphere;	// returns sphere with ref
+	// count of zero
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5448606"></a>Summary of References and Deletion</h3></div></div>
+<p><a href="ch03.html#id70066">Table 3-1</a> summarizes the occurrences that increment and decrement reference counts of nodes and engines.  Note that connecting an engine to a field in a node does not increment the node's reference count.  (Engines are discussed in <a href="ch13.html#id11499">Chapter 13</a>.)</p>
+<div class="table"><p><a name="id5448654"></a><b>Table 3-1. <a name="id70066"></a><a name="idch03139"></a>References and Deletion</b></p>
+<table summary="References and Deletion" border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>Increments Reference Count by 1		</p>
+</th><th valign="top"><p>		Decrements Reference Count by 1</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>Adding a node as a child of another node 
+increments child's reference count</p>
+</td><td valign="top"><p>Removing a node as a child of another 
+node</p>
+</td></tr><tr valign="top"><td valign="top"><p>Adding a node to a path </p>
+</td><td valign="top"><p>Removing a node from a path</p>
+</td></tr><tr valign="top"><td valign="top"><p>Applying an action to a node or path 
+increments reference count of all nodes 
+that are traversed</p>
+</td><td valign="top"><p>When traversal for the action<br>
+finishes, all nodes that were<br>
+traversed are unreferenced</p>
+</td></tr><tr valign="top"><td valign="top"><p>Adding a node to an SoNodeList node </p>
+</td><td valign="top"><p>Removing a node from an SoNodeList</p>
+</td></tr><tr valign="top"><td valign="top"><p>Setting an SoSFNode or SoMFNode value 
+to point to a node</p>
+</td><td valign="top"><p>Changing an SoSFNode or SoMFNode 
+value to point to a different node or to 
+NULL, or deleting the value</p>
+</td></tr><tr valign="top"><td valign="top"><p>Connecting an output of an engine to a 
+field in a node or engine increments the 
+engine's reference count</p>
+</td><td valign="top"><p>Disconnecting an engine's output from the 
+field decrements the engine's reference 
+count</p>
+</td></tr></tbody></table></div><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5448838"></a>Node Types</h2></div></div>
+<p>Inventor provides runtime type-checking through the <a name="idch03140"></a><span class="bold"><b>SoType</b></span> class. Use the <a name="idch03141"></a><span class="bold"><b>getTypeId()</b></span> method on an instance to obtain the <a name="idch03142"></a><span class="bold"><b>SoType</b></span> for that instance. Runtime type-checking is available for most Inventor classes, including nodes, engines, actions, details, and events.<a name="idch03143"></a></p>
+<p>The <span class="bold"><b>SoType</b></span> class has methods that enable you to find the parent class of a type (<a name="idch03144"></a><span class="bold"><b>getParent()</b></span>), to create an instance of a particular type  (<a name="idch03145"></a><span class="bold"><b>createInstance()</b></span>), and to obtain an <a name="idch03146"></a><span class="bold"><b>SbName</b></span> for the class type (<a name="idch03147"></a><span class="bold"><b>getName()</b></span>). For example, the following code returns a name, such as<a name="idch03148"></a></p>
+<p>Material or Group, which you could then use to print some information about the node:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+node-&gt;getTypeId().getName();
+</pre></td></tr></table><p>The following two statements both return the <span class="bold"><b>SoType</b></span> for an <span class="bold"><b>SoMaterial</b></span> node (the first is more efficient):</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// (1)
+SoMaterial::getClassTypeId();
+// (2)
+SoType::fromName(&quot;Material&quot;);
+</pre></td></tr></table><p>To determine whether an instance is of a particular type, use the == operator, as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+if (myNode-&gt;getTypeId() == SoGroup::getClassTypeId())
+      // Is this an SoGroup?
+</pre></td></tr></table><p>To determine whether an instance is of the same type or derived from a particular class, use the <span class="bold"><b>isOfType()<a name="idch03149"></a></b></span> method or the <a name="idch03150"></a><span class="bold"><b>SoType::derivedFrom()<a name="idch03151"></a></b></span> method (the two methods have the same effects):</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// (1)
+if (myNode-&gt;isOfType(SoGroup::getClassTypeId()))
+   // Is this an SoGroup, SoSeparator, SoSwitch, and so on
+      
+// (2)
+if (myNode-&gt;getTypeId().isDerivedFrom(
+      SoGroup::getClassTypeId()))
+</pre></td></tr></table><p>Also see the description in <a href="ch09.html#id14375">Chapter 9</a> of the <a name="idch03152"></a><span class="bold"><b>SoSearchAction</b></span>, which allows you to search the scene graph for nodes of a particular type, or derived from a type.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5449189"></a>Naming Nodes</h2></div></div>
+<p>You can assign a name to a node, path, or engine and then search for the object by name. Because the names are preserved when the objects are written to or read from files, they are also a useful way of identifying objects. The base class <a name="idch03153"></a><a name="idch03154"></a><span class="bold"><b>SoBase</b></span> provides the <a name="idch03155"></a><span class="bold"><b>setName()</b></span> method, which allows you to specify a name for a node, path, or engine. It also provides the <a name="idch03156"></a><a name="idch03157"></a><span class="bold"><b>getName()</b></span> method, which returns the name for the given object. </p>
+<p>Any node, path, or engine has one name, which does not have to be unique. Names can be any <span class="bold"><b>SbName</b></span>. An <span class="bold"><b>SbName</b></span> can start with any uppercase or lowercase letter (A-Z) or an underscore (_). All characters in an <span class="bold"><b>SbName </b></span>must be digits 0-9, upper/lowercase A-Z, or underscores. The default name for an object is the empty string (&quot;&quot;).</p>
+<p>Use the <span class="bold"><b>SoNode</b></span> method <a name="idch03158"></a><span class="bold"><b>getByName()</b></span> to find a node or nodes with a given name. (<span class="bold"><b>SoPath</b></span> and <span class="bold"><b>SoEngine</b></span> provide similar <span class="bold"><b>getByName()</b></span> methods.) The search action also allows you to search for an object or objects with a given name (see <a href="ch09.html#id14375">Chapter 9</a>). </p>
+<p>An example of how names might be used is a slot-car racer program that allows users to create their own slot cars, following simple conventions for how big the cars are, which direction is up, and how the standard nodes or engines in the slot cars are named.  For example, the guidelines might specify that the <a name="idch03159"></a><span class="bold"><b>SoTransform</b></span> node that is the steering wheel's rotation is always named <i>SteeringWheelRotation</i>.  The slot-car program could then read in the scene graph for a given car, search for the <i>SteeringWheelRotation</i> node, and then animate the steering wheel using that node.</p>
+<p><a href="ch03.html#id40802">Example 3-3</a> shows naming several nodes with <span class="bold"><b>setName()</b></span>, then using <span class="bold"><b>getByName()</b></span> to return specific nodes. The child node named <i>MyCube</i> is removed from the parent named <i>Root</i>.</p>
+<div class="example"><p><a name="id5449445"></a><b>Example 3-3. <a name="id40802"></a>Naming Nodes</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/nodes/SoCube.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoSphere.h&gt;
+#include &lt;Inventor/sensors/SoNodeSensor.h&gt;
+
+void RemoveCube();  // Defined later...
+
+main( int , char ** )
+{
+   SoDB::init();
+
+   // Create some objects and give them names:
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+   root-&gt;setName(&quot;Root&quot;);
+
+   SoCube *myCube = new SoCube;
+   root-&gt;addChild(myCube);
+   myCube-&gt;setName(&quot;MyCube&quot;);
+   SoSphere *mySphere = new SoSphere;
+   root-&gt;addChild(mySphere);
+   mySphere-&gt;setName(&quot;MySphere&quot;);
+
+   RemoveCube();
+}
+
+void
+RemoveCube()
+{
+   // Remove the cube named 'MyCube' from the separator named
+   // 'Root'.  In a real application, isOfType() would probably
+   // be used to make sure the nodes are of the correct type
+   // before doing the cast.
+
+   SoSeparator *myRoot;
+   myRoot = (SoSeparator *)SoNode::getByName(&quot;Root&quot;);
+
+   SoCube *myCube;
+   myCube = (SoCube *)SoNode::getByName(&quot;MyCube&quot;);
+
+   myRoot-&gt;removeChild(myCube);
+}
+
+<a name="id73641"></a>
+</pre></td></tr></table><br></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 2. An Inventor Sampler </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 4. Cameras and Lights </td></tr></table></div></body></html>

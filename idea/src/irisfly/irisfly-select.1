@@ -1,0 +1,93 @@
+.TH irisfly-* 1 "January 2012"
+
+.SH NAME
+\fB
+.br
+irisfly-addAndShowWindow
+.br
+irisfly-addToMCP
+.br
+irisfly-addWindowName
+.br
+irisfly-deselect
+.br
+irisfly-hideWindows
+.br
+irisfly-removeAndHideWindow
+.br
+irisfly-removeWindowName
+.br
+irisfly-select
+.br
+irisfly-showWindows
+\fR
+
+.SH SYNOPSIS 
+All the commands that begin with the string "irisfly-" are small convenience
+utilities whose goal is to simplify the creation of scripts that control a
+running irisfly process. The "irisfly-*" commands hide implementation
+details so if their implementation changes the utilities can be updated, but
+the scripts that use them will continue to work without modification.
+
+The "irisfly-*" commands should only be used when \fIirisfly\fR is running; they
+direct their output to $IRIS_CONTROL_FIFO, and the running \fIirisfly\fR process
+actually executes the commands.
+
+Below are the irisfly-* commands and a description of what they do. They are
+grouped by related functionality. See the irisfly(1) man page for more details.
+
+.IP "\fBirisfly-addToMCP\fR \fIMCPfile\fR"
+loads \fIMCPfile\fR, an MCP (hev-masterControlPanel) file into the default control panel
+launched by irisfly.
+
+.IP "\fBirisfly-showWindows\fR"
+calls \fIhev-showWindow\fR
+for all window names in the list managed by the \fIirisfly-addWindowName\fR
+and \fIirisfly-removeWindowName\fR commands.
+
+.IP "\fBirisfly-hideWindows\fR"
+calls \fIhev-hideWindow\fR for all window names in the list managed by the \fIirisfly-addWindowName\fR
+and \fIirisfly-removeWindowName\fR commands.
+
+.IP "\fBirisfly-addWindowName\fR \fIwindowName\fR"
+adds the window named \fIwindowName\fR to the list of windows that will be hidden and shown using
+the \fIirisfly-hideWindows\fR and \fIirisfly-showWindows\fR commands.
+
+.IP "\fBirisfly-removeWindowName\fR \fIwindowName\fR"
+removes the window named \fIwindowName\fR from the list of windows that be will
+hidden and shown using the \fIirisfly-hideWindows\fR and \fIirisfly-showWindows\fR
+commands.
+
+.IP "\fBirisfly-addAndShowWindow\fR \fIwindowName\fR"
+calls \fIhev-showWindow windowName\fR and \fIirisfly-addWindowName
+windowName\fR.
+
+.IP "\fBirisfly-removeAndHideWindow\fR \fIwindowName\fR"
+calls \fIhev-hideWindow windowName\fR and \fIirisfly-removeWindowName
+IwindowName\fR.
+
+
+.IP "\fBirisfly-select\fR \fIname\fR"
+write the string \fIname\fR to the "selector" shared memory, so only
+programs checking for \fIname\fR will be active.
+
+.IP "\fBirisfly-deselect\fR"
+writes a null to the "selector" shared memory file so no programs using the
+selector convention will be active.
+
+.SH SEE ALSO
+
+irisfly(1)
+
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+January 2012
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

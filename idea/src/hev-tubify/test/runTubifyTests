@@ -1,0 +1,119 @@
+set -x
+
+../hev-tubify < 1lineTest.in.savg > 1lineTest.out1.osg
+../hev-tubify < 1polyTest.in.savg > 1polyTest.out1.osg
+../hev-tubify < 2lineTest.in.savg > 2lineTest.out1.osg
+../hev-tubify < 2polyTest.in.savg > 2polyTest.out1.osg
+../hev-tubify < 3lineTest.in.savg > 3lineTest.out1.osg
+../hev-tubify < 3polyTest.in.savg > 3polyTest.out1.osg
+../hev-tubify < linePolyLineTest.in.savg > linePolyLineTest.out1.osg
+../hev-tubify < linePolyTest.in.savg > linePolyTest.out1.osg
+../hev-tubify < polyLinePolyTest.in.savg > polyLinePolyTest.out1.osg
+../hev-tubify < polyLineTest.in.savg > polyLineTest.out1.osg
+
+../hev-tubify -f o < 1lineTest.in.savg > 1lineTest.out2.osg
+../hev-tubify -f o < 1polyTest.in.savg > 1polyTest.out2.osg
+../hev-tubify -f o < 2lineTest.in.savg > 2lineTest.out2.osg
+../hev-tubify -f o < 2polyTest.in.savg > 2polyTest.out2.osg
+../hev-tubify -f o < 3lineTest.in.savg > 3lineTest.out2.osg
+../hev-tubify -f o < 3polyTest.in.savg > 3polyTest.out2.osg
+../hev-tubify -f o < linePolyLineTest.in.savg > linePolyLineTest.out2.osg
+../hev-tubify -f o < linePolyTest.in.savg > linePolyTest.out2.osg
+../hev-tubify -f o < polyLinePolyTest.in.savg > polyLinePolyTest.out2.osg
+../hev-tubify -f osg < polyLineTest.in.savg > polyLineTest.out2.osg
+
+
+
+
+../hev-tubify -f s < 1lineTest.in.savg > 1lineTest.out1.savg
+../hev-tubify -f s < 1polyTest.in.savg > 1polyTest.out1.savg
+../hev-tubify -f s < 2lineTest.in.savg > 2lineTest.out1.savg
+../hev-tubify -f s < 2polyTest.in.savg > 2polyTest.out1.savg
+../hev-tubify -f s < 3lineTest.in.savg > 3lineTest.out1.savg
+../hev-tubify -f s < 3polyTest.in.savg > 3polyTest.out1.savg
+../hev-tubify -f s < linePolyLineTest.in.savg > linePolyLineTest.out1.savg
+../hev-tubify -f s < linePolyTest.in.savg > linePolyTest.out1.savg
+../hev-tubify -f s < polyLinePolyTest.in.savg > polyLinePolyTest.out1.savg
+../hev-tubify -f savg < polyLineTest.in.savg > polyLineTest.out1.savg
+
+##########################################################
+
+
+../hev-tubify -f s --norm facet < 1lineTest.in.savg > 1lineTest.nf.savg
+../hev-tubify -f s --norm sm < polyLinePolyTest.in.savg > polyLinePoly.ns.savg
+
+../hev-tubify -f s -c y < 2lineTest.in.savg > 2lineTest.cy.savg
+../hev-tubify -f s -c NO < 2lineTest.in.savg > 2lineTest.cn.savg
+
+../hev-tubify -f s -j raw < linePolyLineTest.in.savg > linePolyLineTest.raw.savg
+../hev-tubify -f s -j angle < linePolyLineTest.in.savg > linePolyLineTest.angle.savg
+../hev-tubify -f s -j cut < linePolyLineTest.in.savg > linePolyLineTest.cut.savg
+../hev-tubify -f s -j round < linePolyLineTest.in.savg > linePolyLineTest.round.savg
+
+../hev-tubify -f s --div=3  < 3lineTest.in.savg > 3lineTest.d3.savg
+../hev-tubify -f s -d 10  < 3lineTest.in.savg > 3lineTest.d10.savg
+
+../hev-tubify -f s -r 0.01 < 2polyTest.in.savg > 2polyTest.r0.01.savg
+../hev-tubify -f s -r 0.02 < 2polyTest.in.savg > 2polyTest.r0.02.savg
+
+
+
+
+../hev-tubify -f o --norm facet < 1lineTest.in.savg > 1lineTest.nf.osg
+../hev-tubify  --norm sm < polyLinePolyTest.in.savg > polyLinePoly.ns.osg
+
+../hev-tubify -f o -c y < 2lineTest.in.savg > 2lineTest.cy.osg
+../hev-tubify -c NO < 2lineTest.in.savg > 2lineTest.cn.osg
+
+../hev-tubify -f o -j raw < linePolyLineTest.in.savg > linePolyLineTest.raw.osg
+../hev-tubify  -j angle < linePolyLineTest.in.savg > linePolyLineTest.angle.osg
+../hev-tubify -f o -j cut < linePolyLineTest.in.savg > linePolyLineTest.cut.osg
+../hev-tubify  -j round < linePolyLineTest.in.savg > linePolyLineTest.round.osg
+
+../hev-tubify -f o --div=3  < 3lineTest.in.savg > 3lineTest.d3.osg
+../hev-tubify  -d 10  < 3lineTest.in.savg > 3lineTest.d10.osg
+
+../hev-tubify -f o -r 0.01 < 2polyTest.in.savg > 2polyTest.r0.01.osg
+../hev-tubify  -r 0.02 < 2polyTest.in.savg > 2polyTest.r0.02.osg
+
+
+
+##########################################################
+
+
+../hev-tubify -j raw -f s --cap=y < 1lineTest.in.savg > 1lineTest.raw.cy.savg
+../hev-tubify -j cut -f s -n f < 1lineTest.in.savg > 1lineTest.cut.nf.savg
+../hev-tubify -j rou -f s -d 4 < 1lineTest.in.savg > 1lineTest.round.d4.savg
+../hev-tubify -j ang -f s --rad=0.03 < 1lineTest.in.savg > 1lineTest.ang.r0.03.savg
+
+../hev-tubify -c yes  -f s -n f < 1lineTest.in.savg > 1lineTest.cynf.savg
+../hev-tubify -c N -f s -d 5 < 1lineTest.in.savg > 1lineTest.cn.d5.savg
+../hev-tubify -c YE -f s --rad=0.02 < 1lineTest.in.savg > 1lineTest.cy.r0.02.savg
+
+../hev-tubify --norm SMOO  -f s -d 6 < 1lineTest.in.savg > 1lineTest.ns.d6.savg
+../hev-tubify --norm=Face -f s --rad=0.005 < 1lineTest.in.savg > 1lineTest.nf.r0.005.savg
+
+../hev-tubify  --div=5 -f s -r 0.02 < 1lineTest.in.savg > 1lineTest.d5.r0.02.savg
+
+
+
+
+
+../hev-tubify -j raw  --cap=y < 1lineTest.in.savg > 1lineTest.raw.cy.osg
+../hev-tubify -j cut -f o -n f < 1lineTest.in.savg > 1lineTest.cut.nf.osg
+../hev-tubify -j rou  -d 4 < 1lineTest.in.savg > 1lineTest.round.d4.osg
+../hev-tubify -j ang -f o --rad=0.03 < 1lineTest.in.savg > 1lineTest.ang.r0.03.osg
+
+../hev-tubify -c yes   -n f < 1lineTest.in.savg > 1lineTest.cynf.osg
+../hev-tubify -c N -f o -d 5 < 1lineTest.in.savg > 1lineTest.cn.d5.osg
+../hev-tubify -c YE  --rad=0.02 < 1lineTest.in.savg > 1lineTest.cy.r0.02.osg
+
+../hev-tubify --norm SMOO  -f o -d 6 < 1lineTest.in.savg > 1lineTest.ns.d6.osg
+../hev-tubify --norm=Face  --rad=0.005 < 1lineTest.in.savg > 1lineTest.nf.r0.005.osg
+
+../hev-tubify  --div=5 -f o -r 0.02 < 1lineTest.in.savg > 1lineTest.d5.r0.02.osg
+
+
+
+
+

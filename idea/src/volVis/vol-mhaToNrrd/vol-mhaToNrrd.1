@@ -1,0 +1,35 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+
+.\" This does left justification, but not right
+.\" .ad l
+.\" This turns off hyphenation?
+.\" .nh
+.\" This turns on hyphenation?
+.\" .hy
+
+.TH vol-mhaToNrrd 1 " " "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+vol-mhaToNrrd - Convert a MetaImage (.mha) file to nrrd format.
+
+.SH SYNOPSIS
+.B vol-mhaToNrrd in.mha out.nrrd
+
+.SH DESCRIPTION
+
+\fBvol-mhaToNrrd\fR converts a MetaImage (.mha) formatted file
+to the nrrd format used by the \fIteem\fR software.
+
+This program is used by the programs
+\fIvol-tfPrep\fR and \fIvol-visBuilder\fR.
+
+We recommend that you do not use this program as it may
+be removed with future development.
+
+
+
+.SH SEE ALSO
+
+vol-tfPrep, vol-visBuilder, hev-convertDataArray, vol-nrrdToMha
+
+

@@ -1,0 +1,51 @@
+#! /bin/sh
+
+function usage {
+
+cat <<EOF
+
+Usage: createimg size r g b file
+
+Create a image file of a specified size and color
+
+     size    specified a NxM, e.g. 1024x768
+
+     r g b   color in range 0.0 to 1.0
+
+     file    file name and type, e.g. sample.png
+    
+
+EOF
+exit 1
+
+}
+
+case $# in
+5)
+   size=$1
+   r=$2
+   g=$3
+   b=$4
+   file=$5
+   ;;
+*)
+   usage
+   ;;
+esac
+
+for i in $r $g $b
+do
+  check=`echo $i | awk '{if (($1<0)||($1>1.0)) {print 1;} else {print 0;}}'`
+  if [ "$check" == "1" ]
+  then
+      echo "$i is outside of color range"
+      usage
+  fi
+done
+
+color=`echo $r $g $b | awk '{printf "rgb(%d,%d,%d)\n",int($1*255),int($2*255),int($3*255);}'`
+
+echo $color
+
+convert -size $size xc:"$color" -depth 8 $file
+

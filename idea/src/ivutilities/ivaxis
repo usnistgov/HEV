@@ -1,0 +1,35 @@
+#! /bin/sh
+
+# ivaxis - output a very simple axis shape
+
+case $# in
+0)
+	ivstick 0 0 0 1 0 0
+	ivstick 0 0 0 0 1 0
+	ivstick 0 0 0 0 0 1
+	;;
+1)
+	case $1 in
+	-rgb)
+		ivstick 0 0 0 1 0 0 | ivrgba 1 0 0 1
+		ivstick 0 0 0 0 1 0 | ivrgba 0 1 0 1
+		ivstick 0 0 0 0 0 1 | ivrgba 0 0 1 1
+		;;
+	-h)
+		echo "Usage: ivaxis [-rgb]"
+		echo
+		echo "  Outputs an unit X,Y,Z axis shape"
+		echo "  If '-rgb' specified, then X axis is red,"
+		echo "  Y axis is green, Z axis is blue."
+		exit
+		;;
+	*)
+		ivaxis -h
+	esac
+	;;
+*)
+	ivaxis -h
+	exit
+	;;
+esac
+

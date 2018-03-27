@@ -1,0 +1,244 @@
+#! /usr/bin/perl
+#
+# hyv-probeComponent - see usage message below
+#
+# steve@nist.gov
+#
+# Indexing the img and phase file:
+#   From jeff, 4 Sep 2008:
+#   The first index (i, or the x dimension) varies the fastest,
+#      the last index (k, or the z dimension) varies the slowest.
+
+
+#$version="20081103";
+$version="20120223";
+
+
+use Getopt::Long qw(:config posix_default);  # posix_default reuired to alow "+1" to be
+                                             # a parmater instead of a option flag
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hyv-probeComponent i j k componentFile fbnumber
+
+  Using the specified componentFile read a float x y z position from
+  stdin identify the closest component value and print to stdout.
+
+     i j k         is the dimensions of the corresponding component file.
+
+     componentFile is the component file
+
+     fbnumber      is the flip book page/frame number corresponding
+                   to componentFile
+
+
+  Output is actually 7 float values:
+
+     1st value:  -1 data out of range, +1 data in range
+
+     2nd value: actual component value
+
+     3rd value: normalized (0.0 to 1.0) component value for the specified file
+
+     4th,5th,6th values: input x, y, z
+
+     7th value: fbnumber, see above
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+
+############################
+# Process the command line #
+############################
+
+#print STDERR "hyv-probeComponent ARGV = @ARGV\n";
+#$sgs=@ARGV;
+#print STDERR "number args = $sgs\n";
+
+$debugFlag=0;
+GetOptions("debug"       => \$debugFlag);
+
+usage() if (@ARGV != 5);
+$iDimension= shift;
+$jDimension= shift;
+$kDimension= shift;
+$data= shift;
+$fbnumber = shift;;
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "component size: $iDimension $jDimension $kDimension\n";
+    print STDERR "data= $data\n";
+    print STDERR "fbnumber= $fbnumber\n";
+}
+
+
+# Zero based dimensions
+$iDimension0=$iDimension-1;
+$jDimension0=$jDimension-1;
+$kDimension0=$kDimension-1;
+
+open(CF,"<$data") || die("Can not open file: $data\n");
+
+if ($debugFlag) {
+    print STDERR "Debug file: 'probeComponent.debug'\n";
+    open(COUT,">probeComponent.debug") || die("can not open probeComponent.debug\n");
+}
+
+#
+# Read the file into a 3 dim array
+#
+
+$minComponent=0; $maxComponent=0;
+
+# Zero based dimensions
+$i=0; $j=0; $k=0;
+while (<CF>) {
+    @c=split(' ', $_, -1);
+    if ($debugFlag) {
+	printf(COUT "%d %d %d    %g\n", $i, $j, $k, $c[0]);
+    }
+
+    # Compute range to normalize later
+    if (($i==0) && ($j==0) && ($k==0)) {
+	$minComponent=$c[0];   $maxComponent=$c[0];
+    } else {
+	if ($c[0] < $minComponent) {$minComponent=$c[0];}
+	if ($c[0] > $maxComponent) {$maxComponent=$c[0];}
+    }
+
+    $cf[$i][$j][$k] = $c[0];
+
+    $i++;
+    if ($i > $iDimension0) {
+	$i=0;
+	$j++;
+	if ($j > $jDimension0) {
+	    $j=0;
+	    $k++;
+	    if ($k > $kDimension0) {
+		last;
+	    }
+	}
+    }
+
+}
+
+$deltaComponent=abs($maxComponent-$minComponent);
+if ($debugFlag) {
+    print STDERR "minComponent= $minComponent\n";
+    print STDERR "maxComponent= $maxComponent\n";
+    print STDERR "deltaComponent= $deltaComponent\n";
+}
+
+close(CF);
+
+if($debugFlag) {
+    close(COUT);
+}
+
+
+#
+# Now read x y z from stdin and map to integer index values
+#
+#  Here is an example for a 3x3x3.
+#  Index is zero based, of the index values are: 0,1,2
+#
+#  map range     to     index value
+#
+#  -0.5 -> +0.5            0
+#  +0.5 -> +1.5            1
+#  +1.5 -> +2.5            2
+#
+#  Exact value   to     index 
+#    >=-0.5               0
+#    >=+0.5               1
+#    >=+1.5               2
+#    <=+2.5               2
+#
+#
+
+
+
+$minVal=-.5;
+
+while (<STDIN>) {
+    @c=split(' ', $_, -1);
+    $inRange=1;
+
+    #############
+
+    $i=$c[0];  $imaxVal=$iDimension-.5;
+    if (($i < $minVal) || ($i > $imaxVal)) {
+	$i=0;  $inRange=-1;
+    }
+    $i=int($i+.5);
+    if ($i==$iDimension) {$i--;}  # special case
+
+    #############
+
+    $j=$c[1];  $jmaxVal=$jDimension-.5;
+    if (($j < $minVal) || ($j > $jmaxVal)) {
+	$j=0;  $inRange=-1;
+    }
+    $j=int($j+.5);
+    if ($j==$jDimension) {$j--;}  # special case
+
+    #############
+
+    $k=$c[2];  $kmaxVal=$kDimension-.5;
+    if (($k < $minVal) || ($k > $kmaxVal)) {
+	$k=0;  $inRange=-1;
+    }
+    $k=int($k+.5);
+    if ($k==$kDimension) {$k--;}  # special case
+
+    #############
+
+    if ($debugFlag) {
+	printf STDERR "stdin: $c[0] $c[1] $c[2]; index: $i $j $k; value: $cf[$i][$j][$k]\n";
+    }
+
+    if ( $inRange == 1) {
+
+	# Normalize
+	if ($deltaComponent > 0) {
+	    $norm=($cf[$i][$j][$k] - $minComponent)/$deltaComponent;
+	} else {
+	    $norm=0;
+	}
+
+	print "$inRange $cf[$i][$j][$k] $norm $c[0] $c[1] $c[2] $fbnumber\n";
+	$| = 1; # perform flush after each write to STDOUT 
+
+    } else {
+	print "$inRange 0.0 0.0   0.0 0.0 0.0  $fbnumber\n";
+	$| = 1; # perform flush after each write to STDOUT 
+	if ($debugFlag) {
+	    print STDERR "hyv-probeComponent:\n    input $c[0] $c[1] $c[2] out of range,  $minVal $minVal $minVal to $imaxVal $jmaxVal $kmaxVal\n";
+	}
+
+    }
+
+
+}
+
+
+# End

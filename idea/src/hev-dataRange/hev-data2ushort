@@ -1,0 +1,151 @@
+#! /usr/bin/perl
+#
+# hev-data2ushort - see usage message
+#
+# steve@nist.gov
+#
+
+$version="20090728";
+
+use Getopt::Long;    # http://perldoc.perl.org/Getopt/Long.html
+use File::Basename;  # http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hev-data2ushort [--help] [--integer | --float] < input > output
+
+   Map printf style numbers from stdin to unsigned char on stdout
+   The input on stdin must be one ASCII number per line.
+
+     --help      print this help message
+
+     --integer  input is integer in the range 0 to 65535
+
+     --float     input is float in the range 0.0 to 1.0.
+                 This is the default.     
+
+
+Version: $version
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+$helpFlag=0;
+$integerFlag=0;
+$floatFlag=0;
+$inputFlag=0;   # 0 is float, 1 is integer
+
+GetOptions("debug"       => \$debugFlag,
+	   "help"        => \$helpFlag,
+	   "integerFlag" => \$integerFlag,
+	   "floatFlag"   => \$floatFlag
+           );
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "helpFlag= $helpFlag\n";
+    print STDERR "integerFlag= $integerFlag\n";
+    print STDERR "floatFlag= $floatFlag\n";
+}
+
+usage() if ((@ARGV > 0)||($helpFlag));
+
+if ($integerFlag && $floatFlag) {
+    print STDERR "Specify either --integer or --float, but not both\n";
+    usage();
+}
+
+if ($floatFlag) {
+    $inputFlag=0;
+}
+if ($integerFlag) {
+    $inputFlag=1;
+}
+
+if ($debugFlag) {
+    print STDERR "inputFlag= $inputFlag\n";
+    print STDERR "\n";
+}
+
+
+
+#######################################
+# Read stdin, map, output to stdout   #
+#######################################
+
+$l=0;
+if ($inputFlag == 0) {  # Input is float
+
+    while (<STDIN>) {
+	chop;
+	($v)=split(' ', $_, -1);
+	$l++;
+
+	if (! defined($v)) {
+	    print STDERR "Invalid input at line $l: $v\n";
+	    exit(1);
+	}
+	if ($v < 0) {
+	    print STDERR "Input is < 0.0 at line: $l\n";
+	    print STDERR "$_\n";
+	    exit(1);
+	}
+	if ($v > 1.0) {
+	    print STDERR "Input is > 1.0 at line: $l\n";
+	    print STDERR "$_\n";
+	    exit(1);
+	}
+
+	$v=int($v*65535);
+	print STDOUT pack("S*",$v);
+    }
+} else {                # Input is integer
+
+    while (<STDIN>) {
+	chop;
+	($v)=split(' ', $_, -1);
+	$l++;
+
+	if (! defined($v)) {
+	    print STDERR "Invalid input at line $l: $v\n";
+	    exit(1);
+	}
+	if ($v < 0) {
+	    print STDERR "Input is < 0 at line: $l\n";
+	    print STDERR "$_\n";
+	    exit(1);
+	}
+	if ($v > 65535) {
+	    print STDERR "Input is > 65535 at line: $l\n";
+	    print STDERR "$_\n";
+	    exit(1);
+	}
+
+	$v=int($v);
+	print STDOUT pack("S",$v);
+
+    }
+}
+# End
+
+

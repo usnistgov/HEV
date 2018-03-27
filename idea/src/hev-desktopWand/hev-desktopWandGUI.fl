@@ -1,0 +1,163 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+Function {make_window()} {open
+} {
+  Fl_Window {} {open selected
+    xywh {2801 617 280 400} type Double box BORDER_BOX
+    code0 {main_window = o ;}
+    code1 {o->label(wandShmName.c_str()) ;} visible
+  } {
+    Fl_Group {} {
+      label {translation coordinate space:} open
+      xywh {25 40 240 80} box BORDER_BOX align 21
+    } {
+      Fl_Round_Button {} {
+        label screen
+        callback {setWorldCoords(false) ;}
+        xywh {50 69 70 15} type Radio down_box ROUND_DOWN_BOX value 1
+        code0 {o->value(!worldCoords) ;}
+        code1 {screenButton = o ;}
+      }
+      Fl_Round_Button {} {
+        label data
+        callback {setWorldCoords(true) ;}
+        xywh {50 93 70 15} type Radio down_box ROUND_DOWN_BOX
+        code0 {o->value(worldCoords) ;}
+        code1 {dataButton = o ;}
+      }
+    }
+    Fl_Button {} {
+      label RESET
+      callback {reset() ;}
+      xywh {190 125 70 20} color 7
+    }
+    Fl_Light_Button {} {
+      label {move with navigation}
+      callback {setMoveWithNavigation((bool)o->value()) ;}
+      xywh {25 10 177 20}
+      code0 {o->value(moveWithNavigation) ;}
+      code1 {moveWithNavigationButton = o ;}
+    }
+    Fl_Button {} {
+      label BUTTON_0
+      callback {setButton0(1) ;
+setButton0(0) ;
+button0LB->value(0) ;}
+      xywh {25 155 115 20} align 20 hide deactivate
+      code0 {button0B = o ;}
+    }
+    Fl_Button {} {
+      label BUTTON_2
+      callback {setButton2(1) ;
+setButton2(0) ;
+button2LB->value(0) ;}
+      xywh {150 155 115 20} align 20 hide deactivate
+      code0 {button2B = o ;}
+    }
+    Fl_Light_Button {} {
+      label BUTTON_0L
+      callback {setButton0(o->value()) ;}
+      xywh {25 180 115 20} hide deactivate
+      code0 {button0LB = o ;}
+    }
+    Fl_Light_Button {} {
+      label BUTTON_2L
+      callback {setButton2(o->value()) ;}
+      xywh {150 180 115 20} hide deactivate
+      code0 {button2LB = o ;}
+    }
+    Fl_Group {} {open
+      xywh {5 205 270 94}
+      code0 {xyzGroup = o ;}
+    } {
+      Fl_Roller {} {
+        label {X:}
+        callback {updateX((float)o->value()) ;}
+        xywh {30 210 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002
+        code0 {xRoller = o ;}
+        code1 {o->value(scene.x) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Roller {} {
+        label {Y:}
+        callback {updateY((float)o->value()) ;}
+        xywh {30 240 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002
+        code0 {yRoller = o ;}
+        code1 {o->value(scene.y) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Roller {} {
+        label {Z:}
+        callback {updateZ((float)o->value()) ;}
+        xywh {30 270 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.002
+        code0 {zRoller = o ;}
+        code1 {o->value(scene.z) ;}
+        code2 {o->step(step) ;}
+      }
+      Fl_Input {} {
+        callback {updateX(atof((char*)o->value())) ;}
+        xywh {195 210 75 20} when 8
+        code0 {xText = o ;}
+        code1 {o->value("0") ;}
+      }
+      Fl_Input {} {
+        callback {updateY(atof((char*)o->value())) ;}
+        xywh {195 240 75 20} when 8
+        code0 {yText = o ;}
+        code1 {o->value("0") ;}
+      }
+      Fl_Input {} {
+        callback {updateZ(atof((char*)o->value())) ;}
+        xywh {195 270 75 20} when 8
+        code0 {zText = o ;}
+        code1 {o->value("0") ;}
+      }
+    }
+    Fl_Group {} {open
+      xywh {5 303 270 87}
+      code0 {hprGroup = o ;}
+    } {
+      Fl_Roller {} {
+        label {H:}
+        callback {updateH((float)o->value()) ;}
+        xywh {30 305 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.2
+        code0 {hRoller = o ;}
+        code1 {o->value(scene.h) ;}
+      }
+      Fl_Roller {} {
+        label {P:}
+        callback {updateP((float)o->value()) ;}
+        xywh {30 335 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.2
+        code0 {pRoller = o ;}
+        code1 {o->value(scene.p) ;}
+      }
+      Fl_Roller {} {
+        label {R:}
+        callback {updateR((float)o->value()) ;}
+        xywh {30 365 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.2
+        code0 {rRoller = o ;}
+        code1 {o->value(scene.r) ;}
+      }
+      Fl_Input {} {
+        callback {updateH(atof((char*)o->value())) ;}
+        xywh {195 305 75 20} when 8
+        code0 {hText = o ;}
+        code1 {o->value("0") ;}
+      }
+      Fl_Input {} {
+        callback {updateP(atof((char*)o->value())) ;}
+        xywh {195 335 75 20} when 8
+        code0 {pText = o ;}
+        code1 {o->value("0") ;}
+      }
+      Fl_Input {} {
+        callback {updateR(atof((char*)o->value())) ;}
+        xywh {195 365 75 20} when 8
+        code0 {rText = o ;}
+        code1 {o->value("0") ;}
+      }
+    }
+  }
+} 

@@ -1,0 +1,4 @@
+LOAD box0 box.osgb
+DCS box 2.5 5 7.5
+ADDCHILD box0 box
+RETURN box

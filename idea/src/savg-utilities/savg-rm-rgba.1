@@ -1,0 +1,42 @@
+.TH SAVG\-RM-RGBA 1 "31 March 2005"
+.SH NAME
+savg-rm-rgba \- SAVG ToolBox: rm-rgba
+.SH SYNOPSIS
+.B savg-rm-rgba
+
+.SH DESCRIPTION
+.I savg-rm-rgba
+removes rgba values from any point data line containing them.
+.I stdin
+and outputs to
+.I stdout.
+There are no command line arguments.
+.SH EXAMPLES
+.TP
+.B cat file.savg | savg-rm-rgba > file-rm-rgba.savg
+Reads from 
+.I in.savg
+and removes rgba values from each line containing them.  Then outputs to 
+.I out.savg.
+.SH BUGS
+(none)
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Spring 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

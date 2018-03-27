@@ -1,0 +1,111 @@
+.TH "hev-desktopWand" 1 "March 17, 20011"
+.SH NAME
+
+hev-desktopWand
+
+.SH SYNOPSIS
+
+\fBhev-desktopWand 
+[ --buttons shm ] 
+[ --0 label ] [ --0h label ] [ --2 label ] [ --2h label ] 
+[ --step value ] [--xyz | --hpr ] [ --wand shm ] 
+[ --world ] [ --noescape ] 
+[ x y z [ h p r ] | x y z | h p r ]
+
+.SH DESCRIPTION
+
+\fBhev-desktopWand\fR is a GUI which can replace the tracked wand, and
+tracked wand buttons, in a desktop environment.
+
+.SH OPTIONS
+
+.IP "\fI--buttons shm\fR" 
+specifies that button presses will be written to the shared memory file 
+\fIshm\fR instead of the default, "buttons".
+
+.IP "\fI--0 label\fR"
+specifies that the button shared memory will have a "1", and then a "0",
+written to it when the button labeled \fIlabel\fR is pressed.  This is
+similar to pressing AND releasing wand button 0.
+
+.IP "\fI--0h label\fR"
+specifies that the button shared memory will have the value of the button
+written to it when the button labeled \fIlabel\fR is pressed. This is
+similar to pressing OR releasing wand button 0.
+
+.IP "\fI--2 label\fR"
+specifies that the button shared memory will have a "1", and then a "2",
+written to it when the button labeled \fIlabel\fR is pressed.  This is
+similar to pressing AND releasing wand button 2.
+
+.IP "\fI--2h label\fR"
+specifies that the button shared memory will have the value of the button
+written to it when the button labeled \fIlabel\fR is pressed. This is
+similar to pressing OR releasing wand button 2.
+
+.IP "\fI--step value\fR"
+specifies the smallest amount to change the x, y, and z rollers when moved.
+Pressing the left and right cursor arrows while a roller is selected will
+step the roller by this amount. The default
+value is .002.
+
+.IP "\fI--world\fR"
+specifies that the coordinate system radio buttons will be set to \fBdata\fR,
+and the initial x,y, z, h, p, r and step values will be interpreted as
+coordinates in the world coordinates, not normalized coordinates.
+
+.IP "\fI--noescape\fR"
+if supplied, specifies that the GUI can't be killed by pressing the window
+manager's close button, or by pressing escape in he GUI window.
+
+.IP "\fI--wand shm\fR"
+specifies the dtk shared memory file to use for writing wand data.  The
+default is "wand".
+.br
+If the file exists and it has the size of six floats then the data
+are written as XYZHPR with H, P, and R set to zero.
+If the file exists and it has the size of sixteen doubles then the data
+are written as a translation matrix.
+If the file does not exist then it is created to hold sixteen doubles
+and the data are written as a matrix.
+
+
+.IP \fI--xyz\fR
+specifies that only x, y, and z rollers will be displayed.  h, p, and r
+values of zero will be written to shared memory.
+
+.IP \fI--hpr\fR
+specifies that only h, p, and r rollers will be displayed.  x, y, and z
+values of zero will be written to shared memory.
+
+.IP "\fIx y z\fR" 
+species the initial x, y and z values to use.  The default is 0, 0, 0.
+
+.IP "\fIh p r\fR"
+species the initial h, p, and r values to use.  The default is 0, 0, 0.
+
+.P
+\fBhev-desktopWand\fR has a pair of radio buttons which can be used to
+specify what coordinate system is used by the rollers.  When \fBscreen\fR is
+selected, normalized coordinates, which align with the screen, are used.  When
+\fBdata\fR is selected, the rollers use world coordinates, which align with
+the model's coordinate system.  Regardless of which is used, normalized
+coordinates are always written to shared memory.
+
+A light button labeled "move with navigation" can be used to automatically
+modify the rollers and written values based on changes to navigation.
+
+Each roller has a text box which displays the current value of the roller.
+Text can also be entered in these boxes to modify the roller's value.
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

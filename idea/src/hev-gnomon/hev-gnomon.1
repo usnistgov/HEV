@@ -1,0 +1,49 @@
+.TH hev-gnomon 1 "August 18, 2012"
+.SH NAME
+
+hev-gnomon
+
+.SH SYNOPSIS
+
+\fBhev-gnomon [x z]
+
+
+.SH DESCRIPTION
+
+\fBhev-gnomon\fR writes \fBiris\fR control commands to standard output to create
+a gnomon object which rotates to reflect the current navigational rotation.
+
+.SH ARGUMENTS
+
+.IP x\ z
+Are the x and z positions of the gnomon in dgl coordinates.  The y
+coordinate and scale of the gnomon object are fixed.
+
+If \fBx\fR and \fBz\fR are not supplied, the following default vales are used:
+
+desktop: x=.07; z=-.07
+
+RAVE: x=.135; z=-.131
+
+Powerwall: x=.165; z=-.135
+
+The objective is to put the gnomon in the lower right corner of the display,
+and close enough to the default front clipping plane so that it will occlude
+most geometry in the scene.
+
+.SH EXAMPLE
+
+savgfly --ex tape.osg &
+.br
+hev-gnomon > $IRIS_CONTROL_FIFO
+
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/acmd/hpcvg/\fR
+

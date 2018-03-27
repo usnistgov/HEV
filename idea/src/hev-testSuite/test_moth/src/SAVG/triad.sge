@@ -1,0 +1,6 @@
+GROUP Triad
+
+load Lines axises.savg
+ON Lines Triad
+
+RETURN Triad

@@ -1,0 +1,15 @@
+# modular sphere test of patterns with procedure using vertex shader
+
+
+# load points4 data set with culling off
+LOAD points4 points4.savg
+CULLING points4 OFF
+ADDCHILD points4 world
+
+# add textured sphere shader
+SHADERPROG points4 V gpuSphere.vert G P TS 4 gpuSphere.geom F sphere4.frag
+
+UNIFORM world fatpointSize .2
+
+
+

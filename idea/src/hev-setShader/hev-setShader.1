@@ -1,0 +1,187 @@
+.TH hev-setShader 1 
+
+
+.SH NAME
+
+hev-setShader 
+
+
+.SH SYNOPSIS
+
+
+.B hev-setShader
+.I [options] [ inputFile outputFile ] 
+.br
+    or
+.br
+.B hev-setShader
+.I [options] [nodeName]
+
+
+.SH DESCRIPTION
+
+\fBhev-setShader\fR attaches shader programs to the
+contents of the given file or node.
+It can produce an output file or it can modify a node's state in
+a running irisfly session.
+
+In the first form of the command given above the 
+\fIinputFile\fR and \fIoutputFile\fR are specified. 
+In this case the 
+input file is read, its shader programs are
+modified based on the \fIoptions\fR
+and the output file is written.  The output file will contain the
+modified shader state together with any geometry from the input file.
+
+If a \fInodeName\fR is specified, then the shader state of the 
+node is modified in a running irisfly session based on the \fIoptions\fR.
+
+.P
+So \fBhev-setShader \fR with \fIinputFile\fR and \fIoutputfile\fR 
+specified is most useful
+for file preprocessing, while \fBhev-setShader \fR with only 
+a \fInodeName\fR specified
+is useful for on-the-fly changes such as
+part of the action for a GUI button or slider.
+
+.SH OPTIONS
+
+
+.TP
+.B -v \fIshaderFN.vert\fB
+Loads the vertex shader from the file \fIshaderFN.vert\fR.
+
+.TP
+.B -g \fIinPrim outPrim maxV shaderFN.geom\fB
+Loads the geometry shader from the file \fIshaderFN.geom\fR,
+while the other parameters indicate the inputs and outputs
+of the geometry shader program:
+.IP
+\fIinPrim\fR is the input primitive type.  It is one of the following:
+.br
+.RS
+.RS
+\fIP\fR point
+.br
+\fIL\fR line
+.br
+\fILA\fR line with adjacency
+.br
+\fIT\fR triangle
+.br
+\fITA\fR triangle with adjacency
+.RE
+.RE
+.br
+.br
+
+.IP
+\fIoutPrim\fR is the output primitive type.  It is one of the following:
+.br
+.RS
+.RS
+\fIP\fR point
+.br
+\fILS\fR line strip
+.br
+\fITS\fR triangle strip
+.RE
+.RE
+.br
+.br
+
+.IP
+\fImaxV\fR is the maximum number of vertices produced by the program
+.br
+
+
+For example, a geometry shader that turns lines into quads would use a
+"-g l ts 4 shaderFN.geom", indicating that its input is lines, and its
+output is a four-vertex triangle strip. A geometry shader that turns
+each input triangle into two disjoint triangles might use 
+"-g t ts 6 shaderFN.geom", since
+its input is triangles and its output is two three-vertex triangle
+strips for a total of six vertices.
+.IP
+Note that use of a geometry shader \fBrequires\fR that you also use a
+vertex shader.
+
+.TP
+.B -f \fIshaderFN.frag\fB
+Loads the fragment shader from the file \fIshaderFN.frag\fR.
+
+.P
+
+Any of the shader program file names may be specified as:
+_REMOVE_ (note the underscores before and after REMOVE).  When this is done, the shader of the specified
+type will be removed from the file or node.
+
+
+.P
+
+Shader changes will generally only affect child nodes that do
+not explicitly set the same state. So, if an individual object is
+already set to wireframe, turning the "world" node to wireframe or
+back will not change the wireframe child, only other objects that do
+not specify a specific preference for being wireframe or not. A
+corollary is that if you set a node's state in a running irisfly using
+\fBhev-setShader\fR, that node will no longer respond to changes to
+made to the same state to any node further up the tree.
+
+
+.SH EXAMPLES
+
+
+Here are some examples of modifying the shaders in an input file
+and writing out the results to an output file:
+
+ # attach a fragment shader
+ hev-setShader -f red.frag cube.savg cubeRed.osg
+
+ # add the fatpoint vertex and fragment shaders
+ hev-setShader -v fatpoint.vert -f fatpoint.frag  pts1.osg  pts2.osg
+
+ # remove all shaders
+ hev-setShader -r cubeRed.osg cubeOrig.osg
+
+
+To modify a node in the scenegraph of an executing irisfly session, suppose
+you start up irisfly like this:
+
+ irisfly --examine boundingBox.osg &
+ echo LOAD plane Plane.osg > $IRIS_CONTROL_FIFO
+ echo ADDCHILD plane world > $IRIS_CONTROL_FIFO
+
+You can then modify the shader programs for the node "plane" with 
+commands like these:
+
+ # set the vertex, fragment, and geometry shaders
+ hev-setShader -v min.vert -f dCol.frag -g P TS 12 pBox.geom  plane
+
+ # reset just the vertex shader
+ hev-setShader -v shift.vert  plane
+
+ # remove the geometry shader
+ hev-setShader -g _REMOVE_ plane
+
+ # remove all shaders
+ hev-setShader -r  plane
+
+        
+
+.SH SEE ALSO
+
+\fBhev-mergeState\fR(1), IRIS control command SHADERPROG 
+
+.SH AUTHOR
+
+Marc Olano & John Hagedorn
+
+.PP
+June 2011
+
+.PP 
+High Performance Computing and Visualization Group
+.br
+NIST
+.br

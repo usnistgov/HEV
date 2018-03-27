@@ -1,0 +1,13 @@
+
+hev-convertDataArray \
+    --ndim 3 --dim 512 512 119 \
+    --intype int16 --infmt bin \
+    --outFmt bin \
+    set9559-1-119.raw   set9559.short.mha
+
+hev-convertDataArray \
+    --ndim 3 --dim 512 512 119 \
+    --intype int16 --infmt bin \
+    --outtype float32 --outFmt bin \
+    set9559-1-119.raw   set9559.float.mha
+

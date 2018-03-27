@@ -1,0 +1,7 @@
+# navigation
+dso wandJoystickZNav
+dso wandJoystickYNav
+dso wandJoystickNav
+
+# distance the probe is in front of the wand
+wait hev-writeFloats -c 1 idea/wandOffsetDistance 0.0833333

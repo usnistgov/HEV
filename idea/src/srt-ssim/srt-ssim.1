@@ -1,0 +1,41 @@
+.TH srt-ssim 1 "August 2016" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+srt-ssim
+
+.SH SYNOPSIS
+.BR srt-ssim
+[--map FN] ref dst
+
+.SH DESCRIPTION
+\fBsrt-ssim\fR computes the mean SSIM between \fIref\fR and \fIdst\fR.
+
+.P
+\fIref\fR and \fIdst\fR are image files.
+
+.SH OPTIONS
+
+.IP -m,--map
+Specify a filename to write the SSIM map to.
+
+.SH INFORMATION
+
+The structural similarity (SSIM) index is a method for predicting the
+perceived quality of digital television and cinematic pictures, as well as
+other kinds of digital images and videos. Importantly, SSIM is formulated
+\fBonly\fR for grayscale images. Therefore, \fBsrt-ssim\fR will convert color
+images to the CIE Lab color space and then compute the mean SSIM over the L
+(luminance) channel.
+
+More information about SSIM can be found at the Wikipedia page:
+.P
+https://en.wikipedia.org/wiki/Structural_similarity
+
+More information about the CIE Lab color space can be found at the Wikipedia
+page:
+.P
+https://en.wikipedia.org/wiki/Lab_color_space
+
+.SH AUTHOR
+Wesley Griffin <wesley.griffin@nist.gov>
+

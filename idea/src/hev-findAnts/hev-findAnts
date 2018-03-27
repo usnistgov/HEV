@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+export HEIGHT=$((`tput lines`- 3))
+export PRIVATE_BINS="${HEV_IDEA_DIR}/etc/hev-findAnts/bin"
+
+#DEBUG echo "HFA: PRIVATE_BINS: "${PRIVATE_BINS}
+
+ENV_VARS="HEIGHT=${HEIGHT} TERM=${TERM} HEVROOT=${HEVROOT} PRIVATE_BINS=${PRIVATE_BINS}"
+
+#DEBUG echo "HFA: HEIGHT: "${HEIGHT}
+#DEBUG echo "HFA: ENV_VARS: "${ENV_VARS}
+
+ALL_ARGS=$@
+
+if [ -n "${ALL_ARGS}" ]                                  # If there are command 
+then                                                     # line args, and...
+  if [ $((`expr index "${ALL_ARGS}" u`)) != 0 ]          # one is 'u'...
+  then
+    ./_hev-findAnts ${ALL_ARGS}                          # run hev-findAnts in user's env.
+  else                                                   # Otherwise run in clean env.
+    # Run in clean env
+    # |     Set env var in new env
+    # |      |                  bash w/o rc or profile            Run hev-findAnts helper script
+    # |      |                     |                                 |
+    # V      V                     V                                 V
+    exec -c env -i ${ENV_VARS} /bin/bash --norc --noprofile -c "${PRIVATE_BINS}/_hev-findAnts ${ALL_ARGS}" &
+    wait                                                 # Wait until exec is done before quiting
+  fi
+else                                                     # if no args are given, run in clean env.
+  exec -c env -i ${ENV_VARS} bash --norc --noprofile -c "${PRIVATE_BINS}/_hev-findAnts ${ALL_ARGS}" &
+  wait                                                   # Wait until exec is done before quiting
+fi

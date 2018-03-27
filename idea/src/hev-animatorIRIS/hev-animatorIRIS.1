@@ -1,0 +1,69 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-animatorIRIS 1 "June 2011" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-animatorIRIS
+- Create an \fBiris\fR for animation with \fBhev-animator\fB
+
+.SH SYNOPSIS
+.B "hev-animatorIRIS"
+[-h] [-nogeometry] uniqueID files ...  > out.iris
+
+.SH DESCRIPTION
+.PP
+.I hev-animatorIRIS
+will create a \fB.iris\fR file on stdout suitable for use with
+\fBirisfly\fR and \fBhev-animator\fR to produce an animation.
+Any irisfly load-able file can be specified.
+Typically a sequence of frames is specified.
+.br
+The \fIuniqueID\fR parameter is a unique string so that internal names
+will be unique.
+.PP
+The
+.B -nogeometry
+is used to create a file for
+.B hev-animator
+which will load quickly, no geometry is included (not needed by hev-animator).
+.PP
+The
+.B -h
+option prints a brief usage message.
+.PP
+If an integer number is given instead of a file name, then that number
+padding empty frames will be inserted. Multiple padding segments made
+be used as needed.
+
+
+.SH EXAMPLES
+
+.PP 
+Here is an example of manually using \fBhev-animatorIRIS\fR manually.
+Additional examples of how to build an animation sequence and add it
+to the \fBirisfly\fR menu are available at
+$HEVROOT/idea/src/hev-animattorIRIS/example. See the \fIREADME\fR
+found there.
+
+.IP
+hev-animatorIRIS sampleID *.savg > sample.iris
+.IP
+hev-animatorIRIS -nogeometry sampleID *.savg > sample_animator.iris
+.IP
+irisfly --examine sample.iris &
+.IP
+hev-animator frame sample_animator.iris > $IRIS_CONTROL_FIFO
+
+.PP
+Insert 4 padding steps between a series of files.
+.IP
+hev-animatorIRIS sampleID a.savg b.savg 4 c.savg > sample.iris
+
+.SH SEE ALSO
+.I
+ hev-animator(1), irisfly(1), iris(1)
+
+
+
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov, NIST/ITL/ACMD/HPCVG

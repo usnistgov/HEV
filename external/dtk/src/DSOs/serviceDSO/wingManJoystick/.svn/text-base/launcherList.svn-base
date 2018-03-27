@@ -1,0 +1,10 @@
+
+dtk-server wingManJoystick
+
+dtk-floatScope wingMan/joystick wingMan/throttle -geometry 623x380+300+20
+#hay cool
+xterm -T joystick -n joystick -geometry 45x7+0+0 -e dtk-readFloats -qc wingMan/joystick
+xterm -T throttle -n throttle -geometry 45x7+0+123 -e dtk-readFloats -qc wingMan/throttle
+xterm -T buttons -n buttons -geometry 20x6+0+246 -e dtk-readButtons -qc wingMan/buttons
+xterm -T hat -n hat -geometry 20x6+148+246 -e dtk-readChars -qc wingMan/hat
+xlogo -bg blue -fg yellow

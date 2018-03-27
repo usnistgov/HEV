@@ -1,0 +1,7 @@
+
+
+# adds a button for the light editor to MCP
+
+EXEC irisfly-addToMCP lightEditor.mcp
+
+

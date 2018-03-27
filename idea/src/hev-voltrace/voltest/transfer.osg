@@ -1,0 +1,23 @@
+Node {
+  DataVariance STATIC
+  StateSet {
+    DataVariance STATIC
+    textureUnit 3 {
+      Texture2D {
+        DataVariance STATIC
+        file "transfer.mhd"
+        min_filter LINEAR
+        mag_filter LINEAR
+        useHardwareMipMapGeneration TRUE
+        unRefImageDataAfterApply TRUE
+        internalFormatMode USE_IMAGE_DATA_FORMAT
+        resizeNonPowerOfTwo FALSE
+      }
+    }
+    Uniform {
+      DataVariance STATIC
+      name "volumeLUT"
+      int 3
+    }
+  }
+}

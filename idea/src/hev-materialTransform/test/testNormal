@@ -1,0 +1,170 @@
+
+set -x
+
+
+cp /local/HEV/apps/diverse/installed/share/dgl/data/sub.osg sub.osg
+
+savg-sphere > sphere.savg
+iris-convert --nostatesets sphere.savg tmp.osg
+../hev-materialTransform --diffuse 0 1 0 1 --colormode off tmp.osg  greenSphere.osg
+
+savg-cube > cube.savg
+iris-convert --nostatesets cube.savg tmp.osg
+../hev-materialTransform --diffuse 1 0 0 1 --colormode off tmp.osg redCube.osg
+
+
+
+#
+#
+#      --rmMaterials
+../hev-materialTransform  --verbose --rmMat redCube.osg noMaterials.osg
+
+#
+#
+#      --rmGeomColors
+../hev-materialTransform  --verbose --rmG redCube.osg noGeomColors.osg
+
+
+
+
+#
+#
+#
+#      --sourceMaterial fileName  
+../hev-materialTransform  --source greenSphere.osg redCube.osg greenCube.osg
+
+
+
+
+#
+#      --ambient front r g b a    
+../hev-materialTransform  --ambient front 1 0 0 1 redCube.osg ambRed.front.osg
+
+#      --ambient back  r g b a    
+../hev-materialTransform  --ambient back 1 0 0 1 redCube.osg ambRed.back.osg
+
+#      --ambient both  r g b a    
+../hev-materialTransform  --ambient both 1 0 0 1 redCube.osg ambRed.both1.osg
+
+#      --ambient       r g b a    
+../hev-materialTransform  --ambient 1 0 0 1 redCube.osg ambRed.both2.osg
+
+
+
+#
+#      --diffuse front r g b a    
+../hev-materialTransform  --diffuse front 1 0.4 0 1 redCube.osg difRed.front.osg
+
+#      --diffuse back  r g b a    
+../hev-materialTransform  --diffuse back 1 0.4 0 1 redCube.osg difRed.back.osg
+
+#      --diffuse both  r g b a    
+../hev-materialTransform  --diffuse both 1 0.4 0 1 redCube.osg difRed.both1.osg
+
+#      --diffuse       r g b a    
+../hev-materialTransform  --diffuse 1 0.4 0 1 redCube.osg difRed.both2.osg
+
+
+
+#
+#      --specular front r g b a    
+../hev-materialTransform  --specular front 1 0 0 1 redCube.osg specRed.front.osg
+
+#      --specular back  r g b a    
+../hev-materialTransform  --specular back 1 0 0 1 redCube.osg specRed.back.osg
+
+#      --specular both  r g b a    
+../hev-materialTransform  --specular both 1 0 0 1 redCube.osg specRed.both1.osg
+
+#      --specular       r g b a    
+../hev-materialTransform  --specular 1 0 0 1 redCube.osg specRed.both2.osg
+
+
+
+#
+#      --emission front r g b a    
+../hev-materialTransform  --emission front 1 0 0 1 redCube.osg emRed.front.osg
+
+#      --emission back  r g b a    
+../hev-materialTransform  --emission back 1 0 0 1 redCube.osg emRed.back.osg
+
+#      --emission both  r g b a    
+../hev-materialTransform  --emission both 1 0 0 1 redCube.osg emRed.both1.osg
+
+#      --emission       r g b a    
+../hev-materialTransform  --emission 1 0 0 1 redCube.osg emRed.both2.osg
+
+
+
+
+
+
+
+
+#
+#      --shininess front s
+../hev-materialTransform  --specular 1 0 0 1 --shin front 100 redCube.osg sh.specRed.front.osg
+
+#      --shininess back  s
+../hev-materialTransform  --specular 1 0 0 1 --shin back 100 redCube.osg sh.specRed.back.osg
+
+#      --shininess both  s
+../hev-materialTransform  --specular 1 0 0 1 --shin both 100 redCube.osg sh.specRed.both1.osg
+
+#      --shininess       s
+../hev-materialTransform  --specular 1 0 0 1 --shin 100 redCube.osg sh.specRed.both2.osg
+
+
+
+#
+#      --colorMode       mode
+../hev-materialTransform  --colormode AMBIENT  redCube.osg cm.amb.osg
+../hev-materialTransform  --colormode AMBIENT_and_d  redCube.osg cm.ambdif.osg
+../hev-materialTransform  --colormode DIFFUS   redCube.osg cm.dif.osg
+../hev-materialTransform  --colorm S redCube.osg cm.spec.osg
+../hev-materialTransform  --color e redCube.osg cm.em.osg
+../hev-materialTransform  --color both e redCube.osg cm.em2.osg
+../hev-materialTransform  --color off cm.em.osg cm.off.osg
+
+#
+#
+#      --override
+../hev-materialTransform  --override --colormode AMBIENT  redCube.osg cm.amb.override.osg
+
+#
+#      --topOnly
+../hev-materialTransform  --root --colormode DIFF cm.amb.override.osg cm.diff.toponly.osg
+
+#
+#
+#
+#      one input / one output  - that's what all of the tests above are
+
+
+#
+#
+#      multi input / one output
+../hev-materialTransform  --override --ambient 0.5 0.5 0 1 redCube.osg greenSphere.osg sub.osg many.one.osg
+
+#
+#
+#      multi input / multi output
+../hev-materialTransform  --ambient 0.5 0.5 0 1 redCube.osg greenSphere.osg sub.osg ive
+../hev-materialTransform redCube.ive redCube2.osg
+../hev-materialTransform greenSphere.ive greenSphere2.osg
+../hev-materialTransform sub.ive sub2.osg
+../hev-materialTransform sub.ive sub2.osgt
+
+
+
+#
+#
+#      one input / multi output
+../hev-materialTransform  --override --ambient 0.9 0.9 0 1 redCube2.osg ive
+../hev-materialTransform redCube2.ive redCube3.osg
+
+
+#
+#      no input / one output
+../hev-materialTransform  --noInput --override --ambient 0.9 0.9 0 1 noInput.osg
+

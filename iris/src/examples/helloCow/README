@@ -1,0 +1,7 @@
+simplest example I can come up with.
+
+run with
+
+  ./helloCow cow.osg
+
+instead of cow.osg you can use any other iris loadable file

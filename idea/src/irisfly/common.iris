@@ -1,0 +1,33 @@
+# create/initialize shared memory for cave devices
+  WAIT hev-writeFloats -c 6 head 0 0 0 0 0 0
+  WAIT hev-writeFloats -c 6 wand 0 0 0 0 0 0
+  WAIT hev-writeFloats -c 2 joystick 0 0
+  WAIT hev-writeButtons -c 1 buttons 0
+  WAIT hev-writeDoubles -c 16 headMatrix 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+  WAIT hev-writeDoubles -c 16 wandMatrix 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+
+# moved to the setheadWandMatrix DSO 8/12 jtk
+# convert the head and wand from xyzhpr to Matrices
+#  EXEC iris-xyzhprToMatrix head headMatrix
+#  EXEC iris-xyzhprToMatrix wand wandMatrix
+
+# load some handy DSOs
+  DSO toggleObjects
+  DSO keyboardControl
+  DSO writeState
+  DSO setHeadWandMatrix
+
+# is this true for the powerWall too?
+  METERS 1.219184
+
+# no science went behind this number!
+  INTEROCULAR $($IRISFLY_INTEROCULAR_DISTANCE)
+
+# define some commonly used shared memory files
+  LOAD deriveDeviceData.iris
+
+# start MCP and raise it after graphics windows are up so it'll be on top of them
+  #EXEC hev-masterControlPanel -title MCP $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS --noescape --fifo $IRISFLY_MCP_CONTROL_FIFO $IRISFLY_MCP_FILES > $IRIS_CONTROL_FIFO
+  #AFTER REALIZE EXEC hev-showWindow MCP > $IRIS_CONTROL_FIFO
+
+  AFTER REALIZE EXEC hev-masterControlPanel -title MCP $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS --noescape --fifo $IRISFLY_MCP_CONTROL_FIFO $IRISFLY_MCP_FILES > $IRIS_CONTROL_FIFO

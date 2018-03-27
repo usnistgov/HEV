@@ -1,0 +1,295 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-convertDataArray 1 " " "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-convertDataArray - Perform simple manipulations of a numeric data array.
+
+
+.SH SYNOPSIS
+.B hev-convertDataArray
+[options] inputFn outputFn
+.br
+or
+.br
+.B hev-convertDataArray
+[options] inputFn1 ... inputFnN  outputFnTemplate
+
+.SH DESCRIPTION
+
+\fBhev-convertDataArray\fR enables simple transformations and
+conversions of numeric data arrays.  
+The input and output files can be either
+in raw data files or in the MetaImage (.mha/.mhd) format.  
+Raw data array files can either be in ascii or binary format
+and must contain no data other than the numeric array.
+
+
+MetaImage files are most often used as texture
+within the HEV software, 
+The MetaImage format is described here:
+
+.RS
+\fIhttp://www.itk.org/Wiki/MetaIO/Documentation\fR
+.RE
+
+
+
+When multiple input files are specified, the program assumes
+that all input files have the same format.  
+One output file is produced for each input file.
+
+\fBhev-convertDataArray\fR does not require any transformation of the data.  
+It can be used to convert between raw and .mha
+formats and for conversion between different data type (float, integer, etc.).
+
+
+.TP
+.B Input File(s):
+
+You can specify either a single input file name or multiple input file names.
+The program determines whether the file is in raw format or MetaImage format
+based on the file name.  If the file name ends in \fI.mha\fR or \fI.mhd\fR
+then the input file is assumed to be in MetaImage format; otherwise it is
+assumed to be in raw format.
+
+Raw files should contain only a series of numbers.  Raw ascii files 
+should have decimal ascii representations separated by white space 
+(spaces, new lines, etc.).  
+Raw binary files should contain a sequence of binary representations
+of numbers with no header or other data.  
+The format and structure of the raw input files should be described
+in the options detailed below.  
+
+
+.TP
+.B Output File(s):
+The format of the output file(s) is also determined from the specified
+file name or file name template.  If it ends with \fI.mha\fR, 
+it will be written in MetaImage format, otherwise it will be written in
+raw format. On output, the \fI.mhd\fR format (in which the header 
+information and the array data are written in separate files) is not
+supported.
+
+When a single input file is specified, the final command line argument
+is the name of the output file.
+
+When multiple input files are specified, the final command line argument
+is a template from which the multiple output file names are generated.
+This template should include some form of the C printf format '%d'.
+This enables a sequence number to become part of the file name.
+
+For example, the output file name template could be specified
+as \fIoutDat.%03d.mha\fR.
+This would generate output file names outDat.000.mha, outDat.001.mha, ...
+
+
+
+.SH OPTIONS
+
+
+Options describing data manipulations:
+
+.RS
+
+.TP
+.B --clamp minVal maxVal
+If this option is specified, then input values are clamped
+to the interval \fI[ minVal, maxVal ].\fR.
+
+.TP
+.B --transform  log | exp | log10 | exp10 | none
+Transformation to apply to the input data.
+Default is \fBnone\fR.  
+
+
+.TP
+.B --normalize v0 v1
+If this option is specified then the data is 
+normalized between the values \fIv0\fR \fIv1\fR.
+In other words, data values are linearly mapped so that \fIv0\fR is
+mapped to zero and \fIv1\fR is mapped to one.  The result is 
+clamped to the interval [0,1].
+
+
+.TP
+.B --infSub negSub posSub
+Describes floating point \fIinf\fR handling.
+When a positive \fIinf\fR value is encountered or generated
+in the data, the value \fIposSub\fR is substituted.
+When a negative \fIinf\fR value is encountered or generated
+in the data, the value \fInegSub\fR is substituted.
+If a value is specified as \fInone\fR, then no substitution 
+is done.
+
+If this option is not specified, then largest floating
+point value for the given output floating point 
+data type (float32 or float64)
+is used for \fIposSub\fR and the negative of this value is
+used for \fInegSub\fR.
+
+Note that the use of the \fI--clamp\fR and \fI--normalize\fR options can also force
+finite values to be substituted in place of positive and
+negative \fIinf\fR values.
+
+.TP
+.B --nanSub val    |   --nanSub none
+Describes floating point \fInan\fR (not-a-number) handling.
+When a floating point \fInan\fR is encountered or generated
+in the data, the value \fIval\fR is substituted.
+If the value is specified as \fInone\fR then no substitution
+is done.  The default is \fB--nanSub none\fR.
+
+
+.RE
+
+
+Options for describing raw \fIinput\fR files:
+
+.RS
+
+.TP
+.B --nDim N
+The number of dimensions in the raw data array.
+Default is 1.
+
+.TP
+.B --dim d1 d2 ... dN
+The dimensions of the raw input volume data files. 
+N is the number of dimensions specified by \fI--nDim\fR.
+In the data array, the first dimension index varies the fastest.
+The option must be specified if \fI--nDim\fR is 
+greater than 1.  If \fI--nDim\fR is 1, then this option
+may be omitted and the length of the one-dimensional array
+is determined by the number of data items in the input file.
+
+.TP
+.B --nComp N
+The number of data components (channels)
+at each array element in raw input data files.
+Component values in the input data must be stored adjacently.
+Default is 1.
+
+.TP 
+.B --inType type
+The data type of raw input data files.
+The \fItype\fR must be one of the following:
+\fIuint8\fR, 
+\fIuint16\fR, 
+\fIuint32\fR, 
+\fIint8\fR, 
+\fIint16\fR, 
+\fIint32\fR, 
+\fIfloat32\fR, 
+or 
+\fIfloat64\fR.
+Default is \fIfloat32\fR.
+
+.TP
+.B --inFmt  ascii | bin
+The encoding of the raw input volume data files.
+Default is \fIascii\fR.
+
+
+.RE
+
+Options describing the output file(s):
+
+.RS
+
+.TP 
+.B --outType type
+The data type of data in the output file(s).
+The possible specifications for \fItype\fR are same as
+those for \fI--inType\fR.
+If this is not specified, then the data type of the input data is used.
+
+.TP
+.B --outFmt  ascii | bin
+The encoding of the output data file(s).
+Default is \fBbin\fR.
+
+.RE
+
+
+
+.SH NOTES ON DATA MANIPULATIONS
+
+If no data manipulations other than type conversion are required, then
+the input data is converted to the output data type and written to the
+output file.
+
+If some other data manipulations are required, then the data is first
+converted to 64 bit floating point (double/float64).  The data
+manipulations are then done and the result is converted to the 
+requested output data format.  
+The data manipulations are performed in the following order:
+
+The data transformations are done in the following order:
+.RS
+.br 
+* nan and inf substitution
+.br 
+* clamp
+.br 
+* transform
+.br 
+* nan and inf substitution
+.br 
+* normalize
+.br 
+* nan and inf substitution
+.RE
+
+Other data manipulations may be
+added in the future such as more functions for the \fI--transformations\fR option.
+Suggestions for extensions are welcomed.
+
+
+
+
+
+.SH EXAMPLES
+
+The following examples are based on data files that
+can be found in the directory $HEVROOT/idea/src/volVis/testData.
+
+
+.TP
+.B hev-convertDataArray --transform log  concen_50.dat  c_50.log.raw
+This command reads the ascii data in concen_50.dat as a series 32 bit floating
+point numbers. It then takes the log of each number and writes it to
+the output file c_50.log.raw in in raw binary format.
+
+.TP
+.B hev-convertDataArray --trans log10 --norm -20 10 --outType float64 concen_50.dat  c_50.logNorm.mha
+This command reads the ascii data in concen_50.dat as a series 32 bit floating
+point numbers. It then takes the log base 10 of each number, 
+normalizes the range [-20, 10] to [0,1] and writes it out 
+in MetaImage (.mha) format 
+as a one-dimesional array 
+to the file c_50.logNorm.mha.
+
+.TP
+.B hev-convertDataArray --nDim 3 --dim 100 115 29 --trans log10 --norm -20 10 --outType float64 concen_50.dat  c_50.vol.logNorm.mha
+This command does the same data transformations as the example above, but
+the command line options describe the three dimensional structure of the input data.
+This enables the program to write the data to the 
+output MetaImage file as a three-dimensional array
+with dimensions 100x115x29.
+
+.TP
+.B hev-convertDataArray --nDim 3 --dim 100 115 29 --trans log10 --norm -20 10 --outType float64 concen_*.dat  c.%04d.mha
+This command is very similar to the example above except that it processes
+multiple data files with one command.
+It converts all of files with names that match 'concen_*.dat' and converts
+them to MetaImage files with names: c.0000.mha, c.0001.mha, ...
+Note that the output sequence numbering always starts with zero.
+
+
+.SH SEE ALSO
+
+vol-visBuilder, vol-tfPrep,
+hev-data2uchar, hev-data2ushort, hev-data2float, hev-dataMapTo01, 
+hev-dataRange, hev-LUT2mhd,
+
+

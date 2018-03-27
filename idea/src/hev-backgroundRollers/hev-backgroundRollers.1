@@ -1,0 +1,131 @@
+.TH hev-backgroundRollers 1
+
+
+.SH NAME
+
+hev-backgroundRollers - control irisfly background color
+
+
+.SH SYNOPSIS
+
+.B hev-backgroundRollers [ grayLevel ]
+.br
+    or
+.br
+.B hev-backgroundRollers [ -rgb [r g b] ]
+
+.SH DESCRIPTION
+
+\fBhev-backgroundRollers\fR 
+creates a GUI for controlling the background color of the 
+\fBirisfly\fR display window.
+It produces IRIS control commands that should be redirected
+to $IRIS_CONTROL_FIFO.  
+
+When invoked without any command line arguments, it initializes
+to a black background and provides a single roller with which
+the user can control the gray level of the background.
+
+The \fI-rgb\fR option enables full control of the RGB color 
+of the background.
+
+
+
+.SH OPTIONS
+
+.TP 
+.B grayLevel
+.br
+Specifies the initial gray level of the background. 
+The gray level value must be between 0 and 1.
+Default is \fB0\fR (black).
+
+.TP 
+.B -rgb [r g b]
+.br
+Enables control of all three components of the background color.
+Three rollers are created in the GUI.
+If \fRr g b\fR are specified then the background color is 
+initialized to these values; these must be between 0 and 1..  
+The default for \fBr g b\fR is \fB0 0 0\fR.
+
+
+.SH ASSOCIATED FILES
+
+Several files are provided that facilitate the use of this
+program:
+
+.TP 
+\fBbackgroundWhite.iris\fR and \fBbackgroundWhite.mcp\fR
+.br
+These files setup the use of hev-backgroundRollers within irisfly 
+with an initial background color of white. 
+Loading the file \fIbackgroundWhite.iris\fR will 
+initialize the background color to white and uses the .mcp
+file to add a menu item that will display the GUI.
+When these files are used, the GUI only allows control 
+of the gray level of the background color.  
+See the examples below.
+The file \fBbackgroundWhite.mcp\fR can also be used
+directly with the command \fBirisfly-addToMCP\fR.
+
+
+
+
+.TP 
+\fBbackgroundBlack.iris\fR and \fBbackgroundBlack.mcp\fR
+.br
+These are like the files above except that they 
+initialize the background color to black.
+
+
+.TP 
+\fBbackgroundRgbWhite.iris\fR, \fBbackgroundRgbWhite.mcp\fR, \fBbackgroundRgbBlack.iris\fR and \fBbackgroundRgbBlack.mcp\fR
+.br
+These are like the files above except that they
+enable separate control of the red, green, and blue components
+of the background color.
+
+
+
+.SH EXAMPLES
+
+.br
+
+.P
+    
+.P
+One can invoke this program directly:
+
+.TP
+.B hev-backgroundRollers > $IRIS_CONTROL_FIFO
+.br
+This creates a GUI with a single roller that controls the background
+gray level color of the irisfly window.  The initial color is black.
+
+.P
+More typically, one would integrate the use of this program into the 
+irisfly menu system:
+
+.TP 
+.B irisfly --ex tape.osg backgroundWhite.iris
+This starts up irisfly with a display of the model tape.osg
+with an initial background color of white.
+A button labelled "Bckgrnd" is added to the irisfly 
+master control panel (MCP); this button will bring up the 
+GUI that enables the user to control the background color.
+
+
+.TP 
+.B irisfly --ex tape.osg backgroundRgbBlack.iris
+This is similar to the example above, except that 
+the initial background color is black and
+the user has separate control of the
+red, green, and blue components of the background color.
+
+
+.SH SEE ALSO
+
+irisfly, irisfly-addToMCP, dtk-floatRollers
+
+

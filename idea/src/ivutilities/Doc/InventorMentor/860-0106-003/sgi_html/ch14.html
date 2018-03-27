@@ -1,0 +1,711 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 14. Node Kits</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch13.html" title="Chapter 13. Engines"><link rel="next" href="ch15.html" title="Chapter 15. Draggers and Manipulators"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 14. Node Kits</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch13.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch15.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5498283"></a>Chapter 14. <a name="id29093"></a>Node Kits</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Use node kits in a scene graph, selecting the required parts and setting their values</p>
+</li>
+<li><p>Explain the difference between a path, a full path, and a node-kit path</p>
+</li>
+<li><p>Create a simple motion hierarchy using node kits</p>
+</li>
+</ul></div><p>This chapter describes node kits, which are a convenient mechanism for creating groupings of Inventor nodes. When you create a shape node such as an indexed triangle strip set, you usually also need at least a coordinate node, a material node, and a transform node. You may also want to specify drawing style and a material binding. Instead of creating each of these nodes individually, specifying values for their fields, and then arranging them into a subgraph, you can simply use an <span class="bold"><b>SoShapeKit</b></span>, which already contains information on how these nodes should be arranged in the subgraph. You then use a special set of convenience methods to specify which nodes you want to use and to set and get the values of these nodes. This chapter introduces the concepts of node kits, node-kit <i>catalogs</i>, catalog entries, and <i>hidden children</i>.</p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5498363"></a>Why Node Kits?</h2></div></div>
+<p>Node kits offer a convenient way to create both simple and complex graphs of nodes. Node kits can contain other node kits, a feature that allows you to build hierarchies of kits relative to each other. Some of the advantages of node kits include the following:<a name="idch141"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>Node kits organize a number of Inventor nodes into a subgraph that has a higher-level meaning for you. An <a name="idch142"></a><a name="idch143"></a><span class="bold"><b>SoShapeKit</b></span>, for example, can describe a shape that can move and has a particular appearance. The shape and its properties are all packaged into one node kit. You do not need to worry about how the nodes are placed into the graph because the node kit takes care of this organization for you.</p>
+</li>
+<li><p>Node kits are flexible, allowing you to create complex subgraphs that use many Inventor features, or simple subgraphs that use only a few features.</p>
+</li>
+<li><p>Node kits create collections of nodes efficiently. They create only the nodes needed for a particular instance.</p>
+</li>
+<li><p>Node kits provide shortcut routines for creating nodes and setting values in them. Your code is short and easy to read.<a name="idch144"></a></p>
+</li>
+<li><p>Through subclassing, you can design your own node kits that are tailored to the kinds of groupings used in your particular application. (See <a name="idch145"></a><i>The Inventor Toolmaker</i>, Chapter 7.)</p>
+</li>
+</ul></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5498510"></a>Hidden Children and SoNodeKitPath</h2></div></div>
+<p>A node kit contains a collection of nodes. The node kit manages these nodes and how they are arranged in its subgraph. You can create and remove these nodes, or <i>parts</i>, of the node kit.  But, because the node kit is actually managing these parts, you do not have direct access to them. These parts are referred to as the <a name="idch146"></a><i>hidden children</i> of the node kit. Although a node kit is a grouping of nodes, it is not subclassed from <span class="bold"><b>SoGroup</b></span>; methods such as <span class="bold"><b>addChild()</b></span> do not exist for node kits.</p>
+<p>Whenever you perform a pick or a search action, a path may be returned.  The default path returned, <span class="bold"><b>SoPath</b></span>, stops at the first node in the path that has hidden children (often a node kit).  If you need more detailed information about what is in the path underneath the node kit, you can cast the <span class="bold"><b>SoPath</b></span> to an <a name="idch147"></a><span class="bold"><b>SoFullPath</b></span>, which includes hidden children as well as public children. If, for example, you search for spheres in a given scene graph, you may get a path to a node kit with hidden children, one of which is a sphere. The <span class="bold"><b>SoPath</b></span> returned by the search action ends in the node kit.  In most cases, you can probably ignore the hidden children.  But if you need information about them, you can cast this path to an <span class="bold"><b>SoFullPath</b></span>.</p>
+<p>You will probably use node kit paths more often than you use full paths.  If you use full paths with node kits, take care not to change the node kit's structure.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>When you cast a path (not a pointer) to a full path, be sure to cast a pointer; otherwise a new instance of the path is created. For example, you can do this: 
+</td></tr></table><hr noshade="noshade"></div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   SoPath &amp;pathRef;
+   ((SoFullPath *) &amp;pathRef)-&gt;getLength();
+
+   But don't do this:
+   length = ((SoFullPath) pathRef).getLength();
+</pre></td></tr></table><p>Another kind of path is the <span class="bold"><b>SoNodeKitPath</b></span>, which contains only the node kits and leaves out the intermediate nodes in the path. You might use a node-kit path if you are looking at a motion hierarchy (see <a href="ch14.html#id37668">Example 14-3</a>) and you want to think of each kit as an object. <a href="ch14.html#id42974">Figure 14-1</a> shows a path, a full path, and a node-kit path for the same subgraph. The shaded circles are node kits, and the light circles are not.</p>
+<p><div class="figure"><p><a name="id5498696"></a><b>Figure 14-1. <a name="id42974"></a><a name="idch148"></a>Different Types of Paths</b></p>
+<div class="mediaobject"><img src="figures/14-2.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5498741"></a>Node-Kit Classes</h2></div></div>
+<p><a href="ch14.html#id36193">Figure 14-2</a> shows the class tree for node kits, which are all derived from <a name="idch149"></a><span class="bold"><b>SoBaseKit</b></span>.</p>
+<p>See the entry for <span class="bold"><b>SoBaseKit</b></span> in the<i> Open Inventor C++ Reference Manual</i> for a complete list of the methods for getting and setting parts in node kits.</p>
+<p><div class="figure"><p><a name="id5498785"></a><b>Figure 14-2. <a name="id36193"></a><a name="idch1410"></a>Node-Kit Classes</b></p>
+<div class="mediaobject"><img src="figures/fig14.1node.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5498839"></a>Node-Kit Catalog</h2></div></div>
+<p>Each node-kit class shown in <a href="ch14.html#id36193">Figure 14-2</a> has an associated <a name="idch1411"></a><i>catalog</i>. The catalog lists  all the parts (nodes) available in this kit, in the same way as an electronics or software catalog lists all the items available for sale. Just as you order items selectively from a software catalog, you can choose nodes selectively from a node-kit catalog. In addition to simply listing the available parts, a node-kit catalog also describes how the nodes are arranged into a subgraph when you select them.</p>
+<p>For example, the catalog for an <a name="idch1412"></a><span class="bold"><b>SoShapeKit</b></span> is shown in <a href="ch14.html#id28858">Figure 14-3</a>.</p>
+<p>When you first create an <span class="bold"><b>SoShapeKit</b></span>, you get the &#8220;base model,&#8221; shown in <a name="idch1413"></a><a href="ch14.html#id38959">Figure 14-4</a>. By default, the &#8220;shape&#8221; part is a cube. You can change this shape and also add options as you need them.</p>
+<p><div class="figure"><p><a name="id5498987"></a><b>Figure 14-3. <a name="id28858"></a>Catalog for SoShapeKit</b></p>
+<div class="mediaobject"><img src="figures/14-3.gif"></div></div><br>
+<div class="figure"><p><a name="id5499006"></a><b>Figure 14-4. <a name="id38959"></a><a name="idch1414"></a>Basic Version of an SoShapeKit</b></p>
+<div class="mediaobject"><img src="figures/14-4.gif"></div></div><br>
+</p>
+<p>A node-kit catalog contains a separate entry to describe each part. The <span class="bold"><b>SoShapeKit</b></span> catalog shown in <a href="ch14.html#id28858">Figure 14-3</a> has 24 entries. Each catalog entry contains the following pieces of information:<a name="idch1415"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p><i>Name</i> of the part</p>
+</li>
+<li><p><i>Type</i> of node</p>
+</li>
+<li><p><i>Default</i> type (used if <i>Type</i> is an abstract class)</p>
+</li>
+<li><p>Whether this part is <i>created by default</i></p>
+</li>
+<li><p>Name of this part's <i>parent </i></p>
+</li>
+<li><p>Name of the <i>right sibling</i> of this part </p>
+</li>
+<li><p>Whether this part is a <i>list </i></p>
+</li>
+<li><p>If the part is a list, the <i>type of group node</i> that is used to contain the list items</p>
+</li>
+<li><p>If the part is a list, the permissible <i>node types</i> for entries in this list </p>
+</li>
+<li><p>Whether this part is <i>public</i></p>
+</li>
+</ul></div><p>The following list shows several sample catalog entries from <a name="idch1416"></a><span class="bold"><b>SoShapeKit</b></span>.</p>
+<div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>Information</p>
+</th><th valign="top"><p>Sample Entry 1</p>
+</th><th valign="top"><p>Sample Entry 2</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>Name</p>
+</td><td valign="top"><p>&#8220;callbackList&#8221;</p>
+</td><td valign="top"><p>&#8220;transform&#8221;</p>
+</td></tr><tr valign="top"><td valign="top"><p>Type</p>
+</td><td valign="top"><p>SoNodeKitListPart</p>
+</td><td valign="top"><p>SoTransform</p>
+</td></tr><tr valign="top"><td valign="top"><p>Default Type</p>
+</td><td valign="top"><p>(Not Applicable)</p>
+</td><td valign="top"><p>(Not Applicable)</p>
+</td></tr><tr valign="top"><td valign="top"><p>Created by Default?</p>
+</td><td valign="top"><p>FALSE</p>
+</td><td valign="top"><p>FALSE</p>
+</td></tr><tr valign="top"><td valign="top"><p>Parent Name</p>
+</td><td valign="top"><p>&#8220;this&#8221;</p>
+</td><td valign="top"><p>&#8220;topSeparator&#8221;</p>
+</td></tr><tr valign="top"><td valign="top"><p>Right Sibling</p>
+</td><td valign="top"><p>&#8220;topSeparator&#8221;</p>
+</td><td valign="top"><p>&#8220;texture2Transform&#8221;</p>
+</td></tr><tr valign="top"><td valign="top"><p>Is It a List?</p>
+</td><td valign="top"><p>TRUE</p>
+</td><td valign="top"><p>FALSE</p>
+</td></tr><tr valign="top"><td valign="top"><p>List Container Type</p>
+</td><td valign="top"><p>SoSeparator</p>
+</td><td valign="top"><p>(Not Applicable)</p>
+</td></tr><tr valign="top"><td valign="top"><p>List Element Type</p>
+</td><td valign="top"><p>SoCallback</p>
+</td><td valign="top"><p>(Not Applicable)</p>
+</td></tr><tr valign="top"><td valign="top"><p> </p>
+</td><td valign="top"><p>SoEventCallback</p>
+</td><td valign="top"><p> </p>
+</td></tr><tr valign="top"><td valign="top"><p>Is It Public?</p>
+</td><td valign="top"><p>TRUE</p>
+</td><td valign="top"><p>TRUE</p>
+</td></tr></tbody></table></div><p>An <span class="bold"><b>SoShapeKit</b></span> contains another node kit, &#8220;appearance,&#8221; which is an <span class="bold"><b>SoAppearanceKit</b></span>. The catalog for <a name="idch1417"></a><span class="bold"><b>SoAppearanceKit</b></span> is shown in<br>
+<a href="ch14.html#id32713">Figure 14-5</a>.</p>
+<p><div class="figure"><p><a name="id5499638"></a><b>Figure 14-5. <a name="id32713"></a>Catalog for SoAppearanceKit</b></p>
+<div class="mediaobject"><img src="figures/14-5.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5499659"></a>Parts Created by Default</h2></div></div>
+<p>The following constructor creates an instance of an <a name="idch1418"></a><span class="bold"><b>SoShapeKit</b></span>:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoShapeKit *myShapeKit = new SoShapeKit();
+</pre></td></tr></table><p>When an instance of a node kit is created, certain nodes are created by default.  In the kits provided, the <span class="bold"><b>SoShapeKit</b></span>, <span class="bold"><b>SoLightKit</b></span>, and <span class="bold"><b>SoCameraKit</b></span> create the parts &#8220;shape,&#8221; &#8220;light,&#8221; and &#8220;camera,&#8221; respectively. The default types for these parts are <span class="bold"><b>SoCube</b></span>, <span class="bold"><b>SoDirectionalLight</b></span>, and <span class="bold"><b>SoPerspectiveCamera</b></span>.</p>
+<p>When the shape kit is constructed, it automatically creates the cube node as well as the top separator and shape separator nodes for the group. (Internal nodes, such as the separator node, are automatically created when you add a node lower in the node kit structure.) At this point, the scene graph would look like <a href="ch14.html#id38959">Figure 14-4</a>. The shape kit now consists of four nodes: the<span class="bold"><b> SoShapeKit</b></span> node itself, the top separator node, the shape separator (used for caching even when the transform or material is changing) and the cube node. The other nodes in the shape-kit catalog are not created until you explicitly request them, as described below.</p>
+<p><div class="figure"><p><a name="id5499806"></a><b>Figure 14-6. <a name="id38959"></a>Creating an Instance of SoShapeKit</b></p>
+<div class="mediaobject"><img src="figures/14-6.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5499847"></a>Selecting Parts and Setting Values<a name="idch1419"></a></h2></div></div>
+<p>Next you can use the <a name="idch1420"></a><span class="bold"><b>set()</b></span> method, a method for <span class="bold"><b>SoBaseKit</b></span> that is inherited by all node kits. Use the <span class="bold"><b>set()</b></span> method to create a part <i>and</i> specify field values in the new node. This method has two different forms:</p>
+<p><span class="bold"><b>set</b></span>(<i>nameValuePairListString</i>); 	// uses braces to separate<br>
+	// part names from value pairs</p>
+<p>or</p>
+<p><span class="bold"><b>set</b></span>(<i>partNameString</i>, <i>parameterString</i>);	// does not use braces</p>
+<p>An example of the first form of <span class="bold"><b>set()</b></span>, which makes a material node and <br>
+sets the diffuse color field to purple is as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myShape-&gt;set(&quot;material { diffuseColor 1 0 1 }&quot;);
+</pre></td></tr></table><p>An example of the second form of <span class="bold"><b>set()</b></span>, which does the same thing, is as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myShape-&gt;set(&quot;material&quot;, &quot;diffuseColor 1 0 1&quot;);
+</pre></td></tr></table><p>The scene graph for this instance of the shape kit now looks like <a href="ch14.html#id19766">Figure 14-7</a>. Note that the <span class="bold"><b>SoAppearanceKit</b></span> node is created automatically when you request the material node. Also note that the node is created only if it does not yet exist. Subsequent calls to <span class="bold"><b>set()</b></span> edit the fields of the material node rather than recreate it.</p>
+<p><div class="figure"><p><a name="id5500027"></a><b>Figure 14-7. <a name="id19766"></a>Adding the Material Node</b></p>
+<div class="mediaobject"><img src="figures/14-7.gif"></div></div><br>
+</p>
+<p>Now suppose you want to make the cube wireframe rather than solid, and twice its original size:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myShape-&gt;set(&quot;drawStyle { style LINES }
+             transform { scaleFactor 2.0 2.0 2.0 } &quot;);
+</pre></td></tr></table><p>The scene graph now looks like <a href="ch14.html#id29260">Figure 14-8</a>.</p>
+<p><div class="figure"><p><a name="id5500080"></a><b>Figure 14-8. <a name="id29260"></a>Adding Draw-Style and Transform Nodes</b></p>
+<div class="mediaobject"><img src="figures/14-8.gif"></div></div><br>
+</p>
+<p>Note that you can use the <span class="bold"><b>set()</b></span> method to create the nodes in any order. The node kit automatically inserts the nodes in their correct positions in the scene graph, as specified by the node-kit catalog.<a name="idch1421"></a></p>
+<p>This instance of the shape kit now contains eight nodes, as shown in <a href="ch14.html#id29260">Figure 14-8</a>.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5500183"></a>Other Methods: getPart() and setPart()</h2></div></div>
+<p>Two other useful methods of <span class="bold"><b>SoBaseKit()</b></span> are <span class="bold"><b>getPart()</b></span> and <span class="bold"><b>setPart()</b></span>.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5500261"></a>The getPart() Method</h3></div></div>
+<p>The <a name="idch1422"></a><span class="bold"><b>getPart()</b></span> method returns the requested node (part):</p>
+<p><span class="bold"><b>getPart</b></span>(<i>partName</i>, <i>makeIfNeeded</i>); </p>
+<p>If <i>makeIfNeeded</i> is TRUE and no node is present, the node is created. In addition, if any extra nodes are needed to connect the node to the top node (&#8220;this&#8221;) of the node kit, those nodes are created as well.</p>
+<p>For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+xf = (SoTransform *) myKit-&gt;getPart(&quot;transform&quot;, TRUE);
+</pre></td></tr></table><p>looks for &#8220;transform&#8221; and either returns it (if found) or makes it (if not found). It then assigns this node to <i>xf</i>. If you specify FALSE for <i>makeIfNeeded</i> and the node kit has no &#8220;transform&#8221;  yet, the method returns NULL without creating the node. If the catalog for the type of node kit you are using does not have an entry for a part named &#8220;transform,&#8221; the <span class="bold"><b>getPart()</b></span> method returns NULL.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5500396"></a>The setPart() Method</h3></div></div>
+<p>The <a name="idch1423"></a><span class="bold"><b>setPart()</b></span> method inserts the given node as a new part in the <br>
+node kit:</p>
+<p><span class="bold"><b>setPart</b></span>(<i>partName</i>, <i>node</i>); </p>
+<p>If extra nodes are required to connect the part into the node-kit structure, those nodes are created as well. For example, suppose you want another node kit to share the transform node (<i>xf</i>) created in the previous example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myOtherKit-&gt;setPart(&quot;transform&quot;, xf);
+</pre></td></tr></table><p>If the given node is not derived from the type of that part, as described in the node-kit catalog, the part will not be set. If you have linked with the debugging library, an error message will print.</p>
+<p>To delete the transform node entirely, use a NULL argument for the node pointer:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myOtherKit-&gt;setPart(&quot;transform&quot;, NULL);
+</pre></td></tr></table><p>To change the &#8220;shape&#8221; in <span class="bold"><b>SoShapeKit</b></span> from the default cube to a cone:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myShape-&gt;setPart(&quot;shape&quot;, new SoCone);
+</pre></td></tr></table><p>And, of course, <span class="bold"><b>setPart()</b></span> will do nothing if there is no part with the specified name in the catalog.</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5500536"></a>Macros for Getting Parts<a name="idch1424"></a></h2></div></div>
+<p>Instead of using the <span class="bold"><b>getPart()</b></span> method, you can use the macros SO_GET_PART() and SO_CHECK_PART(). If you compile with the debugging version of the Inventor library, these macros perform casting and type check the result for you.  (If you link with the optimized version of Inventor, no type-checking is performed.)<a name="idch1425"></a><a name="idch1426"></a></p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5500598"></a>The SO_GET_PART() Macro</h3></div></div>
+<p>The syntax for SO_GET_PART() is as follows:</p>
+<p><span class="bold"><b>SO_GET_PART</b></span>(<i>kitContainingPart, partName, partClassName</i>);</p>
+<p>This macro does the type-casting for you and is equivalent to</p>
+<p>(<i>partClassName</i> *) <i>kitContainingPart</i>-&gt;<span class="bold"><b>getPart</b></span>(<i>partName</i>, TRUE);</p>
+<p>Since the <i>makeIfNeeded</i> argument is TRUE in this macro, the part is created if it is not already in the node kit.</p>
+<p>For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+xf = SO_GET_PART(myKit, &quot;transform&quot;, SoTransform);
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5500692"></a>The SO_CHECK_PART() Macro</h3></div></div>
+<p>The syntax for SO_CHECK_PART() is as follows:</p>
+<p><span class="bold"><b>SO_CHECK_PART</b></span>(<i>kitContainingPart, partName, partClassName</i>);</p>
+<p>This macro does the type-casting for you and is equivalent to</p>
+<p>(<i>partClassName</i> *) <i>kitContainingPart</i>-&gt;<span class="bold"><b>getPart</b></span>(<i>partName</i>, FALSE);</p>
+<p>Since the <i>makeIfNeeded</i> argument is FALSE in this macro, the part is <i>not</i> created if it is not already in the node kit.</p>
+<p>For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+xf = SO_CHECK_PART(myKit, &quot;transform&quot;, SoTransform);
+if (xf == NULL)
+   printf(&quot;Transform does not exist in myKit.&quot;);
+else 
+   printf(&quot;Got it!&quot;);
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5500774"></a>Specifying Part Names<a name="idch1427"></a></h2></div></div>
+<p>Suppose you have created the three node-kit classes shown in <a href="ch14.html#id40940">Figure 14-9</a> (see <i>The Inventor Toolmaker</i>, Chapter 7, for information on how to subclass node kits): </p>
+<div class="itemizedlist"><ul type="disc"><li><p>An <span class="bold"><b>SoGoonKit</b></span>, which defines the complete creature, a goon. This goon consists of an <span class="bold"><b>SoAppearanceKit</b></span>, two instances of <span class="bold"><b>SoLegKit</b></span> for <i>leg1</i> and <i>leg2</i>, and an <span class="bold"><b>SoCone</b></span> for <i>body</i>.</p>
+</li>
+<li><p>An <span class="bold"><b>SoLegKit</b></span>, which defines a leg for a goon. This class contains an <span class="bold"><b>SoAppearanceKit</b></span>, an <span class="bold"><b>SoFootKit</b></span>, and an <span class="bold"><b>SoCylinder </b></span>for <i>thigh</i>.</p>
+</li>
+<li><p>An <span class="bold"><b>SoFootKit</b></span>, which defines a foot for a goon. This class contains an <span class="bold"><b>SoAppearanceKit</b></span>, an <span class="bold"><b>SoCube</b></span> for <i>toe1</i>, and an <span class="bold"><b>SoCube</b></span> for <i>toe2</i>.</p>
+</li>
+</ul></div><p>After creating an instance of <span class="bold"><b>SoGoonKit</b></span> (<i>myGoon</i>), you can be very specific when asking for the parts. For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myCube = SO_GET_PART(myGoon, &quot;toe1&quot;, SoCube);
+</pre></td></tr></table><p>first looks in the catalog of <i>myGoon</i> for<i> toe1</i>. If it doesn't find <i>toe1</i> and some children in the catalog are node kits, it looks inside the leaf node kits for <i>toe1</i> and uses the first match it finds. Here, the match would be found in the foot of <i>leg1</i>. But what if you really want <i>toe1</i> in <i>leg2</i>? In that case, you may specify:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myCube = SO_GET_PART(myGoon, &quot;leg2.toe1&quot;, SoCube);
+</pre></td></tr></table><p>which returns <i>toe1</i> in <i>leg2</i>. This is equivalent to <i>leg2.foot.toe1</i>.</p>
+<p>You can also refer to parts by indexing into any part that is defined as a list in the catalog&#8212;for example, &#8220;childList[0]&#8221; or &#8220;callbackList[2].&#8221;</p>
+<p>The following excerpts illustrate three different ways to create node-kit parts and set their values. These excerpts assume you have subclassed to create your own class, derived from <span class="bold"><b>SoBaseKit</b></span>, an <span class="bold"><b>SoGoonKit</b></span> (see <i>The Inventor Toolmaker</i>, Chapter 7). This goon has a body, legs, and feet, as described earlier.</p>
+<p>This fragment shows setting each part individually:<a name="idch1428"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoGoonKit *myGoon = new SoGoonKit();
+myGoon-&gt;set(&quot;body.material&quot;, &quot;diffuseColor [1 0 0 ]&quot;);
+				// makes body red
+myGoon-&gt;set(&quot;leg2.toe1&quot;, &quot;width 2 height 3 depth 1&quot;);
+				// creates toe with proper dimensions
+</pre></td></tr></table><p><div class="figure"><p><a name="id5501145"></a><b>Figure 14-9. <a name="id40940"></a>  Three Node-Kit Classes for Making &#8220;Goons&#8221;</b></p>
+<div class="mediaobject"><img src="figures/fig14.9.gif"></div></div><br>
+</p>
+<p>This fragment shows getting parts and editing them:<a name="idch1429"></a><a name="idch1430"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoGoonKit *myGoon = new SoGoonKit();
+SoMaterial *bodyMtl;
+SoCube     *toe;
+bodyMtl = SO_GET_PART(myGoon, &quot;body.material&quot;, SoMaterial);
+	bodyMtl-&gt;diffuseColor.setValue(1, 0, 0);
+toe = SO_GET_PART(myGoon, &quot;leg2.toe1&quot;, SoCube);
+	toe-&gt;width.setValue(2);
+	toe-&gt;height.setValue(3);
+	toe-&gt;depth.setValue(1);
+</pre></td></tr></table><p>This fragment shows setting both parts in one command:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoGoonKit *myGoon = new SoGoonKit();
+myGoon-&gt;set(				&quot;body.material { diffuseColor [ 1 0 0 ] }
+				             leg2.toe1     { width 2
+				                             height 3
+				                             depth 1 }&quot;);
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5501247"></a>Creating Paths to Parts<a name="idch1431"></a></h2></div></div>
+<p>Sometimes you will need a path down to one of the node kit parts&#8212;for instance, to replace a part with a manipulator as described in <a href="ch15.html#id31593">Chapter 15</a>. Use the <a name="idch1432"></a><span class="bold"><b>createPathToPart()</b></span> method to obtain the path to the desired node for the manipulator.</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+<span class="bold"><b>createPathToPart</b></span>(<i>partName</i>, <i>makeIfNeeded</i>,<i> pathToExtend</i>);
+</pre></td></tr></table><p>For example, after picking a node kit, replace the transform part with a trackball manipulator:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoPath *pickPath = myPickAction-&gt;getPath();
+
+if((pickPath != NULL) &amp;&amp;
+(pickPath-&gt;getTail()-&gt;isOfType(SoBaseKit::getClassTypeId())){
+SoTrackballManip *tb = new SoTrackball;
+SoBaseKit *kit = (SoBaseKit *) pickPath-&gt;getTail();
+   // extends the pick path all the way down
+		   // to the transform node
+SoPath *attachPath = kit-&gt;createPathToPart(&quot;transform&quot;,
+					                     TRUE, pickPath);
+		tb-&gt;replaceNode(attachPath);
+</pre></td></tr></table><p>Note that using <span class="bold"><b>replaceNode()</b></span> does more work for you than simply calling</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+setPart(&quot;transform&quot;, tb)
+</pre></td></tr></table><p>Field values are copied from the existing &#8220;transform&#8221; part into the trackball manipulator's fields.</p>
+<p>If the <i>pathToExtend</i> parameter is NULL or missing, <span class="bold"><b>createPathToPart()</b></span> simply returns the path from the top of the node kit to the specified part (see <a href="ch14.html#id30019">Figure 14-10</a>):</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoPath *littlePath;
+littlePath = myKit-&gt;createPathToPart(&quot;transform&quot;, TRUE);
+</pre></td></tr></table><p>Since <i>makeIfNeeded</i> is TRUE, the &#8220;transform&#8221; part will be created if it does not already exist. However, if <i>makeIfNeeded</i> is FALSE and the part does not exist, <i>createPathToPart</i> returns NULL.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	If you want to view the full path, including hidden children, be sure to cast the <a name="idch1433"></a><span class="bold"><b>SoPath</b></span> to an <span class="bold"><b>SoFullPath</b></span>.
+</td></tr></table><hr noshade="noshade"></div><p><div class="figure"><p><a name="id5501497"></a><b>Figure 14-10. <a name="id30019"></a> Obtaining the Path to a Given Part</b></p>
+<div class="mediaobject"><img src="figures/14-11.gif"></div></div><br>
+</p>
+<p>If the <i>pathToExtend</i> parameter is used, <span class="bold"><b>createPathToPart()</b></span> extends the path provided all the way down to the specified part within the node kit (here, the &#8220;transform&#8221; node). (See <a href="ch14.html#id24164">Figure 14-11</a>.) If the path provided as input (in this case, <i>pickPath</i>) does not include the specified node kit, <i>bigPath</i> equals NULL. If the path given as input extends past the specified node kit, the path will first be truncated at the node kit before extending it to reach the part.</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+bigPath = myKit-&gt;createPathToPart(&quot;transform&quot;, TRUE, pickPath);
+</pre></td></tr></table><p>To create a path to a child within a list part, use the same indexing notation as you would for <span class="bold"><b>setPart()</b></span> or <span class="bold"><b>getPart()</b></span>:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+pathToListElement = createPathToPart(&quot;callbackList[0]&quot;, TRUE);
+</pre></td></tr></table><p><div class="figure"><p><a name="id5501620"></a><b>Figure 14-11. <a name="id24164"></a>Extending a Given Path to the Desired Part</b></p>
+<div class="mediaobject"><img src="figures/14-12.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5501642"></a>Using List Parts<a name="idch1434"></a><a name="idch1435"></a></h2></div></div>
+<p>Some node-kit parts are actually <i>lists</i> of parts. These lists, of type  <span class="bold"><b>SoNodeKitListPart<a name="idch1436"></a></b></span>, are a special type of group that restricts its children to certain classes of nodes.  Examples are &#8220;childList&#8221; (found in <span class="bold"><b>SoSeparatorKit</b></span> and <a name="idch1437"></a><span class="bold"><b>SoSceneKit</b></span>) and &#8220;cameraList&#8221; and &#8220;lightList&#8221; (both found in <span class="bold"><b>SoSceneKit</b></span>). Whenever you add a child to a node-kit list, the group checks to see if that child is legitimate. If the child is not legitimate, it is not added (and if you are using the debugging library, an error is printed).</p>
+<p>Use <span class="bold"><b>getPart()</b></span> to obtain the requested list, then use any of the standard group methods for adding, removing, replacing, and inserting children in the parts list.  (But remember that each of these methods is redefined to check the types of children before adding them.) For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoPointLight *myLight = new SoPointLight;
+ls = (SoNodeKitListPart *) k-&gt;getPart(&quot;lightList&quot;, TRUE);
+
+ls-&gt;addChild(myLight);
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5501757"></a>Using Separator Kits to Create <br>
+Motion Hierarchies<a name="idch1438"></a></h2></div></div>
+<p><a name="idch1439"></a><span class="bold"><b>SoSeparatorKit</b></span> is a class of node kit.  All classes derived from separator kit inherit a part called &#8220;childList,&#8221; of type <span class="bold"><b>SoNodeKitListPart</b></span>. Through use of the &#8220;childList,&#8221; separator kits allow you to think in terms of how parts of an object move relative to each other. Each element of the child list is, in turn, an <span class="bold"><b>SoSeparatorKit</b></span> and may contain its own transform node. By nesting separator kits, multiple levels of relative motion can be achieved. </p>
+<p><a href="ch14.html#id35162">Figure 14-12</a> shows how you might group individual parts that move together. Assume you have already made an individual <span class="bold"><b>SoSeparatorKit</b></span> for each part in a balance scale, shown in <a name="idch1440"></a><a href="ch14.html#id35162">Figure 14-12</a>. You want <i>tray1</i> and <i>string1</i> to move as a unit, and <i>tray2</i> and <i>string2</i> to move as a unit. But when the beam moves, both trays and both strings move with it.</p>
+<p>As you arrange these group kits into a hierarchy, you don't need to think in terms of the individual parts each group kit contains (&#8220;material,&#8221; &#8220;complexity,&#8221; and so on). You can think of the objects themselves (beam, strings, trays) and how they move relative to each other. The <span class="bold"><b>childList</b></span> for <span class="bold"><b>SoSeparatorKit</b></span> can contain any node derived from <span class="bold"><b>SoSeparatorKit</b></span>, so any type of separator kit is permissible as an entry in this list.</p>
+<p>The following code constructs the hierarchy shown in <a href="ch14.html#id35162">Figure 14-12</a>. A working version of this model is provided in <a href="ch14.html#id37668">Example 14-3</a> at the end of this chapter.</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+scale-&gt;setPart(&quot;childList[0]&quot;, support);
+scale-&gt;setPart(&quot;childList[1]&quot;, beam);
+beam-&gt;setPart(&quot;childList[0]&quot;, string1);
+beam-&gt;setPart(&quot;childList[1]&quot;, string2);
+string1-&gt;setPart(&quot;childList[0]&quot;, tray1);
+string2-&gt;setPart(&quot;childList[0]&quot;, tray2);
+</pre></td></tr></table><p><div class="figure"><p><a name="id5501992"></a><b>Figure 14-12. <a name="id35162"></a>Hierarchical Motion Relationships</b></p>
+<div class="mediaobject"><img src="figures/fig11.10.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5502013"></a>Examples<a name="idch1441"></a></h2></div></div>
+<p>This section includes three examples of node kits. The first example uses two <span class="bold"><b>SoShapeKits</b></span>. The second example, with detailed comments, uses an <span class="bold"><b>SoWrapperKit</b></span> and an <span class="bold"><b>SoSceneKit</b></span> that contains an <span class="bold"><b>SoLightKit</b></span> and an <span class="bold"><b>SoCameraKit</b></span>. The third example uses various node kits as well as an <span class="bold"><b>SoEventCallback</b></span> with an associated function for animating the balance scale.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5502072"></a>Simple Use of Node Kits<a name="idch1442"></a></h3></div></div>
+<p><a href="ch14.html#id14933">Example 14-1</a> uses node kits to create two 3D words and shows use of node kit methods to access the fields of the &#8220;material&#8221; and &#8220;transform&#8221; parts of the shape kits. It uses a calculator engine and an elapsed time engine to make the words change color and fly around the screen. <a name="idch1443"></a><a href="ch14.html#id12127">Figure 14-13</a> shows two images from this example.</p>
+<div class="example"><p><a name="id5502208"></a><b>Example 14-1. <a name="id14933"></a>Simple Use of Node Kits</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/engines/SoCalculator.h&gt;
+#include &lt;Inventor/engines/SoElapsedTime.h&gt;
+#include &lt;Inventor/nodekits/SoShapeKit.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoText3.h&gt;
+#include &lt;Inventor/nodes/SoTransform.h&gt;
+
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+
+main(int , char **argv)
+{
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) exit(1);
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+
+   // Create shape kits with the words &quot;HAPPY&quot; and &quot;NICE&quot;
+   SoShapeKit *happyKit = new SoShapeKit;
+   root-&gt;addChild(happyKit);
+   happyKit-&gt;setPart(&quot;shape&quot;, new SoText3);
+   happyKit-&gt;set(&quot;shape { parts ALL string \&quot;HAPPY\&quot;}&quot;);
+   happyKit-&gt;set(&quot;font { size 2}&quot;);
+
+   SoShapeKit *niceKit = new SoShapeKit;
+   root-&gt;addChild(niceKit);
+   niceKit-&gt;setPart(&quot;shape&quot;, new SoText3);
+   niceKit-&gt;set(&quot;shape { parts ALL string \&quot;NICE\&quot;}&quot;);
+   niceKit-&gt;set(&quot;font { size 2}&quot;);
+
+   // Create the Elapsed Time engine
+   SoElapsedTime *myTimer = new SoElapsedTime;
+   myTimer-&gt;ref();
+
+
+</pre></td></tr></table><p><div class="figure"><p><a name="id5502254"></a><b>Figure 14-13. <a name="id12127"></a>   Using an SoShapeKit with Engines</b></p>
+<div class="mediaobject"><img src="figures/ch14-9.gif"></div></div><br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+
+   // Create two calculators - one for HAPPY, one for NICE.
+   SoCalculator *happyCalc = new SoCalculator;
+   happyCalc-&gt;ref();
+   happyCalc-&gt;a.connectFrom(&amp;myTimer-&gt;timeOut);
+   happyCalc-&gt;expression = &quot;ta=cos(2*a); tb=sin(2*a);\
+      oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);         \
+      oB = vec3f(fabs(ta)+.1,fabs(.5*fabs(tb))+.1,1);\
+      oC = vec3f(fabs(ta),fabs(tb),.5)&quot;;
+
+   // The second calculator uses different arguments to
+   // sin() and cos(), so it moves out of phase.
+   SoCalculator *niceCalc = new SoCalculator;
+   niceCalc-&gt;ref();
+   niceCalc-&gt;a.connectFrom(&amp;myTimer-&gt;timeOut);
+   niceCalc-&gt;expression = &quot;ta=cos(2*a+2); tb=sin(2*a+2);\
+      oA = vec3f(3*pow(ta,3),3*pow(tb,3),1);            \
+      oB = vec3f(fabs(ta)+.1,fabs(.5*fabs(tb))+.1,1);   \
+      oC = vec3f(fabs(ta),fabs(tb),.5)&quot;;
+
+   // Connect the transforms from the calculators...
+   SoTransform *happyXf
+      = (SoTransform *) happyKit-&gt;getPart(&quot;transform&quot;,TRUE);
+   happyXf-&gt;translation.connectFrom(&amp;happyCalc-&gt;oA);
+   happyXf-&gt;scaleFactor.connectFrom(&amp;happyCalc-&gt;oB);
+   SoTransform *niceXf
+      = (SoTransform *) niceKit-&gt;getPart(&quot;transform&quot;,TRUE);
+   niceXf-&gt;translation.connectFrom(&amp;niceCalc-&gt;oA);
+   niceXf-&gt;scaleFactor.connectFrom(&amp;niceCalc-&gt;oB);
+
+   // Connect the materials from the calculators...
+   SoMaterial *happyMtl
+      = (SoMaterial *) happyKit-&gt;getPart(&quot;material&quot;,TRUE);
+   happyMtl-&gt;diffuseColor.connectFrom(&amp;happyCalc-&gt;oC);
+   SoMaterial *niceMtl
+      = (SoMaterial *) niceKit-&gt;getPart(&quot;material&quot;,TRUE);
+   niceMtl-&gt;diffuseColor.connectFrom(&amp;niceCalc-&gt;oC);
+
+   SoXtExaminerViewer *myViewer = new
+            SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;Frolicking Words&quot;);
+   myViewer-&gt;viewAll();
+   myViewer-&gt;show();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5502322"></a>Using Node Kits with Editors<a name="idch1444"></a></h3></div></div>
+<p><a href="ch14.html#id19028">Example 14-2</a> reads in a desk from a file and puts it in the &#8220;contents&#8221; part of an SoWrapperKit. It adds a directional light editor to the light in the scene and a material editor to the desk, as shown in <a name="idch1445"></a><a href="ch14.html#id40782">Figure 14-14</a>. The scene is organized using an SoSceneKit, which contains lists for grouping lights (&#8220;lightList&#8221;), cameras (&#8220;cameraList&#8221;), and objects (&#8220;childList&#8221;) in a scene.<a name="idch1446"></a></p>
+<div class="example"><p><a name="id5502372"></a><b>Example 14-2. <a name="id19028"></a>Using Node Kits and Editors</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/SoInput.h&gt;
+#include &lt;Inventor/nodekits/SoCameraKit.h&gt;
+#include &lt;Inventor/nodekits/SoLightKit.h&gt;
+#include &lt;Inventor/nodekits/SoSceneKit.h&gt;
+#include &lt;Inventor/nodekits/SoWrapperKit.h&gt;
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/SoXtDirectionalLightEditor.h&gt;
+#include &lt;Inventor/Xt/SoXtMaterialEditor.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt;
+
+</pre></td></tr></table><p><div class="figure"><p><a name="id5502432"></a><b>Figure 14-14. <a name="id40782"></a>Using an SoSceneKit with Directional Light and Material Editors</b></p>
+<div class="mediaobject"><img src="figures/14.14.ex.14.2.gif"></div></div><br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+main(int , char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) exit(1);
+
+   // SCENE!
+   SoSceneKit *myScene = new SoSceneKit;
+   myScene-&gt;ref();
+
+   // LIGHTS! Add an SoLightKit to the &quot;lightList.&quot; The 
+   // SoLightKit creates an SoDirectionalLight by default.
+   myScene-&gt;setPart(&quot;lightList[0]&quot;, new SoLightKit);
+
+   // CAMERA!! Add an SoCameraKit to the &quot;cameraList.&quot; The 
+   // SoCameraKit creates an SoPerspectiveCamera by default.
+   myScene-&gt;setPart(&quot;cameraList[0]&quot;, new SoCameraKit);
+   myScene-&gt;setCameraNumber(0);
+
+   // Read an object from file. 
+   SoInput myInput;
+   if (!myInput.openFile(&quot;desk.iv&quot;)) 
+      return (1);
+   SoSeparator *fileContents = SoDB::readAll(&amp;myInput);
+   if (fileContents == NULL) return (1);
+   // OBJECT!! Create an SoWrapperKit and set its contents to
+   // be what you read from file.
+   SoWrapperKit *myDesk = new SoWrapperKit();
+   myDesk-&gt;setPart(&quot;contents&quot;, fileContents);
+   myScene-&gt;setPart(&quot;childList[0]&quot;, myDesk);
+   // Give the desk a good starting color
+   myDesk-&gt;set(&quot;material { diffuseColor .8 .3 .1 }&quot;);
+
+   // MATERIAL EDITOR!!  Attach it to myDesk's material node.
+   // Use the SO_GET_PART macro to get this part from myDesk.
+   SoXtMaterialEditor *mtlEditor = new SoXtMaterialEditor();
+   SoMaterial *mtl = SO_GET_PART(myDesk,&quot;material&quot;,SoMaterial);
+   mtlEditor-&gt;attach(mtl);
+   mtlEditor-&gt;setTitle(&quot;Material of Desk&quot;);
+   mtlEditor-&gt;show();
+
+   // DIRECTIONAL LIGHT EDITOR!! Attach it to the 
+   // SoDirectionalLight node within the SoLightKit we made.
+   SoXtDirectionalLightEditor *ltEditor = 
+                 new SoXtDirectionalLightEditor();
+   SoPath *ltPath = myScene-&gt;createPathToPart(
+      &quot;lightList[0].light&quot;, TRUE);
+   ltEditor-&gt;attach(ltPath);
+   ltEditor-&gt;setTitle(&quot;Lighting of Desk&quot;);
+   ltEditor-&gt;show();
+
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+
+   // Set up Camera with ViewAll...
+   // -- use the SO_GET_PART macro to get the camera node.
+   // -- viewall is a method on the 'camera' part of 
+   //    the cameraKit, not on the cameraKit itself.  So the part
+   //    we ask for is not 'cameraList[0]' (which is of type 
+   //    SoPerspectiveCameraKit), but 
+   //    'cameraList[0].camera' (which is of type 
+   //    SoPerspectiveCamera).
+   SoPerspectiveCamera *myCamera = SO_GET_PART(myScene,
+      &quot;cameraList[0].camera&quot;, SoPerspectiveCamera);
+   SbViewportRegion myRegion(myRenderArea-&gt;getSize());
+   myCamera-&gt;viewAll(myScene, myRegion);
+   myRenderArea-&gt;setSceneGraph(myScene);
+   myRenderArea-&gt;setTitle(&quot;Main Window: Desk In A Scene Kit&quot;);
+   myRenderArea-&gt;show();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5502573"></a>Creating a Motion Hierarchy<a name="idch1447"></a></h3></div></div>
+<p><a href="ch14.html#id37668">Example 14-3</a> creates a balance scale using node kits and their motion hierarchies. <a href="ch14.html#id10454">Figure 14-15</a> shows the balance scale created by this example.</p>
+<p><div class="figure"><p><a name="id5502634"></a><b>Figure 14-15. <a name="id10454"></a>A Balance Scale Created with Node Kits</b></p>
+<div class="mediaobject"><img src="figures/14.15.ex.14.3.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5502654"></a><b>Example 14-3. <a name="id37668"></a>Using Node Kits to Create a Motion Hierarchy</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// This example illustrates the creation of motion hierarchies
+// using nodekits by creating a model of a balance-style scale.
+
+// It adds an SoEventCallback to the &quot;callback&quot; list in the 
+// nodekit called 'support.'
+// The callback will have the following response to events:
+// Pressing right arrow key == lower the right pan
+// Pressing left arrow key  == lower the left pan
+// The pans are lowered by animating three rotations in the 
+// motion hierarchy.
+// Use an SoText2Kit to print instructions to the user as part
+// of the scene.
+
+#include &lt;Inventor/events/SoKeyboardEvent.h&gt;
+#include &lt;Inventor/nodekits/SoCameraKit.h&gt;
+#include &lt;Inventor/nodekits/SoLightKit.h&gt;
+#include &lt;Inventor/nodekits/SoSceneKit.h&gt;
+#include &lt;Inventor/nodekits/SoShapeKit.h&gt;
+#include &lt;Inventor/nodes/SoCone.h&gt;
+#include &lt;Inventor/nodes/SoCube.h&gt;
+#include &lt;Inventor/nodes/SoCylinder.h&gt;
+#include &lt;Inventor/nodes/SoEventCallback.h&gt;
+#include &lt;Inventor/nodes/SoText2.h&gt;
+#include &lt;Inventor/nodes/SoTransform.h&gt;
+#include &lt;Inventor/nodes/SoPerspectiveCamera.h&gt;
+
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/SoXtRenderArea.h&gt;
+
+// Callback Function for Animating the Balance Scale.
+// --used to make the balance tip back and forth
+// --Note: this routine is only called in response to KeyPress
+//   events since the call 'setEventInterest(KeyPressMask)' is
+//   made on the SoEventCallback node that uses it.
+// --The routine checks if the key pressed was left arrow (which
+//   is XK_Left in X-windows talk), or right arrow (which is
+//   XK_Right)
+// --The balance is made to tip by rotating the beam part of the
+//   scale (to tip it) and then compensating (making the strings
+//   vertical again) by rotating the string parts in the opposite
+//   direction.
+void
+tipTheBalance(
+   void *userData, // The nodekit representing 'support', the
+                   // fulcrum of the balance. Passed in during
+                   // main routine, below. 
+   SoEventCallback *eventCB)
+{
+   const SoEvent *ev = eventCB-&gt;getEvent();
+   
+   // Which Key was pressed?
+   // If Right or Left Arrow key, then continue...
+   if (SO_KEY_PRESS_EVENT(ev, RIGHT_ARROW) || 
+        SO_KEY_PRESS_EVENT(ev, LEFT_ARROW)) {
+      SoShapeKit  *support, *beam1, *string1, *string2;
+      SbRotation  startRot, beamIncrement, stringIncrement;
+
+      // Get the different nodekits from the userData.
+      support = (SoShapeKit *) userData;
+
+    // These three parts are extracted based on knowledge of
+    // the motion hierarchy (see the diagram in the main
+    // routine.
+      beam1   = (SoShapeKit *)support-&gt;getPart(&quot;childList[0]&quot;,TRUE);
+      string1 = (SoShapeKit *)  beam1-&gt;getPart(&quot;childList[0]&quot;,TRUE);
+      string2 = (SoShapeKit *)  beam1-&gt;getPart(&quot;childList[1]&quot;,TRUE);
+
+      //Set angular increments to be .1 Radians about the Z-Axis
+      //The strings rotate opposite the beam, and the two types
+      //of key press produce opposite effects.
+      if (SO_KEY_PRESS_EVENT(ev, RIGHT_ARROW)) {
+         beamIncrement.setValue(SbVec3f(0, 0, 1), -.1);
+         stringIncrement.setValue(SbVec3f(0, 0, 1), .1);
+      } 
+      else {
+         beamIncrement.setValue(SbVec3f(0, 0, 1), .1);
+         stringIncrement.setValue(SbVec3f(0, 0, 1), -.1);
+      }
+
+      // Use SO_GET_PART to find the transform for each of the 
+      // rotating parts and modify their rotations.
+
+      SoTransform *xf;
+      xf = SO_GET_PART(beam1, &quot;transform&quot;, SoTransform);
+      startRot = xf-&gt;rotation.getValue();
+      xf-&gt;rotation.setValue(startRot *  beamIncrement);
+
+      xf = SO_GET_PART(string1, &quot;transform&quot;, SoTransform);
+      startRot = xf-&gt;rotation.getValue();
+      xf-&gt;rotation.setValue(startRot *  stringIncrement);
+
+      xf = SO_GET_PART(string2, &quot;transform&quot;, SoTransform);
+      startRot = xf-&gt;rotation.getValue();
+      xf-&gt;rotation.setValue(startRot *  stringIncrement);
+
+      eventCB-&gt;setHandled();
+   }
+}
+
+main(int , char **argv)
+{
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) exit(1);
+
+   SoSceneKit *myScene = new SoSceneKit;
+   myScene-&gt;ref();
+
+   myScene-&gt;setPart(&quot;lightList[0]&quot;, new SoLightKit);
+   myScene-&gt;setPart(&quot;cameraList[0]&quot;, new SoCameraKit);
+   myScene-&gt;setCameraNumber(0);
+
+   // Create the Balance Scale -- put each part in the 
+   // childList of its parent, to build up this hierarchy:
+   //
+   //                    myScene
+   //                       |
+   //                     support
+   //                       |
+   //                     beam
+   //                       |
+   //                   --------
+   //                   |       |
+   //                string1  string2
+   //                   |       |
+   //                tray1     tray2
+
+   SoShapeKit *support = new SoShapeKit();
+   support-&gt;setPart(&quot;shape&quot;, new SoCone);
+   support-&gt;set(&quot;shape { height 3 bottomRadius .3 }&quot;);
+   myScene-&gt;setPart(&quot;childList[0]&quot;, support);
+
+   SoShapeKit *beam = new SoShapeKit();
+   beam-&gt;setPart(&quot;shape&quot;, new SoCube);
+   beam-&gt;set(&quot;shape { width 3 height .2 depth .2 }&quot;);
+   beam-&gt;set(&quot;transform { translation 0 1.5 0 } &quot;);
+   support-&gt;setPart(&quot;childList[0]&quot;, beam);
+
+   SoShapeKit *string1 = new SoShapeKit;
+   string1-&gt;setPart(&quot;shape&quot;, new SoCylinder);
+   string1-&gt;set(&quot;shape { radius .05 height 2}&quot;);
+   string1-&gt;set(&quot;transform { translation -1.5 -1 0 }&quot;);
+   string1-&gt;set(&quot;transform { center 0 1 0 }&quot;);
+   beam-&gt;setPart(&quot;childList[0]&quot;, string1);
+
+   SoShapeKit *string2 = new SoShapeKit;
+   string2-&gt;setPart(&quot;shape&quot;, new SoCylinder);
+   string2-&gt;set(&quot;shape { radius .05 height 2}&quot;);
+   string2-&gt;set(&quot;transform { translation 1.5 -1 0 } &quot;);
+   string2-&gt;set(&quot;transform { center 0 1 0 } &quot;);
+   beam-&gt;setPart(&quot;childList[1]&quot;, string2);
+
+   SoShapeKit *tray1 = new SoShapeKit;
+   tray1-&gt;setPart(&quot;shape&quot;, new SoCylinder);
+   tray1-&gt;set(&quot;shape { radius .75 height .1 }&quot;);
+   tray1-&gt;set(&quot;transform { translation 0 -1 0 } &quot;);
+   string1-&gt;setPart(&quot;childList[0]&quot;, tray1);
+
+   SoShapeKit *tray2 = new SoShapeKit;
+   tray2-&gt;setPart(&quot;shape&quot;, new SoCylinder);
+   tray2-&gt;set(&quot;shape { radius .75 height .1 }&quot;);
+   tray2-&gt;set(&quot;transform { translation 0 -1 0 } &quot;);
+   string2-&gt;setPart(&quot;childList[0]&quot;, tray2);
+
+   // Add EventCallback so Balance Responds to Events
+   SoEventCallback *myCallbackNode = new SoEventCallback;
+   myCallbackNode-&gt;addEventCallback(
+        SoKeyboardEvent::getClassTypeId(), 
+            	tipTheBalance, support); 
+   support-&gt;setPart(&quot;callbackList[0]&quot;, myCallbackNode);
+
+   // Add Instructions as Text in the Scene...
+   SoShapeKit *myText = new SoShapeKit;
+   myText-&gt;setPart(&quot;shape&quot;, new SoText2);
+   myText-&gt;set(&quot;shape { string \&quot;Press Left or Right Arrow Key\&quot; }&quot;);
+   myText-&gt;set(&quot;shape { justification CENTER }&quot;);
+   myText-&gt;set(&quot;font { name \&quot;Helvetica-Bold\&quot; }&quot;);
+   myText-&gt;set(&quot;font { size 16.0 }&quot;);
+   myText-&gt;set(&quot;transform { translation 0 -2 0 }&quot;);
+   myScene-&gt;setPart(&quot;childList[1]&quot;, myText);
+
+   SoXtRenderArea *myRenderArea = new SoXtRenderArea(myWindow);
+
+   // Get camera from scene and tell it to viewAll...
+   SbViewportRegion myRegion(myRenderArea-&gt;getSize());
+   SoPerspectiveCamera *myCamera = SO_GET_PART(myScene,
+      &quot;cameraList[0].camera&quot;, SoPerspectiveCamera);
+   myCamera-&gt;viewAll(myScene, myRegion);
+
+   myRenderArea-&gt;setSceneGraph(myScene);
+   myRenderArea-&gt;setTitle(&quot;Balance Scale Made of Nodekits&quot;);
+   myRenderArea-&gt;show();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+
+</pre></td></tr></table><br></div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch13.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch15.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 13. Engines </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 15. Draggers and Manipulators </td></tr></table></div></body></html>

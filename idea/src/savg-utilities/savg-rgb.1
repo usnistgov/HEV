@@ -1,0 +1,52 @@
+.TH SAVG\-RGB 1 " March 2005"
+.SH NAME
+savg-rgb \- SAVG ToolBox: rgb
+.SH SYNOPSIS
+.B savg-rgb
+r g b
+.SH DESCRIPTION
+.I savg-rgb
+sets the color of geometry in \fIsavg\fP files (\fISAVG ToolBox\fP).  It 
+accepts input from
+.I stdin
+and outputs to
+.I stdout.
+If no command line arguments are given
+.I savg-rgb
+defaults to an opaque white.  If invalid arguments are given 
+then 
+.I savg-rgb
+prints usage information and terminates.
+.SH ARGUMENTS
+.TP
+.B r g b
+The values of the red, green, and blue components.  Accepts floating point numbers from 0 to 1. All 3 values must be entered.
+.SH EXAMPLES
+.TP
+.B savg-rgb 0.5 0.0 1.0 < in.savg > out.savg
+Reads from 
+.I in.savg
+and sets the rgb to (0.5, 0.0, 1.0), leaving the alpha value unchanged.  Then outputs to 
+.I out.savg.
+.SH BUGS
+(none)
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+March 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

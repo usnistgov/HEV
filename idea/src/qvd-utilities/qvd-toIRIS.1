@@ -1,0 +1,148 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH qvd-toIRIS 1 "April 2013" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+qvd-toIRIS
+- convert .qvisdat file to .iris file to visualize the \fIinclusions\fR (rocks)
+
+.SH SYNOPSIS
+.B "qvd-toIRIS"
+[Options] rockTemplate inFile.qvisdat outFile.iris outDir ID
+
+.SH DESCRIPTION
+.PP
+.I
+qvd-toIRIS
+converts a 
+.B .qvisdat file
+to a
+.B .iris
+to produce an animated visualization.
+
+
+
+.SH OPTIONS
+.TP
+.B "--gpuSpheres"
+ rocks will be rendered by the GPU, see below under \fBrockTemplate\fR.
+
+.TP
+.B " --radius radiusList"
+When specified, provides the name of a file containing radius values
+for the generated gpuSpheres. Currently, it only works with gpu
+spheres. The file is a single column of numbers corresponding to the
+inclusions in the qvisdat file.
+
+
+.TP
+.B "--parallel n"
+ by default use as many CPUs as available to convert savg file
+pages to osgb format. If specified, use n CPUs.
+
+.TP
+.B "--verbose"
+produces lots of mildly interesting spewage
+
+
+.SH REQUIRED PARAMETERS
+
+.TP
+.B rockTemplate
+is a string which forms a
+printf-style template for existing polygonal rock shape files.
+These files must be \fI.savg\fR format
+(e.g. rocks/rock.poly.%02d.savg)
+
+.TP
+   These template savgfiles can be of two forms:
+.br
+    - normal savg files representing the inclusions as polygons
+.br
+    - single point representing the inclusions a single point
+      when --gpuSpheres is specified.
+.br
+    A single point file has a single line in the form:
+.br
+       #POINTS r g b a
+.br
+    for example:
+.br
+       #POINTS  1 1 0 1  
+                    
+
+.TP 
+.B inFile.qvisdat
+is a QVISDAT format data file. This is a text file format, documented
+in comments in the file header.
+
+.TP
+.B outFile.iris
+is the output file, must end in .iris
+A \fIno geometry\fR filed named \fBnogeometry_outfile.iris\fR is also created.
+This second file is used with the \fIhev-animator(1)\fR command.
+.br
+When --gpuSpheres is specified, the geometry is a single point suitable
+to be rendered by a GPU shader which is is added later.
+
+.TP
+.B outDir
+is the name of an output directory that will contain the
+flipbook pages (savg files) for each time step
+
+.TP
+.B ID
+is a short unique identifier (no spaces or special characters).
+Used to ensure the internal names in the output
+.B iris
+file don\'t clash.
+
+.SH OPTIMIZATION
+
+.PP
+This command internally uses \fBiris-convert\fR to convert \fB.savg\fR
+format rock files to \fB.osgb\fR format. Generally, the command will
+do the best optimization automatically. If any explicit optimization
+is needed, set the environment variable \fBOSG_OPTIMIZER\fR which will
+be passed to the \fI--optimize\fR parameter of \fBiris-convert\fR.
+
+.SH EXAMPLES
+
+For a complete example of using this command, go to
+.br
+${HEVROOT}/idea/src/qvd-utilities/toIRISrocksExample
+.br
+or
+.br
+${HEVROOT}/idea/src/qvd-utilities/toGpuSpheresExample
+
+
+.IP
+Copy \fBbuild.sh\fR and \fBdata.qvisdat.gz\fR to an empty directory.
+.IP
+Use: \fIgunzip data.qvisdat.gz\fR to uncompress the data file.
+.IP
+Then: \fI./build.sh data.qvisdat\fB
+.IP
+or use it as a model for building a qvisdat application with other data files.
+
+.SH SEE ALSO
+.I
+iris-convert(1),
+printf(1), hev-animator(1), hev-animatorIRIS(1).
+
+
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov,  NIST/ITL/MCSD/SAVG
+.br
+Original implementation of hev-toSGE: February 29, 2008
+.br
+Conversion to hev-toSGErocks: January 14, 2010
+.br
+Conversion to hev-toIRISrocks: April 18, 2012
+.br
+Conversion to hev-toIRIS: May 8, 2012
+.br
+Much credit goes to Marc Olano. This program borrowed heavily,
+i.e. directly lifted sections, from hev-qvToNpr
+

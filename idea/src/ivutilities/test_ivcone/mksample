@@ -1,0 +1,15 @@
+#! /bin/sh
+
+ivwirecube | ivscale 2 2 2 > cube.ivu
+#ivarrow | ivrotate 1 0 0 `ivdeg2rad 180` > arrow.ivu
+ivarrow  > arrow.ivu
+
+STICK="0 0 0 1 1 1"
+
+ivstick $STICK | ivrgba 1 0 0 1 > stick.ivu
+
+cat arrow.ivu | ivposition $STICK > sample.ivu
+
+echo "savgfly --examine cube.ivu arrow.ivu stick.ivu sample.ivu"
+
+

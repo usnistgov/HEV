@@ -1,0 +1,36 @@
+.TH hyd-BIMGtoRAW 1 "16 Aug 2016" "version 1.0"
+.SH NAME
+hyd-BIMGtoRAW - HydratiCA raw volume extraction tool
+
+.SH SYNOPSIS
+.B hyd-BIMGtoRAW column_number file1 file2 file3 ...
+
+.SH DESCRIPTION
+.B hyd-BIMGtoRAW
+Takes a set of .bimg files from the HydratiCA simulation and extracts and saves a raw 3D
+volume of a desired variable (column number) from each file. The output data files use
+type "float".
+
+.SH PARAMETERS
+.TP
+.B column_number
+An positive integer representing the variable (column) of data to extract. Must not exceed
+the number of columns available in the .bimg file.
+.TP
+.B fileN
+Location/filename of each input file.
+This file must be the standard .bimg file from the the HydratiCA simulation.
+
+.SH EXAMPLE
+.TP
+.B hyd-BIMGtoRAW 5 timestep1.bimg timestep2.bimg timestep3.bimg
+This goes through each of the three input files, extracts the raw data located in the
+fifth column and saves it as as set of raw volume files. In this case the output files
+are "timestep1_5.raw", "timestep2_5.raw", and "timestep3_5.raw".
+
+.SH AUTHOR
+Franz Sauer
+.br
+High Performance Computing and Visualization Group, NIST
+.br
+August 16th 2016

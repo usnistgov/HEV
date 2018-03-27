@@ -1,0 +1,8 @@
+# Glowing Example Lut From Marc Olano
+# See Man Page For Volumeappbuilder
+0     0   0   0   0
+50    0   0   0   0
+100   0   0   5  .98
+150   0   0   0   0
+230   0   0   0   0
+255  30   0   0  .98

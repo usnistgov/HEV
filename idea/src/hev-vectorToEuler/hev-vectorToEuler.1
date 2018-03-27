@@ -1,0 +1,28 @@
+.TH hev-vectorToEuler 1 "May 2009"
+.SH NAME
+
+hev-vectorToEuler
+
+.SH SYNOPSIS
+
+\fBhev-vectorToEuler [-c N]
+
+.SH DESCRIPTION
+
+\fBhev-vectorToEuler\fR converts lines from stdin containing an xyz vector
+rotation to lines on stdout containing the equivalent Euler angle
+rotation.
+
+.SH OPTIONS
+
+.IP "\fB-c \fIN\fR"
+Skip the first \fIN\fR tokens on each line before evaluating the next three
+tokens as x, y and z vector rotation values.
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+.br
+\fBhttp://www.nist.gov/acmd/hpcvg/\fR
+

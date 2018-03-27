@@ -1,0 +1,110 @@
+.TH hev-imageDisplay 1 "February 2010"
+.SH NAME
+
+hev-imageDisplay
+
+.SH SYNOPSIS
+
+\fBhev-imageDisplay [FLTK options] [OPTIONS] [ file ...]
+
+.SH DESCRIPTION
+
+\fBhev-imageDisplay\fR displays an image file in a window.
+
+.PP
+At least one file must be supplied unless --color is specified.
+Multiple files may be specified for implementing a \fIflip book\fR animation.
+
+If the single file name "-" is supplied then file names are read once from
+stdin at startup. Blank lines and # comments are supported, and there can be
+multiple file names per line.
+
+When multiple files are specified, either via the command line of stdin,
+the \fB--shm name\fR parameter must be supplied. See below for more details.
+
+.SH OPTIONS
+
+.IP "\fBFLTK options\fR"
+are any standard FLTK options, specified first on the command line
+
+.IP "\fB--noescape\fR"
+if  supplied, specifies that
+the GUI
+can't
+be killed by pressing
+the window manager's close button, or by pressing escape  in  he
+GUI window.
+
+.IP "\fB--noborder\fR"
+displays a borderless window
+
+.IP "\fB--fullscreen\fR"
+displays a fullscreen window
+
+.IP "\fB--color r g b"
+specifies the color of the generated image when \fBfile\fR is not
+specified.  The \fBr\fRed, \fBg\fRreen, \fBb\fRlue values are in the
+range 0.0 to 1.0. No effect when a \fBfile\fR is specified.
+.IP
+This option is a special case for creating solid color windows. The
+image is displayed in a size determined by the usual X11
+\fB-geometry\fR specification.
+
+.IP "\fB--height h"
+specifies the height of the window. If not provided, the maximum height of
+all provided windows is used.
+
+.IP "\fB--width h"
+specifies the width of the window. If not provided, the maximum width of
+all provided windows is used.
+
+.IP "\fB--shm name"
+specifies the name of an integer shared memory segment used to select
+which of the multiple files is to be displayed. A flip book style
+animation can be easily implemented by dynamically changing the shared
+memory value.
+
+.SH EXAMPLES
+
+.PP
+
+Assuming a directory with a series of \fBpng\fR image files use the
+following bash commands to manually flip though them using a slider GUI.
+
+.IP
+CNT=\`ls *.png | wc -l\`
+.br
+hev-intSlider --mi 0 --ma $((CNT-1)) --in 0 | hev-writeInts -c 1 tmp/ints &
+.br
+hev-imageDisplay --shm tmp/ints *.png
+
+
+.PP
+This command can be easily linked to the \fBhev-vcr\fR command by specifying the same shared memory. For example, here is a typical command for use with an application created with \fBselectionAppBuildeer\fR
+
+.IP
+hev-imageDisplay --shm hev-vcr/frame  *.png
+
+.PP
+Create a 200x200 yellow window at screen position 100,100
+
+.IP
+hev-imageDisplay -geometry 200x200 --color 1 1 0
+
+.SH "SEE ALSO"
+.PP
+hev-vcr(1), hev-intSlider(1)
+
+
+.SH AUTHOR
+.PP
+John Kelso <kelso@nist.gov>
+.br
+Man page additions/updates by Steve Satterfield <steve@nist.gov>
+.br
+High Performance Computing & Visualization group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/itl/math/hpcvg/\fR
+

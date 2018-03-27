@@ -1,0 +1,13 @@
+#Inventor V2.0 ascii
+Separator {
+ Material {
+  diffuseColor [1 1 1]
+ }
+ Font {
+  name  "Times-Roman"
+  size 2
+ }
+ Text3 {
+   string ["Hello World!!"]
+ }
+}

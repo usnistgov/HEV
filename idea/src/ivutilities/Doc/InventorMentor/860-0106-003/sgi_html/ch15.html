@@ -1,0 +1,811 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 15. Draggers and Manipulators</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch14.html" title="Chapter 14. Node Kits"><link rel="next" href="ch16.html" title="Chapter 16. Inventor Component Library"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 15. Draggers and Manipulators</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch14.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch16.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5502897"></a>Chapter 15. <a name="id31593"></a>Draggers and Manipulators</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Connect draggers to fields or engines in the scene graph</p>
+</li>
+<li><p>Explain the difference between a dragger and a manipulator</p>
+</li>
+<li><p>Write callback functions that are performed when interaction starts or finishes, when the mouse moves, or when the value in a dragger's field changes</p>
+</li>
+<li><p>Use manipulators in your application to allow the user to edit nodes in the scene graph directly</p>
+</li>
+<li><p>Customize the appearance of a dragger</p>
+</li>
+</ul></div><p>This chapter describes how to use <i>draggers</i> and <i>manipulators</i>, which are special objects in the scene graph that have a user interface and respond to events. Manipulators, such as the handle box, trackball, and directional light manipulator, are nodes that employ draggers to enable the user to interact with them and edit them. For information on how draggers receive and respond to events, see <a href="ch10.html#id10433">Chapter 10</a>.</p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5502993"></a>What Is a Dragger?</h2></div></div>
+<p>A dragger is a node in the scene graph with specialized behavior that enables it to respond to user events. All Inventor draggers have a built-in user interface, and they insert geometry into the scene graph that is used for picking and user feedback. <a name="idch151"></a><a href="ch15.html#id39041">Figure 15-1</a> shows the class tree for dragger classes.</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5503021"></a>Types of Draggers<a name="idch152"></a></h2></div></div>
+<p>For all draggers subclassed from <a name="idch153"></a><span class="bold"><b>SoDragger</b></span>, the user employs a click-drag-release motion with the mouse. <a href="ch15.html#id30272">Table 15-1</a> indicates the use of each dragger subclassed from <a name="idch154"></a><span class="bold"><b>SoDragger</b></span>. For example, the drag-point dragger responds to dragging by translating in three dimensions.<a name="idch155"></a></p>
+<p>Subclasses of <span class="bold"><b>SoDragger</b></span> fall into two general categories: <a name="idch156"></a><i>simple</i> draggers and <i>compound</i> draggers. In general, simple draggers perform only one operation, such as a scale or a translation. Compound draggers perform several operations and are composed of multiple simple draggers. Simple draggers can be used in three ways:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>You can <i>connect the field</i> of a simple dragger to other fields or to engines in the scene graph. This is a simple way to set up dependencies within the scene graph.</p>
+</li>
+<li><p>You can write <i>callback functions</i> that are performed when interaction starts or finishes, whenever the mouse moves, or when the value in the dragger's field changes.</p>
+</li>
+<li><p>You can use the simple draggers as <i>building blocks</i> to create more complex draggers.</p>
+</li>
+</ul></div><p>Compound draggers are similar to simple draggers, except that they have more parts because they are comprised of two or more draggers. Th<span class="bold"><b>e SoTransformBoxDragger</b></span>, for example, uses a scale dragger, three rotators, and six translators.</p>
+<p><div class="figure"><p><a name="id5503173"></a><b>Figure 15-1. <a name="id39041"></a><a name="idch157"></a>Dragger Classes</b></p>
+<div class="mediaobject"><img src="figures/fig15.1.draggers.gif"></div></div><br>
+</p>
+<p><a name="id16826"></a></p>
+<div class="table"><p><a name="id5503253"></a><b>Table 15-1. <a name="id30272"></a><a name="idch158"></a>Uses of Draggers</b></p>
+<table summary="Uses of Draggers" border="1"><colgroup><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>Dragger</p>
+</th><th valign="top"><p>Use</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>SoCenterballDragger</p>
+</td><td valign="top"><p>rotation, center</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoDirectionalLightDragger</p>
+</td><td valign="top"><p>rotation</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoDragPointDragger</p>
+</td><td valign="top"><p>translation</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoHandleBoxDragger</p>
+</td><td valign="top"><p>translation, scale</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoJackDragger</p>
+</td><td valign="top"><p>rotation, translation, uniform scale (three 
+dimensions)</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoPointLightDragger</p>
+</td><td valign="top"><p>translation</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoRotateCylindricalDragger</p>
+</td><td valign="top"><p>rotation</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoRotateDiscDragger</p>
+</td><td valign="top"><p>rotation</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoRotateSphericalDragger</p>
+</td><td valign="top"><p>rotation</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoScale1Dragger</p>
+</td><td valign="top"><p>scale (one dimension)</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoScale2Dragger</p>
+</td><td valign="top"><p>scale (two dimensions)</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoScaleUniformDragger</p>
+</td><td valign="top"><p>uniform scale (three dimensions)</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoScale2UniformDragger</p>
+</td><td valign="top"><p>uniform scale (two dimensions)</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoSpotLightDragger</p>
+</td><td valign="top"><p>translation, rotation, cone angle</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoTabBoxDragger</p>
+</td><td valign="top"><p>scale, translation</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoTabPlaneDragger</p>
+</td><td valign="top"><p>scale (two dimensions), translation (two 
+dimensions)</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoTrackballDragger</p>
+</td><td valign="top"><p>rotation, scale</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoTransformBoxDragger</p>
+</td><td valign="top"><p>rotation, translation, scale</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoTranslate1Dragger</p>
+</td><td valign="top"><p>translation (one dimension)</p>
+</td></tr><tr valign="top"><td valign="top"><p>SoTranslate2Dragger</p>
+</td><td valign="top"><p>translation (two dimensions)</p>
+</td></tr></tbody></table></div><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5503772"></a>Manipulators versus Draggers</h2></div></div>
+<p>Manipulators are subclasses of other nodes (such as SoTransform or SoDirectionalLight) that employ draggers (as hidden children) to respond to user events and edit themselves. <a name="idch159"></a><a href="ch15.html#id17354">Figure 15-2</a> shows the portions of the class tree that contain manipulator classes. Each manipulator <i>contains</i> a dragger that responds directly to user events and in turn modifies the fields of the manipulator. A manipulator inserts geometry into the scene that provides feedback to the user; this geometry is provided by the manipulator's dragger. An <a name="idch1510"></a><span class="bold"><b>SoHandleBoxManip</b></span>, for example, inserts cubes and lines into the scene that allow the user to edit the scale and translate fields of an <a name="idch1511"></a><span class="bold"><b>SoTransform</b></span> node by moving the mouse in various ways (see <a href="ch15.html#id41651">Figure 15-3</a>). This geometry is part of the <span class="bold"><b>SoHandleBoxDragger</b></span> contained within the <span class="bold"><b>SoHandleBoxManip</b></span> manipulator. An <a name="idch1512"></a><span class="bold"><b>SoTrackballManip</b></span> allows the user to edit the rotation field of an <span class="bold"><b>SoTransform </b></span>node by inserting a sphere surrounded by three ribbons into the scene (see <a href="ch15.html#id20599">Figure 15-4</a>). The user can then rotate or scale the object inside this trackball.<a name="idch1513"></a></p>
+<p>A dragger moves only itself when it responds to user events. A manipulator, on the other hand, moves itself and affects other objects in the scene graph because, as a subclass of <span class="bold"><b>SoTransform</b></span> or <span class="bold"><b>SoLight</b></span>, it functions as a transform or light node and modifies the traversal state. A dragger supplies geometry and a user interface for a manipulator. A manipulator uses the values it receives from the dragger and copies them into its own fields. When interaction finishes and the manipulator is removed from the scene graph, it copies its values into the transform or light node it was replacing.</p>
+<p><div class="figure"><p><a name="id5503940"></a><b>Figure 15-2. <a name="id17354"></a><a name="idch1514"></a>Manipulator Classes</b></p>
+<div class="mediaobject"><img src="figures/Manip-2.gif"></div></div><br>
+</p>
+<p>A manipulator replaces a node in the scene graph, substituting an editable version of that node for the original. When interaction finishes, the original (non-editable) node can be restored. Each manipulator contains a dragger that allows the user to edit its fields. Manipulators derived from <span class="bold"><b>SoTransform<a name="idch1515"></a></b></span> are as follows:</p>
+<p>SoCenterBallManip</p>
+<p>SoHandleBoxManip</p>
+<p>SoJackManip</p>
+<p>SoTabBoxManip</p>
+<p>SoTrackballManip</p>
+<p>SoTransformBoxManip</p>
+<p>Other manipulators include the <span class="bold"><b>SoPointLightManip</b></span>, derived from <span class="bold"><b>SoPointLight</b></span>, and the <span class="bold"><b>SoDirectionalLightManip</b></span>, derived from <span class="bold"><b>SoDirectionalLight</b></span>.</p>
+<p><div class="figure"><p><a name="id5504089"></a><b>Figure 15-3. <a name="id41651"></a><a name="idch1516"></a>Handle-Box Manipulator</b></p>
+<div class="mediaobject"><img src="figures/15.3.handl.bx.gif"></div></div><br>
+<div class="figure"><p><a name="id5504111"></a><b>Figure 15-4. <a name="id20599"></a><a name="idch1517"></a>Trackball Manipulator</b></p>
+<div class="mediaobject"><img src="figures/15.4.trkball.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5504136"></a>Simple Draggers<a name="idch1518"></a></h2></div></div>
+<p>A simple dragger moves in 3D space in response to click-drag-release mouse events. Its position in space is determined by its position in the scene graph. Each simple dragger has a field that reflects the current state of the dragger. For example, the SoRotateDiscDragger has a rotation field that indicates its current rotation value. This field can be connected to other fields in the scene graph or to the input field of an engine (see the following section). Callback functions can also be used with simple draggers, as described in <a name="idch1519"></a><a href="ch15.html#id14440">&#8220;Callback Functions&#8221;</a>.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5504173"></a><a name="id13650"></a>Field Connections<a name="idch1520"></a></h3></div></div>
+<p>A convenient way to use a dragger is to connect its fields to other fields or engines in the scene graph. For example, the <a name="idch1521"></a><span class="bold"><b>SoTranslate1Dragger</b></span> has a <span class="bold"><b>translation</b></span> field that could be used in a variety of ways. <a href="ch15.html#id37538">Figure 15-5</a> shows how this field could be used to edit the radius of a cone node. Since the dragger's <span class="bold"><b>translation</b></span> field is an <span class="bold"><b>SoSFVec3f</b></span>, you need to use an <span class="bold"><b>SoDecomposeVec3f<a name="idch1522"></a></b></span> engine to extract the <i>x</i> value of the dragger's </p>
+<p>translation. This <i>x</i> value is then fed into the <span class="bold"><b>bottomRadius</b></span> field of the cone node. Now, whenever the dragger is translated, the radius of the cone changes.</p>
+<p><div class="figure"><p><a name="id5504317"></a><b>Figure 15-5. <a name="id37538"></a>Connecting a Dragger's Field to Another Field in the Scene Graph</b></p>
+<div class="mediaobject"><img src="figures/15-5.gif"></div></div><br>
+</p>
+<p><a href="ch15.html#id13953">Example 15-1</a> shows the code for connecting these fields and engines. <a href="ch15.html#id35679">Figure 15-6</a> shows an image created by this example.</p>
+<div class="example"><p><a name="id5504361"></a><b>Example 15-1. <a name="id13953"></a><a name="idch1523"></a>Using a Simple Dragger</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   // Create myDragger with an initial translation of (1,0,0)
+   SoTranslate1Dragger *myDragger = new SoTranslate1Dragger;
+   root-&gt;addChild(myDragger);
+   myDragger-&gt;translation.setValue(1,0,0);
+
+   // Place an SoCone below myDragger
+   SoTransform *myTransform = new SoTransform;
+   SoCone *myCone = new SoCone;
+   root-&gt;addChild(myTransform);
+   root-&gt;addChild(myCone);
+   myTransform-&gt;translation.setValue(0,3,0);
+
+   // SoDecomposeVec3f engine extracts myDragger's x-component
+   // The result is connected to myCone's bottomRadius.
+   SoDecomposeVec3f *myEngine = new SoDecomposeVec3f;
+   myEngine-&gt;vector.connectFrom(&amp;myDragger-&gt;translation);
+   myCone-&gt;bottomRadius.connectFrom(&amp;myEngine-&gt;x);
+</pre></td></tr></table><p><div class="figure"><p><a name="id5504420"></a><b>Figure 15-6. <a name="id35679"></a>Using a Dragger and Engine to Edit the Radius of a Cone</b></p>
+<a name="id23748"></a><div class="mediaobject"><img src="figures/ch15-9.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5504487"></a><a name="id14440"></a>Callback Functions<a name="idch1524"></a></h3></div></div>
+<p>Any dragger or manipulator can use callback functions to pass data back to the application. This callback mechanism can be used to augment the default functionality of the dragger or manipulator.  Several lists of callback functions and associated data, of class <a name="idch1525"></a><span class="bold"><b>SoCallbackList</b></span>, are automatically created when a dragger is constructed. You can add functions to and remove functions from these lists and pass a pointer to the user callback data. Draggers use these lists of callback functions:</p>
+<div class="itemizedlist"><ul type="disc"><li><p><i>Start callbacks<a name="idch1526"></a></i>&#8212;called when manipulation starts</p>
+</li>
+<li><p><i>Motion callbacks&#8212;<a name="idch1527"></a></i>called after each mouse movement during manipulation</p>
+</li>
+<li><p><i>Value-changed callbacks<a name="idch1528"></a></i>&#8212;called when any of the dragger's fields change</p>
+</li>
+<li><p><i>Finish callbacks<a name="idch1529"></a></i>&#8212;called when manipulation finishes</p>
+</li>
+</ul></div><p>The following methods add functions to and remove functions from these callback lists:<a name="idch1530"></a><a name="idch1531"></a></p>
+<p><span class="bold"><b>addStartCallback</b></span>(<i>functionName</i>, <i>userData</i>)<br>
+<span class="bold"><b>removeStartCallback</b></span>(<i>functionName</i>, <i>userData</i>)</p>
+<p><span class="bold"><b>addMotionCallback</b></span>(<i>functionName</i>, <i>userData</i>)<br>
+<span class="bold"><b>removeMotionCallback</b></span>(<i>functionName</i>, <i>userData</i>)</p>
+<p><span class="bold"><b>addValueChangedCallback</b></span>(<i>functionName</i>, <i>userData</i>)<br>
+<span class="bold"><b>removeValueChangedCallback</b></span>(<i>functionName</i>, <i>userData</i>)</p>
+<p><span class="bold"><b>addFinishCallback</b></span>(<i>functionName</i>, <i>userData</i>)<br>
+<span class="bold"><b>removeFinishCallback</b></span>(<i>functionName</i>, <i>userData</i>)</p>
+<p>These methods are called on <span class="bold"><b>SoDragger</b></span>. To call one of these methods on the manipulator, call <a name="idch1532"></a><span class="bold"><b>getDragger()</b></span> first, then call the callback list method. </p>
+<p>For example, you could write a start callback function that would turn an object to wireframe during manipulation and a finish callback function that would turn it back to filled drawing style when manipulation finishes. You could write a value-changed callback to find out when the value being manipulated has changed, and then use the <span class="bold"><b>getValue()</b></span> method to obtain the field's new value. </p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5504874"></a>Using Multiple Draggers<a name="idch1533"></a></h3></div></div>
+<p><a href="ch15.html#id33410">Example 15-2</a> uses three <span class="bold"><b>translate1Draggers</b></span> to change the <i>x</i>, <i>y</i>, and <i>z</i> components of a translation that affects some 3D text. <a href="ch15.html#id18226">Figure 15-7</a> shows two images created by this program.</p>
+<p><div class="figure"><p><a name="id5504925"></a><b>Figure 15-7. <a name="id18226"></a>A Slider Box That Uses Draggers and Engines to Move Text</b></p>
+<div class="mediaobject"><img src="figures/ch15-7.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5504946"></a><b>Example 15-2. <a name="id33410"></a><a name="idch1534"></a>Using Multiple Draggers</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+//  Uses 3 translate1Draggers to change the x, y, and z 
+//  components of a translation. A calculator engine assembles 
+//  the components.
+//  Arranges these draggers along edges of a box containing the
+//  3D text to be moved.
+//  The 3D text and the box are made with SoShapeKits
+
+#include &lt;Inventor/engines/SoCalculator.h&gt;
+#include &lt;Inventor/nodekits/SoShapeKit.h&gt;
+#include &lt;Inventor/nodes/SoCube.h&gt;
+#include &lt;Inventor/nodes/SoSeparator.h&gt;
+#include &lt;Inventor/nodes/SoText3.h&gt;
+#include &lt;Inventor/nodes/SoTransform.h&gt;
+
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+
+#include &lt;Inventor/draggers/SoTranslate1Dragger.h&gt;
+
+main(int , char **argv)
+{
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) exit(1);
+
+   SoSeparator *root = new SoSeparator;
+   root-&gt;ref();
+
+   // Create 3 translate1Draggers and place them in space.
+   SoSeparator *xDragSep = new SoSeparator;
+   SoSeparator *yDragSep = new SoSeparator;
+   SoSeparator *zDragSep = new SoSeparator;
+   root-&gt;addChild(xDragSep);
+   root-&gt;addChild(yDragSep);
+   root-&gt;addChild(zDragSep);
+   // Separators will each hold a different transform
+   SoTransform *xDragXf = new SoTransform;
+   SoTransform *yDragXf = new SoTransform;
+   SoTransform *zDragXf = new SoTransform;
+   xDragXf-&gt;set(&quot;translation 0 -4 8&quot;);
+   yDragXf-&gt;set(&quot;translation -8 0 8 rotation 0 0 1 1.57&quot;);
+   zDragXf-&gt;set(&quot;translation -8 -4 0 rotation 0 1 0 -1.57&quot;);
+   xDragSep-&gt;addChild(xDragXf);
+   yDragSep-&gt;addChild(yDragXf);
+   zDragSep-&gt;addChild(zDragXf);
+
+   // Add the draggers under the separators, after transforms
+   SoTranslate1Dragger *xDragger = new SoTranslate1Dragger;
+   SoTranslate1Dragger *yDragger = new SoTranslate1Dragger;
+   SoTranslate1Dragger *zDragger = new SoTranslate1Dragger;
+   xDragSep-&gt;addChild(xDragger);
+   yDragSep-&gt;addChild(yDragger);
+   zDragSep-&gt;addChild(zDragger);
+
+   // Create shape kit for the 3D text
+   // The text says 'Slide Arrows To Move Me'
+   SoShapeKit *textKit = new SoShapeKit;
+   root-&gt;addChild(textKit);
+   SoText3 *myText3 = new SoText3;
+   textKit-&gt;setPart(&quot;shape&quot;, myText3);
+   myText3-&gt;justification = SoText3::CENTER;
+   myText3-&gt;string.set1Value(0,&quot;Slide Arrows&quot;);
+   myText3-&gt;string.set1Value(1,&quot;To&quot;);
+   myText3-&gt;string.set1Value(2,&quot;Move Me&quot;);
+   textKit-&gt;set(&quot;font { size 2}&quot;);
+   textKit-&gt;set(&quot;material { diffuseColor 1 1 0}&quot;);
+
+   // Create shape kit for surrounding box.
+   // It's an unpickable cube, sized as (16,8,16)
+   SoShapeKit *boxKit = new SoShapeKit;
+   root-&gt;addChild(boxKit);
+   boxKit-&gt;setPart(&quot;shape&quot;, new SoCube);
+   boxKit-&gt;set(&quot;drawStyle { style LINES }&quot;);
+   boxKit-&gt;set(&quot;pickStyle { style UNPICKABLE }&quot;);
+   boxKit-&gt;set(&quot;material { emissiveColor 1 0 1 }&quot;);
+   boxKit-&gt;set(&quot;shape { width 16 height 8 depth 16 }&quot;);
+
+   // Create the calculator to make a translation
+   // for the text. The x component of a translate1Dragger's 
+   // translation field shows how far it moved in that 
+   // direction. So our text's translation is:
+   // (xDragTranslate[0],yDragTranslate[0],zDragTranslate[0])
+   SoCalculator *myCalc = new SoCalculator;
+   myCalc-&gt;ref();
+   myCalc-&gt;A.connectFrom(&amp;xDragger-&gt;translation);
+   myCalc-&gt;B.connectFrom(&amp;yDragger-&gt;translation);
+   myCalc-&gt;C.connectFrom(&amp;zDragger-&gt;translation);
+   myCalc-&gt;expression = &quot;oA = vec3f(A[0],B[0],C[0])&quot;;
+
+   // Connect the the translation in textKit from myCalc
+   SoTransform *textXf = (SoTransform *)
+            textKit-&gt;getPart(&quot;transform&quot;,TRUE);
+   textXf-&gt;translation.connectFrom(&amp;myCalc-&gt;oA);
+
+   SoXtExaminerViewer *myViewer = new
+            SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(root);
+   myViewer-&gt;setTitle(&quot;Slider Box&quot;);
+   myViewer-&gt;viewAll();
+   myViewer-&gt;show();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5505098"></a>Manipulators<a name="idch1535"></a></h2></div></div>
+<p>You can use manipulators in your application in various ways:<a name="idch1536"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p>You can use the <span class="bold"><b>replaceNode()<a name="idch1537"></a></b></span> method to replace certain kinds of nodes in the scene graph with an editable version. When the user is finished manipulating the node, use the <a name="idch1538"></a><span class="bold"><b>replaceManip()</b></span> method to restore the original node to the scene graph.</p>
+</li>
+<li><p>You can write your own callback functions to use the field values of the manipulator. The callback functions described in <a name="idch1539"></a><a href="ch15.html#id14440">&#8220;Callback Functions&#8221;</a> can be used for any manipulator. (Recall that these functions belong to the dragger, so you need to call getDragger() before using them.)<a name="idch1540"></a></p>
+</li>
+</ul></div><p>You can also combine use of these two techniques. For example, you can use <span class="bold"><b>replaceNode()</b></span> to replace an <span class="bold"><b>SoTransform</b></span> with a manipulator. Then you can use a value-changed callback to notify the application when any of the manipulator's dragger fields changes, and the application can use this new value, if desired. </p>
+<p>The following sections describe both of these techniques in more detail.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5505258"></a><a name="id32460"></a>Replacing a Node with a Manipulator<a name="idch1541"></a></h3></div></div>
+<p>To use any manipulator in an application, follow these basic steps:</p>
+<div class="orderedlist"><ol type="1"><li><p>Construct the manipulator.</p>
+</li>
+<li><p>Reference it if you plan on reusing it.</p>
+</li>
+<li><p>Replace the node in the scene graph with the manipulator. Manipulators derived from <span class="bold"><b>SoTransform</b></span>, such as the handle box and trackball, replace an <span class="bold"><b>SoTransform</b></span> node. An <span class="bold"><b>SoDirectionalLight-<br>
+Manip</b></span> replaces an <span class="bold"><b>SoDirectionalLight</b></span> node, an <span class="bold"><b>SoPointLightManip</b></span> replaces an <span class="bold"><b>SoPointLight</b></span> node, and so on.</p>
+</li>
+</ol></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5505369"></a>Replacing a Node</h4></div></div>
+<p>The <span class="bold"><b>replaceNode()</b></span> method takes a path as an argument:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+<span class="bold"><b>replaceNode</b></span>(SoPath *<i>p</i>)
+</pre></td></tr></table><p>The path is supplied by the application. For example, <a href="ch15.html#id15267">Figure 15-8</a> shows the path to a target <span class="bold"><b>SoTransform</b></span> node. When a transform manipulator replaces this node, editing the manipulator will affect <i>cube2</i> in the scene graph.</p>
+<p>Manipulators subclassed from <a name="idch1542"></a><span class="bold"><b>SoTransformManip</b></span> use special nodes to maintain their shape (so that the trackball remains spherical, for example) and to ensure that they surround the shape objects they affect. These nodes are described in <i>The Inventor Toolmaker</i>.</p>
+<p><div class="figure"><p><a name="id5505482"></a><b>Figure 15-8. <a name="id15267"></a>Specifying the Path to the Target Node</b></p>
+<div class="mediaobject"><img src="figures/fig15.8.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5505503"></a>Removing the Manipulator</h4></div></div>
+<p>To remove the manipulator from the scene graph:</p>
+<div class="orderedlist"><ol type="1"><li><p>Use the <span class="bold"><b>replaceManip()</b></span> method to restore the original node to the scene graph. In the example, the field values from the manipulator are copied into the transform node.</p>
+</li>
+<li><p>Use <a name="idch1543"></a><span class="bold"><b>unref()</b></span> on the manipulator so that it will be deleted.</p>
+</li>
+</ol></div><p>Because the manipulator methods <span class="bold"><b>replaceManip()</b></span> and <span class="bold"><b>replaceNode()</b></span> exchange the new node for the tail of the given path, you can reuse the path for subsequent calls to these methods.</p>
+<p>For example, if we begin with:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myManip = new SoTrackballManip;
+myPathToTransform = createPathtoTransform(pickPath);
+</pre></td></tr></table><p>Then we can call:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myManip-&gt;replaceNode(myPathToTransform);
+</pre></td></tr></table><p>to put the manipulator at the end of the path.</p>
+<p>Later, we can call</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myManip-&gt;replaceManip(myPathToTransform, new SoTransform);
+</pre></td></tr></table><p>to remove the manipulator and replace it with a transform.</p>
+<div class="orderedlist"><ol type="1"><li><p>
+</li>
+</ol></div></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5505662"></a><a name="id18183"></a>Using the replaceNode() Method</h3></div></div>
+<p><a href="ch15.html#id12878">Example 15-3</a> displays a cube, a sphere, and a lamp. The lamp is read from a file and inserted as the &#8220;contents&#8221; part of an <span class="bold"><b>SoWrapperKit</b></span>. When the user picks  the cube, a trackball replaces the transform node that affects the cube. When the user picks the sphere, a handle box replaces the transform node that affects the sphere. When the user picks the lamp, a transform box replaces the &#8220;transform&#8221; part of the wrapper kit containing the lamp. <a name="idch1544"></a><a name="idch1545"></a><a href="ch15.html#id37533">Figure 15-9</a> shows an image created by this program. This example shows the following techniques:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Using <span class="bold"><b>replaceNode()</b></span> and <span class="bold"><b>replaceManip()</b></span> to make certain nodes in the scene graph editable and to restore the original nodes when manipulation finishes</p>
+</li>
+<li><p>Using selection callbacks (see <a name="idch1546"></a><a href="ch10.html#id10433">Chapter 10</a>)</p>
+<div class="example"><p><a name="id5505853"></a><b>Example 15-3. <a name="id12878"></a><a name="idch1547"></a>Using Manipulators to Transform Objects</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Note that for illustration purposes, the
+// cube and SoWrapperKit already have transform nodes 
+// associated with them; the sphere does not. In all cases, 
+// the routine createTransformPath() is used to find the 
+// transform node that affects the picked object.
+
+#include &lt;Inventor/SoDB.h&gt;
+#include &lt;Inventor/SoInput.h&gt;
+#include &lt;Inventor/manips/SoHandleBoxManip.h&gt;
+#include &lt;Inventor/manips/SoTrackballManip.h&gt;
+#include &lt;Inventor/manips/SoTransformBoxManip.h&gt;
+#include &lt;Inventor/nodekits/SoWrapperKit.h&gt;
+#include &lt;Inventor/nodes/SoCamera.h&gt;
+#include &lt;Inventor/nodes/SoCube.h&gt;
+#include &lt;Inventor/nodes/SoGroup.h&gt;
+#include &lt;Inventor/nodes/SoLight.h&gt;
+</pre></td></tr></table><p><div class="figure"><p><a name="id5505899"></a><b>Figure 15-9. <a name="id37533"></a>Adding Manipulators to a Scene</b></p>
+<div class="mediaobject"><img src="figures/15.9.ex.15.3.gif"></div></div><br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#include &lt;Inventor/nodes/SoMaterial.h&gt;
+#include &lt;Inventor/nodes/SoSelection.h&gt;
+#include &lt;Inventor/nodes/SoSphere.h&gt;
+#include &lt;Inventor/nodes/SoTransform.h&gt;
+
+#include &lt;Inventor/Xt/SoXt.h&gt;
+#include &lt;Inventor/Xt/viewers/SoXtExaminerViewer.h&gt;
+
+// function prototypes
+void selectionCallback(void *, SoPath *);
+void deselectionCallback(void *, SoPath *);
+void dragStartCallback(void *, SoDragger *);
+void dragFinishCallback(void *, SoDragger *);
+
+// global data
+SoSeparator *root;
+SoHandleBoxManip    *myHandleBox;
+SoTrackballManip    *myTrackball;
+SoTransformBoxManip *myTransformBox;
+SoPath *handleBoxPath    = NULL;
+SoPath *trackballPath    = NULL;
+SoPath *transformBoxPath = NULL;
+
+main(int, char **argv)
+{
+   // Initialize Inventor and Xt
+   Widget myWindow = SoXt::init(argv[0]);
+   if (myWindow == NULL) exit(1);
+
+   // Create and set up the selection node
+   SoSelection *selectionRoot = new SoSelection;
+   selectionRoot-&gt;ref();
+   selectionRoot-&gt;
+      addSelectionCallback(selectionCallback, NULL);
+   selectionRoot-&gt;
+      addDeselectionCallback(deselectionCallback, NULL);
+
+   // Create the scene graph
+   root = new SoSeparator;
+   selectionRoot-&gt;addChild(root);
+
+   // Read a file into contents of SoWrapperKit 
+   // Translate it to the right.
+   SoWrapperKit *myWrapperKit = new SoWrapperKit;
+   root-&gt;addChild(myWrapperKit);
+   SoInput myInput;
+   if (!myInput.openFile(&quot;luxo.iv&quot;)) 
+      return (1);
+   SoSeparator *objectFromFile = SoDB::readAll(&amp;myInput);
+   if (objectFromFile == NULL) return (1);
+   myWrapperKit-&gt;setPart(&quot;contents&quot;,objectFromFile);
+   myWrapperKit-&gt;set(&quot;transform { translation 3 -1 0 }&quot;);
+   SoMaterial *wrapperMat 
+      = (SoMaterial *) myWrapperKit-&gt;getPart(&quot;material&quot;,TRUE);
+   wrapperMat-&gt;diffuseColor.setValue(.8, .8, .8);
+
+   // Create a cube with its own transform.
+   SoSeparator *cubeRoot = new SoSeparator;
+   SoTransform *cubeXform = new SoTransform;
+   cubeXform-&gt;translation.setValue(-4, 0, 0);
+   root-&gt;addChild(cubeRoot);
+   cubeRoot-&gt;addChild(cubeXform);
+
+   SoMaterial *cubeMat = new SoMaterial;
+   cubeMat-&gt;diffuseColor.setValue(.8, .8, .8);
+   cubeRoot-&gt;addChild(cubeMat);
+   cubeRoot-&gt;addChild(new SoCube);
+
+   // Add a sphere node without a transform
+   // (one will be added when we attach the manipulator)
+   SoSeparator *sphereRoot = new SoSeparator;
+   SoMaterial *sphereMat = new SoMaterial;
+   root-&gt;addChild(sphereRoot);
+   sphereRoot-&gt;addChild(sphereMat);
+   sphereRoot-&gt;addChild(new SoSphere);
+   sphereMat-&gt;diffuseColor.setValue(.8, .8, .8);
+
+   // Create the manipulators
+   myHandleBox = new SoHandleBoxManip;
+   myHandleBox-&gt;ref();
+   myTrackball = new SoTrackballManip;
+   myTrackball-&gt;ref();
+   myTransformBox = new SoTransformBoxManip;
+   myTransformBox-&gt;ref();
+
+   // Get the draggers and add callbacks to them. Note
+   // that you don't put callbacks on manipulators. You put
+   // them on the draggers which handle events for them. 
+   SoDragger *myDragger;
+   myDragger = myTrackball-&gt;getDragger();
+   myDragger-&gt;addStartCallback(dragStartCallback,cubeMat);
+   myDragger-&gt;addFinishCallback(dragFinishCallback,cubeMat);
+
+   myDragger = myHandleBox-&gt;getDragger();
+   myDragger-&gt;addStartCallback(dragStartCallback,sphereMat);
+   myDragger-&gt;addFinishCallback(dragFinishCallback,sphereMat);
+
+   myDragger = myTransformBox-&gt;getDragger();
+   myDragger-&gt;addStartCallback(dragStartCallback,wrapperMat);
+   myDragger-&gt;addFinishCallback(dragFinishCallback,wrapperMat);
+
+   SoXtExaminerViewer *myViewer 
+      = new SoXtExaminerViewer(myWindow);
+   myViewer-&gt;setSceneGraph(selectionRoot);
+   myViewer-&gt;setTitle(&quot;Attaching Manipulators&quot;);
+   myViewer-&gt;show();
+   myViewer-&gt;viewAll();
+
+   SoXt::show(myWindow);
+   SoXt::mainLoop();
+}
+
+// Is this node of a type that is influenced by transforms?
+SbBool
+isTransformable(SoNode *myNode)
+{
+   if (myNode-&gt;isOfType(SoGroup::getClassTypeId())
+      || myNode-&gt;isOfType(SoShape::getClassTypeId())
+      || myNode-&gt;isOfType(SoCamera::getClassTypeId())
+      || myNode-&gt;isOfType(SoLight::getClassTypeId()))
+      return TRUE;
+   else 
+      return FALSE;
+}
+
+//  Create a path to the transform node that affects the tail
+//  of the input path.  Three possible cases:
+//   [1] The path-tail is a node kit. Just ask the node kit for
+//       a path to the part called &quot;transform&quot;
+//   [2] The path-tail is NOT a group.  Search siblings of path
+//       tail from right to left until you find a transform. If
+//       none is found, or if another transformable object is 
+//       found (shape,group,light,or camera), then insert a 
+//       transform just to the left of the tail. This way, the 
+//       manipulator only affects the selected object.
+//   [3] The path-tail IS a group.  Search its children left to
+//       right until a transform is found. If a transformable
+//       node is found first, insert a transform just left of 
+//       that node.  This way the manip will affect all nodes
+//       in the group.
+SoPath *
+createTransformPath(SoPath *inputPath)
+{
+   int pathLength = inputPath-&gt;getLength();
+   if (pathLength &lt; 2) // Won't be able to get parent of tail
+      return NULL;
+
+   SoNode *tail = inputPath-&gt;getTail();
+
+   // CASE 1: The tail is a node kit.
+   // Nodekits have built in policy for creating parts.
+   // The kit copies inputPath, then extends it past the 
+   // kit all the way down to the transform. It creates the
+   // transform if necessary.
+   if (tail-&gt;isOfType(SoBaseKit::getClassTypeId())) {
+      SoBaseKit *kit = (SoBaseKit *) tail;
+      return kit-&gt;createPathToPart(&quot;transform&quot;,TRUE,inputPath);
+   }
+
+   SoTransform *editXf = NULL;
+   SoGroup     *parent;
+   SbBool      existedBefore = FALSE;
+
+   // CASE 2: The tail is not a group.
+   SbBool isTailGroup;
+   isTailGroup = tail-&gt;isOfType(SoGroup::getClassTypeId());
+   if (!isTailGroup) {
+      // 'parent' is node above tail. Search under parent right
+      // to left for a transform. If we find a 'movable' node
+      // insert a transform just left of tail.  
+      parent = (SoGroup *) inputPath-&gt;getNode(pathLength - 2);
+      int tailIndx = parent-&gt;findChild(tail);
+
+      for (int i = tailIndx; (i &gt;= 0) &amp;&amp; (editXf == NULL);i--){
+         SoNode *myNode = parent-&gt;getChild(i);
+         if (myNode-&gt;isOfType(SoTransform::getClassTypeId()))
+            editXf = (SoTransform *) myNode;
+         else if (i != tailIndx &amp;&amp; (isTransformable(myNode)))
+            break;
+      }
+      if (editXf == NULL) {
+         existedBefore = FALSE;
+         editXf = new SoTransform;
+         parent-&gt;insertChild(editXf, tailIndx);
+      }
+      else
+         existedBefore = TRUE;
+   }
+   // CASE 3: The tail is a group.
+   else {
+      // Search the children from left to right for transform 
+      // nodes. Stop the search if we come to a movable node
+      // and insert a transform before it.
+      parent = (SoGroup *) tail;
+      for (int i = 0;
+         (i &lt; parent-&gt;getNumChildren()) &amp;&amp; (editXf == NULL); 
+         i++) {
+         SoNode *myNode = parent-&gt;getChild(i);
+         if (myNode-&gt;isOfType(SoTransform::getClassTypeId()))
+            editXf = (SoTransform *) myNode;
+         else if (isTransformable(myNode))
+            break;
+      }
+      if (editXf == NULL) {
+         existedBefore = FALSE;
+         editXf = new SoTransform;
+         parent-&gt;insertChild(editXf, i);
+      }
+      else 
+         existedBefore = TRUE;
+   }
+
+   // Create 'pathToXform.' Copy inputPath, then make last
+   // node be editXf.
+   SoPath *pathToXform = NULL;
+   pathToXform = inputPath-&gt;copy();
+   pathToXform-&gt;ref();
+   if (!isTailGroup) // pop off the last entry.
+      pathToXform-&gt;pop();
+   // add editXf to the end
+   int xfIndex   = parent-&gt;findChild(editXf);
+   pathToXform-&gt;append(xfIndex);
+   pathToXform-&gt;unrefNoDelete();
+
+   return(pathToXform);
+}
+
+// This routine is called when an object
+// gets selected. We determine which object
+// was selected, then call replaceNode()
+// to replace the object's transform with
+// a manipulator.
+void
+selectionCallback(
+   void *, // user data is not used
+   SoPath *selectionPath)
+{
+   // Attach the manipulator.
+   // Use the convenience routine to get a path to
+   // the transform that affects the selected object.
+   SoPath *xformPath = createTransformPath(selectionPath);
+   if (xformPath == NULL) return;
+   xformPath-&gt;ref();
+
+   // Attach the handle box to the sphere,
+   // the trackball to the cube
+   // or the transformBox to the wrapperKit
+   if (selectionPath-&gt;getTail()-&gt;isOfType(
+        SoSphere::getClassTypeId())) {
+      handleBoxPath = xformPath;
+      myHandleBox-&gt;replaceNode(xformPath);
+   }
+   else if (selectionPath-&gt;getTail()-&gt;
+        isOfType(SoCube::getClassTypeId())) {
+      trackballPath = xformPath;
+      myTrackball-&gt;replaceNode(xformPath);
+   }
+   else if (selectionPath-&gt;getTail()-&gt;
+        isOfType(SoWrapperKit::getClassTypeId())) {
+      transformBoxPath = xformPath;
+      myTransformBox-&gt;replaceNode(xformPath);
+   }
+}
+
+// This routine is called whenever an object gets
+// deselected. It detaches the manipulator from
+// the transform node, and removes it from the 
+// scene graph that will not be visible.
+void
+deselectionCallback(
+   void *, // user data is not used
+   SoPath *deselectionPath)
+{
+   if (deselectionPath-&gt;getTail()-&gt;
+        isOfType(SoSphere::getClassTypeId())) {
+      myHandleBox-&gt;replaceManip(handleBoxPath,NULL);
+      handleBoxPath-&gt;unref();
+   }
+   else if (deselectionPath-&gt;getTail()-&gt;
+        isOfType(SoCube::getClassTypeId())) {
+      myTrackball-&gt;replaceManip(trackballPath,NULL);
+      trackballPath-&gt;unref();
+   }
+   else if (deselectionPath-&gt;getTail()-&gt;
+        isOfType(SoWrapperKit::getClassTypeId())) {
+      myTransformBox-&gt;replaceManip(transformBoxPath,NULL);
+      transformBoxPath-&gt;unref();
+   }
+}
+
+// This is called when a manipulator is
+// about to begin manipulation.
+void
+dragStartCallback(
+   void *myMaterial, // user data
+   SoDragger *)         // callback data not used
+{
+   ((SoMaterial *) myMaterial)-&gt;diffuseColor=SbColor(1,.2,.2);
+}
+
+// This is called when a manipulator is
+// done manipulating.
+void
+dragFinishCallback(
+   void *myMaterial, // user data
+   SoDragger *)    // callback data not used
+{
+   ((SoMaterial *) myMaterial)-&gt;diffuseColor=SbColor(.8,.8,.8);
+}
+</pre></td></tr></table><br></li>
+</ul></div></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5506278"></a>Customizing a Dragger <i>(Advanced)</i></h2></div></div>
+<p>This section describes how to modify the appearance of a dragger. This customization is performed either by changing the default geometry for a part or by changing the part after an instance of a dragger has been built. Although the look and feel of a dragger can be changed or removed in this manner, no new functionality can be added. </p>
+<p>Using the <a name="idch1548"></a><span class="bold"><b>SoTrackballDragger</b></span> as an example, this section describes the <i>parts</i> of a dragger and how they combine to make the whole dragger. It explains how the <a name="idch1549"></a><i>geometry</i> for each part can be changed or removed, and how that can affect the functionality of the dragger. <a href="ch15.html#id33463">Example 15-4</a> illustrates how parts of an <a name="idch1550"></a><span class="bold"><b>SoTranslate1Dragger</b></span> can be changed after it has been built.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5506366"></a>Parts of a Dragger<a name="idch1551"></a></h3></div></div>
+<p>Every dragger is a node kit that is constructed out of parts. A <i>part</i> is simply a piece of the dragger that has some task associated with it. Often, two parts act as a pair. One part is displayed when it is in use (or <a name="idch1552"></a><i>active</i>), and the other is displayed when that part is not in use (or <a name="idch1553"></a><i>inactive</i>). For example, for the </p>
+<p>trackball's inactive &#8220;XRotator&#8221; part, a white stripe is displayed, and for its active &#8220;XRotatorActive&#8221; part, a yellow stripe is displayed.</p>
+<p>Each dragger has a resource file associated with it that contains an Inventor scene graph describing the default geometry for each part. By creating a new resource file, you can override the default and give the part a new shape or new properties such as color or drawing style. In the resource file, scene graphs are labeled with their unique resource names.<a name="idch1554"></a></p>
+<p>Many classes of draggers use the same part names. For example, the trackball, rotate-disc, rotate-cylindrical, and rotate-spherical draggers each have a part named &#8220;rotator.&#8221; Since the default parts are stored in the global dictionary, each part in each class must have a unique resource name. In all cases, the class name (without the &#8220;So&#8221; or &#8220;Dragger&#8221;) is prepended to the part name. <a href="ch15.html#id32521">Table 15-2</a> shows how the resource names and part names relate.</p>
+<p>For example, the <a name="idch1555"></a><span class="bold"><b>SoTrackballDragger</b></span> has twelve parts. <a href="ch15.html#id32521">Table 15-2</a> lists the resource and part names of eight of these parts (for brevity, the &#8220;userRotator&#8221; and &#8220;userAxis&#8221; parts are omitted). When you interact with a trackball dragger, you are actually interacting with its parts. For example, if the mouse goes down over the trackball's &#8220;XRotator&#8221; part, a rotation about the <i>x</i>-axis is initiated.</p>
+<div class="table"><p><a name="id5506529"></a><b>Table 15-2. <a name="id32521"></a>Selected Parts of the SoTrackballDragger</b></p>
+<table summary="Selected Parts of the SoTrackballDragger" border="1"><colgroup><col><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>Resource Names</p>
+</th><th valign="top"><p>Part Names</p>
+</th><th valign="top"><p>Task</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>trackballRotator	</p>
+<p>trackball RotatorActive</p>
+</td><td valign="top"><p>rotator<br>
+rotatorActive</p>
+</td><td valign="top"><p>Free rotation	<br>
+</p>
+</td></tr><tr valign="top"><td valign="top"><p>trackballXRotator</p>
+<p>trackballXRotatorActive</p>
+</td><td valign="top"><p>XRotator<br>
+XRotatorActive</p>
+</td><td valign="top"><p>Rotation about x-axis</p>
+</td></tr><tr valign="top"><td valign="top"><p>trackballYRotator</p>
+<p>trackballYRotatorActive</p>
+</td><td valign="top"><p>YRotator<br>
+YRotatorActive</p>
+</td><td valign="top"><p>Rotation about y-axis</p>
+</td></tr><tr valign="top"><td valign="top"><p>trackballZRotator</p>
+<p>trackballZRotatorActive</p>
+</td><td valign="top"><p>ZRotator<br>
+ZRotatorActive</p>
+</td><td valign="top"><p>Rotation about z-axis</p>
+</td></tr></tbody></table></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5506734"></a>Changing a Part after Building the Dragger<a name="idch1556"></a></h3></div></div>
+<p>To change the part of a dragger that has already been built, use the <a name="idch1557"></a><span class="bold"><b>setPart()</b></span>  or <a name="idch1558"></a><span class="bold"><b>setPartAsPath()</b></span> method provided by <span class="bold"><b>SoInteractionKit</b></span>. The <span class="bold"><b>setPart()</b></span> method takes the root of a scene graph as a parameter, while <span class="bold"><b>setPartAsPath()</b></span> accepts an <span class="bold"><b>SoPath</b></span>.</p>
+<p>For example, to change the &#8220;rotator&#8221; part of <span class="bold"><b>myDragger</b></span>:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myDragger-&gt;setPart(&quot;rotator&quot;, myNewRotatorSceneGraph);
+</pre></td></tr></table><p>To change the &#8220;rotator&#8221; part of a dragger within a manipulator:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+myManip-&gt;getDragger()-&gt;setPart(&quot;rotator&quot;,
+                             myNewRotatorSceneGraph);
+</pre></td></tr></table><p>You can also provide<span class="bold"><b> setPartAsPath()</b></span> with the path to a particular instance of an object in the scene graph.  The dragger then uses that object for the part. For example, if you have an arrow used as a weather vane mounted on a post, you could provide the path to the arrow and rotate the arrow itself. (Note the difference here between specifying a node and specifying a path. If you specify the arrow <i>node</i> using <span class="bold"><b>setPart()</b></span>, a new instance of that node is created and two copies of the same geometry appear on the screen. If you specify the <i>path</i> to the arrow using <span class="bold"><b>setPartAsPath()</b></span>, the dragger actually uses the existing arrow node and waits for the user to press the mouse on the same weather vane that is sitting on the barn.)</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+<i>myRotateManip-&gt;getDragger()-&gt;setPartAsPath(&quot;rotator&quot;,</i>
+<i>                           pathToMyWeatherVaneArrow);</i>
+</pre></td></tr></table><p><a href="ch15.html#id33463">Example 15-4</a> shows how to change the geometry of the draggers in <a href="ch15.html#id33410">Example 15-2</a>. The &#8220;translator&#8221; and &#8220;translatorActive&#8221; parts are now cubes instead of arrows. The setPart() method is used to replace the default parts with the new scene graphs specified here. <a href="ch15.html#id21179">Figure 15-10</a> shows the new dragger geometry.</p>
+<p><div class="figure"><p><a name="id5506999"></a><b>Figure 15-10. <a name="id21179"></a>Changing the Dragger Parts to Cubes</b></p>
+<div class="mediaobject"><img src="figures/ch15-10.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5507038"></a><b>Example 15-4. <a name="id33463"></a>Changing Parts after Building a Dragger</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Create myTranslator and myTranslatorActive.
+// These are custom geometry for the draggers.
+SoSeparator *myTranslator = new SoSeparator;
+SoSeparator *myTranslatorActive = new SoSeparator;
+myTranslator-&gt;ref();
+myTranslatorActive-&gt;ref();
+   
+// Materials for the dragger in regular and active states
+SoMaterial *myMtl = new SoMaterial;
+SoMaterial *myActiveMtl = new SoMaterial;
+myMtl-&gt;diffuseColor.setValue(1,1,1);
+myActiveMtl-&gt;diffuseColor.setValue(1,1,0);
+myTranslator-&gt;addChild(myMtl);
+myTranslatorActive-&gt;addChild(myActiveMtl);
+   
+// Same shape for both versions.
+SoCube *myCube = new SoCube;
+myCube-&gt;set(&quot;width 3 height .4 depth .4&quot;);
+myTranslator-&gt;addChild(myCube);
+myTranslatorActive-&gt;addChild(myCube);
+
+// Now, customize the draggers with the pieces we created.
+xDragger-&gt;setPart(&quot;translator&quot;,myTranslator);
+xDragger-&gt;setPart(&quot;translatorActive&quot;,myTranslatorActive);
+yDragger-&gt;setPart(&quot;translator&quot;,myTranslator);
+yDragger-&gt;setPart(&quot;translatorActive&quot;,myTranslatorActive);
+zDragger-&gt;setPart(&quot;translator&quot;,myTranslator);
+zDragger-&gt;setPart(&quot;translatorActive&quot;,myTranslatorActive);
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5507094"></a>Changing the Default Geometry for a Part</h3></div></div>
+<p>Every class of dragger has a resource file associated with it that contains Inventor scene graphs defining default geometry for that class. The default geometry for a given class is also compiled in, so that if the dragger resource files are lost, the dragger will still operate.<a name="idch1559"></a></p>
+<div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5507113"></a>Where a Dragger Looks for Defaults</h4></div></div>
+<p>When a dragger is constructed, it checks whether a resource file for overriding the defaults has been created. When reading from this file (if found), if the dragger encounters a second definition of a particular geometry, the new geometry replaces any previously defined geometry of the same name. </p>
+<p>Inventor will look for files only if the environment variable SO_DRAGGER_DIR has been set. If it has, Inventor will look in that directory.<a name="idch1560"></a></p>
+<p>In all cases, a given dragger class will read only files of its same name: the <span class="bold"><b>SoTranslate1Dragger</b></span> class reads only resource files named translate1Dragger.iv, the <span class="bold"><b>SoTrackballDragger</b></span> class reads only files named trackballDragger.iv. </p>
+<p>Changing the default geometry of a dragger part is a simple matter of creating a new file that contains a scene graph defining the new resource. When encountered, this new definition overrides the default definitions of that resource. The next two sections show how to do this using the <a name="idch1561"></a><span class="bold"><b>SoTrackballDragger</b></span> as a foundation.</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5507180"></a>How to Edit Your File</h4></div></div>
+<p>To change the default geometry of a part, you merely redefine the scene graph for the geometry used by the part. When creating new resource files, it is necessary to define only the geometry that you wish to change. Other geometry will use the default values.<a name="idch1562"></a></p>
+<p>Keep in mind that you should never edit the resource files in Inventor/resources. If you want your application to use alternate resources, put your files in a convenient place and set the SO_DRAGGER_DIR environment variable to point there.</p>
+<p>As an example, let's replace the <span class="bold"><b>trackballRotator</b></span> resource of the trackball with a cube. (For more information on the  Inventor file format, see <a href="ch11.html#id13752">Chapter 11</a>.) Looking at the default geometry file for the trackball, we see that the <span class="bold"><b>trackballRotator</b></span> resource is defined by this scene graph:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+# default geometry for SoTrackballDragger's &quot;rotator&quot; part (inactive)
+DEF trackballRotator Separator {
+   DrawStyle { style INVISIBLE }
+   Sphere {}
+}
+# default geometry for SoTrackballDragger's &quot;rotatorActive&quot; part
+DEF trackballRotatorActive Separator {
+   DrawStyle { style INVISIBLE }
+   Sphere {}
+}
+</pre></td></tr></table><p>Note that, in the case of the trackball, the resources specify that the <span class="bold"><b>rotator</b></span> and <span class="bold"><b>rotatorActive</b></span> parts have the same geometry, an invisible sphere. Although this is common, some draggers may have completely different geometry for when they are inactive and active (and most manipulators have more complicated scene graphs than just a sphere).</p>
+<p>To change the <span class="bold"><b>trackballRotator</b></span> and <span class="bold"><b>trackballRotatorActive</b></span> resources from an invisible sphere to a visible cube, you simply replace the sphere with a cube in both scene graphs:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+# default geometry for the SoTrackballDragger's &quot;rotator&quot; part
+DEF trackballRotator Separator {
+   BaseColor {
+      rgb 1. 1. 1.        #white
+   }
+   Cube {}
+}
+# default geometry for the SoTrackballDragger's &quot;rotatorActive&quot; part
+DEF trackballRotatorActive Separator {
+   BaseColor {
+      rgb .5 .5  0.        #yellow
+   }
+   Cube {}
+}
+</pre></td></tr></table><p>Using this mechanism, you can not only change the geometry of a given part, but also remove the functionality of that part entirely. For example, to disable the trackball's &quot;rotator&quot;  part but still leave the cube visible, you can make the cube unpickable:<a name="idch1563"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+# default geometry for the SoTrackballDragger's &quot;rotator&quot; part
+DEF trackballRotator Separator {
+   BaseColor {
+      rgb 1. 1. 1.        #white
+   }
+   PickStyle {
+      style UNPICKABLE
+   }
+   Cube {}
+}
+# default geometry for the SoTrackballDragger's &quot;rotatorActive&quot; part
+DEF trackballRotatorActive Separator {
+   BaseColor {
+      rgb .5 .5  0.        #yellow
+   }
+   PickStyle {
+      style UNPICKABLE
+   }
+   Cube {}
+}
+</pre></td></tr></table><p>To remove the trackball's rotator part altogether, leaving a trackball that can only rotate about its <a name="idch1564"></a><i>x</i>, <i>y</i>, and<i> z</i> axes, you could redefine its geometry to be an empty scene graph:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+# default geometry for SoTrackballDragger's &quot;rotator&quot; part
+DEF trackballRotator Separator {
+}
+# default geometry for SoTrackballDragger's &quot;rotatorActive&quot; part
+DEF trackballRotatorActive Separator {
+}
+</pre></td></tr></table><p>You can also read the geometry from a file instead of defining it inline:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+DEF trackballRotator Separator {
+   File { name &quot;myCustomRotator.iv&quot; }
+}
+DEF trackballRotatorActive Separator {
+   File { name &quot;myCustomRotatorActive.iv&quot; }
+}
+</pre></td></tr></table><br><div class="note"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/note.png"></td><td align="left" valign="top"><b>Note: </b>	Never set a dragger part to NULL. Internal methods require a node to be present, even if it's simply an empty separator as shown in the previous example. (Often, the dragger parts are the children of a switch node. Changing a node to NULL could result in an incorrect ordering of the switch node's children.)
+</td></tr></table><hr noshade="noshade"></div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+
+</pre></td></tr></table><br></div></div></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch14.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch16.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 14. Node Kits </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 16. Inventor Component Library </td></tr></table></div></body></html>

@@ -1,0 +1,10 @@
+BUTTON borders
+  # default the simulator to the RAVE
+  FIRST EXEC env IRIS_FILES=raveSimFrontWindow:raveSimLeftWindow:raveSimFloorWindow iris-immersivePaneBorders > $IRIS_CONTROL_FIFO
+  ON NODEMASK iris-immersivePaneBorders on
+  OFF NODEMASK iris-immersivePaneBorders off
+BUTTON devices
+  FIRST EXEC dtk-caveDeviceSimulator $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS -title devices > $IRIS_CONTROL_FIFO
+  FIRST WAIT irisfly-addAndShowWindow devices
+  ON WAIT irisfly-addAndShowWindow devices
+  OFF WAIT irisfly-removeAndHideWindow devices

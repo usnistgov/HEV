@@ -1,0 +1,77 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cxx}
+Function {guiWindow(void)} {open
+} {
+  Fl_Window {} {open
+    xywh {2485 121 270 215} type Double visible
+  } {
+    Fl_Light_Button {} {
+      label Exact
+      callback {showPicker = (int) o->value() ;
+updateButtons() ;}
+      xywh {10 10 110 20}
+      code0 {o->value(showNearest) ;}
+    }
+    Fl_Light_Button {} {
+      label Nearest
+      callback {showNearest = (int) o->value() ;
+updateButtons() ;}
+      xywh {10 35 110 20}
+      code0 {o->value(showNearest) ;}
+    }
+    Fl_Light_Button {} {
+      label Proximity
+      callback {showProximity = (int) o->value() ;
+updateButtons() ;}
+      xywh {10 60 110 20}
+      code0 {o->value(showProximity) ;}
+    }
+    Fl_Light_Button {} {
+      label Background
+      callback {showBackground = (int) o->value() ;
+updateButtons() ;}
+      xywh {10 85 110 20}
+      code0 {o->value(showBackground) ;}
+    }
+    Fl_Roller {} {
+      label scale
+      callback {gridScale = getGridScale((float)o->value()) ;
+updateGridScale() ;}
+      xywh {135 10 125 20} type Horizontal minimum -10 maximum 10 step 0.01
+      code0 {gridScaleRoller = o ;}
+    }
+    Fl_Value_Output {} {
+      xywh {172 50 50 20}
+      code0 {gridScaleOutput = o ;}
+      code1 {o->value(gridScale) ;}
+    }
+    Fl_Button {} {
+      label {Reset scale}
+      callback {gridScale = 1.f;
+updateGridScale() ;}
+      xywh {151 79 92 20} color 7
+    }
+    Fl_Light_Button {} {
+      label {zero HPR}
+      callback {zeroHPR = (bool) o->value() ;}
+      xywh {10 160 110 20}
+      code0 {o->value(zeroHPR) ;}
+    }
+    Fl_Light_Button {} {
+      label Axes
+      callback {showAxes = (int) o->value() ;
+updateButtons() ;}
+      xywh {10 110 110 20}
+      code0 {o->value(showAxes) ;}
+    }
+    Fl_Light_Button {} {
+      label {Unit cube}
+      callback {showCube = (int) o->value() ;
+updateButtons() ;} selected
+      xywh {10 135 110 20}
+      code0 {o->value(showCube) ;}
+    }
+  }
+} 

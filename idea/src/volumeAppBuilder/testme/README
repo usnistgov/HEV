@@ -1,0 +1,96 @@
+For examples of what the sample data should look like,
+refer to the images ./sampleImages/*.png
+or open  ./sampleImages/index.html with a web browser.
+
+
+To run the basic test:
+
+Build the application:
+
+  volumeAppBuilder --debug --lut ctable_.9.lut --dim 79 79 79 scaled_3Dcolorfield.ab
+
+The to execute:
+
+  cd volVisApp
+  ./runvol &
+
+# Change LUT of running application:
+volumeAppBuilder --applyLUT ../ctable_.01.lut
+
+
+
+
+Or for a more complete example, the following was taken from the man page.
+
+
+
+# Build the application
+volumeAppBuilder -lut ctable_1.0.lut --dim 79 79  79  scaled_3Dcolorfield.ab
+
+# Run the application:
+cd volVisApp
+./runvol &
+
+# View the current LUT as an image and RGBA plot
+display transferLUT.png &
+display transferPlot.png &
+
+# Change LUT of running application:
+volumeAppBuilder --applyLUT ../ctable_.01.lut
+
+# View the second LUT as an image and RGBA plot
+display transferLUT.png &
+display transferPlot.png &
+
+
+# The files, box.ive and volume.sge, produced by volumeAppBuilder can be used
+# with selectionAppBuilder to get additional capabilities such as
+# clipping. Refer to the selectionAppBuilder man page for details.
+
+# Build an application to include clipping planes
+selectionAppBuilder -noive -clip -desktopImmersive \
+     -dataRange -.5 -.5 -.5 .5 .5 .5 box.ive volume.sge
+
+# Run the application
+./runapp -b 1 1 1 &
+
+-----------------------------------------------------------------------------------------------
+
+
+#build three types of mha with the same LUT
+
+
+LUT=ctable.lut
+LUT=ctable_.01.lut
+
+
+echo uchar
+volumeAppBuilder --elementType uchar   --debug --lut $LUT --dim 79 79 79 scaled_3Dcolorfield.ab
+mv volVisApp volVisApp.uchar
+
+echo ushort
+volumeAppBuilder --elementType ushort  --debug --lut $LUT --dim 79 79 79 scaled_3Dcolorfield.ab
+mv volVisApp volVisApp.ushort
+
+echo float
+volumeAppBuilder --elementType float   --debug --lut $LUT --dim 79 79 79 scaled_3Dcolorfield.ab
+mv volVisApp volVisApp.float
+
+
+
+-----------------------------------------------------------------------------------------------
+
+
+# for development of flipbook animation
+
+
+cd testme
+
+./createTestdata.sh
+
+../volumeAppBuilder --debug --lut ctable_.01.lut --dim 79 79 79 step*.ab
+
+# for installation, no need to install step*.ab or any volVisApp directories
+# i.e, delete them prior to installation
+
+

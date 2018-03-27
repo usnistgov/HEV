@@ -1,0 +1,216 @@
+#! /usr/bin/perl
+#
+# hev-speakDigits - speak a number as a series of audio digits
+#
+# See usage message
+#
+# steve@nist.gov
+#
+
+
+#$version="20090419";
+#$version="20110609";
+#$version="20140225";
+$version="20160623";
+
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+#use Time::HiRes qw( usleep ualarm gettimeofday tv_interval nanosleep
+#		      clock_gettime clock_getres clock_nanosleep clock
+#                      stat );
+use Time::HiRes qw( usleep );
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage:  hev-speakDigits [--help] [--verbose] 
+
+v  Speak a number, ASCII string, on stdin as a series of audio digits.
+
+  For example:   3.14 as "three" "point" "one" "four"
+
+     --help    print this help message
+
+     --verbose print a bit of verbosity
+
+
+  Input from stdin:
+
+      Only one string per line, consisting of "0" to "9","+","-","e","E".
+
+      Lines beginning with "#" are ignored, i.e. comments
+
+      A string beginning with "@", i.e. "@file.wav" is taken as a .wav
+      file to be used directly.
+      "file" can be full or relative path.
+
+   Example input:
+
+        # Example input
+        3.14
+        -5
+        1e37
+        \@sphere.wav
+        42
+	
+
+Version: $version
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+###########################
+# Play the files in $wavs #
+###########################
+
+sub play {
+
+    #$cmd="mplayer -really-quiet -ao esd ".$wavs." 2>/dev/null >/dev/null";
+
+    $cmd="aplay -q ".$wavs;
+
+    if ($debugFlag) {
+	print $cmd,"\n";
+    }
+    system($cmd);
+    $s=$?;
+    
+    if ($debugFlag) {
+	print "Returned exit status:",$s,"\n";
+    }
+
+    if ($s != 0) {
+	print "audio command failed with status:", $?,"\n";
+	print "$cmd\n";
+	exit(1);
+    }
+
+}
+# End of play subroutine
+
+############################
+# Process the command line #
+############################
+
+$helpFlag=0;
+$debugFlag=0;
+$verboseFlag=0;
+
+GetOptions("debug"       => \$debugFlag,
+	   "help"        => \$helpFlag,
+	   "verbose"     => \$verboseFlag,
+	   );
+
+
+$dataDir=$ENV{"HEVROOT"}."/idea/etc/hev-speakDigits/data/";
+#$dataDir="./";
+
+#print "@ARGV\n";
+#$sgs=@ARGV;
+#print "number args = $sgs\n";
+usage() if (@ARGV != 0);
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "verboseFlag= $verboseFlag\n";
+    print STDERR "helpFlag= $helpFlag\n";
+    print STDERR "dataDir= $dataDir\n";
+    print STDERR "\n";
+}
+
+usage() if ($helpFlag == 1);
+
+%table=qw/
+ 0 00_zero.wav
+ 1 01_one.wav
+ 2 02_two.wav
+ 3 03_three.wav
+ 4 04_four.wav
+ 5 05_five.wav
+ 6 06_six.wav
+ 7 07_seven.wav
+ 8 08_eight.wav
+ 9 09_nine.wav
+ + 10_positive.wav
+ - 11_negative.wav
+ . 12_point.wav
+ e 13_e.wav
+ E 13_e.wav/;
+
+
+
+######################################
+# Read stdin and "speak" the strings #
+######################################
+
+
+
+$l=0;   # Line count
+
+while (<STDIN>) {
+    chop($_);
+    $_ =~ s/\s+$//;  # trim trailing blanks
+    @in=split(' ', $_, -1);
+    $a=$in[0];
+    $n=@in;    # number of words on input line
+    $line++;
+
+    $a1=substr($a,0,1);  # Comment 
+    if ($a1 eq '#' ) {
+	next;
+    } 
+
+
+    if ($n != 1) {
+	print STDERR "Incorrect input near line $line: '$_'\n";
+	exit(1);
+    }
+
+    if ($verboseFlag) {
+	printf STDERR "$in[0]\n";
+    }
+
+    $wavs="";
+    if ($a1 eq '@') {                # play the specified file
+	$wavs=substr($a,1);
+    } else {
+	$l=length($a);               # normally play digits
+	for ($i=0; $i<$l; $i++) {
+	    $d=substr($a,$i,1);
+	    if ($debugFlag) {
+		print STDERR "d= $d\n";
+	    }
+	    $w=$dataDir.$table{$d};
+	    if (($w eq "") || ($w eq $dataDir)) {
+		print STDERR "Incorrect input near line $line: $_\n";
+		exit(1);
+	    }
+
+	    if ($debugFlag) {
+		print STDERR "play: $w\n";
+	    }
+	    $wavs=$wavs." ".$w;
+	}
+    }
+
+    play();
+
+    usleep(500000);    # sleep .5 seconds
+}
+
+
+# End
+

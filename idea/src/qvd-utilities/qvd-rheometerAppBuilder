@@ -1,0 +1,729 @@
+#! /bin/bash
+
+# qvd-rheometerAppBuilder - build a Rheometer visualization
+#
+# March 11, 2011 - renamed from buildVaneRheometer.sh taken from
+#                  Vane-Rheometer_20101215
+#                  also see the example in qvd-toSGErocks(1)
+#
+# March 16, 2011 - fixed  bug, see 3/16/2011 in the code
+#                  Optimize away nodes, what is the implication of
+#                  the fix kludge ?
+#
+# September 14, 2011 - make the sphere radius a parameter
+#
+# October 31, 2011 - fix usage message
+#
+# April 24, 2012 - convert to IRIS/IDEA
+#
+# April 27, 2012 - convert to litFatSpheres
+#
+# May 9, 2012 - handle both polygon objects and litFatSpheres
+#
+# June 13, 2012 - minor fix, remove n=1
+#
+# January 23, 2013 - use gpuShpere.iris
+#
+# March 18, 2013 - add --vane option
+#
+# April 18, 2013 - add 12 colors for blade vane
+#
+# April 25, 2013 - add varying radius
+#
+# May 29, 2015 - change the exec of hev-moo to add -id MOO_RAB
+#                to the moo.iris internal names will be predictable
+#                rather than using the hev-moo default.
+#
+# June 3, 2015 - add --columns N which is passed to the underlying hev-moo
+#
+# June 15, 2015 - add --on which is passed to the underlying hev-moo
+#
+# October 27, 2016 - removed hard coded savg-color because savg reader can't seem to handle
+#                    color on both polygon keywords and in the data line.
+#                    removed a hard coded  hev-savgTransformation --xyz 0 0 -17.506178 
+#                    These apply to the rehometer blade special case.
+# steve@nist.gov
+#
+
+version="20161027";
+
+
+function usage {
+
+cat <<EOF
+
+ Usage: qvd-rheometerAppBuilder [--verbose] [--noclean] [--noexamine] [--radius float] [--listRadius radiusList] [--gpuSpheres] [--vane 4 | 6] [--columns N] [--on] [--noPID] file1.qvisdat [file2.qvisdat ...]
+
+   Build an application for Vane Rheometer Visualization based on
+   one or more specified .qvisdat files.
+
+   The application will be self contained in the $vrd subdirectory.
+   The directory $vrd will be created, so it must not exist prior to
+   executing this command.
+
+   This command has the following limitations and assumptions:
+
+     * A hard coded data size of 50x50x100
+
+     * --radius specifies the sphere radius. Default = 1.398
+
+     * Spheres are created to represent the inclusions. 
+       See the man page for more information.
+
+
+   --noclean  Don't remove intermediate files. Normally, this should
+              not be used.
+
+   --noexamine The default is to create the application using
+               irisfly --examine. This option prevents disables it.
+
+   --gpuSpheres renders spheres with the GPU instead of polygon based spheres
+
+   --listRadius radiusList.dat if specified, provides the name of a
+                               file containing radius values for the
+                               generated gpuSpheres. Currently, it
+                               only works with gpu spheres. The file
+                               is a single column of numbers
+                               corresponding to the inclusions in the
+                               qvisdat file.
+
+
+   --vane 4 | 6  use a four or six blade vane model, four is default
+
+   --columns N - passed to the underlying hev-moo. N is 2 by default
+
+   --on        - passes "--on" to the underlying hev-moo
+
+   --noPID     normally the current PID is appended to the osgb filenames
+               to keep their names unique for the generated app. The option
+               turns that off.
+
+ Version= $version
+
+EOF
+exit 1
+}
+
+
+function labelOctants {
+cat <<EOF
+GROUP boxLabels
+
+SCS boxCorner--- -30 -25 -54
+ADDCHILD boxCorner--- boxLabels
+TEXT boxText--- COLOR .5 .5 .5 1 SIZE 5 STRING '---'
+ADDCHILD boxText--- boxCorner---
+
+SCS boxCorner--+ -30 -25 +50
+ADDCHILD boxCorner--+ boxLabels
+TEXT boxText--+ COLOR .5 .5 .5 1 SIZE 5 STRING '--+'
+ADDCHILD boxText--+ boxCorner--+
+
+SCS boxCorner-+- -30 +25 -54
+ADDCHILD boxCorner-+- boxLabels
+TEXT boxText-+- COLOR .5 .5 .5 1 SIZE 5 STRING '-+-'
+ADDCHILD boxText-+- boxCorner-+-
+
+
+SCS boxCorner-++ -30 +25 +50
+ADDCHILD boxCorner-++ boxLabels
+TEXT boxText-++ COLOR .5 .5 .5 1 SIZE 5 STRING '-++'
+ADDCHILD boxText-++ boxCorner-++
+
+SCS boxCorner+-- +20 -25 -54
+ADDCHILD boxCorner+-- boxLabels
+TEXT boxText+-- COLOR .5 .5 .5 1 SIZE 5 STRING '+--'
+ADDCHILD boxText+-- boxCorner+--
+
+SCS boxCorner+-+ +20 -25 +50
+ADDCHILD boxCorner+-+ boxLabels
+TEXT boxText+-+ COLOR .5 .5 .5 1 SIZE 5 STRING '+-+'
+ADDCHILD boxText+-+ boxCorner+-+
+
+SCS boxCorner++- +20 +25 -54
+ADDCHILD boxCorner++- boxLabels
+TEXT boxText++- COLOR .5 .5 .5 1 SIZE 5 STRING '++-'
+ADDCHILD boxText++- boxCorner++-
+
+SCS boxCorner+++ +20 +25 +50
+ADDCHILD boxCorner+++ boxLabels
+TEXT boxText+++ COLOR .5 .5 .5 1 SIZE 5 STRING '+++'
+ADDCHILD boxText+++ boxCorner+++
+
+RETURN boxLabels
+EOF
+
+}
+
+
+function buildPolygonSpheres {
+
+#SPHERE_N=3    # ugly sphere, but faster
+#SPHERE_N=4    # less accurate sphere give better speed
+#SPHERE_N=5    # more accurate sphere look better, slower to build, load and run
+#SPHERE_N=6    # even more accurate, but not significantly better looking than 5
+
+if [ "$SPHERE_N" != "" ]
+then
+    case $SPHERE_N in
+	3|4|5|6)
+	    N=$SPHERE_N
+	    ;;
+	*)
+	    echo "SPHERE_N should be 3,4 or 5 using 4"
+
+	    N=4
+	    ;;
+    esac
+else
+    N=4
+fi
+
+if [ $verbose == 1 ]
+then
+    echo "Creating spheres with: hev-savgSphere $N"
+fi
+
+hev-savgSphere $N | hev-savgTransformation --scale $RADIUS $RADIUS $RADIUS > rs.savg
+
+b=.4   # "black"
+c=.7   # "color"
+w=.85  # "white"
+
+cat rs.savg | sed "s/tristrips/tristrips $b $b $b 1/" > s_000.savg  # gray
+cat rs.savg | sed "s/tristrips/tristrips  0  0 $c 1/" > s_001.savg  # blue
+cat rs.savg | sed "s/tristrips/tristrips  0 $c  0 1/" > s_010.savg  # green
+cat rs.savg | sed "s/tristrips/tristrips  0 $c $c 1/" > s_011.savg  # cyan
+cat rs.savg | sed "s/tristrips/tristrips $c  0  0 1/" > s_100.savg  # red
+cat rs.savg | sed "s/tristrips/tristrips $c  0 $c 1/" > s_101.savg  # magenta
+cat rs.savg | sed "s/tristrips/tristrips $c $c  0 1/" > s_110.savg  # yellow
+cat rs.savg | sed "s/tristrips/tristrips $w $w $w 1/" > s_111.savg  # white
+rm rs.savg
+
+}
+
+function build8GpuSpheres {
+if [ $verbose == 1 ]
+then
+    echo "Creating single point sphere for GPU rendering"
+fi
+
+echo "8 files for 4 blade vane" > README
+
+b=.4   # "black"
+c=.7   # "color"
+w=.85  # "white"
+
+echo "#POINTS   $b $b $b 1" > s_000.savg  # gray
+echo "#POINTS    0  0 $c 1" > s_001.savg  # blue
+echo "#POINTS    0 $c  0 1" > s_010.savg  # green
+echo "#POINTS    0 $c $c 1" > s_011.savg  # cyan
+echo "#POINTS   $c  0  0 1" > s_100.savg  # red
+echo "#POINTS   $c  0 $c 1" > s_101.savg  # magenta
+echo "#POINTS   $c $c  0 1" > s_110.savg  # yellow
+echo "#POINTS   $w $w $w 1" > s_111.savg  # white
+}
+
+
+function build12GpuSpheres {
+if [ $verbose == 1 ]
+then
+    echo "Creating single point sphere for GPU rendering"
+fi
+
+echo "12 files for 6 blade vane (top: s_2xx, bottom: s_3xx)" > README
+
+c=.7   # "color"
+w=.85
+i=.5
+j=.3
+
+
+echo "#POINTS    0  0 $c 1" > s_201.savg  # blue
+echo "#POINTS   $i $i $c 1" > s_301.savg
+
+echo "#POINTS    0 $c  0 1" > s_202.savg  # green
+echo "#POINTS   $i $c $i 1" > s_302.savg
+
+echo "#POINTS    0 $w $w 1" > s_203.savg  # cyan
+echo "#POINTS    0 $i $i 1" > s_303.savg
+
+echo "#POINTS   $c  0  0 1" > s_204.savg  # red
+echo "#POINTS   $c $j $j 1" > s_304.savg
+
+echo "#POINTS   $c  0 $c 1" > s_205.savg  # magenta
+echo "#POINTS   $i  0 $i 1" > s_305.savg
+
+echo "#POINTS   $w $w  0 1" > s_206.savg  # yellow
+echo "#POINTS   $i $i  0 1" > s_306.savg
+
+
+
+
+}
+
+
+function isanumber()
+{
+   if ( printf "%g" $1 >/dev/null  2> /dev/null )
+   then
+     return 0
+   else
+     return 1
+   fi
+
+}
+
+
+
+
+#######################
+# Main body of script #
+#######################
+
+verbose=0
+noclean=0
+gpuSpheres=0
+blades=4
+radiusList=""
+radiusListParam=""
+EXAMINE="--examine"
+
+MOO_ID="-id MOO_RAB"
+MOO_COLUMNS=2
+MOO_ON_OFF=""
+NOPID=0
+
+# Default radius
+RADIUS=1.398
+   
+
+# Name of subdirectory to create the demo
+vrd=vaneRheometerVis
+
+while [ $# != 0 ]
+do
+    case $1 in
+	-h*|--h*)
+	    usage
+	    ;;
+	-ve*|--ve*)
+	    verbose=1
+	    shift
+	    ;;
+	-g*|--g*)
+	    gpuSpheres=1
+	    shift
+	    ;;
+	-noc*|--noc*)
+	    noclean=1
+	    shift
+	    ;;
+	-noe*|--noe*)
+	    EXAMINE=""
+	    shift
+	    ;;
+	-r*|--r*)
+	    case $# in
+		1)
+		    echo "Missing radius value"
+		    usage
+		    ;;
+		*)
+		    if ( isanumber $2)
+		    then
+			RADIUS=$2
+		    else
+			echo "Missing radius value"
+			usage
+		    fi
+
+		    shift
+		    shift
+		    ;;
+            esac
+	    ;;
+	-l*|--l*)
+	    case $# in
+		1)
+		    echo "Missing radius list file name"
+		    usage
+		    ;;
+		*)
+		    radiusList=$2
+		    shift
+		    shift
+		    ;;
+            esac
+	    radiusListParam="--radius ../$radiusList"
+	    ;;
+	-va*|--va*)
+	    case $# in
+		1)
+		    echo "Missing number of vane blades"
+		    usage
+		    ;;
+		*)
+		    if ( isanumber $2)
+		    then
+			blades=$2
+		    else
+			echo "Missing number of vane blades"
+			usage
+		    fi
+
+		    shift
+		    shift
+		    ;;
+            esac
+	    if [ "$blades" != "4" -a "$blades" != "6" ]
+	    then
+		echo "Number of blades must be 4 or 6"
+		usage
+	    fi
+	    ;;
+
+	-co*|--co*)
+	    case $# in
+		1)
+		    echo "Missing number of columns blades"
+		    usage
+		    ;;
+		*)
+		    if ( isanumber $2)
+		    then
+			MOO_COLUMNS=$2
+		    else
+			echo "Missing number of columns"
+			usage
+		    fi
+
+		    shift
+		    shift
+		    ;;
+            esac
+	    ;;
+
+	-on|--on)
+	    MOO_ON_OFF="--on"
+	    shift
+	    ;;
+
+	-noPID|--noPID)
+	    NOPID=1
+	    shift
+	    ;;
+
+        *)
+	    break
+	    ;;
+    esac
+
+done
+
+case $# in
+0)
+   echo "At least one qvisdat file must be specified"
+   usage
+   ;;
+esac
+
+
+# Collect the qvisdat file names
+QFILES=""
+
+for i in $*
+do
+  if [ ! -f "$i" ]
+  then
+      echo "file: $i does not exist"
+      usage
+  fi
+  QFILES="$QFILES ../$i"
+  
+done
+
+if [ $verbose == 1 ]
+then
+    echo "Sphere Radius:" $RADIUS
+    echo "Radius List:  " $radiusList
+    echo "noclean:      " $noclean
+    echo "gpuSpheres:   " $gpuSpheres
+    echo "blades:       " $blades
+    echo "Using files:  " $QFILES
+fi
+
+
+if [ $blades == 6 -a $gpuSpheres == 0 ]
+then
+    echo "Specifying --vane 6 also requires --gpuSpheres."
+    exit 1
+fi
+
+
+if [ -d ${vrd} ]
+then
+    echo "$vrd exists, please delete or rename it"
+    exit 1
+else
+    mkdir $vrd
+    cd $vrd
+
+    (date; pwd; echo) > README
+    echo >> README
+    echo "Everything in this directory can be re-created by" >> README
+    echo >> README
+
+    here=`pwd`
+
+    echo "cd $OLDPWD" >> README
+    echo "$0 $*" >> README
+
+
+    if [ -f ${OLDPWD}/vane.savg ]
+    then
+	if [ $verbose == 1 ]
+	then
+	    echo "Using ${OLDPWD}/vane.savg"
+	fi
+	cp -a $OLDPWD/vane.savg .
+    else
+	bladeNumber=""
+	case $blades in
+	    4)
+		bladeNumber=""
+		;;
+	    6)
+		bladeNumber="6"
+		;;
+	esac
+
+	if [ $verbose == 1 ]
+	then
+	    echo "Using $HEVROOT/idea/etc/qvd-utilities/data/vane${bladeNumber}.savg"
+	fi
+
+	if [ -f $HEVROOT/idea/etc/qvd-utilities/data/vane${bladeNumber}.savg ]
+	then
+            cp -a $HEVROOT/idea/etc/qvd-utilities/data/vane${bladeNumber}.savg vane.savg
+	else
+	    echo  $HEVROOT/idea/etc/qvd-utilities/data/vane${bladeNumber}.savg not found
+	    exit 1
+        fi
+	
+    fi
+fi
+
+
+if [ $verbose == 1 ]
+then
+    VERBOSE="--verbose"
+else
+    VERBOSE=""
+fi
+
+#
+# Define the bounding dimensions and the date range
+# (Currently hard coded.)
+#
+bsX=50;   bsY=50;  bsZ=100
+
+# Make a wire box
+qvd-wireBox $bsX $bsY $bsZ .5 .5 .5 box0.osgb
+
+# Label the box
+labelOctants > labels0.iris
+iris-convert  --static labels0.iris labels0.osgb
+
+# Combine box and labels
+iris-convert  box0.osgb labels0.osgb box.osgb
+
+rm -f box0.osgb labels0.iris labels0.osgb
+
+#
+# Make a sphere for "shape 1"
+rm -rf rocks
+mkdir rocks
+
+# Build colored spheres
+if [ $gpuSpheres == 0 ]
+then
+    (cd rocks; buildPolygonSpheres)
+else
+    if [ $blades == 4 ]
+    then
+	(cd rocks; build8GpuSpheres)
+    else
+	(cd rocks; build12GpuSpheres)
+    fi
+fi
+
+
+# Use the rheometer paddle vane for "shape 2"
+# translate it to center of mass
+#cat vane.savg | savg-color -r .4 -g .4 -b .4 -a 1| hev-savgTransformation --xyz 0 0 -17.506178 > rocks/s_999.savg
+# 10/27/2016
+cp vane.savg rocks/s_999.savg
+(cd rocks; ln -s s_999.savg s_002.savg)
+
+#
+# Process multiple qvisdat files for each object to be controlled on/off
+#
+
+# material properties
+sh=16   # shininess 0 -> 128
+sp=.6   # specular  0 -> 1.0
+di=0    # diffuse
+am=.8   # ambient   0 -> 1.0
+em=0    # emission  0 -> 1.0
+
+
+cp /dev/null nglist.txt
+cp /dev/null glist.txt
+cp /dev/null ilist.txt
+cp /dev/null plist.txt
+
+cp /dev/null pcmds.sh
+cp /dev/null  addMaterials.sh
+
+
+for Q in ${QFILES}
+do
+  f0=`basename $Q .qvisdat`
+  if [ $NOPID == 0 ]
+  then
+      f=${f0}$$
+  else
+      f=${f0}
+  fi
+
+  if [ $gpuSpheres == 0 ]
+  then
+      GPUSPHERES=""
+  else
+      GPUSPHERES="--gpuSpheres"
+  fi
+
+  RADIUSLISTARG=$radiusListParam
+  
+  # Special case
+  if [ "$f0" == "vane" ]
+  then
+      GPUSPHERES=""
+      RADIUSLISTARG=""
+  fi
+
+
+  rm -rf pages_$f
+  mkdir pages_$f
+  n=0   # set n to number of CPUs, or 0 to automatically determine
+        # Note: for large data, this can easily exhaust system memory 
+        #       and terminate processing
+
+#  n=1
+  echo qvd-toIRIS $VERBOSE $GPUSPHERES $RADIUSLISTARG --parallel $n  rocks/s_%03d.savg \
+       ${Q} $f.iris pages_$f $f >> pcmds.sh
+
+  if [ "$GPUSPHERES" == ""  ]
+  then
+	echo hev-materialTransform --rmMaterials --colorMode DIFFUSE \
+	    --diffuse $di $di $di 1 \
+	    --shininess $sh \
+	    --specular $sp $sp $sp 1 \
+	    --ambient $am $am $am 1 \
+	    --emission $em $em $em 1 ${f}.iris ${f}.osgb >> addMaterials.sh
+   else
+      echo hev-mergeState size${f}.iris ${f}.iris ${f}.osgb >> addMaterials.sh
+   fi
+
+  echo nogeometry_${f}.iris >> nglist.txt
+  echo            ${f}.osgb >> glist.txt
+  echo            ${f}.iris >> ilist.txt
+  echo      pages_${f}      >> plist.txt
+
+  if [ "$RADIUSLISTARG" != "" ]
+  then
+    RADIUS=-1
+  fi
+
+cat > size${f}.iris <<EOF
+GROUP sizeGroup
+LOAD gSphere gpuSphere.iris
+MERGESTATE gSphere sizeGroup
+UNLOAD gSphere
+UNIFORM sizeGroup fatpointSize $RADIUS
+CULLING sizeGroup OFF
+RETURN sizeGroup
+EOF
+
+
+done
+
+hev-runParallel $VERBOSE < pcmds.sh
+
+
+
+#
+# Convert to osgb and add materials
+#
+
+if [ $verbose == 1 ]
+then
+    echo Convert to osgb and add materials
+fi
+
+hev-runParallel $VERBOSE < addMaterials.sh
+
+
+
+#
+# Build the final application
+#
+
+hev-moo ${MOO_ID} --xsize 120 --columns ${MOO_COLUMNS} ${MOO_ON_OFF} ${EXAMINE} `cat glist.txt` box.osgb > moo.iris
+
+hev-animatorMCP `cat nglist.txt` > animator.mcp
+
+cat > light2.iris <<EOF
+# add a second light 
+LIGHTNODE light2 ON POSITION 0 -.707 .707 1 ATTENUATION LINEAR 1
+ADDCHILD light2 scene
+EOF
+
+cat > runapp <<EOF
+#! /bin/bash
+
+irisfly \$* ${EXAMINE}  moo.iris animator.mcp clip.mcp light2.iris
+
+EOF
+chmod +x runapp
+
+
+#
+# Clean up files not needed in final app
+#
+
+if [ $noclean == 0 ]
+then
+    for f in `cat plist.txt ilist.txt` 
+    do
+       #echo rm -rf $f
+	rm -rf $f
+    done
+
+    rm -rf vane.savg rocks *list.txt addmaterials.sh pcmds.sh
+    rm -f size.osgb addMaterials.sh
+fi
+
+#
+# notify user
+#
+
+echo
+echo "To execute:"
+echo
+echo "cd $vrd"
+echo "./runapp --background 1 1 1"
+echo
+
+# End

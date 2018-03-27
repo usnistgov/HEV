@@ -1,0 +1,211 @@
+#!/bin/bash
+
+id=$RANDOM
+node="hev-annotate-$id"
+
+# default values
+pointer=pointerGlyph.osg
+size=.05
+r=1
+g=1
+b=1
+a=1
+font=arial.ttf
+
+initTextXYZ="0 1 0"
+initTextHPR="0 0 0"
+initPointerXYZ="0 1 0"
+initPointerHPR="0 0 0"
+
+
+usage() {
+    echo "hev-annotate [--title name] [--pointer fileName] [--font fontName] [--size s] [--color r g b a] [ --hpr ] [--nounload] [text]"
+}
+
+while [ -z "$done" -a $# -gt 0 ] ; do
+    lc=`echo $1 | tr [:upper:] [:lower:]`
+    if [ "$lc" == "--pointer" ] ; then
+	shift 
+	if [ $# -ge 1 ] ; then
+	    pointer=$1
+	    shift
+	else
+	    usage
+	    exit 1
+	fi
+    elif [ "$lc" == "--font" ] ; then
+	shift 
+	if [ $# -ge 1 ] ; then
+	    font=$1
+	    shift
+	else
+	    usage
+	    exit 1
+	fi
+    elif [ "$lc" == "--title" ] ; then
+	shift 
+	if [ $# -ge 1 ] ; then
+	    title=$1
+	    shift
+	else
+	    usage
+	    exit 1
+	fi
+    elif [ "$lc" == "--node" ] ; then
+	shift 
+	if [ $# -ge 1 ] ; then
+	    node=$1
+	    shift
+	else
+	    usage
+	    exit 1
+	fi
+    elif [ "$lc" == "--size" ] ; then
+	shift 
+	if [ $# -ge 1 ] ; then
+	    size=$1
+	    shift
+	else
+	    usage
+	    exit 1
+	fi
+    elif [ "$lc" == "--color" ] ; then
+	shift 
+	if [ $# -ge 4 ] ; then
+	    r=$1
+	    g=$2
+	    b=$3
+	    a=$4
+	    shift 4
+	else
+	    usage
+	    exit 1
+	fi
+    elif [ "$lc" == "--hpr" ] ; then
+	shift 
+	hpr=1
+
+    elif [ "$lc" == "--nounload" ] ; then
+	shift 
+	nounload=1
+
+    elif [ "$lc" == "--textxyz" ] ; then
+	shift 
+	if [ $# -ge 3 ] ; then
+	    initTextXYZ="$1 $2 $3"
+	    shift 3
+	else
+	    usage
+	    exit 1
+	fi
+
+    elif [ "$lc" == "--texthpr" ] ; then
+	shift 
+	if [ $# -ge 3 ] ; then
+	    initTextHPR="$1 $2 $3"
+	    hpr=1
+	    shift 3
+	else
+	    usage
+	    exit 1
+	fi
+
+    elif [ "$lc" == "--pointerxyz" ] ; then
+	shift 
+	if [ $# -ge 3 ] ; then
+	    initPointerXYZ="$1 $2 $3"
+	    shift 3
+	else
+	    usage
+	    exit 1
+	fi
+
+    elif [ "$lc" == "--pointerhpr" ] ; then
+	shift 
+	if [ $# -ge 3 ] ; then
+	    initPointerHPR="$1 $2 $3"
+	    shift 3
+	else
+	    usage
+	    exit 1
+	fi
+
+    else done=1
+    fi
+done
+
+text="$*"
+# add a space so we won't have a null string
+if [ -z "$text" ] ; then
+    text=" "
+fi
+
+min=`echo $size\*.1 | bc -l`
+max=`echo $size\*10 | bc -l`
+
+echo -e "SHMMATRIXTRANSFORM $node-text-SHMMATRIXTRANSFORM hev-annotate/text-$id\n\
+NOCLIP $node-text-NOCLIP\n\
+TEXT $node-text-TEXT ALIGNMENT CENTER_CENTER STRING \"$text\" SIZE $size FONT \"$font\" COLOR $r $g $b $a" > $IRIS_CONTROL_FIFO
+
+# no hpr for text, so use billboard
+if [ -z "$hpr" ] ; then
+    echo "BILLBOARD $node-text-BILLBOARD" > $IRIS_CONTROL_FIFO
+fi
+
+echo -e "GROUP $node\n\
+ADDCHILD $node scene\n\
+ADDCHILD $node-text-SHMMATRIXTRANSFORM $node\n\
+ADDCHILD $node-text-NOCLIP $node-text-SHMMATRIXTRANSFORM" > $IRIS_CONTROL_FIFO
+if [ -z "$hpr" ] ; then
+    echo -e "ADDCHILD $node-text-BILLBOARD $node-text-NOCLIP\n\
+             ADDCHILD  $node-text-TEXT $node-text-BILLBOARD" > $IRIS_CONTROL_FIFO
+else
+    echo "ADDCHILD $node-text-TEXT $node-text-NOCLIP" > $IRIS_CONTROL_FIFO
+fi
+
+echo -e "SHMMATRIXTRANSFORM $node-pointer-SHMMATRIXTRANSFORM hev-annotate/pointer-$id\n\
+NOCLIP $node-pointer-NOCLIP\n\
+LOAD $node-pointer-pointer $pointer\n\
+ADDCHILD $node-pointer-SHMMATRIXTRANSFORM $node\n\
+ADDCHILD $node-pointer-NOCLIP $node-pointer-SHMMATRIXTRANSFORM\n\
+ADDCHILD  $node-pointer-pointer $node-pointer-NOCLIP" > $IRIS_CONTROL_FIFO
+
+hev-textInput -title "$title text string" $text | sed -u -e 's/^$/ /' -e "s/^/TEXT $node-text-TEXT STRING \"/" -e 's/$/"/' > $IRIS_CONTROL_FIFO &
+
+if [ -z "$hpr" ] ; then
+    hev-desktopWand -title "$title text" --xyz --wand hev-annotate/text-$id $initTextXYZ &
+else
+    hev-desktopWand -title "$title text" --wand hev-annotate/text-$id $initTextXYZ $initTextHPR &
+fi
+
+hev-desktopWand -title "$title pointer" --wand hev-annotate/pointer-$id $initPointerXYZ $initPointerHPR &
+
+dtk-floatSliders -title "$title text size" -s 0 $min $max $size -N 1 -l size |\
+sed -u -e "s/^/TEXT  $node-text-TEXT SIZE /" > $IRIS_CONTROL_FIFO &
+
+dtk-floatSliders -title "$title text color" -s 0 0 1 $r -s 1 0 1 $g -s 2 0 1 $b -s 3 0 1 $a -N 4 -l r g b a |\
+sed -u -e "s/^/TEXT  $node-text-TEXT COLOR "/ > $IRIS_CONTROL_FIFO &
+
+cleanup() {
+    kill %1 %2 %3 %4 %5
+
+    if [ -z "$nounload" ] ; then
+	echo -e "UNLOAD $node-pointer-pointer\n\
+             UNLOAD $node-pointer-NOCLIP\n\
+             UNLOAD $node-pointer-SHMMATRIXTRANSFORM" > $IRIS_CONTROL_FIFO
+	echo "UNLOAD $node-text-TEXT" > $IRIS_CONTROL_FIFO
+	if [ -z "$hpr" ] ; then
+	    echo "UNLOAD $node-text-BILLBOARD" > $IRIS_CONTROL_FIFO
+	fi
+	echo -e "UNLOAD $node-text-NOCLIP\n\
+             UNLOAD $node-text-SHMMATRIXTRANSFORM" > $IRIS_CONTROL_FIFO
+	sleep 1
+	dtk-destroySharedMem hev-annotate/text-$id hev-annotate/pointer-$id
+    fi
+
+}
+
+trap cleanup EXIT 
+
+wait 
+

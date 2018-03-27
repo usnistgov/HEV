@@ -1,0 +1,96 @@
+.TH iris-DCS 1 "February 2011"
+
+.SH NAME
+iris-DCS
+
+.SH SYNOPSIS 
+.B iris-DCS
+nodename [ -- help ] [ --matrix ] [ --translate x y z ] [ --euler h p r ] [ --quat x y z w ] [ -- scale x [ y z ] ] [ --center [ 0 0 0 ] ] [ --bound [ 1 ] ] [ --examine ] [ --load file ... ] [file ... ]
+
+.SH DESCRIPTION
+\fBiris-DCS\fR prints the IRIS control commands to create a DCS with the specified geometric
+transformations. If files are specified, commands are generated to load the
+files under the DCS. The output of \fBiris-DCS\fR can be saved in a iris file and
+loaded by IRIS.
+
+The supplied transformations are compounded into a single DCS
+transformation, so the order of the transformations matters, and
+transformations can be repeated if needed.
+
+.SH OPTIONS
+
+.TP
+nodename
+.br
+The name of the DCS node.
+
+.TP
+--help
+.br
+Print the usage message and exit
+
+.TP
+--matrix
+.br
+will generate a MATRIX control command instead of the default DCS command
+
+.TP
+--translate \fIx y z\fR
+.br
+Translates by \fIx y z\fR
+
+.TP
+--euler \fIh p r\fR
+.br
+Rotates by the Euler angle \fIh p r\fR
+
+.TP
+--quat \fIx y z w\fR
+.br
+Rotates by the quaternion angle \fIx y z w\fR
+
+.TP
+--scale \fIx\fR [ \fIy z\fR ]
+.br
+Scale by \fIx y z\fR.  If \fIy z\fR omitted a uniform scale is applied
+
+.TP
+--center [ \fIx y z\fR ]
+.br
+Translates the loaded files to have a bounding sphere center of \fIx y z\fR.  If \fIx y z\fR are omitted, 0 0 0 is used.
+
+.TP
+--bound [ \fIr\fR ]
+.br
+Scales the loaded files to have a bounding sphere of radius at \fIr\fR.
+If \fIr\fR is omitted, 1 is used.
+
+.TP
+--examine
+.br
+Translates and scales the loaded files to have a bounding sphere of radius 1
+and a bounding sphere center of 0 2 0.
+
+.TP
+--load \fIfile\fR ...
+.br
+Specifies a list of input files.  This option is needed if optional
+parameters are omitted before the list of files to load, so the parser will
+know when it has reached the end of option's parameters.
+
+.TP 
+file ...
+.br
+A list of input files
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+ 

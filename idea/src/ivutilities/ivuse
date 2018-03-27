@@ -1,0 +1,32 @@
+#! /bin/sh
+
+# ivuse - add a "USE name" to the stdin.
+
+
+case $# in
+1)
+	case $1 in
+	-h)
+		echo "Usage: ivuse name"
+                echo "   Output a 'USE name' which refers"
+                echo "   to a previously defined named (ivdef)"
+		echo "   This is not a filter, it takes no input."
+		echo "   The name must be in the same file."
+		echo "  Example: "
+		echo "      ivcube | ivdef cube > junk.iv"
+		echo "      ivuse cube | ivtranslate 3 0 0 >> junk.iv"
+		exit
+		;;
+         *)
+		name=$1
+		;;
+
+	esac
+	;;
+*)
+	ivuse -h
+	exit
+	;;
+esac
+	
+echo "USE" $name

@@ -1,0 +1,44 @@
+#!gmake
+
+# IRIX make has a make directive that lets you
+# execute an alternate interpreter
+#  #!alternate_make
+# GNU make will ignore it
+
+# This file works with GNU make
+# you can get it at
+# ftp://prep.ai.mit.edu/pub/gnu/make/
+
+#################################################################
+
+
+# This makes the target in all sub-directories
+# if there is a file `Makefile' in it.
+
+default: build
+
+clean cleaner distclean depend:
+	@for i in *; do \
+          if [ -f $$i/Makefile ]; then \
+             cd $$i ; $(MAKE) $@; cd .. ; \
+          fi ; \
+          done
+
+install: build
+
+
+build install:
+	@for i in *; do \
+          if [ -f $$i/Makefile ]; then \
+             cd $$i ; if ! $(MAKE) $@; then exit 1; fi; \
+             cd .. ; \
+          fi ; \
+          done
+
+
+cleaner distclean: Cleaner
+
+Cleaner:
+	rm -f *~ core
+
+#

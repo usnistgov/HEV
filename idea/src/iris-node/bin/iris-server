@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+// vim: ft=javascript
+
+/**
+ * \file iris-server a socket.io server for interacting with IRIS.
+ * @see doc/iris-server.1
+ */
+
+"use strict"
+var path = require("path"),
+    fs = require("fs"),
+    fmt = require("util").format;
+
+var lib = path.join(path.dirname(fs.realpathSync(__filename)), "../lib");
+var iris = require(lib+"/iris.js");
+
+var args = iris.parseArgs(process.argv, [
+    { name: "port", opt: "p", required: false, value: true, defaultValue: 8080 },
+    { name: "ip", opt: "i", required: false, value: true, defaultValue: "127.0.0.1" },
+    { name: "directory", opt: "d", required: false, value: true }
+]);
+
+if (!args) {
+    console.log(fmt("usage: %s [--port PORT] [--ip IP] [--directory DIR]", process.argv[1]));
+    process.exit(1);
+}
+args.port = +args.port;
+
+if (args.directory) {
+    try {
+        process.chdir(args.directory);
+    } catch (e) {
+        console.log(fmt("cannot change to %s", args.directory));
+        process.exit(1);
+    }
+}
+
+var server = iris.server();
+var log = server.io.log;
+
+server.app.listen(args.port, args.ip);
+log.info(fmt("server listening on %s:%s", args.ip, args.port));
+

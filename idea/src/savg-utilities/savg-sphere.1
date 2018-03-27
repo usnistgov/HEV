@@ -1,0 +1,55 @@
+.TH SAVG\-SPHERE 1 "April 2004"
+
+.SH NAME
+savg-sphere
+.SH SYNOPSIS
+.B savg-sphere 
+[val]
+
+.SH DESCRIPTION 
+.I Savg-sphere 
+creates a sphere centered on the origin with radius 1
+and writes its data to 
+.I stdout.
+
+.SH OPTIONS
+.TP
+.B val
+Specify the number of polygons requested.  Default is 128. The program
+will return the number of polygons actually used, which will be as
+close to the user request as possible without going over that number.
+The algorithm is based on subdividing an octehedron. The possible number
+of polygons always contains a factor of 8, 8*1^2=8, 8*2^2=32, 8*3^2=72,
+etc.
+.SH EXAMPLES
+.TP
+.B "savg-sphere > sphere.savg"
+This creates a complete white (default) sphere at the origin with 128 3-sided polygons (128 = 8 * 4^2) to 
+.I sphere.savg.
+.TP
+.B "savg-sphere 100 > sphere.savg"
+This creates a white (default) sphere of diameter 2 at the origin with 
+as many triangles as possible without exceeding 100.
+.PP
+
+.SH SEE ALSO
+savg-cone, savg-cylinder, savg-cube, savg-tetra, savg-octa
+
+.SH AUTHORS
+.PP
+Adele Peskin, 
+Brandon M. Smith
+.TP
+Version 2.0
+.br
+Summer 2004, modified June 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+

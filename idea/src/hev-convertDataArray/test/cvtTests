@@ -1,0 +1,221 @@
+
+
+# dims are 10x11x12 = 1320
+# number of values is 1320*nComp
+#  nComp = 2   # val = 2640
+#  nComp = 3   # val = 3960
+#  nComp = 4   # val = 5280
+#  nComp = 5   # val = 6600
+
+
+# for comparison puposes
+./onePerLine < asc_10_11_12_int_neg.raw > asc_10_11_12_int_neg.raw.onePerLine
+./onePerLine < asc_10_11_12_int.raw > asc_10_11_12_int.raw.onePerLine
+ 
+
+
+
+# basic format conversions, all outputs are binary
+echo
+echo Basic format conversion raw to mha, no data transformation
+
+# Input is ascii, so compare input to dump of output
+../hev-convertDataArray --inType float32 --nDim 3 --dim 10 11 12 --nComp 2 --inFmt ascii   asc_10_11_12_flt_neg_n2.raw asc_10_11_12_flt_neg_n2.raw.bin.mha
+../hev-convertDataArray --inType float32 --nDim 3 --dim 10 11 12 --nComp 3 --inFmt ascii   asc_10_11_12_flt_neg_n3.raw asc_10_11_12_flt_neg_n3.raw.bin.mha
+../hev-convertDataArray --inType float32 --nDim 3 --dim 10 11 12 --nComp 4 --inFmt ascii   asc_10_11_12_flt_neg_n4.raw asc_10_11_12_flt_neg_n4.raw.bin.mha
+../hev-convertDataArray --inType float32 --nDim 3 --dim 10 11 12 --nCom  5 --inFmt ascii   asc_10_11_12_flt_neg_n5.raw asc_10_11_12_flt_neg_n5.raw.bin.mha
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt ascii   asc_10_11_12_int_neg.raw asc_10_11_12_int_neg.raw.bin.mha
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12                 asc_10_11_12_int.raw asc_10_11_12_int.raw.bin.mha
+./dumpFltFromEnd 2640 asc_10_11_12_flt_neg_n2.raw.bin.mha > compareA.dump
+./dumpFltFromEnd 3960 asc_10_11_12_flt_neg_n3.raw.bin.mha > compareB.dump
+./dumpFltFromEnd 5280 asc_10_11_12_flt_neg_n4.raw.bin.mha > compareC.dump
+./dumpFltFromEnd 6600 asc_10_11_12_flt_neg_n5.raw.bin.mha > compareD.dump
+./dumpIntFromEnd 1320 asc_10_11_12_int_neg.raw.bin.mha > compareE.dump
+./dumpIntFromEnd 1320 asc_10_11_12_int.raw.bin.mha > compareF.dump
+
+
+
+
+
+
+# input is binary, without negs, compare output to asc_10_11_12_int.raw
+../hev-convertDataArray --inType float64 --nDim 3 --dim 10 11 12 --inFmt bin            bin_10_11_12_dbl.raw            bin_10_11_12_dbl.raw.bin.mha
+../hev-convertDataArray --inType float32 --nDim 3 --dim 10 11 12 --inFmt bin            bin_10_11_12_flt.raw            bin_10_11_12_flt.raw.bin.mha
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt bin              bin_10_11_12_int.raw            bin_10_11_12_int.raw.bin.mha
+../hev-convertDataArray --inType uint8 --nDim 3 --dim 10 11 12 --inFmt bin              bin_10_11_12_uch.raw            bin_10_11_12_uch.raw.bin.mha
+./dumpDblFromEnd 1320 bin_10_11_12_dbl.raw.bin.mha > compareG.dump
+./dumpFltFromEnd 1320 bin_10_11_12_flt.raw.bin.mha > compareH.dump
+./dumpIntFromEnd 1320 bin_10_11_12_int.raw.bin.mha > compareI.dump
+./dumpUchFromEnd 1320 bin_10_11_12_uch.raw.bin.mha > compareJ.dump
+
+
+
+
+# input is binary, WITH negs, compare output to asc_10_11_12_int_neg.raw
+../hev-convertDataArray --inType float64 --nDim 3 --dim 10 11 12 --nCo   1 --inFmt bin  bin_10_11_12_dbl_neg.raw        bin_10_11_12_dbl_neg.raw.bin.mha
+../hev-convertDataArray --inType float32 --nDim 3 --dim 10 11 12 --inFmt bin            bin_10_11_12_flt_neg.raw        bin_10_11_12_flt_neg.raw.bin.mha
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt bin              bin_10_11_12_int_neg.raw        bin_10_11_12_int_neg.raw.bin.mha
+./dumpDblFromEnd 1320 bin_10_11_12_dbl_neg.raw.bin.mha > compareK.dump
+./dumpFltFromEnd 1320 bin_10_11_12_flt_neg.raw.bin.mha > compareL.dump
+./dumpIntFromEnd 1320 bin_10_11_12_int_neg.raw.bin.mha > compareM.dump
+
+
+
+
+
+# a few conversions to ascii
+echo
+echo Conversions to ascii
+# compare output to asc_10_11_12_int.raw
+../hev-convertDataArray --inType float32 --nDim 3 --dim 10 11 12 --inFmt bin --outFmt ascii  bin_10_11_12_flt.raw bin_10_11_12_flt.raw.asc.mha
+../hev-convertDataArray --inType uint8 --nDim 3 --dim 10 11 12 --inFmt bin --outFmt ascii  bin_10_11_12_uch.raw bin_10_11_12_uch.raw.asc.mha
+./printMhaDataToks < bin_10_11_12_flt.raw.asc.mha > compareR.dump
+./printMhaDataToks < bin_10_11_12_uch.raw.asc.mha > compareS.dump
+
+
+
+
+# data type conversions
+echo
+echo Conversions of data type
+# compare output to asc_10_11_12_int.raw
+../hev-convertDataArray --inType float32 --nDim 3 --dim 10 11 12 --inFmt bin --outFmt ascii --outType uint8  bin_10_11_12_flt.raw bin_10_11_12_flt2uch.asc.mha
+../hev-convertDataArray --inType uint8 --nDim 3 --dim 10 11 12 --inFmt bin --outFmt ascii  --outType float32 bin_10_11_12_uch.raw bin_10_11_12_uch2flt.asc.mha
+./printMhaDataToks < bin_10_11_12_flt2uch.asc.mha > compareT.dump
+./printMhaDataToks < bin_10_11_12_uch2flt.asc.mha > compareU.dump
+
+
+
+
+# different nDim, we pretend that files have different dimensionality than we originally intended
+echo
+echo Various dimensions
+
+# check headers of output for dims 
+# check data against asc_10_11_12_int.raw
+../hev-convertDataArray --inType int32 --nDim 1 --dim 10           --outFmt ascii  asc_10_11_12_int.raw  asc_10_int.asc.mha
+../hev-convertDataArray --inType int32 --nDim 2 --dim 10 11        --outFmt ascii  asc_10_11_12_int.raw  asc_10_11_int.asc.mha
+../hev-convertDataArray --inType int32 --nDim 4 --dim 5 2 11 12    --outFmt ascii  asc_10_11_12_int.raw  asc_5_2_11_12_int.asc.mha
+../hev-convertDataArray --inType int32 --nDim 5 --dim 5 2 11 3 4   --outFmt ascii  asc_10_11_12_int.raw  asc_5_2_11_3_4_int.asc.mha
+./printMhaDataToks < asc_10_int.asc.mha                 > compareV.dump
+./printMhaDataToks < asc_10_11_int.asc.mha              > compareW.dump
+./printMhaDataToks < asc_5_2_11_12_int.asc.mha          > compareX.dump
+./printMhaDataToks < asc_5_2_11_3_4_int.asc.mha         > compareY.dump
+
+
+
+
+
+# test log and exp10 transformations, I'm only going to use the flt inputs
+echo
+echo Various transformations
+# spot check against asc_10_11_12_int.raw
+../hev-convertDataArray --inType float32 --nDim 3 --dim 10 11 12 --inFmt bin  --outFmt ascii --transform log  bin_10_11_12_flt.raw log.asc.mha
+../hev-convertDataArray --inType float32 --nDim 3 --dim 10 11 12 --inFmt bin  --outFmt ascii --transform exp10  bin_10_11_12_flt.raw exp10.asc.mha
+
+
+
+
+
+# normalization
+echo
+echo Normalization
+# spot check against asc_10_11_12_int.raw, output one tenth of reference, with clamping to [0,1]
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt bin  --norm 0 10 --outFmt asc --outType float32 bin_10_11_12_int.raw int.norm.mha
+# spot check against log.asc.mha,  output one tenth of reference, with clamping to [0,1]
+../hev-convertDataArray --norm 0 10 --inType float32 --nDim 3 --dim 10 11 12 --inFmt bin  --outFmt ascii --transform log  bin_10_11_12_flt.raw log.norm.asc.mha
+
+
+
+
+
+# clamping
+echo
+echo Clamp
+# spot check against asc_10_11_12_int.raw, output clamped
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt bin  --clamp 2 8 --outFmt asc --outType float32 bin_10_11_12_int.raw int.clamp.mha
+# spot check against log.asc.mha, output clamped to [log(3),log(7)]
+../hev-convertDataArray --clamp 3 7 --inType float32 --nDim 3 --dim 10 11 12 --inFmt bin  --outFmt ascii --transform log  bin_10_11_12_flt.raw log.clamp.asc.mha
+
+
+
+
+
+echo
+echo mha to mha conversion
+# check data against asc_10_11_12_int.raw or int.norm.mha
+../hev-convertDataArray --norm 0 10 --outFmt asc --outType float32 bin_10_11_12_int.raw.bin.mha int.norm.mha.mha
+# check against log.norm.asc.mha
+echo       should see four msgs about ignored args because input is not raw:
+../hev-convertDataArray --norm 0 10 --inType float32 --nDim 3 --dim 10 11 12 --inFmt bin  --outFmt ascii --transform log  bin_10_11_12_flt.raw.bin.mha log.norm.asc.mha.mha
+
+
+
+echo
+echo nan and inf substitution with asc vs bin output, also tests no array structure spec
+
+# all use the same input, nan and infs at beginning and end of input
+../hev-convertDataArray --outFmt ascii  nanInf.asc.raw  nanInf.asc.infSub.noNanSub.raw
+../hev-convertDataArray --infSub none 9999 --outFmt ascii  nanInf.asc.raw  nanInf.asc.out.infpos.raw
+../hev-convertDataArray --infSub -99999 none --outFmt ascii  nanInf.asc.raw  nanInf.asc.out.infneg.raw
+../hev-convertDataArray --infSub -9999 9999 --nanSub -42 --outFmt ascii  nanInf.asc.raw  nanInf.asc.out.inf.nan.raw
+../hev-convertDataArray --infSub -9999 9999 --nanSub -42 --outFmt bin nanInf.asc.raw  nanInf.asc.out.inf.nan.bin.raw
+./dumpFltFromEnd 1326 nanInf.asc.out.inf.nan.bin.raw > compareN.dump
+
+
+
+
+
+
+echo
+echo more tests of no structure spec and raw output
+# compare outputs with log.asc.mha
+../hev-convertDataArray --inType float32 --inFmt bin  --outFmt ascii --transform log  bin_10_11_12_flt.raw noStruct.asc.mha
+../hev-convertDataArray --inType float32 --inFmt bin  --outFmt bin   --transform log  bin_10_11_12_flt.raw noStruct.bin.mha
+../hev-convertDataArray --inType float32 --inFmt bin  --outFmt ascii --transform log  bin_10_11_12_flt.raw noStruct.asc.raw
+../hev-convertDataArray --inType float32 --inFmt bin  --outFmt bin   --transform log  bin_10_11_12_flt.raw noStruct.bin.raw
+./dumpFltFromEnd 1320 noStruct.bin.mha > compareO.dump
+./dumpFltFromEnd 1320 noStruct.bin.raw > compareP.dump
+./printMhaDataToks < log.asc.mha > compareZ.dump
+
+
+
+
+# input and output should be identical
+../hev-convertDataArray --inType float32 --inFmt bin  --outFmt bin    bin_10_11_12_flt.raw   bin_10_11_12.bin.same.raw
+./dumpFltFromEnd 1320 bin_10_11_12.bin.same.raw > compareQ.dump
+
+
+
+
+
+
+echo
+echo input as mhas
+# output should be similar to asc_10_11_12_int.raw
+../hev-convertDataArray   --outFmt ascii --transform exp   log.asc.mha explog.asc.raw
+../hev-convertDataArray   --outFmt ascii --transform exp   log.asc.mha explog.asc.mha
+
+
+
+
+echo
+echo Should see some error messages about bad data in input files:
+# bad data in raw files
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12                 bad.raw bad1.mha
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt bin     bad.raw bad2.mha
+# bad data in mha
+../hev-convertDataArray --norm 0 10 --inType float32 --nDim 3 --dim 10 11 12 --inFmt bin  --outFmt ascii --transform log  bad.mha bad5.mha
+
+
+
+
+# bad args
+echo
+echo Should see some error messages about bad arguments:
+../hev-convertDataArray --inType int32 --nDim 2 --dim 10 11 12 --inFmt bin  bin_10_11_12_int.raw   bad3.mha
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt bin  --badArg  bin_10_11_12_int.raw   bad4.mha
+
+
+
+# OK TO HERE JGH

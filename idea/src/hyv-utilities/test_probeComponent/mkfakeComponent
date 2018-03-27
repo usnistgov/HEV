@@ -1,0 +1,30 @@
+#! /bin/sh
+
+# make a fake component file
+
+
+#awk '
+#BEGIN {
+#      v=0;
+#      n=25*25*25;
+#      for (i=0; i<n; i++) {
+#	  printf "%6.3f\n",v;
+#	  v=v+.001
+#      }
+#}'
+#
+#
+
+awk '
+BEGIN {
+    idim=25; jdim=25; kdim=25;
+    for (i=0; i<idim; i++) {
+	for (j=0; j<jdim; j++) {
+	    for (k=0; k<kdim; k++) {
+		printf ".%02d%02d%02d\n",k,j,i;
+            }
+	}
+    }
+}'
+
+

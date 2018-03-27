@@ -1,0 +1,68 @@
+.TH hev-animateWindow 1 "August 12 2011" "NIST/ITL/AMD/HPCVG" "MCSD HEV"
+
+.SH NAME
+
+hev-animateWindow - animates window shards
+
+.SH SYNOPSIS
+
+\fBhev-animateWindow [options] [inputDir] [inputFile] [envFile]\fR 
+
+.SH DESCRIPTION
+
+\fBhev-animateWindow\fR accepts window shards from hev-brokenGlass, and animates them. The resulting animation is stored in frames.iris. To finish the animation, press 'q' at the GUI.
+.br
+\fBiris-convert\fR can be used on frames.iris to create an .osgb file with a substantially smaller loading time.
+
+.SH OPTIONS
+
+\fB-l {damping}\fR    - Sets the linear damping of the simulation
+.br
+\fB-a {damping}\fR    - Sets the angular damping of the simulation
+.br
+\fB-m\fR              - Runs the simulation using external mass properties. The mass properties should be stored in a .dat file with the same name as the savg file the shard data is stored in.
+.br
+                        The .dat file should contain first the mass, second the centroid, and third the inertia tensor.
+.br
+\fB-f {frames}\fR     - Sets the number of movement frames the simulation should run for. Default runs for 100 frames.
+.br
+\fB-t {fps}\fR        - Sets the frame rate in frames per second. Default is 6 fps
+.br
+\fB-s {start}\fR      - Sets the frame that movement will start at. Default is 0.
+.br
+\fB-e {end}\fR        - Sets the frame that the animation will end at. Default is the same as frames + start. 
+
+.SH ARGUMENTS
+\fBinputDir\fR  - The directory where the input file, environment file, and window shards are stored.
+.br
+\fBinputFile\fR - The name of the the input file. The input file should contain a list of each shard to be simulated, followed by its initial velocity.
+.br
+\fBenvFile\fR   - The name of the environment file. This should be in the savg file format.
+
+.SH EXAMPLES
+\fBhev-animateWindow $HEVROOT/idea/src/hev-animateWindow/exampleData shards.dat room.savg\fR
+.br
+This will load the shards in the shards.dat file, along with the room.savg environment.
+.br
+shards.dat, room.savg, and all the window shards are in the $HEVROOT/idea/src/hev-animateWindow/data directory
+.br
+\fBiris-convert frames.iris frames.osgb\fR
+.br
+This will optimize the frames.iris file into frames.osgb, and decrease the loading time.
+
+.SH BUGS
+The inertia tensors may be improperly diagonalized. I don't really know if this is the case.
+.br
+
+.SH "SEE ALSO"
+.BR hev-brokenwindow (1),
+.BR iris-convert (1)
+
+.SH AUTHOR
+
+.PP
+Matthew Du - matthew.du@nist.gov
+.br
+NIST/ITL/AMD/HPCVG
+.br
+\fBhttp://www.nist.gov/mcsd/savg/\fR

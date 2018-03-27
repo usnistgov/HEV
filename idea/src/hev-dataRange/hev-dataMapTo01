@@ -1,0 +1,108 @@
+#! /usr/bin/perl
+#
+# hev-dataMap01 - see usage message
+#
+# steve@nist.gov
+#
+
+$version="20090616";
+
+use Getopt::Long;    # http://perldoc.perl.org/Getopt/Long.html
+use File::Basename;  # http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hev-dataMapTo01 [--help] [--range min max] < input > output
+
+   Map input data to an output range of 0.0 to 1.0. Input value are clamped
+   to the specified min to max values or 0 to 1 if not specified.
+
+   The input on stdin must be one ASCII number per line.
+
+     --help    print this help message
+
+     --range  min max   specify the input range. Default is 0.0 to 1.0
+
+Version: $version
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+$helpFlag=0;
+undef(@range);
+
+GetOptions("debug"       => \$debugFlag,
+	   "help"        => \$helpFlag,
+	   "range=f{2}"  => \@range
+           );
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "helpFlag= $helpFlag\n";
+    print STDERR "range= @range \n";
+}
+
+usage() if ((@ARGV > 0)||($helpFlag));
+
+
+if (@range == 2) {
+    $minValue= $range[0];
+    $maxValue= $range[1];
+} else {
+    $minValue= 0;
+    $maxValue= 1;
+}
+
+
+if ($debugFlag) {
+    print STDERR "minValue= $minValue\n";
+    print STDERR "maxValue= $maxValue\n";
+    print STDERR "\n";
+}
+
+#######################################
+# Read stdin, map, output to stdout   #
+#######################################
+
+
+$delta=$maxValue-$minValue;
+
+while (<STDIN>) {
+    chop;
+    ($v)=split(' ', $_, -1);
+    $vOrig=$v;
+
+    if ($v < $minValue) {$v=$minValue;}
+    if ($v > $maxValue) {$v=$maxValue;}
+    $v=($v-$minValue)/$delta;
+
+    print STDOUT "$v\n";
+    
+    if ($debugFlag) {
+	print STDERR "$minValue $maxValue $delta : $vOrig -> $v\n";
+    }
+
+}
+
+# End
+

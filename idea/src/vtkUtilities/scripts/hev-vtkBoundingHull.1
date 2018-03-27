@@ -1,0 +1,64 @@
+.TH hev-vtkBoundingHull
+.SH NAME
+hev-vtkBoundingHull - generate a convex hull (not minimal)
+
+.SH SYNOPSIS
+.B hev-vtkBoundingHull [ options ] inFName outFName
+
+.SH DESCRIPTION
+.B hev-hev-vtkBoundingHull
+creates a convex polyhedron that encloses
+the input polygonal data. It is constructed
+by starting with a set of planes created by subdividing
+an enclosing sphere. 
+Each plane is incrementally moved inward until they just touch the
+input polygonal data. 
+The polygons of the convex hull are derived from the resulting planes.
+
+Note that the resulting polyhedron is a convex hull but may not be
+a minimal convex hull.
+
+.PP
+
+.SH OPTIONS
+.TP
+.B --subDiv N
+Initialize the algorithm with N subdivisions of an octahedral
+division of the sphere. Planes are generated at each vertex of
+the subdivision.
+
+.SH PARAMETERS
+.TP
+.B inFName
+Location/filename of input file in VTK polygonal format.
+
+.TP
+.B outFName
+Location/filename of output file in VTK polygonal format.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these
+files can be used as input to this program.
+
+For example:
+
+  hev-vtkBoundingHull --s 2 sph.triCell.vtk sph.hull.2.vtk
+
+This creates a bounding hull of sph.triCell.vtk
+based on a level 2 octahedral subdivision of the sphere.
+
+
+
+.SH SEE ALSO
+
+hev-vtkAddNormals, vtkUtilities
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+June 27th 2012

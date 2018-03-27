@@ -1,0 +1,12 @@
+# start with the simulator
+load simulator.iris
+
+# exit if three wand buttons are pushed
+exec iris-exitOnThreeButtons
+
+# put the pointer back after exiting
+# $IRIS_SAVE_RESTORE_POINTER was set in irisfly
+exec iris-saveRestorePointer $IRIS_SAVE_RESTORE_POINTER
+
+# start stop sign
+AFTER REALIZE EXEC hev-screenContactAlert

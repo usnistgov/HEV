@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem
+END
+timeQueueRead.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem/timeQueueRead.cpp
+END
+queueRead.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem/queueRead.cpp
+END
+runSecond.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem/runSecond.cpp
+END
+timePollRead.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem/timePollRead.cpp
+END
+pollRead.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem/pollRead.cpp
+END
+sinWrite.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem/sinWrite.cpp
+END
+countQueueRead.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem/countQueueRead.cpp
+END
+Makefile.orig
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem/Makefile.orig
+END
+countPollRead.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem/countPollRead.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem/CMakeLists.txt
+END
+runFirst.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/examplesByClass/dtkSharedMem/runFirst.cpp
+END

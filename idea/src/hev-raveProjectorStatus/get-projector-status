@@ -1,0 +1,52 @@
+#!/bin/bash
+#
+# get-projector-status
+#
+# Determine if RAVE projectors are on/off by polling UPS load.
+
+MONITOR_HOST=acadie.cam.nist.gov
+DEBUG=0
+QUIET=0
+UPS_LOAD_THRESHOLD=3
+
+if [ $HOSTNAME != "$MONITOR_HOST" ]; then
+    echo "This script must run on host '$MONITOR_HOST'."
+    exit 2
+fi
+
+usage() {
+    echo "USAGE: $0 [-q]"
+    echo "  -q: quiet mode, i.e., no output."
+    echo "  -h: usage message (this one)."
+    exit 2
+}
+
+while getopts "dhq" OPTION; do
+    case $OPTION in
+	q) QUIET=1
+	    ;;
+	d) DEBUG=1
+	    ;;
+	h|?) usage
+	    ;;
+    esac
+done
+
+# Get UPS load percentage via apcaccess command, then strip off decimal portion.
+UPS_LOAD=$(/sbin/apcaccess | grep LOADPCT | awk '{print $3}')
+UPS_LOAD=${UPS_LOAD%\.*}
+
+#UPS_LOAD=50            #For debugging
+
+[ $DEBUG = 1 ] && echo "UPS_LOAD='$UPS_LOAD'"
+
+if [ -z "$UPS_LOAD" ]; then
+    echo "$0: ERROR: Invalid UPS_LOAD='$UPS_LOAD', should be an integer."
+    exit 2
+elif [ $UPS_LOAD -lt $UPS_LOAD_THRESHOLD ]; then
+    [ $QUIET = 0 ] && echo "Projectors OFF";
+    exit 0
+else
+    [ $QUIET = 0 ] && echo "Projectors ON"
+    exit 1
+fi

@@ -1,0 +1,15 @@
+SIZE 85 20
+MENU idea
+  READ $IRISFLY_DISPLAY_MCP
+  READ ${HEVROOT}/idea/data/pointer.mcp
+  READ iris.mcp
+  READ $IRISFLY_INTEROCULAR_MCP_FILE
+  BUTTON echo
+    FIRST ECHO ON
+    ON    ECHO ON
+    OFF   ECHO OFF
+  BUTTON "____________"
+  BUTTON QUIT?
+  BUTTON "         Yes"
+    FIRST TERMINATE
+END

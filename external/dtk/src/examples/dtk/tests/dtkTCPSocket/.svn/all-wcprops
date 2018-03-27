@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/759/trunk/dtk/examples/dtk/tests/dtkTCPSocket
+END
+client.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tests/dtkTCPSocket/client.cpp
+END
+server.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/diverse/!svn/ver/569/trunk/dtk/examples/dtk/tests/dtkTCPSocket/server.cpp
+END
+Makefile.orig
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/diverse/!svn/ver/687/trunk/dtk/examples/dtk/tests/dtkTCPSocket/Makefile.orig
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/diverse/!svn/ver/759/trunk/dtk/examples/dtk/tests/dtkTCPSocket/CMakeLists.txt
+END

@@ -1,0 +1,2 @@
+
+cp -f *.glsl *.frag *.vert /usr/local/HEV-beta/idea/shader/

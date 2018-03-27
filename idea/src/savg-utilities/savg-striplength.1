@@ -1,0 +1,32 @@
+.TH SAVG\-STRIPLENGTH 1 "23 March 2005"
+.SH NAME
+savg-striplength \- SAVG ToolBox: basic option striplength
+.SH SYNOPSIS
+.B savg-striplength
+[number of triangles]
+.SH DESCRIPTION
+.I Savg-striplength
+is used to change the default number of triangles per GeoSet in savg files.
+.I stdin
+and outputs to 
+.I stdout.
+One command line argument must be present or 
+a usage message will appear and the program will 
+terminate. 
+
+.SH EXAMPLES
+.TP
+.B cat sample.savg | savg-striplength 3 > sample_3.savg
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Spring 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

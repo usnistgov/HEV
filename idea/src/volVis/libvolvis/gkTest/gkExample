@@ -1,0 +1,189 @@
+
+
+#
+# This script executes an approximation of the tutorial at:
+#     http://teem.sourceforge.net/bane/intro/index.html
+# It is only an approximation because interfaces to
+# some of the programs have (apparently) changed since the
+# tutorial was written.
+#
+#
+# Everything is done by executing the programs that were
+# built with Teem.
+
+# Here's where to find the executables:
+BINDIR=$HEVROOT/external/teem/teem-1.6.0-src/linux.64/bin
+
+
+# The only data file that is needed to start is engine.den
+
+# make a .nrrd file for engine.den
+$BINDIR/unu make -h -i ./engine.den -t uchar \
+  -s 256 256 110 -sp 1 1 1 -c engine \
+  -bs 62 -e raw -o engine.den.nhdr
+
+# crop it
+$BINDIR/unu crop -i engine.den.nhdr -min 59 20 0 -max 207 227 M \
+  -o engine-crop.nrrd
+
+# make an image by projecting (not needed)
+$BINDIR/unu project -i engine-crop.nrrd -a 2 -m max -o engine-crop-maxZ.pgm
+
+
+
+echo
+echo Done section 1: Creating the input data file.
+echo
+
+# create the histogram volume
+$BINDIR/gkms hvol -i engine-crop.nrrd -o engine-hvol.nrrd
+
+
+
+
+
+# works to here?
+###############################
+#
+# Create scatter plots.
+# These images are just informational, not really needed.
+$BINDIR/gkms scat -i engine-hvol.nrrd -o engine-vg.pgm engine-vh.pgm
+$BINDIR/gkms scat -g -1 -i engine-hvol.nrrd -o engine-vg-inv.pgm engine-vh-inv.pgm
+
+echo
+echo Done section 2: Creating the histogram volume.
+echo
+
+
+# works to here?
+###############################
+
+
+
+# Create 1D info file
+$BINDIR/gkms info -i engine-hvol.nrrd -one -o engine-info.1D.nrrd
+
+# Create 2D info file
+$BINDIR/gkms info -i engine-hvol.nrrd -o engine-info.2D.nrrd
+
+# Create color images of info files
+# These are informational, not really needed.
+$BINDIR/gkms pvg -i engine-info.2D.nrrd -o engine-pvg.pgm
+$BINDIR/gkms pvg -inv -i engine-info.2D.nrrd -o engine-pvg2.pgm
+
+
+echo
+echo Done section 3: Creating info files.
+echo
+
+
+# works to here?
+###############################
+
+
+echo
+echo default opac:
+# Make default 1D opacity function.
+$BINDIR/gkms opac -i engine-info.1D.nrrd -o engine-opac.1D.nrrd
+echo 
+echo
+
+
+# Make 1D opacity functions with different sigmas.
+$BINDIR/gkms opac -s 1.5 -i engine-info.1D.nrrd -o engine-opac.1D.s1.5.nrrd
+$BINDIR/gkms opac -s 2.39167 -i engine-info.1D.nrrd -o engine-opac.1D.s2.4.nrrd
+$BINDIR/gkms opac -s 4 -i engine-info.1D.nrrd -o engine-opac.1D.s4.nrrd
+
+
+
+# Convert these nrrd opacity functions to ascii
+$BINDIR/unu save -f nrrd -e ascii -i engine-opac.1D.nrrd -o opac.1D.asc.nrrd
+
+$BINDIR/unu save -f nrrd -e ascii -i engine-opac.1D.s1.5.nrrd \
+  -o opac.1D.s1.5.asc.nrrd
+
+$BINDIR/unu save -f nrrd -e ascii -i engine-opac.1D.s2.4.nrrd \
+  -o opac.1D.s2.4.asc.nrrd
+
+$BINDIR/unu save -f nrrd -e ascii -i engine-opac.1D.s4.nrrd \
+  -o opac.1D.s4.asc.nrrd
+
+# Extract the ascii data without the header.
+tail -257 < opac.1D.asc.nrrd > opac.1D.def.dat
+tail -257 < opac.1D.s1.5.asc.nrrd > opac.1D.s1.5.dat
+tail -257 < opac.1D.s2.4.asc.nrrd > opac.1D.s2.4.dat
+tail -257 < opac.1D.s4.asc.nrrd > opac.1D.s4.dat
+
+echo
+echo Done section 4: Creating 1D opacity files.
+echo
+
+
+
+
+# Create the 2D opacity functions
+$BINDIR/gkms opac -s 1 -i engine-info.2D.nrrd -o engine-opac.2D.1.nrrd
+
+$BINDIR/gkms opac -s 1 -g 15 -i engine-info.2D.nrrd -o engine-opac.2D.2.nrrd
+
+$BINDIR/gkms opac -s 1 -g 15 -m 1 -i engine-info.2D.nrrd \
+  -o engine-opac.2D.2b.nrrd
+
+# Not quite sure what to do with these yet.
+
+echo
+echo Done section 5: Creating 2D opacity files.
+echo
+
+
+exit
+
+
+##############################################################
+##############################################################
+##############################################################
+#
+# Below this point are misc commands that I used to inspect the data
+# and to try to do renderings with miter.  Unfortunately, I found
+# that miter doesn't seem to work properly.  
+#
+# I'm leaving these command here just for documentation.
+
+
+
+$BINDIR/gkms opac -s 4.5 -i engine-info.1D.nrrd -o opac.1D.s4.5.nrrd
+$BINDIR/unu save -f nrrd -e ascii -i opac.1D.s4.5.nrrd -o opac.1D.s4.5.asc.nrrd
+$BINDIR/unu save -f text -e ascii -i opac.1D.s4.5.nrrd -o opac.1D.s4.5.asc.text
+
+$BINDIR/gkms opac -s 2.39167 -i engine-info.1D.nrrd -o opac.1D.s2.4.nrrd
+$BINDIR/unu save -f nrrd -e ascii -i opac.1D.s2.4.nrrd -o opac.1D.s2.4.asc.nrrd
+$BINDIR/unu save -f text -e ascii -i opac.1D.s2.4.nrrd -o opac.1D.s2.4.asc.text
+$BINDIR/gkms mite -i opac.1D.s2.4.nrrd -o opac.1D.s2.4.mite.nrrd
+# $BINDIR/miter @cam.txt -k00 cubic:0,0.5 -i engine-crop.nrrd -txf opac.1D.s2.4.mite.nrrd -o opac.1D.s2.4.rend.nrrd
+# $BINDIR/miter @cam.txt -step 0.1 -k00 cubic:0,0.5 -i engine-crop.nrrd -txf opac.1D.s2.4.mite.nrrd -o opac.1D.s2.4.b.rend.nrrd
+# $BINDIR/overrgb -i opac.1D.s2.4.rend.nrrd -g 1.4 -o opac.1D.s2.4.pgm
+$BINDIR/overrgb -i opac.1D.s2.4.b.rend.nrrd -g 1.4 -o opac.1D.s2.4.b.pgm
+exit 
+
+
+
+
+$BINDIR/miter @cam.txt -i engine-crop.nrrd -txf engine-opac.1D.mite.nrrd -o opac.1D.rend.nrrd
+$BINDIR/overrgb -i opac.1D.rend.nrrd -g 1.4 -o opac.1D.pgm
+
+$BINDIR/miter @cam.txt -i engine-crop.nrrd -txf engine-opac11.mite.nrrd -o opac11.rend.nrrd
+$BINDIR/overrgb -i opac11.rend.nrrd -g 1.4 -o opac11.pgm
+
+$BINDIR/miter @cam.txt -i engine-crop.nrrd -txf engine-opac.2D.1.mite.nrrd -o opac.2D.1.rend.nrrd
+$BINDIR/overrgb -i opac.2D.1.rend.nrrd -g 1.4 -o opac.2D.1.pgm
+
+$BINDIR/miter @cam.txt -i engine-crop.nrrd -txf engine-opac.2D.2.mite.nrrd -o opac.2D.2.rend.nrrd
+$BINDIR/overrgb -i opac.2D.2.rend.nrrd -g 1.4 -o opac.2D.2.pgm
+
+$BINDIR/miter @cam.txt -i engine-crop.nrrd -txf engine-opac.2D.2b.mite.nrrd -o opac.2D.2b.rend.nrrd
+$BINDIR/overrgb -i opac.2D.2b.rend.nrrd -g 1.4 -o opac.2D.2b.pgm
+
+
+
+
+

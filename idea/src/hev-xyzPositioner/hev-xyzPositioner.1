@@ -1,0 +1,170 @@
+.TH hev-xyzPositioner 1 "May 11, 2011"
+.SH NAME
+
+hev-xyzPositioner
+
+.SH SYNOPSIS
+
+\fBhev-xyzPositioner [ --boundingBox nodeName ] [ --xmin f ] [ --xmax f ] [
+--ymin f ] [ --ymax f ] [ --zmin f ] [ --zmax f ] [ --click cmd ] [ --click3
+cmd ] [ --button label on off ] [ --button3 label on off ] [ --outShm name ] [
+--node name ] [ --clip ] [ --noEscape ] [ --usleep ticks ]
+
+.SH DESCRIPTION
+
+\fBhev-xyzPositioner\fR is a FLTK GUI which writes IRIS control commands to
+standard output to create and manipulate a box, three axes and a glyph.
+
+.SH OPTIONS
+
+.IP "\fI--boundingBox\fR"
+specifies that the bounding box of the node \fInodeName\fR should be used to
+set the data range.  Subsequent xmin/xmax/ymin/ymax/zmin/zmax options will
+override the bounding box values.
+
+.IP "\fI--xmin\fR, \fI--xmax\fR, \fI--ymin\fR, \fI--ymax\fR, \fI--zmin\fR and \fI--zmax\fR"
+can be used to specify the data range for each
+axis.  Unspecified minimum values default to -1, and unspecified maximum
+values default to 1.  A subsequent boundingBox comand will override these values.
+
+.IP \fI--click\fR 
+can be used to specify a command to be \fBfork(1)\fR'd and \fBexec(1)\fR'd
+in a \fBbash(1)\fR shell whenever the "Click" GUI button is pressed.
+Commands that contain spaces or other special characters should be enclosed
+in quotes.  If --click is not given, the "Click" button will not be
+activated.  NOTE: the \fIclick\fR option is legacy code.  It's best to use
+the \fIbutton\fR option instead
+
+.IP \fI--click3\fR 
+can be used to specify a command to be \fBfork(1)\fR'd and \fBexec(1)\fR'd
+in a \fBbash(1)\fR shell whenever the "Click3" GUI button is pressed.
+Commands that contain spaces or other special characters should be enclosed
+in quotes.  If --click3 is not given, the "Click3" button will not be
+activated.  NOTE: the \fIclick3\fR option is legacy code.  It's best to use
+the \fIbutton3\fR option instead
+
+.IP \fI--button\fR 
+can be used to specify commands to be \fBfork(1)\fR'd and \fBexec(1)\fR'd in
+a \fBbash(1)\fR shell whenever the "\fIlabel\fR" GUI button is pressed.  Commands
+that contain spaces or other special characters should be enclosed in
+quotes.  If --button is not given, the button will not be activated.  The
+first argument to \fIbutton\fR is the button's label.  The second parameter
+is the command to be executed when the button is pressed.  The third
+parameter, if non-null, is the command to be executed then the button is
+pressed again.  If the third parameter is a non-null string a light button
+GUI will be used.  If the third parameter is a null string a regular
+single-state button GUI will be used.
+
+
+.IP \fI--button3\fR 
+can be used to specify commands to be \fBfork(1)\fR'd and \fBexec(1)\fR'd in
+a \fBbash(1)\fR shell whenever the "\fIlabel\fR" GUI button is pressed.  Commands
+that contain spaces or other special characters should be enclosed in
+quotes.  If --button3 is not given, the button will not be activated.  The
+first argument to \fIbutton3\fR is the button's label.  The second parameter
+is the command to be executed when the button is pressed.  The third
+parameter, if non-null, is the command to be executed then the button is
+pressed again.  If the third parameter is a non-null string a light button
+GUI will be used.  If the third parameter is a null string a regular
+single-state button GUI will be used.
+
+
+.IP \fI--outShm\fR 
+can be used to specify the name of a DTK shared memory file
+into which hev-xyzPositioner will write the current x, y and z values.
+If this option is not specified, no shared memory data are written.
+.br
+If the file exists and it has the size of six floats then the data
+are written as XYZHPR with H, P, and R set to zero.
+If the file exists and it has the size of sixteen doubles then the data
+are written as a translation matrix.
+If the file does not exist then it is created to hold sixteen doubles
+and the data are written as a matrix.
+
+.IP \fI--node\fR 
+can be used to specify the name of a node in the scenegraph
+to act as the parent node of the geometry created by hev-xyzPositioner.  If
+this option is not specified, "world" will be used as the default.
+
+.IP \fI--clip\fR 
+can be used to specify that the geometry created by
+hev-xyzPositioner be subject to clipping by clipping planes. If
+this option is not specified, the geometry will not be clipped. 
+
+.IP \fI--noescape\fR
+if supplied, specifies that the GUI can't be killed by pressing the window
+manager's close button, or by pressing escape in he GUI window.
+
+.IP \fI--usleep\fR
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.P 
+hev-xyzPositioner also accepts the standard FLTK options, which can be
+placed before, after or randomly interspersed with the hev-xyzPositioner options:
+
+.IP "\fI-bg color or -background color\fR"
+
+Sets the background color using Fl::background().
+
+.IP "\fI-bg2 color or -background2 color\fR"
+
+Sets the secondary background color using Fl::background2().
+
+.IP "\fI-display host:n.n\fR"
+
+Sets the X display to use; this option is silently ignored under WIN32 and MacOS.
+
+.IP "\fI-dnd and -nodnd\fR"
+
+Enables or disables drag and drop text operations using Fl::dnd_text_ops().
+
+.IP "\fI-fg color or -foreground color\fR"
+
+Sets the foreground color using Fl::foreground().
+
+.IP "\fI-geometry WxH+X+Y\fR"
+
+Sets the initial window position and size according the the standard X geometry string.
+
+.IP "\fI-iconic\fR"
+
+Iconifies the window using Fl_Window::iconize().
+
+.IP "\fI-kbd and -nokbd\fR"
+
+Enables or disables visible keyboard focus for non-text widgets using Fl::visible_focus().
+
+.IP "\fI-name string\fR"
+
+Sets the window class using Fl_Window::xclass().
+
+.IP "\fI-scheme string\fR"
+
+Sets the widget scheme using Fl::scheme().
+
+.IP "\fI-title string\fR"
+
+Sets the window title using Fl_Window::label().
+
+.IP "\fI-tooltips and -notooltips\fR"
+
+Enables or disables tooltips using Fl_Tooltip::enable().
+
+.SH EXAMPLE
+
+While irisfly is running, type this:
+
+hev-xyzPositioner --bound world > $IRIS_CONTROL_FIFO
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/acmd/hpcvg/\fR
+

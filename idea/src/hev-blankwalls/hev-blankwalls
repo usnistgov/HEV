@@ -1,0 +1,37 @@
+#! /bin/sh
+
+# blankwalls - This script is a simple script to blank (black) all three
+#              RAVE walls. 
+#
+#	       This version is 3 wall, single X11 server, RAVE specific
+#
+#	       It uses hev-imageDisplay --noborder
+#
+# Origional: January 19, 2006
+# Modified for new RAVE configuration: September 29, 2006
+# Bug fixes November 28, 2006
+# steve@nist.gov
+
+
+DATA=${HEVROOT}/savg/etc/hev-blankwalls/data
+img=${DATA}/1280x1024Black.png
+
+if [ ! -f $img ]
+then
+    echo "$img file not found"
+    exit
+fi
+
+for DISPLAY in ":0.3" ":0.2" ":0.1"
+do
+        echo "Blanking" $DISPLAY
+	sleep 1
+	hev-imageDisplay --noborder -geometry +0+0 $img &
+	sleep 1
+done
+
+echo "Press Enter to exit displays 0.1 and 0.2"
+read x
+
+
+killall -9 hev-imageDisplay

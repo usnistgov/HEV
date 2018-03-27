@@ -1,0 +1,111 @@
+Group {
+  DataVariance UNSPECIFIED
+  name "/var/tmp/osgOptimizeB.28755.osg"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  StateSet {
+    DataVariance UNSPECIFIED
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+    GL_LIGHTING PROTECTED|OFF
+  }
+  num_children 1
+  Group {
+    DataVariance STATIC
+    name "foo.savg"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    num_children 1
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 14
+        {
+          DrawArrays LINE_STRIP 0 2
+          DrawArrays LINE_STRIP 2 2
+          DrawArrays LINE_STRIP 4 2
+          DrawArrays LINE_STRIP 6 2
+          DrawArrays LINE_STRIP 8 2
+          DrawArrays LINE_STRIP 10 2
+          DrawArrays LINE_STRIP 12 2
+          DrawArrays LINE_STRIP 14 2
+          DrawArrays LINE_STRIP 16 2
+          DrawArrays LINE_STRIP 18 2
+          DrawArrays LINE_STRIP 20 2
+          DrawArrays LINE_STRIP 22 2
+          DrawArrays LINE_STRIP 24 2
+          DrawArrays LINE_STRIP 26 2
+        }
+        VertexArray Vec3Array 28
+        {
+          -1 0.1 0
+          1 0.1 0
+          0 0.1 1
+          0 0.1 -1
+          -1 0.2 0
+          1 0.2 0
+          0 0.2 1
+          0 0.2 -1
+          -1 0.3 0
+          1 0.3 0
+          0 0.3 1
+          0 0.3 -1
+          -1 0.4 0
+          1 0.4 0
+          0 0.4 1
+          0 0.4 -1
+          -1 0.6 0
+          1 0.6 0
+          0 0.6 1
+          0 0.6 -1
+          -1 0.8 0
+          1 0.8 0
+          0 0.8 1
+          0 0.8 -1
+          -1 1 0
+          1 1 0
+          0 1 1
+          0 1 -1
+        }
+        ColorBinding PER_VERTEX
+        ColorArray Vec4Array 28
+        {
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+          0.7 0.7 0.7 1
+        }
+      }
+    }
+  }
+}

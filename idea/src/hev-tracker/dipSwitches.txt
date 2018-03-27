@@ -1,0 +1,11 @@
+Ascension Flock Of Birds DIP Switches as of 3/6/2015 
+
+1 = on
+0 = off
+
+Shelf  Purpose   shm name    DIP                  Address
+
+Top    Head      head        1 0 1 0   0 1 0 0     2
+Middle Wand      wand        1 0 1 0   0 1 1 0     3
+Bottom Hand      hand        1 0 1 0   1 0 0 0     4
+

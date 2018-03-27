@@ -1,0 +1,69 @@
+.TH hev-buildFDSGeom 1
+.SH NAME
+hev-buildFDSGeom - create a SAVG (default) or OSG format model based on input from an FDS input file
+
+.SH SYNOPSIS
+.B hev-buildFDSGeom
+infile.fds mainoutfile.(savg/osg) [-wireframe -w] [-snaptogrid -s] [-displaymeshoutline -o] [-displaymeshsides -ms] [-displaymeshfull -mf] [-displayholes -holes] [-wireframevents -vw] [-solidvents -vs] [-devices -d] [-osgformat -osg] [-separate directory] [-help -h]
+
+.SH OPTIONS
+.PP
+
+.TP
+.B -wireframe -w
+specifies that instead of showing up as solid faces, all geometry will show up as wireframe models
+
+.TP
+.B -snaptogrid -s
+specifies that all geometry will snap to the grid defined in the input file before displaying
+
+.TP
+.B -displaymeshoutline -o
+specifies that a wireframe box will be displayed to indicate the bounds defined in the input file
+
+.TP
+.B -displaymeshsides -ms
+specifies that each side of the box bounding the model as defined in the input file will be displayed as a wireframe grid
+
+.TP
+.B -displaymeshfull -mf
+specifies that a full wireframe grid will be displayed to indicated the bounds and interval of the grid defined in the input file
+
+.TP
+.B -displayholes -holes
+specifies that holes in the geometry defined in the input file show up as green wireframe boxes
+
+.TP
+.B -wireframevents -vw
+specifies that vents show up as wireframe models
+
+.TP
+.B -solidvents -vs
+specifies that vents show up as solid models
+
+.TP
+.B -devices -d
+specifies that devices show up as small solid spheres
+
+.TP
+.B -osgformat -osg
+specifies that information for the model files is printed out in OSG format rather than the default, SAVG format
+
+.TP
+.B -seperate directory
+specifies that the geometry in the input file will be split based on "!object name" placement in the input file, and placed in separate SAVG or OSG format files in the specified directory
+.br
+.B note:
+components such as the grid, devices, and vents are put into the main output file, as are geometry defined before any "!object name" lines
+.br
+.B example:
+placement of "!object chair" in FDS input file is read as a comment and ignored unless -separate is specified, in which case all geometry following this line until the presence of another "!object name" line is put into a file in the specified separate directory called "chair.savg" or "chair.osg"
+
+.SH AUTHOR
+Joseph Owen
+.br
+NIST Scientific Applications and Visualization Group
+.br
+July 2009
+.br
+http://www.nist.gov/mcsd/savg/

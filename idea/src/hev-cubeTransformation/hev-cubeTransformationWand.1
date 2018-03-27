@@ -1,0 +1,129 @@
+.TH hev-cubeTransformationWand 1 "July 25, 2012"
+.SH NAME
+
+hev-cubeTransformationWand
+
+.SH SYNOPSIS
+
+\fBhev-cubeTransformationWand\fR [ --shm shm ] [ -dcs nodeName ] [ --worldWandShm wandShm ] 
+[--buttonShm buttonShmName] [--selectorShm selectorShmName] [--selectorStr
+string] [ --noEscape ] [ --xyz x y z ] [ --hpr h p r ] [ --scale xs ys zs ] [ --extent file
+] [ [ --translate ] [--rotate ] | [ --scale ] [ --uniformscale ] ]
+
+.SH DESCRIPTION
+
+\fBhev-cubeTransformationWand\fR is a GUI that writes a transformation
+matrix (16 doubles in osg::Matrix order) in world coordinates to either DTK
+shared memory and/or an iris::MatrixTransform node using the IRIS MATRIX
+command.  It will hopefully facilitate the manipulation of an object in the
+virtual environment when running in an immersive environment.
+
+.P
+ \fBhev-cubeTransformationWand\fR uses IRIS control commands to display a
+cube under the world node to provide visual feedback.  The standard output
+of \fBhev-cubeTransformationWand\fR must be redirected to
+$IRIS_CONTROL_FIFO.
+
+.P
+A GUI with radio buttons us used to specify whether the cube's position, orientation or
+scale will be modified.
+
+.P
+The cube is modified by moving the wand into the cube and pressing and
+holding the specified button.
+
+.SH BUGS
+This program is still under development. There are known issues with scaling, both
+uniform and & non-uniform. It hasn't been tested yet with initial scale != 1,1,1
+and initial translation != 0,0,0.
+
+.SH OPTIONS
+
+.IP "\fIshm\fR"
+specifies the dtk shared memory segment to use. If not specified, shared
+memory is not used.
+
+.IP "\fIdcs\fR"
+specifies the name of a node to be updatd by writing MATRIX control commands
+to standard output. If not specified, "hev-cubeTransformationWandDCS" will
+be used.
+
+.IP " \fI--worldWandShm\fR"
+specifies the name of a shared memory file containing the wand position in
+world coordinates.  If not specified "idea/worldOffsetWand" will be used. Note that
+"idea/worldOffsetWand" is automatically created by irisfly.
+
+.IP "buttonShm
+specifies \fIbuttonShmName\fR, the name of a "button" shared memory file,
+one byte in size, that is used to indicate the cube should be moved using
+the wand.  If not specified "idea/buttons/left" will be used. Note that
+"idea/buttons/left" is automatically created by irisfly.
+
+.IP "selectorShm
+specifies \fIselectorShmName\fR, the name of a shared memory file that
+contains the name of the currently selected application. Applications pass
+\fIselectorShmName\fR to an iris::ShmString object to determine if it's
+"their turn" to read buttons and generally act like the active application.
+It's up to the application developer to provide the infrastructure, perhaps
+in a MCP file, to set this shared memory to the correct value. If not
+specified, "idea/selector" will be used. This shared memory file needn't
+exist.  Note that "idea/selector" is automatically created by irisfly.
+
+.IP "selectorStr
+specifies that \fIstring\fR, the value of a std::string, should match the
+std::string contained in \fIselectorShmName\fR to indicate that it's
+\fBhev-clipperControl\fR's "turn".  The default value is "cube".
+
+.IP "noescape
+if supplied, specifies that the GUI can't be killed by pressing the window
+manager's close button, or by pressing escape in the GUI window.
+
+.IP "\fIx y z\fR 
+species the initial x, y and z values to use.  The default is 0, 0, 0.
+
+.IP "\fIh p r\fR 
+species the initial h, p, and r values to use.  The default is 0, 0, 0.
+
+.IP "\fIxs ys zs\fR 
+species the initial x, y and z scale values to use.  The default is 1, 1, 1.
+
+.IP "\fIextent\fR"
+specifies the name of an OSG loadable file whose center and extents are used
+to set --xyz and --scale
+
+.IP "\fItranslate\fR"
+specifies that \fBhev-cubeTransformationWand\fR should run with translation
+selected, and no GUI is displayed.  If --rotate is also specified, both
+wand translation and rotation will be used.
+
+.IP "\fIrotate\fR"
+specifies that \fBhev-cubeTransformationWand\fR should run with rotation
+selected, and no GUI is displayed.  If --translate is also specified, both
+wand translation and rotation will be used.
+
+.IP "\fIscale\fR"
+specifies that \fBhev-cubeTransformationWand\fR should run with scaling
+selected, and no GUI is displayed.
+
+.IP "\fIuniformscale\fR"
+specifies that \fBhev-cubeTransformationWand\fR should run with uniform scaling
+selected, and no GUI is displayed.
+
+.SH EXAMPLE
+
+cd $HEVROOT/idea/src/hev-cubeTransformation
+.br
+irisfly exampleWandDCS.mcp
+.br
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/mcsd/savg/\fR
+

@@ -1,0 +1,69 @@
+.TH hev-vtkGaussianSmooth
+.SH NAME
+hev-vtkGaussianSmooth - apply gaussian smoothing to grid data
+
+.SH SYNOPSIS
+.B hev-vtkGaussianSmooth [ options ] inFName outFName
+
+.SH DESCRIPTION
+.B hev-vtkGaussianSmooth
+Applies a convolution of the input data with a Gaussian kernel.
+The input file  must be a VTK grid file containing
+"structured points" data.  The output is in the same format.
+
+.PP
+
+.SH OPTIONS
+.TP
+.B --stddev or --sd d1 d2 d3
+Sets the standard deviation of the kernel for each axis.
+Default is 2 2 2.
+
+.TP
+.B --rfactor or --r r1 r2 r3
+Sets radius factor per axis.  Default is 1.5  for each of them.
+The radius factors determine how far out the Gaussian kernel
+will go before being clamped to zero.
+
+.TP
+.B --dimensionality or --d VALUE.
+Sets the dimensionality of this filter. This determines whether
+a one, two, or three dimensional gaussian is performed.
+Default is 3.
+
+.SH PARAMETERS
+
+.TP
+.B inFName
+Location/filename of input file.
+
+.TP
+.B outFName
+Location/filename of output file.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+  hev-vtkGaussianSmooth --dev 2 3 4 tosmooth.vtk smoothed.vtk
+
+Applies gaussian smoothing to tosmooth.vtk with deviations of 2 3 and 4,
+radius factors of 1.5 1.5 and 1.5. Sets the dimensionality to 3 and saves
+output in smoothed.vtk.
+
+
+.SH SEE ALSO
+
+vtkUtilities, hev-vtkSmoothMesh
+
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+June 19th 2012

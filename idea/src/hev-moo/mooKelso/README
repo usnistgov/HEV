@@ -1,0 +1,17 @@
+This is John Kelso's original moo prototype
+
+April 19, 2011
+
+
+for a good time:
+
+./moo foo *.savg && irisfly  --ex foo.iris
+
+---------------------------------------------------------------
+
+As part of my development, I manually created myfoo.iris
+to learn what would need to be created by hev-moo
+
+-Steve
+ April 29, 2011
+

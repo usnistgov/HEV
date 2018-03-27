@@ -1,0 +1,142 @@
+
+
+#
+# This script executes an approximation of the tutorial at:
+#     http://teem.sourceforge.net/bane/intro/index.html
+# It is only an approximation because interfaces to
+# some of the programs have (apparently) changed since the
+# tutorial was written.
+#
+#
+# Everything is done by executing the programs that were
+# built with Teem.
+
+# Here's where to find the executables:
+BINDIR=$HEVROOT/external/teem/teem-1.6.0-src/linux.64/bin
+
+
+
+# make a .nrrd file 
+$BINDIR/unu make -h \
+  -i ./set9559-1-119.raw -t short \
+  -s 512 512 119 -sp 1 1 1 -c set9559-1-119.raw \
+  -e raw -o set9559.nhdr
+
+
+# make an image by projecting (not needed)
+$BINDIR/unu project -i set9559.nhdr -a 2 -m max -o maxZ.pgm
+
+
+
+echo
+echo Done section 1: Creating the input data file.
+echo
+
+# create the histogram volume
+$BINDIR/gkms hvol -i set9559.nhdr -o set9559-hvol.nrrd
+
+
+
+# temp exit
+exit
+
+
+# works to here?
+###############################
+#
+# Create scatter plots.
+# These images are just informational, not really needed.
+$BINDIR/gkms scat -i set9559-hvol.nrrd -o set9559-vg.pgm set9559-vh.pgm
+$BINDIR/gkms scat -g -1 -i set9559-hvol.nrrd -o set9559-vg-inv.pgm set9559-vh-inv.pgm
+
+echo
+echo Done section 2: Creating the histogram volume.
+echo
+
+
+# works to here?
+###############################
+
+
+
+# Create 1D info file
+$BINDIR/gkms info -i set9559-hvol.nrrd -one -o set9559-info.1D.nrrd
+
+# Create 2D info file
+$BINDIR/gkms info -i set9559-hvol.nrrd -o set9559-info.2D.nrrd
+
+# Create color images of info files
+# These are informational, not really needed.
+$BINDIR/gkms pvg -i set9559-info.2D.nrrd -o set9559-pvg.pgm
+$BINDIR/gkms pvg -inv -i set9559-info.2D.nrrd -o set9559-pvg2.pgm
+
+
+echo
+echo Done section 3: Creating info files.
+echo
+
+
+# works to here?
+###############################
+
+
+echo
+echo default opac:
+# Make default 1D opacity function.
+$BINDIR/gkms opac -i set9559-info.1D.nrrd -o set9559-opac.1D.nrrd
+echo 
+echo
+
+
+################
+# Make 1D opacity functions with different sigmas.
+$BINDIR/gkms opac -s 1.5 -i set9559-info.1D.nrrd -o set9559-opac.1D.s1.5.nrrd
+$BINDIR/gkms opac -s 2.39167 -i set9559-info.1D.nrrd -o set9559-opac.1D.s2.4.nrrd
+$BINDIR/gkms opac -s 4 -i set9559-info.1D.nrrd -o set9559-opac.1D.s4.nrrd
+################
+
+
+
+# Convert these nrrd opacity functions to ascii
+$BINDIR/unu save -f nrrd -e ascii -i set9559-opac.1D.nrrd -o opac.1D.asc.nrrd
+
+$BINDIR/unu save -f nrrd -e ascii -i set9559-opac.1D.s1.5.nrrd \
+  -o opac.1D.s1.5.asc.nrrd
+
+$BINDIR/unu save -f nrrd -e ascii -i set9559-opac.1D.s2.4.nrrd \
+  -o opac.1D.s2.4.asc.nrrd
+
+$BINDIR/unu save -f nrrd -e ascii -i set9559-opac.1D.s4.nrrd \
+  -o opac.1D.s4.asc.nrrd
+
+# Extract the ascii data without the header.
+tail -257 < opac.1D.asc.nrrd > opac.1D.def.dat
+tail -257 < opac.1D.s1.5.asc.nrrd > opac.1D.s1.5.dat
+tail -257 < opac.1D.s2.4.asc.nrrd > opac.1D.s2.4.dat
+tail -257 < opac.1D.s4.asc.nrrd > opac.1D.s4.dat
+
+echo
+echo Done section 4: Creating 1D opacity files.
+echo
+
+
+
+
+# Create the 2D opacity functions
+$BINDIR/gkms opac -s 1 -i set9559-info.2D.nrrd -o set9559-opac.2D.1.nrrd
+
+$BINDIR/gkms opac -s 1 -g 15 -i set9559-info.2D.nrrd -o set9559-opac.2D.2.nrrd
+
+$BINDIR/gkms opac -s 1 -g 15 -m 1 -i set9559-info.2D.nrrd \
+  -o set9559-opac.2D.2b.nrrd
+
+# Not quite sure what to do with these yet.
+
+echo
+echo Done section 5: Creating 2D opacity files.
+echo
+
+
+exit
+
+

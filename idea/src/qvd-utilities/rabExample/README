@@ -1,0 +1,41 @@
+rabSampleData - qvd-rheometerAppBuilder Sample Data
+
+May 8, 2012
+
+    gunzip *.gz
+
+    ./runall    build the example using polygonal based spheres
+
+    ./runallgpu build the example using GPU rendered spheres
+
+    ./run       used by the above
+
+
+
+April 27, 2012
+Steve
+
+
+Example using data from 20101122 and HEV/Classic
+
+
+gunzip *.gz
+
+# To build this full example, will take 10 minutes or so.
+qvd-rheometerAppBuilder vane.qvisdat octant*.qvisdat
+
+
+
+# For a quicker build using partial data
+qvd-rheometerAppBuilder vane.qvisdat
+
+or
+
+qvd-rheometerAppBuilder vane.qvisdat octant---.qvisdat
+
+
+# To retain all the intermediate files
+
+qvd-rheometerAppBuilder --noclean vane.qvisdat octant---.qvisdat
+
+

@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+
+#User must say whether the graph is directed or not: 'd' = directed
+#'u' = undirected.
+#If weighted, weight must be >0
+#No multi-graphs
+
+import networkx as nx
+import sys
+
+if(len(sys.argv)==3):
+    myFile = open(sys.argv[1], 'r')
+    if(sys.argv[2]=='d'):
+        directed = True
+    elif(sys.argv[2]=='u'):
+        directed = False
+    else:
+        print("Error: wrong input for graph type. Use 'd' for directed or 'u' for undirected.")
+        sys.exit()
+else:
+    print("Error: wrong number of arguments given")
+    sys.exit()
+lines = []
+
+for edge in myFile:
+    lines.append(tuple(edge.split()))
+
+if(directed):
+    G=nx.DiGraph()
+else:
+    G=nx.Graph()
+if(len(lines[0])==2):
+    G.add_edges_from(lines)
+elif(len(lines[0])>=3):
+     for item in lines:
+            G.add_weighted_edges_from([(item[0],item[1],float(item[2]))])
+else:
+    print("Error with input file. Incorrect number of elements per line.")
+    sys.exit()
+
+for key, value in nx.core_number(G).items():
+    print(key,value)
+
+myFile.close()

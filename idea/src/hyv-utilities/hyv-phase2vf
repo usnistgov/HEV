@@ -1,0 +1,221 @@
+#! /usr/bin/perl
+#
+# hyv-phase2vf - see usage message below
+#
+# steve@nist.gov
+#
+
+$version="20081118";
+
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hyv-phase2vf [--parallel n] [--non-zero] [--vfdivisor value] dataDir | phaseFile
+
+  Convert all *.phase files found in the data directory into an *.vf
+  (volume fraction) file needed to generate the full volume fraction plot.
+
+  --parallel n  specifies how many concurrent processes to be used convert
+                in parallel. On a 2 CPU machine, n of 2 is a good number.
+
+
+  --non-zero    Currently, the algorithm for computing volume fraction is
+                the average of the phase valuse. Phase values greater
+                than 1 are assumed to be equal 1.0.
+
+                If the --non-zero paramater is specified, the only the
+                non-zero values are included in the volume fraction
+                computation.
+
+  --vfdivisor value
+                If --vfdivisor is specified, then the value is used as the
+                divisor in the volume fraction computation. This provides an
+                alternative volume fraction algorithm.
+
+		This value is computed externally. For example, the sum of the
+		solid phases.
+
+
+
+  dataDir       is an existing directory containing the phase files.
+                The resulting vf files are written to dataDir
+		with names in the form of *.vf.
+
+  phaseFile     if a phase file is specified rather than a directory name,
+                then the single specified phase file is converted to
+                a vf file in the current directory.
+		This is probably mostly useful for debugging.
+
+
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+$nonZeroFlag=0;
+$parallel=1;
+$vfdivisor=0;
+
+GetOptions("debug"       => \$debugFlag,
+	   "non-zero"    => \$nonZeroFlag,
+	   "vfdivisor:f" => \$vfdivisor,
+           "parallel:i"  => \$parallel);
+
+usage() if (@ARGV != 1);
+
+$data= shift;
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "parallel= $parallel\n";
+    print STDERR "vfdivisor= $vfdivisor\n";
+    print STDERR "nonZeroFlag= $nonZeroFlag\n";
+    print STDERR "data= $data\n";
+}
+
+
+
+# Is the input data a single file or directory of file?
+if ( -d $data ) {
+    #print STDERR "$data is a directory\n";
+    processDirFiles();
+    #print STDERR "All Done\n";
+} else {
+    #print STDERR "$data is a file\n";
+    processSingleFile()
+
+}
+
+
+#########################
+# Process a single file #
+#########################
+
+sub processSingleFile {
+    print STDERR "Process a single phase file: $data\n";
+	
+    ($basename, $dirname, $suffix) = fileparse($data, ('.phase'));
+
+    $a=rindex($basename,"_");
+    if ($a<0) {
+	print STDERR "Phase number must be part of the file name: $basename\n";
+	usage();
+    }
+    $phaseNumber=substr($basename,$a+1);
+    if ($debugFlag) {
+	print STDERR "phaseNumber $phaseNumber\n";
+    }
+
+    $vfName=$basename.".vf";
+    if ($debugFlag) {
+	print STDERR "data= $data\n";
+	print STDERR "basename= $basename\n";
+	print STDERR "path= $path\n";
+	printf(STDERR "suffix= '%s'\n",$suffix);
+	print STDERR "vfName= $vfName\n";
+    }
+    if ($suffix eq '') {die("'$data' is not a phase file or directory\n");}
+
+    open(PHASE,"<$data") || die("Can not open file: $data\n");
+    open(VF,">$vfName") || die("Can not open file: $vfName\n");
+
+    $sum=0;
+    while (<PHASE>) {
+	@c=split(' ', $_, -1);
+	$a=$c[0];
+	if ($a > 1) {$a = 1;}
+	if ($nonZeroFlag) {
+	    #print STDERR "Use only non-zero value\n";
+	    if ($a > 0 ) {
+		$n++;
+		$sum=$sum+$a;
+	    }
+	} else {
+	    #print STDERR "Use all values\n";
+	    $n++;
+	    $sum=$sum+$a;
+	}
+    }
+
+    if ($vfdivisor != 0) {
+	$n=$vfdivisor;
+    }
+    
+    if ($n > 0) {
+	$vf=$sum/$n;
+    } else {
+	$vf=0.0;
+    }
+    #print STDERR "sum= $sum n= $n vf= $vf\n";
+    print VF "$vf\n";
+    close(VF);
+
+	
+}
+
+
+######################################
+# Process a directory of Phase files #
+######################################
+
+sub processDirFiles {
+    print STDERR "Process a directory of Phase files: $data\n";
+
+    chdir($data) || die("Can not chdir to: $data\n");
+
+    ($debugFlag) ? ($debugOption="--debug") : ($debugOption="");
+    ($nonZeroFlag) ? ($nonZeroOption="--non-zero") : ($nonZeroOption="");
+    ($vfdivisor == 0) ? ($vfdivisorOption="") : ($vfdivisorOption="--vfdivisor $vfdivisor");
+
+    $pcount=$parallel;
+    while ($phaseFile = < *.phase > ) {
+
+	$cmd="hyv-phase2vf $debugOption $nonZeroOption $vfdivisorOption $phaseFile";
+	if ($pid = fork) {
+	    # parent here
+	    #print STDERR "Parent\n";
+	    $pcount--;
+	    if ($pcount == 0) {
+		while (wait != -1) {
+		    #print STDERR "waiting\n";
+		}
+		$pcount=$parallel;
+	    }
+	} else {
+	    # child here
+	    #print STDERR "Child: $cmd\n";
+	    exec($cmd);
+	    exit 0;
+	}
+
+
+    }
+
+    while (wait != -1) {
+	#print STDERR "waiting\n";
+    }
+}
+

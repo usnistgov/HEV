@@ -1,0 +1,4 @@
+BUTTON WebUI
+  FIRST EXEC iris-server -d $HEV_IDEA_DIR/etc/iris-webui/data
+  FIRST EXEC firefox -no-remote -P RAVE "localhost:8080/index.html"
+

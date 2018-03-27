@@ -1,0 +1,10 @@
+GROUP objects
+LOAD cone cone.savg 
+ADDCHILD cone objects 
+LOAD sphere sphere.savg
+ADDCHILD sphere objects
+LOAD cube cube.savg
+ADDCHILD cube objects 
+RETURN objects 
+
+

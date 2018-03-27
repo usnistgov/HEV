@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+
+# Test Suite data directory
+TS_DATA="${HEV_IDEA_DIR}/testSuite"
+MOTH_DATA="${TS_DATA}/moth_data"
+SRC_DIR="$HR/idea/src/hev-testSuite/test_moth"
+
+# Dir that test will run from
+RUN_DIR="${HEVROOT}/test/renderTest/testCase_moth"
+
+# Convert SAVG files it IVE and copy to test suite dat dir directory
+for FILE in `\ls -C1 ${SRC_DIR}/src/SAVG/*.savg`                   # For each SAVG file in src/SAVG...
+do
+  F=${FILE##*/}                                                    # ...Get just filename
+  #DEBUG echo "convert ${FILE} to ${SRC_DIR}/src/IVE/${F%.*}.ive"
+  iris-convert ${FILE} ${SRC_DIR}/src/IVE/${F%.*}.ive              # ...Convert SAVG file to IVE and put in src/IVE
+done
+cp ${SRC_DIR}/src/IVE/*.ive ${SRC_DIR}/moth_data/                        # Copy the new IVE files to dat
+
+# make moth.iris
+
+# Vars for IRIS filenames
+MOTHIRIS="${TS_DATA}/moth.iris"
+GRIDSIRIS="${MOTH_DATA}/grids.iris"
+SIDESIRIS="${MOTH_DATA}/sides.iris"
+POINTSIRIS="${MOTH_DATA}/points.iris"
+RUNSCRIPT="${SRC_DIR}/runTestCase.sh"
+
+# Output moth.iris to source dir, then copy to test suite data dir
+#DEBUG echo "Output main IRIS file to ${MOTHIRIS}..."
+
+echo "
+###########################################################
+# Load objects and create scenegraph switch models on/off #
+###########################################################
+LOAD moth_Points ${MOTH_DATA}/points.iris
+NODEMASK moth_Points ON
+ADDCHILD moth_Points world
+
+LOAD moth_Sides ${MOTH_DATA}/sides.iris
+NODEMASK moth_Sides ON
+ADDCHILD moth_Sides world
+
+LOAD moth_Grids ${MOTH_DATA}/grids.iris
+NODEMASK moth_Grids ON
+ADDCHILD moth_Grids world
+" > ${SRC_DIR}/moth.iris
+cp ${SRC_DIR}/moth.iris ${MOTHIRIS}
+ 
+# Output top level group node for each of three IRIS files.
+# This will initialize the files as well.
+echo "GROUP moth_Grids" > ${SRC_DIR}/moth_data/grids.iris
+echo "GROUP moth_Sides" > ${SRC_DIR}/moth_data/sides.iris
+echo "GROUP moth_Points" > ${SRC_DIR}/moth_data/points.iris
+
+# For each index, write a node to each IRIS file.
+for INDEX in 0.0 0.2 0.4 0.5 0.7 0.8 1.0 1.2 1.4 1.5 1.7 1.8 2.0 2.2 2.4 2.5 2.7 2.8 3.0 3.2 3.4 3.5 3.7 3.8 4.0
+do
+
+# Girds IRIS file
+echo "
+LOAD moth-${INDEX}_Grid ${MOTH_DATA}/${INDEX}_Grid.ive
+NODEMASK moth-${INDEX}_Grid OFF
+ADDCHILD moth-${INDEX}_Grid moth_Grids
+" >>  ${SRC_DIR}/moth_data/grids.iris
+
+# Sides IRIS file
+echo "
+LOAD moth-${INDEX}_Sides ${MOTH_DATA}/${INDEX}_Sides.ive
+NODEMASK moth-${INDEX}_Sides OFF
+ADDCHILD moth-${INDEX}_Sides moth_Sides
+" >>  ${SRC_DIR}/moth_data/sides.iris
+
+# Points IRIS file
+echo "
+LOAD moth-${INDEX} ${MOTH_DATA}/${INDEX}.ive
+NODEMASK moth-${INDEX} OFF
+ADDCHILD moth-${INDEX} moth_Points
+" >> ${SRC_DIR}/moth_data/points.iris
+
+done
+echo "RETURN moth_Grids" >> ${SRC_DIR}/moth_data/grids.iris
+echo "RETURN moth_Sides" >> ${SRC_DIR}/moth_data/sides.iris
+echo "RETURN moth_Points" >> ${SRC_DIR}/moth_data/points.iris
+
+# Copy data to central test suite data directory.
+# This is done in GNUmakefile, but do it in case one runs 
+# this without running make
+if [ -d "${MOTH_DATA}" ]
+then 
+  cp ${SRC_DIR}/moth_data/* ${MOTH_DATA}
+else
+  mkdir ${MOTH_DATA}
+  cp ${SRC_DIR}/moth_data/* ${MOTH_DATA}
+fi
+
+echo "
+#! /bin/bash              
+
+# runTestCase.sh
+# June 17, 2015 
+# Steve Satterfield
+
+LOG=/tmp/\$(basename \$0 .sh)_\${USER}_\$$.log
+TC=\$( basename \$(pwd) )
+
+export OSG_FILE_PATH=\${OSG_FILE_PATH}:\${HEV_IDEA_DIR}/testSuite:\${HEV_IDEA_DIR}/testSuite/moth_data
+export PATH=\${HEVROOT}/test/renderTest/bin:\${PATH}
+
+
+# Remove previous frameGrabber images to ensure we are later testing
+# against newly created images
+rm -f /tmp/frameGrabber-\${USER}*
+
+
+# Generate new images
+irisfly  --background 1 1 1  --ex moth.iris  moth.timeline.iris  >  \$LOG 2>&1 #desktopWindowTrait512.iris
+
+# Compare new images against base line
+exitCode=0
+
+pamCount=\$(ls -1 baseLine_*.pam | wc -l)
+for ((i=0; i<\${pamCount}; i++))
+do
+    n=\$(printf \"%06d\" \${i})
+
+    newfile=\"/tmp/frameGrabber-\${USER}-snap-perspective-\${n}.pam\"
+    basefile=\"baseLine_\${n}.pam\"
+
+    # Do the test
+    compare-binary \${newfile} \${basefile} >>  \$LOG  2>&1
+    Dif=\$?
+    # DEBUG echo Dif = \${Dif}
+
+    # Check the result
+    if [ \${Dif} -ne 0 ]
+    then
+            echo \"\${TC} base line \${i}: FAILED (\${Dif})\"
+            echo \"   Generated file differs from base line \${i}\"
+            echo \"   Baseline: \${basefile}\"
+            echo \"   Generated: \${newfile}\"
+            exitCode=1
+    else
+            echo \"\${TC} base line \${i}: PASSED\"
+    fi
+done
+
+# Return exit code
+exit \${exitCode}" > ${RUNSCRIPT}
+
+# Copy run script to run dir (i.e. .../renderTest/testCase_<name>)
+cp ${RUNSCRIPT}  ${RUN_DIR}

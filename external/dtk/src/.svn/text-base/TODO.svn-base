@@ -1,0 +1,29 @@
+Add a configure test for glut.h and -lglut after the fltk testing so that
+the building and installing of dtk-gnomonDisplay can be skipped,
+with a glutinclude and glutlibdir options too.
+
+If a process terminates while waiting on a dtkConditional, on IRIX,
+the shared memory will be rendered unusable.  This needs fixing.
+
+Fix dtk-timeControl to show consistant time in all widgeted all the
+time, currently when it pauses the two text widgets can be off by 0.1
+seconds.
+
+write and add DSO plug-in xSimpleDisplay
+
+fix FLTK <ecsape> exit bug
+
+add MULTI_THREADED option to server in UNIX platforms .  The code is
+there it just needs the configure options.
+
+add optional configServices to service build and install
+
+organize the service, filter, and augment DSO plugins
+
+add configure option to remove the program dtk-gnomonDisplay
+do to add GL and GLUT dependence
+
+Add view/display class that is like Open Producer, but better :).
+
+
+

@@ -1,0 +1,88 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-clipperControl 1 "May, 2011" "NIST/MCSD" "MCSD HEV"
+.SH NAME
+hev-clipperControl
+- a control panel to display and manipulate pre-configured sets of clipping planes
+
+.SH SYNOPSIS
+.B "hev-clipperControl"
+.I [ --noescape ] [--clipParentNode clipParentNodeName] [--buttonShm buttonShmName] [--sceneNode sceneNodeName] [--worldMatShm worldMatShmName] [--selectorShm selectorShmName] [--selectorStr string]
+
+.SH PARAMETERS
+
+.IP noescape
+if supplied, specifies that the GUI can't be killed by pressing the window
+manager's close button, or by pressing escape in the GUI window.
+
+.IP clipParentNode
+specifies \fIclipParentNodeName\fR, the name of a DCS or MATRIX node in the IRIS scenegraph under which the clipping planes
+and glyphs will be created. If not specified, "irisflyClip" will be
+used. The node does not need to exist.
+
+.IP buttonShm
+specifies \fIbuttonShmName\fR, the name of a "button" shared memory file, one byte in size, that
+is used to indicate whether the clipping planes are "active" and placed
+under the \fIsceneNodeName\fR node or whether the clipping planes are "inactive"
+and placed under the \fIworldMatShmName\fR node. If the shared memory file's
+contents are zero, the clip planes are placed under the \fIworldMatShmName\fR
+node, otherwise they are placed under the \fIsceneNodeName\fR node.  If not
+specified "idea/buttons/left" will be used. Note that "idea/buttons/left" is
+automatically created by irisfly.
+
+.IP sceneNode
+specifies \fIsceneNodeName\fR, the name of a DCS or MATRIX node in the IRIS scenegraph under
+which \fIclipParentNodeName\fR will be loaded when "active". If not specified, "offsetWand" will be
+used. The node does not need to exist. Note that "offsetWand" is
+automatically created by irisfly.
+
+.IP worldMatShm 
+specifies \fIworldMatShmName\fR, the name of a shared memory file storing
+a matrix (16 doubles in osg::Matrix order) containing the transformation
+of \fIsceneNodeName\fR into world coordinates. If not specified, "idea/worldOffsetWand" will be
+used. The node does not need to exist. Note that "idea/worldOffsetWand" is
+automatically created by irisfly.
+
+.IP selectorShm
+specifies \fIselectorShmName\fR, the name of a shared memory file that
+contains the name of the currently selected application. Applications pass
+\fIselectorShmName\fR to an iris::ShmString object to determine if it's
+"their turn" to read buttons and generally act like the active application.
+It's up to the application developer to provide the infrastructure, perhaps
+in a MCP file, to set this shared memory to the correct value. If not
+specified, "idea/selector" will be used. This shared memory file needn't
+exist.  Note that "idea/selector" is automatically created by irisfly.
+
+.IP selectorStr
+specifies that \fIstring\fR, the value of a std::string, should match the
+std::string contained in \fIselectorShmName\fR to indicate that it's
+\fBhev-clipperControl\fR's "turn".  The default value is "clip".
+
+
+.SH DESCRIPTION
+.PP
+.I \fBhev-clipperControl\fR
+displays a GUI which allows the user to select various configurations of
+clipping planes to be loaded.  The user can alter the plane's scale by way
+of a slider, and toggle the visibility of a wireframe glyph which displays
+the clipping plane geometry.
+
+When the data in \fIbuttonShmName\fR is non-zero, by default the result of a
+left button press on the wand, the clipping planes are placed under the
+\fIsceneNodeName\fR node.  This node is typically a relative distance from
+the "wand" device, so the clipping planes follow the wand.  When the data in
+\fIbuttonShmName\fR is zero, typically when the left wand button is
+released, the offset wand's position is calculated in world coordinates, and
+the \fIworldMatShmName\fR node is set to have this transformation.  The
+effect is that the clipping planes appear to be dropped into the scene and
+will then navigate with the other data under the world node.
+
+.SH EXAMPLE
+
+irisfly --ex tape.osg clip.mcp
+
+.SH AUTHOR
+
+John Kelso, kelso@nist.gov,  NIST/ITL/MCSD
+
+

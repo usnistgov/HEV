@@ -1,0 +1,62 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-getHostInfo  1 "September 2016" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-getCentOSversion, hev-getNVdriver, hev-getNVcards, hev-getCPUcount
+
+
+.SH SYNOPSIS
+.B "hev-getCentOSversion [--help|-h] [host ...]"
+
+.br
+.B "hev-getNVdriver [--help|-h] [host ...]"
+
+.br
+.B "hev-getNVcards [--help|-h] [host ...]"
+
+.br
+.B "hev-getCPUcount [--help|-h] [host ...]"
+
+
+.SH DESCRIPTION
+.PP
+These commands are a collection utilities for getting specific pieces
+of information about one, a few or all \fBHEV\fR hosts. One or more
+host names may be specified. When no hostname sis specified, all HEV
+hosts are implied.
+
+.IP
+.B "hev-getCentOSversion"
+- CentOS version number.
+
+.br
+.B "hev-getNVdriver"
+- Nvidia driver number.
+
+.br
+.B "hev-getNVcards"
+- Nvidia graphics card model name.
+
+.br
+.B "hev-getCPUcount"
+- Number of CPUs on the specified machine.
+
+.SH NOTICE
+.PP
+Since these commands \fIssh\fR to other hosts, it will ask for a pass phrase
+for each \fIssh\fR executed, unless you have pre-loaded the ssh-agent using the
+command: \fBssh-add\fR.
+
+.SH "SEE ALSO"
+hev-hosts(1)
+
+.SH AUTHOR
+.PP
+Steven G. Satterfield
+.br
+steve@nist.gov
+.br
+NIST/ITL/ACMD/HPCVG
+
+\"  LocalWords:  hev getCentOSversion NIST getNVdriver getNVcards br fBHEV fR
+\"  LocalWords:  hostname IP CentOS Nvidia Satterfield

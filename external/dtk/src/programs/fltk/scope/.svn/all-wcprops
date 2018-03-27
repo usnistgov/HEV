@@ -1,0 +1,143 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/915/trunk/dtk/programs/fltk/scope
+END
+mainWin.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/mainWin.cpp
+END
+controls.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/controls.cpp
+END
+usage.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/usage.cpp
+END
+mainWin.h
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/mainWin.h
+END
+controls.h
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/controls.h
+END
+channel.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/channel.cpp
+END
+colorButton.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/colorButton.cpp
+END
+canvas.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/canvas.cpp
+END
+checkRates.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/checkRates.cpp
+END
+channelWidget.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/channelWidget.cpp
+END
+channel.h
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/channel.h
+END
+plot.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/plot.cpp
+END
+scope.h
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/scope.h
+END
+dtk-floatScope.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/dtk-floatScope.cpp
+END
+colorButton.h
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/colorButton.h
+END
+canvas.h
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/canvas.h
+END
+channelWidget.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/channelWidget.h
+END
+plotWidget.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/plotWidget.cpp
+END
+plot.h
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/plot.h
+END
+type.h
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/type.h
+END
+parseArgs.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/parseArgs.cpp
+END
+plotWidget.h
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/scope/plotWidget.h
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/915/trunk/dtk/programs/fltk/scope/CMakeLists.txt
+END

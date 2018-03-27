@@ -1,0 +1,86 @@
+
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt ascii   asc_10_11_12_int_neg.raw asc_10_11_12_int_neg.raw.bin.mha
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12                 asc_10_11_12_int.raw asc_10_11_12_int.raw.bin.mha
+
+
+
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt ascii   \
+                                        asc_10_11_12_int_neg.raw \
+                                        asc_10_11_12_int.raw \
+                                        outA.%05d.mha
+cmp outA.00000.mha asc_10_11_12_int_neg.raw.bin.mha
+cmp outA.00001.mha asc_10_11_12_int.raw.bin.mha
+
+
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt bin \
+                                        bin_10_11_12_int.raw \
+                                        bin_10_11_12_int_neg.raw \
+                                        bin_10_11_12_int_neg.raw \
+                                        bin_10_11_12_int.raw \
+                                        outB.%04d.mha
+cmp outB.0000.mha asc_10_11_12_int.raw.bin.mha
+cmp outB.0001.mha asc_10_11_12_int_neg.raw.bin.mha
+cmp outB.0002.mha asc_10_11_12_int_neg.raw.bin.mha
+cmp outB.0003.mha asc_10_11_12_int.raw.bin.mha
+
+
+
+echo
+echo should have some errors due to bad template C
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt ascii   \
+                                        asc_10_11_12_int_neg.raw \
+                                        asc_10_11_12_int.raw \
+                                        outC.%05s.mha
+
+echo
+echo output names reused due to bad template D
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt ascii   \
+                                        asc_10_11_12_int_neg.raw \
+                                        asc_10_11_12_int.raw \
+                                        outD.x05d.mha
+cmp outD.x05d.mha asc_10_11_12_int_neg.raw.bin.mha
+
+
+
+echo
+echo Using template with one input E
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt ascii   \
+                                        asc_10_11_12_int_neg.raw \
+                                        outE.%05d.mha
+cmp outE.%05d.mha asc_10_11_12_int_neg.raw.bin.mha
+
+
+echo
+echo should have some errors due to bad arg F
+../hev-convertDataArray --inType int32 --nDim 3 --dim 10 11 12 --inFmt ascii   --badArg \
+                                        asc_10_11_12_int_neg.raw \
+                                        outF.%05d.mha
+
+
+
+
+echo
+echo should have some errors due to bad arg G
+../hev-convertDataArray --inType int32 xxx --nDim 3 --dim 10 11 12 --inFmt ascii   \
+                                        asc_10_11_12_int_neg.raw \
+                                        asc_10_11_12_int.raw \
+                                        outG.%05d.mha
+
+echo
+echo should have some errors due to bad arg H
+../hev-convertDataArray --inType int32 --xxx --nDim 3 --dim 10 11 12 --inFmt ascii   \
+                                        asc_10_11_12_int_neg.raw \
+                                        asc_10_11_12_int.raw \
+                                        outH.%05d.mha
+
+echo
+echo should have some errors due to bad arg I
+../hev-convertDataArray --yyy --inType int32 --nDim 3 --dim 10 11 12 --inFmt ascii   \
+                                        asc_10_11_12_int_neg.raw \
+                                        asc_10_11_12_int.raw \
+                                        outI.%05d.mha
+
+
+
+
+

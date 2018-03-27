@@ -1,0 +1,35 @@
+.TH iris-saveRestorePointer 1 "February 2011"
+
+.SH NAME
+iris-saveRestorePointer
+
+.SH SYNOPSIS 
+
+.B iris-saveRestorePointer [ display ]
+
+.SH OPTIONS
+
+.TP
+display
+.br
+is the name of the X11 DISPLAY to use.  If not given, the DISPLAY envvar is
+used, and if that isn't set, NULL is used.
+
+.SH DESCRIPTION
+
+\fBiris-saveRestorePointer\fR reads the position of the X11 cursor when
+started, and moves the cursor back to this location when exiting. This is a
+simple way of moving the cursor back from one of the immersive screens to its
+initial location on the desktop.
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+ 

@@ -1,0 +1,15 @@
+2014-06-05 wng2:
+
+I have added additional functions to this library that are used by
+hev-intSlider, hev-uniformSlider, and hev-uniformRoller.
+
+The original purpose of the Utils directory was to have a place to park some
+of our more generic functions. It's was to be analogous to the iris::Utils
+library, but perhaps with functions more specific to our particular HEV
+environment.
+
+Any methods that get added to the libIdea.so also need to be added to the
+idea/Utils.h file. 
+
+At some point it would be nice to run doxygen on Utils.h.
+

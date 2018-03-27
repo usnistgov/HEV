@@ -1,0 +1,82 @@
+MatrixTransform {
+  DataVariance STATIC
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  referenceFrame RELATIVE
+  Matrix {
+    1 0 0 0
+    0 0 1 0
+    0 -1 0 0
+    0 0 0 1
+  }
+  num_children 1
+  Group {
+    DataVariance UNSPECIFIED
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    num_children 1
+    Group {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_children 1
+      Group {
+        DataVariance UNSPECIFIED
+        nodeMask 0xffffffff
+        cullingActive TRUE
+        num_children 1
+        Group {
+          DataVariance UNSPECIFIED
+          name "/var/tmp/hev-osgOptimizeB.7255.osg"
+          nodeMask 0xffffffff
+          cullingActive TRUE
+          StateSet {
+            DataVariance UNSPECIFIED
+            rendering_hint DEFAULT_BIN
+            renderBinMode INHERIT
+            GL_LIGHTING PROTECTED|OFF
+          }
+          num_children 1
+          Group {
+            DataVariance STATIC
+            name "xPlusAxis.savg"
+            nodeMask 0xffffffff
+            cullingActive TRUE
+            num_children 1
+            Geode {
+              DataVariance STATIC
+              nodeMask 0xffffffff
+              cullingActive TRUE
+              num_drawables 1
+              Geometry {
+                DataVariance STATIC
+                useDisplayList TRUE
+                useVertexBufferObjects FALSE
+                PrimitiveSets 3
+                {
+                  DrawArrays LINE_STRIP 0 2
+                  DrawArrays LINE_STRIP 2 2
+                  DrawArrays LINE_STRIP 4 2
+                }
+                VertexArray Vec3Array 6
+                {
+                  0.05 1 0
+                  -0.05 1 0
+                  0 1 -0.05
+                  0 1 0.05
+                  0 0 0
+                  0 1 0
+                }
+                ColorBinding OVERALL
+                ColorArray Vec4Array 1
+                {
+                  1 1 1 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+#
+# Some examples using hev-animatorIRIS, hev-animatorMCP and hev-animator
+# April 16, 2012
+# 
+# The examples are designed to be cut&paste to run.
+# Copy this file and ./mksamplesfiles.sh to your own empty directory.
+#
+
+##########################
+# Create some data files #
+##########################
+
+
+./mksamplefiles.sh
+
+
+#####################################################
+# Example: running hev-animator within a .iris file #
+#####################################################
+
+
+hev-animatorIRIS testme *.iv > sample.iris
+
+hev-animatorIRIS -nogeometry testme *.iv > sample_animator.iris
+
+echo 'AFTER REALIZE EXEC hev-animator frame sample_animator.iris > $IRIS_CONTROL_FIFO' > runAnimator.iris
+
+irisfly --examine sample.iris runAnimator.iris 
+
+
+
+
+
+########################################################################
+# Example: how to add hev-animator to the irisfly master control panel #
+#                                                                      #
+#         Note: This is probably the most common usage                 #
+########################################################################
+
+
+hev-animatorIRIS testme *.iv > sample.iris
+
+hev-animatorIRIS -nogeometry testme *.iv > sample_animator.iris
+
+hev-animatorMCP sample_animator.iris > animator.mcp
+
+irisfly --examine sample.iris animator.mcp
+
+
+
+##############################################################
+# Example: Combining hev-moo, hev-animator, hev-animatorIRIS #
+#          (assumes above examples have been done)           #
+##############################################################
+
+
+hev-moo --examine sample.iris tape2.osg > moo.iris
+
+irisfly --examine moo.iris animator.mcp
+
+
+#End
+
+

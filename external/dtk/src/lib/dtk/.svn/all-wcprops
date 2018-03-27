@@ -1,0 +1,407 @@
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svnroot/diverse/!svn/ver/981/trunk/dtk/lib/dtk
+END
+time.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/time.cpp
+END
+input.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/input.cpp
+END
+manager_callbackers.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/manager_callbackers.cpp
+END
+udpSocket.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/udpSocket.cpp
+END
+sharedMem_mapFile.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/sharedMem_mapFile.cpp
+END
+locator.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/locator.cpp
+END
+_private_sharedMem.h
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/_private_sharedMem.h
+END
+inCave.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/inCave.cpp
+END
+basicDisplay.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/basicDisplay.cpp
+END
+usbInput.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/usbInput.cpp
+END
+sharedMem_writeList.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/sharedMem_writeList.cpp
+END
+DSOLoader.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/DSOLoader.cpp
+END
+privateConstants.h
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/privateConstants.h
+END
+color.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/color.cpp
+END
+sharedMem_alloc.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/sharedMem_alloc.cpp
+END
+distribution.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/distribution.cpp
+END
+navList.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/navList.cpp
+END
+filterList.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/filterList.cpp
+END
+socketList.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/socketList.cpp
+END
+calibration.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/calibration.cpp
+END
+valuator.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/valuator.cpp
+END
+tcpSocket.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/tcpSocket.cpp
+END
+service.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/981/trunk/dtk/lib/dtk/service.cpp
+END
+augment.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/augment.cpp
+END
+util_getCommonTCPAddress.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/util_getCommonTCPAddress.cpp
+END
+conditional.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/conditional.cpp
+END
+segAddrList.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/segAddrList.cpp
+END
+readBuffer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/readBuffer.cpp
+END
+display.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/display.cpp
+END
+coord.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svnroot/diverse/!svn/ver/925/trunk/dtk/lib/dtk/coord.cpp
+END
+manager_load.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/manager_load.cpp
+END
+sharedMem_filter.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/sharedMem_filter.cpp
+END
+button.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/button.cpp
+END
+client.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/client.cpp
+END
+sharedMem_network.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/sharedMem_network.cpp
+END
+selector.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/selector.cpp
+END
+sharedMem_misc.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/diverse/!svn/ver/981/trunk/dtk/lib/dtk/sharedMem_misc.cpp
+END
+configure.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/915/trunk/dtk/lib/dtk/configure.cpp
+END
+sharedTime.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/sharedTime.cpp
+END
+sharedMem_create.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/sharedMem_create.cpp
+END
+vec3.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/diverse/!svn/ver/887/trunk/dtk/lib/dtk/vec3.cpp
+END
+realtime.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/realtime.cpp
+END
+matrix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/diverse/!svn/ver/925/trunk/dtk/lib/dtk/matrix.cpp
+END
+tempname.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/tempname.cpp
+END
+FLTKOptions.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/FLTKOptions.cpp
+END
+record.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/record.cpp
+END
+sharedMem_connect.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/sharedMem_connect.cpp
+END
+sharedMem_recreate.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/sharedMem_recreate.cpp
+END
+nav.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/nav.cpp
+END
+filter.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/filter.cpp
+END
+_private_socket.h
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/_private_socket.h
+END
+socket.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/socket.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/diverse/!svn/ver/915/trunk/dtk/lib/dtk/CMakeLists.txt
+END
+VRCOSharedMem.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/VRCOSharedMem.cpp
+END
+utils.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/utils.cpp
+END
+rwlock.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/rwlock.cpp
+END
+printEnv.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/diverse/!svn/ver/981/trunk/dtk/lib/dtk/printEnv.cpp
+END
+sharedMem.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/981/trunk/dtk/lib/dtk/sharedMem.cpp
+END
+manager.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/manager.cpp
+END
+base.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/base.cpp
+END
+sharedMem_rw.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/sharedMem_rw.cpp
+END
+sharedMem_destroy.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/diverse/!svn/ver/981/trunk/dtk/lib/dtk/sharedMem_destroy.cpp
+END
+splice.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/splice.cpp
+END
+dequeuer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/dequeuer.cpp
+END
+gettimeofday.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/gettimeofday.cpp
+END
+message.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/message.cpp
+END
+configService.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtk/configService.cpp
+END

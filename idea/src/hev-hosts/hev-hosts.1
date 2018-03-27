@@ -1,0 +1,71 @@
+.\" This is a comment
+.TH hev-hosts 1 "January 2015" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-hosts - Print a list of the current HEV clients
+
+.SH SYNOPSIS
+
+\fBhev-hosts\fR [--ping] [--newlist] [--all] [--up]
+.br
+\fBhev-ping\fR
+
+.SH DESCRIPTION
+.PP
+.B
+hev-hosts
+prints to \fIstdout\fR the list of HEV clients (hosts HEV is being pushed to).
+
+.PP
+.B
+hev-ping
+is a short cut for
+.B
+hev-hosts --ping --all
+
+
+
+.SH "OPTIONS"
+.TP
+.B "--newlist | -n"
+force a new list to be obtained from server.
+A list is obtained when needed and once every hour.
+
+.TP
+.B "--ping | -p"
+ping the hosts instead of printing the list.
+
+
+.TP
+.B "--all | -a"
+include the push host name in the list.
+
+.TP
+.B "--up | -u"
+ping the list and only print those that are up.
+
+
+.SH EXAMPLES
+
+.TP
+Get a list of HEV client machines:
+.IP
+\fBhev-hosts --clients\fR
+
+.TP
+Get a list of the machines currently down:
+.IP
+\fBhev-ping | grep down\fR
+
+
+.SH SEE ALSO
+\fI
+ping(1)
+\fR
+
+
+.SH AUTHOR
+
+.PP
+Steven G. Satterfield, steve@nist.gov,  NIST/ITL/ACMD/HPCVG
+
+\"  LocalWords:  hev NIST fBhev fR newlist br stdout TP IP fI

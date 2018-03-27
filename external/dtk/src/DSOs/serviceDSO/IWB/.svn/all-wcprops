@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/IWB
+END
+iwbButtons.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/IWB/iwbButtons.cpp
+END
+configure.sh
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/IWB/configure.sh
+END
+dtk-iwb.sh
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/IWB/dtk-iwb.sh
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/IWB/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/IWB/README
+END
+iwbFastrak.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/IWB/iwbFastrak.cpp
+END

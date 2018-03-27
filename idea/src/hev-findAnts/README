@@ -1,0 +1,59 @@
+
+2015/03/30
+
+hev-findAnts has a couple of new options and they required
+restructuring the scripts.
+
+The -u option searches in the user's evnironment, with any
+environment variables the user has changed. For example, if
+the user changes the PATH variable to search first in his
+directory, hev-findAnts may find commands or documentation
+in the user's directory that are not part of the current
+release. This option is check before any other option, to
+make sure it is running in the correct environment.
+
+To implement -u, I moved all of the other functionality of
+hev-findAnts to a helper called _hev-findAnts. The new
+hev-findAnts first checks for the -u option. If it is not
+found, it will run in a "clean" environment. I do this 
+using the exec -c command to run bash --norc --noprofile.
+Before bash is executed, I use the env command to pass on
+some specifiy environments to the new process. Then bash
+runs the helper, _hev-findAnts, passing through any commnd 
+line options for the helper to digest.
+
+The -c option requires a numeric argument. This will cause
+the output to be displayed in the specified number of 
+columns.
+
+I've also written some new commands, hev-checkAnts and
+hev-testAnts.
+
+hev-checkAnts starts with a log file that is known to be
+correct. the log contains a single column list of all commands,
+with full paths and group headings removed.
+
+Next, the command generates a new log file that SHOULD be 
+identical to the refernce and compares them. Any difference 
+found are reported, output to sdterr. If the differences
+are ok, i.e. offical changes since the last time it was 
+checked, the user will have the option of replacing the 
+old log with the new. If not, both logs are retained and
+the user will have to resolve the differences. Otherwise, 
+since they are identical, there is nothing to be done.
+
+I made another helper that hev-checkAnts uses called 
+hev-listAnts. It runs hev-findAnts in a single column,
+removes group headers and blank lines, strips off the 
+man page flag and prepends command name with the path. 
+I decided that this particular output format is specific
+to hev-checkAnts so hev-listAnts is not useful to the
+general public.
+
+hev-testAnts simply runs hev-findAnts with each option and
+outputs the results to stdout. The user must observe this
+output and determine if it is correct. This ensures that
+every control branch of the script is run, in case there
+is a but in a lesser used option.
+
+ 

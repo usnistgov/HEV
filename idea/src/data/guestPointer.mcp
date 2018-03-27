@@ -1,0 +1,39 @@
+MENU guestPointer
+
+RADIO
+
+BUTTON Off
+ON REMOVECHILD guestPointerGlyph offsetTree2
+
+
+BUTTON 0
+ON WAIT  hev-writeFloats -c 1 idea/tree2OffsetDistance 0.0
+ON ADDCHILD guestPointerGlyph offsetTree2
+
+
+BUTTON 1
+ON WAIT  hev-writeFloats -c 1 idea/tree2OffsetDistance 0.20
+ON ADDCHILD guestPointerGlyph offsetTree2
+
+
+BUTTON 2
+ON WAIT  hev-writeFloats -c 1 idea/tree2OffsetDistance 0.40
+ON ADDCHILD guestPointerGlyph offsetTree2
+
+BUTTON 3
+ON WAIT  hev-writeFloats -c 1 idea/tree2OffsetDistance 0.60
+ON ADDCHILD guestPointerGlyph offsetTree2
+
+BUTTON 4
+ON WAIT  hev-writeFloats -c 1 idea/tree2OffsetDistance 0.80
+ON ADDCHILD guestPointerGlyph offsetTree2
+
+BUTTON 5
+ON WAIT  hev-writeFloats -c 1 idea/tree2OffsetDistance 1.00
+ON ADDCHILD guestPointerGlyph offsetTree2
+
+END
+END
+
+
+

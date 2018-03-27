@@ -1,0 +1,347 @@
+<html>
+<header>
+<title>DTK Tutorial - Programming for Operator-in-the-loop</title>
+</header>
+
+<a href="tutor_CPP_DSO_loading.html">next</a> |
+<a href="tutor_toc.html">toc</a> |
+<a href="tutor_programming.html">prev</a>
+<hr>
+
+<h2>Programming for Operator-in-the-loop</h2>
+
+The code for this section of the DTK tutorial is in <a
+href="examples/dtk/tutorial/balanceStick/">tutorial/balanceStick</a>. 
+If DTK is not installed, install DTK first.
+
+<p>
+
+We start by running this example program. Get yourself a copy of the
+balanceStick/ directory from in the tutorial directory as described
+above.  From in that directory run:
+
+<p>
+<blockquote>
+<pre>
+% <font color=green>gmake</font>
+</pre>
+</blockquote>
+<p>
+
+This should build the program <t>balanceStick</t>.  If not make it so.
+
+<p>
+
+Now run:
+
+
+<p>
+<blockquote>
+<pre>
+% <font color=green>./demo.sh</font>
+</pre>
+</blockquote>
+<p>
+
+Move the slider just a little tinny bit and than try to balance the
+<font color=blue>blue arrow</font> so that it stays near pointing
+up.&nbsp; Ignore the <font color=red>red arrow</font>.
+
+<p>
+There are four programs (processes) running:
+
+<ul>
+
+<li><b>launcher script</b>: ./demo.sh runs the other three programs</li>
+
+<li><b>dynamics</b>: ./balanceStick solves the equations of motion in real-time</li>
+
+<li><b>slider user input</b>: dtk-floatSliders</li>
+
+<li><b>visual feedback</b>: dtk-gnomonDisplay</li>
+
+</ul>
+
+
+<hr>
+
+<h3>Real-Time Syncing Programs</h3>
+
+<p>
+
+There is one class of C++ functions, called dtkRealtime_*(), that is
+uses system interval timers to synchronize your dynamics code to wall
+clock time or "real-time".&nbsp In most cases it will do a better job
+at making your code run in a cyclic manner than using <t>sleep()</t>
+or <t>usleep()</t> since is requires less system calls per cycle and
+pauses the process for only the time remaining in a cycle.
+
+<p>
+
+The following example, dtkRealtime/stickBalance.cpp, reads input from
+the DTK shared memory file "translate", of size 1 float, and writes to
+the DTK shared memory file "stick", of size 6 floats, while being
+synchronized to real-time.&nbsp Think of "stick" as a broom stick that
+is pivoted on it's handle tip.&nbsp To keep it simple we
+keep the broom stick so it only moves in a plane.&nbsp We use the
+input from "translate" to translate the handle tip, pivot, along the
+horizontal direction and in this plane.&nbsp In other words it's a 1-D
+pendulum who's pivot point can move from side to side.&nbsp The
+starting position is inverted, or in it's unstable equilibrium
+position.
+
+<p>
+
+First we include three standard header files and the DTK header file
+and than two more DTK header files that are C++ templates.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+#include &lt;math.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;dtk.h&gt;
+#include &lt;dtk/dtkDiffEq.h&gt;
+#include &lt;dtk/dtkRK4.h&gt;
+
+// main loop run state variable
+int running = 1;
+</pre>
+</td></tr></table>
+</blockquote>
+
+Initialize the pivot acceleration and some dynamics parameters,
+and express the pendulum equation of motion as a function.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+float pivot_acceleration = 0.0f; // meters / seconds^2
+const float damping_rate = 0.1f; // 1 / seconds
+const float g = 9.8f; // meters / second^2
+const float length = 6.0f; // meters
+
+void difeq(float *xdot, const float *x, long double t)
+{
+  xdot[0] = x[1];
+  xdot[1] = - pivot_acceleration*cosf(x[0])/length +
+            g*sinf(x[0])/length - damping_rate*x[1];
+}
+</pre>
+</td></tr></table>
+</blockquote>
+
+We declare a signal catcher function that will catch Ctrl-c.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+void sig_catcher(int sig)
+{
+  printf("stickBalance caught signal %d, exiting ...\n", sig);
+  running = 0;
+}
+</pre>
+</td></tr></table>
+</blockquote>
+
+Set up main, get some variables and get shared memory.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+int main(void)
+{
+  float pivot_position[3] = { 0.0f, 0.0f, 0.0f };
+  dtkSharedMem positionShm(sizeof(float), "translate");
+  if(positionShm.isInvalid()) return 1; // error
+
+  // pivot_position[] is used to calculate pivot_acceleration using a
+  // straight forward approximation using the last three pivot_position[]
+  // values read.
+  float pivot_position[3] = { 0.0f, 0.0f, 0.0f };
+  // reset the value of the pivot_position
+  if(positionShm.write(pivot_position)) return 1; // error
+
+  // The stick as a rigid body has 6 degrees of freedom, x, y, z,
+  // heading, pitch, and roll.  In this case we just be changing x
+  // (pivot_position) and roll. The stick is at 0,0,0,0,0,0 if it is
+  // pointing straight up.
+  float x[6] = { 0.0f, 0.0f, 0.0f,  0.0f, 0.0f, 0.0f };  
+  dtkSharedMem stickShm(6*sizeof(float), "stick" , x);
+  if(stickShm.isInvalid()) return 1; // error
+</pre>
+</td></tr></table>
+</blockquote>
+
+dtkTime is used to read the system clock as a long double.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+  dtkTime time;
+  long double t = time.get();
+</pre>
+</td></tr></table>
+</blockquote>
+
+The pendulum dynamics is just in a plain and can be dynamically
+modeled with the, 1-D, roll of a 6-D rigid body (x, y, z, heading,
+pitch, roll).  This choice of variables works OK. We let <t>roll</r>
+be the two floats that will keep the roll angle and the rate of change
+of roll with respect to time.  <t>roll[0]</t> is in radians where as
+the output angles in <t>x</t> are in degrees.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+  float roll[2] = { /*roll*/ x[5]*M_PI/180,  /*roll rate*/ 0.0f };
+</pre>
+</td></tr></table>
+</blockquote>
+
+We will use the 4-th order Runge-Kutta solver that is a DTK C++
+template class object to solve the ordinary differential equations in
+<t>difeq()</t>.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+  dtkRK4 &lt;float, double&gt; rk4(difeq, 2, 0.01, t);
+</pre>
+</td></tr></table>
+</blockquote>
+
+The first dtkRK4 template parameter, float, is the type of the
+dependent dynamical variable, t, and the second dtkRK4 template parameter,
+double, is the type of the time variable, x[].
+
+<p>We set up the <t>sig_catcher()</t> function to catch a Ctrl-c or
+kill command that acts on this process.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+  signal(SIGINT, sig_catcher);
+  signal(SIGTERM, sig_catcher);
+</pre>
+</td></tr></table>
+</blockquote>
+
+We initialize the DTK interval timer wrapper that will be set to cycle
+the program at a 0.01 second period which is a 100 Hz frequency.&nbsp;
+The class-like object dtkRealtime will use less system resources than
+usleep() and give more regular time intervals.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+  dtkRealtime_init(0.01);
+</pre>
+</td></tr></table>
+</blockquote>
+
+We enter the main loop and continue until <t>running</t> is zero which will
+happen in <t>sig_catcher()</t> if Ctrl-c or like it hit.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+  // loop counter
+  u_int64_t count=0;
+
+  while(running)
+    {
+      // get input
+      if(positionShm.read(&(pivot_position[count%3])))
+        return 1; // error
+
+      if(count > 2)
+	pivot_acceleration =
+	  (pivot_position[count%3]-
+           2*pivot_position[(count-1)%2]+
+           pivot_position[(count-2)%2])/(0.01*0.01);
+
+      t = time.get();
+
+      // advance the dynamics to the current time
+      rk4.go(roll, t);
+
+      x[0] = pivot_position[count%3]; // x out
+
+      // We keep the roll between PI and -PI.
+      if(roll[0] > M_PI)
+	roll[0] -= M_PI*2;
+      else if(roll[0] < - M_PI)
+	roll[0] += M_PI*2;
+
+      // The output roll is between 180 and -180
+      x[5] = roll[0]*180/M_PI; // roll out
+
+      // write output
+      if(stickShm.write(x)) return 1; // error
+
+      count++;
+
+      // Wait until the next cycle, after the reminder of the 0.01 seconds
+      dtkRealtime_wait();
+    }
+
+  dtkRealtime_close();
+}
+</pre>
+</td></tr></table>
+</blockquote>
+
+<p>With demo.sh still running, try running:
+
+<blockquote>
+<pre>
+% <font color=green>dtk-floatScope translate stick  --scale stick 5 -180 180 &
+</font>
+</pre>
+</blockquote>
+
+<p>
+Also try running:
+
+ <blockquote>
+<pre>
+% <font color=green>dtk-floatRollers translate --update-continuous &
+</font>
+</pre>
+</blockquote>
+
+
+<h3>What's the point?</h3>
+
+The point is we have written a program to solve the physics of a
+mechanical system and run it in "real-time" with the use of very
+little system resouces (run `top' and see).&nbsp Also we can change on
+the fly the inputs and outputs into this physics by using the DTK
+shared memory as the interface between the programs.&nbsp This example
+is very simple, it has in some sense only one dynamical degree of
+freedom, but the same methods can be used to build large simulator
+systems with hundreds of degrees of freedom.&nbsp Using the methods of
+the previous two sections, one can then distribute this across
+multiple computers, changing the interconnectivity on the fly while
+programs are running.
+
+<hr>
+
+<a href="tutor_CPP_DSO_loading.html">next</a> |
+<a href="tutor_toc.html">toc</a> |
+<a href="tutor_programming.html">prev</a>
+
+

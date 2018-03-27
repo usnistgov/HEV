@@ -1,0 +1,188 @@
+#! /bin/bash
+
+# hev-LUT2plot - plot the separate R, G, B, A components of a LUT
+
+# 4/7/2011 - Modified to handle rgba greater and 1.0.
+#            When <=1.0 the Y limit is 0 to 1
+#            Othewise limit is 0 to max
+
+# 10/18/2012 added the png version as background
+
+# steve@nist.gov
+
+#version="20090204"
+#version="20090421"
+#version="20110408"
+version="20121022"
+
+
+function usage()
+{
+
+cat <<EOF
+
+Usage: hev-LUT2plot [-h] [-s float] in.lut [outImage]
+
+     in.lut     is an input LUT file
+
+     outImage   is an output png image file.
+                If not specified, the the image is displayed
+
+Version: $version
+EOF
+
+exit 1
+
+}
+
+function infile()
+{
+   inLUT=$1
+   if [ ! -f "${inLUT}" ]
+   then
+       echo "file ${inLUT} not found"
+       exit 1
+   fi
+}
+
+case $# in
+0)
+    usage
+    ;;
+*)
+    case $1 in
+    -h*|--h*)
+            usage
+	    ;;
+    esac
+    ;;
+esac
+
+case $1 in
+-s)
+     SCALE="-s $2"
+     shift
+     shift
+     ;;
+esac
+
+bgImage=/tmp/hev-LUT2plot.${USER}.$$.BG.png
+
+case $# in
+1)
+    infile $1
+    outImage=/tmp/hev-LUT2plot.${USER}.$$.png
+    trap "rm -f ${outImage} ${bgImage}" 0
+    displayFlag=1
+    ;;
+2)
+    infile $1
+    outImage=$2
+    trap "rm -f ${bgImage}" 0
+    displayFlag=0
+    ;;
+*)
+    usage
+    ;;
+esac
+
+
+#echo "inLUT= ${inLUT} outImage= ${outImage}"
+#echo "SCALE= $SCALE  bgImage= ${bgImage}" 
+#exit
+
+hev-LUT2png $SCALE ${inLUT} ${bgImage}
+
+
+#
+# Run R
+#
+
+R --no-save > /dev/null  <<EOF
+
+.libPaths("$HEVROOT/external/R/installed")
+library(png)
+ima <- readPNG("${bgImage}", native=TRUE)
+
+lut=read.table("${inLUT}")
+
+png("${outImage}",width=512,height=700)
+
+Red=lut\$V2
+Green=lut\$V3
+Blue=lut\$V4
+Alpha=lut\$V5
+
+r=rgb(1.0,0.0,0.0)
+g=rgb(0.0,1.0,0.0)
+b=rgb(0.0,0.0,1.0)
+w=rgb(1.0,1.0,1.0)
+gray=rgb(.75,.75,.75)
+
+plot.new()
+# 4 plots
+par(mfrow=c(4,1))
+
+#mar is magic, see:
+#http://research.stowers-institute.org/efg/R/Graphics/Basics/mar-oma/index.htm
+
+par(mar=c(5.1,6.1,4.1,2.1))
+
+par(bg=gray, ps=30, lab=c(5,3,7), lwd=3)
+
+
+maxred=max(Red,1)
+ylimit=c(0,maxred)
+plot(Red,   type="l", col=r, ylim=ylimit)
+  rasterImage(ima, 0,0, 255,ylimit, interpolate=TRUE)
+  par(new=TRUE)
+  plot(Red,   type="l", col=r, ylim=ylimit, lwd=8)
+  par(new=FALSE)
+
+
+maxgreen=max(Green,1)
+ylimit=c(0,maxgreen)
+plot(Green, type="l", col=g, ylim=ylimit)
+  rasterImage(ima, 0,0, 255,ylimit, interpolate=TRUE)
+  par(new=TRUE)
+  plot(Green, type="l", col=g, ylim=ylimit, lwd=8)
+  par(new=FALSE)
+
+maxblue=max(Blue,1)
+ylimit=c(0,maxblue)
+plot(Blue,  type="l", col=b, ylim=ylimit)
+  rasterImage(ima, 0,0, 255,ylimit, interpolate=TRUE)
+  par(new=TRUE)
+  plot(Blue,  type="l", col=b, ylim=ylimit, lwd=8)
+  par(new=FALSE)
+
+maxalpha=max(Alpha,1)
+ylimit=c(0,maxalpha)
+plot(Alpha, type="l", col=w, ylim=ylimit)
+  rasterImage(ima, 0,0, 255,ylimit, interpolate=TRUE)
+  par(new=TRUE)
+  plot(Alpha, type="l", col=w, ylim=ylimit, lwd=8)
+  par(new=FALSE)
+
+graphics.off()
+quit()
+
+
+
+
+EOF
+
+
+# Finish up
+
+if [ ${displayFlag} == 1 ]
+then
+    if [ -f ${outImage} ]
+    then
+         display -title hev-LUT2plot ${outImage} &
+	 sleep 1
+    else
+         echo "file ${outImage} not found" > /dev/tty
+    fi
+fi
+

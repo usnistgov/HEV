@@ -1,0 +1,17 @@
+# try to raise the window, and if that doesn't work, send a command to iris-fly to create a new one
+# command needs to be sent to the fifo so IRIS will kill the PID on exit
+# if the command uses quoted spaces for parameters, see desktop.mcp
+BUTTON nav
+  FIRST EXEC hev-navigationControl $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS --noescape > $IRIS_CONTROL_FIFO
+  FIRST WAIT irisfly-addAndShowWindow hev-navigationControl
+  ON WAIT irisfly-addAndShowWindow hev-navigationControl
+  OFF EXEC irisfly-removeAndHideWindow hev-navigationControl
+
+BUTTON status
+  FIRST EXEC $HEV_IDEA_DIR/etc/irisfly/bin/status.sh
+  FIRST WAIT irisfly-addAndShowWindow status
+  ON WAIT irisfly-addAndShowWindow status
+  OFF EXEC irisfly-removeAndHideWindow status
+
+
+

@@ -1,0 +1,2100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<toc>
+<book href="index.html" id="id5364247">
+<title>The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2</title>
+<bookinfo href="front.html">
+<title>Front Matter</title>
+</bookinfo>
+<preface href="pr01.html" id="id5364506">
+<title>About This Book</title>
+<section href="pr01.html#id5364571" id="id5364571">
+<title>What This Book Contains</title>
+</section>
+<section href="pr01.html#id5362615" id="id5362615">
+<title>How to Use This Book</title>
+</section>
+<section href="pr01.html#id5362702" id="id5362702">
+<title>What You Should Know 
+Before Reading This Book</title>
+</section>
+<section href="pr01.html#id5362734" id="id5362734">
+<title>Conventions Used in This Book</title>
+<section href="pr01.html#id5362786" id="id5362786">
+<title>Tips</title>
+</section>
+<section href="pr01.html#id5362803" id="id5362803">
+<title>Advanced Information</title>
+</section>
+</section>
+<section href="pr01.html#id5362841" id="id5362841">
+<title>Key to Scene Graph Diagrams</title>
+</section>
+<section href="pr01.html#id5362856" id="id5362856">
+<title>Suggestions for Further Reading</title>
+<figure href="pr01.html#id5362978" id="id5362978">
+<title>Figure 1. Scene Graph Symbols</title>
+</figure>
+</section>
+<section href="pr01.html#id5363022" id="id5363022">
+<title>Acknowledgments</title>
+</section>
+</preface>
+<preface href="pr02.html" id="id5363369">
+<title>Color Plates</title>
+<figure href="pr02.html#id5363380" id="id5363380">
+<title>Figure 2. Plate 1</title>
+</figure>
+<figure href="pr02.html#id5363429" id="id5363429">
+<title>Figure 3. Plate 2</title>
+</figure>
+<figure href="pr02.html#id5363454" id="id5363454">
+<title>Figure 4. Plate 3</title>
+</figure>
+<figure href="pr02.html#id5363488" id="id5363488">
+<title>Figure 5. Plate 4</title>
+</figure>
+<figure href="pr02.html#id5363535" id="id5363535">
+<title>Figure 6. Plate 5</title>
+</figure>
+<figure href="pr02.html#id5363598" id="id5363598">
+<title>Figure 7. Plate 6</title>
+</figure>
+<figure href="pr02.html#id5363632" id="id5363632">
+<title>Figure 8. Plate 7</title>
+</figure>
+<figure href="pr02.html#id5363678" id="id5363678">
+<title>Figure 9. Plate 8</title>
+</figure>
+<figure href="pr02.html#id5363705" id="id5363705">
+<title>Figure 10. Plate 9</title>
+</figure>
+<figure href="pr02.html#id5363738" id="id5363738">
+<title>Figure 11. Plate 10</title>
+</figure>
+<figure href="pr02.html#id5363786" id="id5363786">
+<title>Figure 12. Plate 11</title>
+</figure>
+<figure href="pr02.html#id5363813" id="id5363813">
+<title>Figure 13. Plate 12</title>
+</figure>
+<figure href="pr02.html#id5363838" id="id5363838">
+<title>Figure 14. Plate 13</title>
+</figure>
+<figure href="pr02.html#id5363892" id="id5363892">
+<title>Figure 15. Plate 14</title>
+</figure>
+<figure href="pr02.html#id5363920" id="id5363920">
+<title>Figure 16. Plate 15</title>
+</figure>
+<figure href="pr02.html#id5363945" id="id5363945">
+<title>Figure 17. Plate 16</title>
+</figure>
+<figure href="pr02.html#id5363971" id="id5363971">
+<title>Figure 18. Plate 17</title>
+</figure>
+<figure href="pr02.html#id5364054" id="id5364054">
+<title>Figure 19. Plate 18</title>
+</figure>
+<figure href="pr02.html#id5364082" id="id5364082">
+<title>Figure 20. Plate 19</title>
+</figure>
+<figure href="pr02.html#id5435506" id="id5435506">
+<title>Figure 21. Plate 20</title>
+</figure>
+<figure href="pr02.html#id5435562" id="id5435562">
+<title>Figure 22. Plate 21</title>
+</figure>
+<figure href="pr02.html#id5435592" id="id5435592">
+<title>Figure 23. Plate 22</title>
+</figure>
+<figure href="pr02.html#id5435623" id="id5435623">
+<title>Figure 24. Plate 23</title>
+</figure>
+<figure href="pr02.html#id5435648" id="id5435648">
+<title>Figure 25. Plate 24</title>
+</figure>
+<figure href="pr02.html#id5435693" id="id5435693">
+<title>Figure 26. Plate 25</title>
+</figure>
+<figure href="pr02.html#id5435720" id="id5435720">
+<title>Figure 27. Plate 26</title>
+</figure>
+<figure href="pr02.html#id5435748" id="id5435748">
+<title>Figure 28. Plate 27</title>
+</figure>
+<figure href="pr02.html#id5435774" id="id5435774">
+<title>Figure 29. Plate 28</title>
+</figure>
+<figure href="pr02.html#id5435821" id="id5435821">
+<title>Figure 30. Plate 29</title>
+</figure>
+<figure href="pr02.html#id5435854" id="id5435854">
+<title>Figure 31. Plate 30</title>
+</figure>
+<figure href="pr02.html#id5435881" id="id5435881">
+<title>Figure 32. Plate 31</title>
+</figure>
+<figure href="pr02.html#id5435939" id="id5435939">
+<title>Figure 33. Plate 32</title>
+</figure>
+<figure href="pr02.html#id5435966" id="id5435966">
+<title>Figure 34. Plate 33</title>
+</figure>
+<figure href="pr02.html#id5436011" id="id5436011">
+<title>Figure 35. Plate 34</title>
+</figure>
+<figure href="pr02.html#id5436036" id="id5436036">
+<title>Figure 36. Plate 35</title>
+</figure>
+<figure href="pr02.html#id5436059" id="id5436059">
+<title>Figure 37. Plate 36</title>
+</figure>
+<figure href="pr02.html#id5436086" id="id5436086">
+<title>Figure 38. Plate 37</title>
+</figure>
+<figure href="pr02.html#id5436121" id="id5436121">
+<title>Figure 39. Plate 38</title>
+</figure>
+<figure href="pr02.html#id5436166" id="id5436166">
+<title>Figure 40. Plate 39</title>
+</figure>
+<figure href="pr02.html#id5436190" id="id5436190">
+<title>Figure 41. Plate 40</title>
+</figure>
+</preface>
+<chapter href="ch01.html" id="id5436220">
+<title>Chapter 1. Overview</title>
+<section href="ch01.html#id5436297" id="id5436297">
+<title>What Is Open Inventor?</title>
+<figure href="ch01.html#id5436479" id="id5436479">
+<title>Figure 1-1. Inventor Architecture</title>
+</figure>
+</section>
+<section href="ch01.html#id5436528" id="id5436528">
+<title>Objects, not Drawings</title>
+<section href="ch01.html#id5436605" id="id5436605">
+<title>Using Database Objects in a Variety of Ways</title>
+</section>
+<section href="ch01.html#id5436644" id="id5436644">
+<title>Animation</title>
+<example href="ch01.html#id5436703" id="id5436703">
+<title>Example 1-1. File Describing a Spinning Windmill</title>
+</example>
+</section>
+</section>
+<section href="ch01.html#id5436757" id="id5436757">
+<title>How Does Open Inventor Relate to OpenGL?</title>
+</section>
+<section href="ch01.html#id5437095" id="id5437095">
+<title>The Inventor Toolkit</title>
+<section href="ch01.html#id5437250" id="id5437250">
+<title>The Scene Database</title>
+<figure href="ch01.html#id5437508" id="id5437508">
+<title>Figure 1-2. Example of a Scene Graph</title>
+</figure>
+</section>
+<section href="ch01.html#id5437528" id="id5437528">
+<title>Node Kits</title>
+</section>
+<section href="ch01.html#id5437647" id="id5437647">
+<title>Manipulators</title>
+<figure href="ch01.html#id5437707" id="id5437707">
+<title>Figure 1-3. Handle-Box Manipulator</title>
+</figure>
+</section>
+</section>
+<section href="ch01.html#id5437728" id="id5437728">
+<title>Inventor Component Library</title>
+<figure href="ch01.html#id5437904" id="id5437904">
+<title>Figure 1-4. Example of a Component: Directional Light Editor (lower right)</title>
+</figure>
+</section>
+<section href="ch01.html#id5437926" id="id5437926">
+<title>Inventor Class Tree</title>
+</section>
+<section href="ch01.html#id5438049" id="id5438049">
+<title>Extending the Toolkit</title>
+<figure href="ch01.html#id5438340" id="id5438340">
+<title>Figure 1-5. Inventor Class Tree Summary (Part 1 of 3)</title>
+</figure>
+<figure href="ch01.html#id5438358" id="id5438358">
+<title>Figure 1-6. Inventor Class Tree Summary (Part 2 of 3)</title>
+</figure>
+<figure href="ch01.html#id5438370" id="id5438370">
+<title>Figure 1-7. Inventor Class Tree Summary (Part 3 of 3)</title>
+</figure>
+</section>
+</chapter>
+<chapter href="ch02.html" id="id5438410">
+<title>Chapter 2. An Inventor Sampler</title>
+<section href="ch02.html#id5438456" id="id5438456">
+<title>&#8220;Hello, Cone&#8221;</title>
+<section href="ch02.html#id5362412" id="id5362412">
+<title>A Red Cone </title>
+<example href="ch02.html#id5362491" id="id5362491">
+<title>Example 2-1. Basic &#8220;Hello, Cone&#8221; Program</title>
+</example>
+</section>
+<section href="ch02.html#id5438872" id="id5438872">
+<title>Using Engines to Make the Cone Spin</title>
+<example href="ch02.html#id5438912" id="id5438912">
+<title>Example 2-2. &#8220;Hello, Cone&#8221; Using Engines</title>
+</example>
+</section>
+<section href="ch02.html#id5438985" id="id5438985">
+<title>Adding a Trackball Manipulator</title>
+<example href="ch02.html#id5439118" id="id5439118">
+<title>Example 2-3. &#8220;Hello, Cone&#8221; with a Trackball Manipulator</title>
+</example>
+</section>
+<section href="ch02.html#id5439161" id="id5439161">
+<title>Adding the Examiner Viewer</title>
+<example href="ch02.html#id5439255" id="id5439255">
+<title>Example 2-4. &#8220;Hello, Cone&#8221; Using the Examiner Viewer</title>
+</example>
+</section>
+</section>
+<section href="ch02.html#id5439298" id="id5439298">
+<title>Naming Conventions</title>
+</section>
+<section href="ch02.html#id5439484" id="id5439484">
+<title>Scene Basic Types</title>
+<section href="ch02.html#id5440076" id="id5440076">
+<title>Methods</title>
+</section>
+<section href="ch02.html#id5441479" id="id5441479">
+<title>Types versus Fields</title>
+</section>
+</section>
+<section href="ch02.html#id5441565" id="id5441565">
+<title>Coordinate Systems in Inventor</title>
+</section>
+<section href="ch02.html#id5441658" id="id5441658">
+<title>Include Files</title>
+</section>
+</chapter>
+<chapter href="ch03.html" id="id5441738">
+<title>Chapter 3. Nodes and Groups</title>
+<section href="ch03.html#id5441881" id="id5441881">
+<title>The Scene Database</title>
+<figure href="ch03.html#id5441932" id="id5441932">
+<title>Figure 3-1. An Inventor Database</title>
+</figure>
+</section>
+<section href="ch03.html#id5442247" id="id5442247">
+<title>Scene Graphs</title>
+</section>
+<section href="ch03.html#id5442313" id="id5442313">
+<title>Types of Nodes</title>
+<section href="ch03.html#id5442437" id="id5442437">
+<title>Creating Nodes</title>
+</section>
+<section href="ch03.html#id5442531" id="id5442531">
+<title>What's in a Node?</title>
+</section>
+<section href="ch03.html#id5442826" id="id5442826">
+<title>What Happens When You Apply an Action to a Node? (Advanced)</title>
+</section>
+<section href="ch03.html#id5443055" id="id5443055">
+<title>Shape Nodes</title>
+<figure href="ch03.html#id5443125" id="id5443125">
+<title>Figure 3-2. Shape-Node Classes</title>
+</figure>
+</section>
+<section href="ch03.html#id5443145" id="id5443145">
+<title>Property Nodes</title>
+<figure href="ch03.html#id5443578" id="id5443578">
+<title>Figure 3-3. Property-Node Classes</title>
+</figure>
+</section>
+<section href="ch03.html#id5443599" id="id5443599">
+<title>Groups</title>
+<figure href="ch03.html#id5443653" id="id5443653">
+<title>Figure 3-4. Group-Node Classes</title>
+</figure>
+</section>
+</section>
+<section href="ch03.html#id5443694" id="id5443694">
+<title>Creating Groups</title>
+<figure href="ch03.html#id5443788" id="id5443788">
+<title>Figure 3-5. Simple Group</title>
+</figure>
+<section href="ch03.html#id5443808" id="id5443808">
+<title>Ordering of Children</title>
+</section>
+<section href="ch03.html#id5443943" id="id5443943">
+<title>Why Is Order Important?</title>
+<figure href="ch03.html#id5444355" id="id5444355">
+<title>Figure 3-6. Combining Groups</title>
+</figure>
+<example href="ch03.html#id5444393" id="id5444393">
+<title>Example 3-1. Molecule.c++</title>
+</example>
+</section>
+<section href="ch03.html#id5444460" id="id5444460">
+<title>Separators</title>
+<figure href="ch03.html#id5444674" id="id5444674">
+<title>Figure 3-7. Separator Groups</title>
+</figure>
+</section>
+<section href="ch03.html#id5444763" id="id5444763">
+<title>Other Subclasses of SoGroup</title>
+<section href="ch03.html#id5444877" id="id5444877">
+<title>SoSwitch</title>
+</section>
+<section href="ch03.html#id5445033" id="id5445033">
+<title>SoLevelOfDetail</title>
+<figure href="ch03.html#id5445287" id="id5445287">
+<title>Figure 3-8. Scene Graph with Level-of-Detail Node</title>
+</figure>
+<figure href="ch03.html#id5445305" id="id5445305">
+<title>Figure 3-9. Different Levels of Detail for an Object</title>
+</figure>
+</section>
+</section>
+</section>
+<section href="ch03.html#id5445330" id="id5445330">
+<title>Shared Instancing of Nodes</title>
+<figure href="ch03.html#id5445422" id="id5445422">
+<title>Figure 3-10. Scene Graph Showing Shared Instancing of the Leg Group</title>
+</figure>
+<example href="ch03.html#id5445486" id="id5445486">
+<title>Example 3-2. Robot.c++</title>
+</example>
+<figure href="ch03.html#id5445583" id="id5445583">
+<title>Figure 3-11.   Rendered Image of the Robot</title>
+</figure>
+</section>
+<section href="ch03.html#id5445604" id="id5445604">
+<title>Paths</title>
+<figure href="ch03.html#id5445728" id="id5445728">
+<title>Figure 3-12. Path Representing the Left Foot</title>
+</figure>
+<section href="ch03.html#id5445752" id="id5445752">
+<title>Where Do Paths Come From?</title>
+</section>
+<section href="ch03.html#id5445802" id="id5445802">
+<title>What Are Paths Used For?</title>
+</section>
+</section>
+<section href="ch03.html#id5445852" id="id5445852">
+<title>Fields within a Node</title>
+<section href="ch03.html#id5446089" id="id5446089">
+<title>Why Fields? (Advanced)</title>
+</section>
+<section href="ch03.html#id5446143" id="id5446143">
+<title>Single- versus Multiple-Value Fields</title>
+</section>
+<section href="ch03.html#id5446412" id="id5446412">
+<title>Single-Value Fields: Setting and Getting Values</title>
+<section href="ch03.html#id5446475" id="id5446475">
+<title>Floats, Longs, and Shorts</title>
+</section>
+<section href="ch03.html#id5446599" id="id5446599">
+<title>Vectors</title>
+</section>
+<section href="ch03.html#id5446782" id="id5446782">
+<title>Rotations</title>
+</section>
+</section>
+<section href="ch03.html#id5446966" id="id5446966">
+<title>Multiple-Value Fields: Setting and Getting Values</title>
+</section>
+<section href="ch03.html#id5447525" id="id5447525">
+<title>Ignore Flag (Advanced)</title>
+</section>
+</section>
+<section href="ch03.html#id5447662" id="id5447662">
+<title>Override Flag (Advanced)</title>
+</section>
+<section href="ch03.html#id5447829" id="id5447829">
+<title>References and Deletion</title>
+<section href="ch03.html#id5447847" id="id5447847">
+<title>Reference Counting</title>
+<figure href="ch03.html#id5447980" id="id5447980">
+<title>Figure 3-13. Reference Counts</title>
+</figure>
+<figure href="ch03.html#id5448018" id="id5448018">
+<title>Figure 3-14. Incrementing the Reference Count</title>
+</figure>
+</section>
+<section href="ch03.html#id5448089" id="id5448089">
+<title>How Nodes Are Deleted</title>
+<figure href="ch03.html#id5448357" id="id5448357">
+<title>Figure 3-15. Decrementing the Reference Count</title>
+</figure>
+</section>
+<section href="ch03.html#id5448476" id="id5448476">
+<title>Nodes with Zero References</title>
+</section>
+<section href="ch03.html#id5448606" id="id5448606">
+<title>Summary of References and Deletion</title>
+<table href="ch03.html#id5448654" id="id5448654">
+<title>Table 3-1. References and Deletion</title>
+</table>
+</section>
+</section>
+<section href="ch03.html#id5448838" id="id5448838">
+<title>Node Types</title>
+</section>
+<section href="ch03.html#id5449189" id="id5449189">
+<title>Naming Nodes</title>
+<example href="ch03.html#id5449445" id="id5449445">
+<title>Example 3-3. Naming Nodes</title>
+</example>
+</section>
+</chapter>
+<chapter href="ch04.html" id="id5449515">
+<title>Chapter 4. Cameras and Lights</title>
+<section href="ch04.html#id5449589" id="id5449589">
+<title>Using Lights and Cameras</title>
+</section>
+<section href="ch04.html#id5449662" id="id5449662">
+<title>Cameras</title>
+<section href="ch04.html#id5449767" id="id5449767">
+<title>SoCamera</title>
+<figure href="ch04.html#id5449799" id="id5449799">
+<title>Figure 4-1. Camera-Node Classes</title>
+</figure>
+</section>
+<section href="ch04.html#id5450618" id="id5450618">
+<title>Subclasses of SoCamera</title>
+</section>
+<section href="ch04.html#id5450659" id="id5450659">
+<title>SoPerspectiveCamera</title>
+</section>
+<section href="ch04.html#id5450786" id="id5450786">
+<title>SoOrthographicCamera</title>
+<figure href="ch04.html#id5450974" id="id5450974">
+<title>Figure 4-2. View Volume and Viewing Projection for an SoPerspectiveCamera Node</title>
+</figure>
+<figure href="ch04.html#id5450998" id="id5450998">
+<title>Figure 4-3. View Volume and Viewing Projection for an SoOrthographicCamera Node</title>
+</figure>
+</section>
+<section href="ch04.html#id5451024" id="id5451024">
+<title>Mapping the Camera Aspect Ratio to the Viewport</title>
+</section>
+<section href="ch04.html#id5451333" id="id5451333">
+<title>Viewing a Scene with Different Cameras</title>
+<figure href="ch04.html#id5451401" id="id5451401">
+<title>Figure 4-4. Mapping the Camera Aspect Ratio to the Viewport</title>
+</figure>
+<figure href="ch04.html#id5451473" id="id5451473">
+<title>Figure 4-5. Scene Graph for Camera Example</title>
+</figure>
+<example href="ch04.html#id5451493" id="id5451493">
+<title>Example 4-1. Switching among Multiple Cameras</title>
+</example>
+<figure href="ch04.html#id5451539" id="id5451539">
+<title>Figure 4-6. Camera Example</title>
+</figure>
+</section>
+</section>
+<section href="ch04.html#id5451665" id="id5451665">
+<title>Lights</title>
+<section href="ch04.html#id5451891" id="id5451891">
+<title>SoLight</title>
+</section>
+<section href="ch04.html#id5452079" id="id5452079">
+<title>Subclasses of SoLight</title>
+<figure href="ch04.html#id5452123" id="id5452123">
+<title>Figure 4-7. Light-Node Classes</title>
+</figure>
+</section>
+<section href="ch04.html#id5452226" id="id5452226">
+<title>SoPointLight</title>
+</section>
+<section href="ch04.html#id5452336" id="id5452336">
+<title>SoDirectionalLight</title>
+<figure href="ch04.html#id5452394" id="id5452394">
+<title>Figure 4-8. Light Types</title>
+</figure>
+</section>
+<section href="ch04.html#id5452467" id="id5452467">
+<title>SoSpotLight</title>
+</section>
+<section href="ch04.html#id5452665" id="id5452665">
+<title>Using Multiple Lights</title>
+<figure href="ch04.html#id5452741" id="id5452741">
+<title>Figure 4-9. Fields for SoSpotLight Node</title>
+</figure>
+<example href="ch04.html#id5452790" id="id5452790">
+<title>Example 4-2. Using Different Types of Lights</title>
+</example>
+<figure href="ch04.html#id5452877" id="id5452877">
+<title>Figure 4-10. Scene Graph for Light Example</title>
+</figure>
+</section>
+</section>
+</chapter>
+<chapter href="ch05.html" id="id5452946">
+<title>Chapter 5. Shapes, Properties, and Binding</title>
+<section href="ch05.html#id5453093" id="id5453093">
+<title>Simple Shapes</title>
+</section>
+<section href="ch05.html#id5453162" id="id5453162">
+<title>Complex Shapes</title>
+<figure href="ch05.html#id5453327" id="id5453327">
+<title>Figure 5-1. Shape-Node Classes</title>
+</figure>
+<figure href="ch05.html#id5453472" id="id5453472">
+<title>Figure 5-2. Nodes Used to Create a Simple Indexed Face Set</title>
+</figure>
+<section href="ch05.html#id5453493" id="id5453493">
+<title>Face Set</title>
+<figure href="ch05.html#id5453768" id="id5453768">
+<title>Figure 5-3. Scene Graph for Face Set Example</title>
+</figure>
+<example href="ch05.html#id5453808" id="id5453808">
+<title>Example 5-1. Creating a Face Set</title>
+</example>
+</section>
+<section href="ch05.html#id5453910" id="id5453910">
+<title>Indexed Face Set</title>
+<figure href="ch05.html#id5454285" id="id5454285">
+<title>Figure 5-4. Scene Graph for Indexed Face-Set Example</title>
+</figure>
+<example href="ch05.html#id5454326" id="id5454326">
+<title>Example 5-2. Creating an Indexed Face Set</title>
+</example>
+</section>
+<section href="ch05.html#id5454432" id="id5454432">
+<title>Triangle Strip Set</title>
+<figure href="ch05.html#id5454658" id="id5454658">
+<title>Figure 5-5. Scene Graph for Triangle Strip Set Example</title>
+</figure>
+<example href="ch05.html#id5454705" id="id5454705">
+<title>Example 5-3. Creating a Triangle Strip Set</title>
+</example>
+</section>
+<section href="ch05.html#id5454796" id="id5454796">
+<title>Quad Mesh</title>
+<figure href="ch05.html#id5454895" id="id5454895">
+<title>Figure 5-6. Scene Graph for Quad Mesh Example</title>
+</figure>
+<example href="ch05.html#id5454960" id="id5454960">
+<title>Example 5-4. Creating a Quad Mesh</title>
+</example>
+</section>
+</section>
+<section href="ch05.html#id5455075" id="id5455075">
+<title>Property Nodes</title>
+<figure href="ch05.html#id5455300" id="id5455300">
+<title>Figure 5-7. Property-Node Classes</title>
+</figure>
+<section href="ch05.html#id5455324" id="id5455324">
+<title>Material Node</title>
+</section>
+<section href="ch05.html#id5455718" id="id5455718">
+<title>Draw-Style Node</title>
+</section>
+<section href="ch05.html#id5456072" id="id5456072">
+<title>Light-Model Node</title>
+</section>
+<section href="ch05.html#id5456396" id="id5456396">
+<title>Environment Node</title>
+</section>
+<section href="ch05.html#id5456833" id="id5456833">
+<title>Shape-Hints Node</title>
+</section>
+<section href="ch05.html#id5457283" id="id5457283">
+<title>Complexity Node</title>
+</section>
+<section href="ch05.html#id5457619" id="id5457619">
+<title>Units Node</title>
+</section>
+</section>
+<section href="ch05.html#id5457797" id="id5457797">
+<title>Binding Nodes</title>
+<section href="ch05.html#id5458285" id="id5458285">
+<title>Indexed Binding</title>
+</section>
+<section href="ch05.html#id5458649" id="id5458649">
+<title>Binding per Vertex</title>
+</section>
+<section href="ch05.html#id5458689" id="id5458689">
+<title>Nuances (Advanced)</title>
+</section>
+<section href="ch05.html#id5458769" id="id5458769">
+<title>Using a Material-Binding Node</title>
+<figure href="ch05.html#id5458946" id="id5458946">
+<title>Figure 5-8. Scene Graph for Material Binding Example</title>
+</figure>
+<example href="ch05.html#id5458967" id="id5458967">
+<title>Example 5-5. Using Different Material Bindings</title>
+</example>
+</section>
+<section href="ch05.html#id5459021" id="id5459021">
+<title>Normal Binding</title>
+</section>
+<section href="ch05.html#id5459136" id="id5459136">
+<title>Generating Normals Automatically</title>
+</section>
+</section>
+<section href="ch05.html#id5459311" id="id5459311">
+<title>Transformations</title>
+<figure href="ch05.html#id5459379" id="id5459379">
+<title>Figure 5-9. Cumulative Effect of Transformation Nodes</title>
+</figure>
+<section href="ch05.html#id5459417" id="id5459417">
+<title>SoTransform Node</title>
+</section>
+<section href="ch05.html#id5459751" id="id5459751">
+<title>Order of Transformations</title>
+<figure href="ch05.html#id5459854" id="id5459854">
+<title>Figure 5-10. Two Groups with Transformations in Different Order</title>
+</figure>
+<example href="ch05.html#id5459916" id="id5459916">
+<title>Example 5-6. Changing the Order of Transformations</title>
+</example>
+</section>
+</section>
+</chapter>
+<chapter href="ch06.html" id="id5460029">
+<title>Chapter 6. Text</title>
+<section href="ch06.html#id5460174" id="id5460174">
+<title>Two-Dimensional Text</title>
+<section href="ch06.html#id5460367" id="id5460367">
+<title>Font Type and Size</title>
+</section>
+<section href="ch06.html#id5460538" id="id5460538">
+<title>Using 2D Text</title>
+<figure href="ch06.html#id5460589" id="id5460589">
+<title>Figure 6-1. 2D Text Example</title>
+</figure>
+<example href="ch06.html#id5460628" id="id5460628">
+<title>Example 6-1. Using 2D Text</title>
+</example>
+</section>
+</section>
+<section href="ch06.html#id5460752" id="id5460752">
+<title>Three-Dimensional Text</title>
+<figure href="ch06.html#id5460831" id="id5460831">
+<title>Figure 6-2. Defining a Customized Profile for 3D Text</title>
+</figure>
+<section href="ch06.html#id5461001" id="id5461001">
+<title>Parts of 3D Text</title>
+</section>
+<section href="ch06.html#id5461052" id="id5461052">
+<title>Profile</title>
+<figure href="ch06.html#id5461121" id="id5461121">
+<title>Figure 6-3. 2D Plane for Drawing a Text Profile</title>
+</figure>
+<section href="ch06.html#id5461141" id="id5461141">
+<title>Linear Profiles</title>
+</section>
+<section href="ch06.html#id5461219" id="id5461219">
+<title>Curved Profiles</title>
+</section>
+<section href="ch06.html#id5461288" id="id5461288">
+<title>Linking Profiles (Advanced)</title>
+</section>
+</section>
+<section href="ch06.html#id5461414" id="id5461414">
+<title>Simple Use of 3D Text</title>
+<figure href="ch06.html#id5461487" id="id5461487">
+<title>Figure 6-4. Scene Graph for Simple 3D Text Example</title>
+</figure>
+<example href="ch06.html#id5461507" id="id5461507">
+<title>Example 6-2. Using 3D Text</title>
+</example>
+</section>
+<section href="ch06.html#id5461647" id="id5461647">
+<title>Advanced Use of 3D Text (Advanced)</title>
+<figure href="ch06.html#id5461768" id="id5461768">
+<title>Figure 6-5. Scene Graph for Advanced 3D Text Example</title>
+</figure>
+<example href="ch06.html#id5461789" id="id5461789">
+<title>Example 6-3. Creating Beveled 3D Text</title>
+</example>
+</section>
+</section>
+</chapter>
+<chapter href="ch07.html" id="id5461942">
+<title>Chapter 7. Textures</title>
+<section href="ch07.html#id5462059" id="id5462059">
+<title>Creating Textured Objects</title>
+<figure href="ch07.html#id5462084" id="id5462084">
+<title>Figure 7-1. Texture Mapping</title>
+</figure>
+<section href="ch07.html#id5462124" id="id5462124">
+<title>What Is a Texture Map?</title>
+</section>
+<section href="ch07.html#id5462191" id="id5462191">
+<title>Nodes Used for Texture Mapping</title>
+<figure href="ch07.html#id5462439" id="id5462439">
+<title>Figure 7-2. Texture Coordinates</title>
+</figure>
+</section>
+<section href="ch07.html#id5462491" id="id5462491">
+<title>Using the Defaults</title>
+<example href="ch07.html#id5462576" id="id5462576">
+<title>Example 7-1. Using the Default Texture Values</title>
+</example>
+</section>
+</section>
+<section href="ch07.html#id5462648" id="id5462648">
+<title>Key Concepts</title>
+<section href="ch07.html#id5462680" id="id5462680">
+<title>Wrapping a Texture around an Object</title>
+</section>
+<section href="ch07.html#id5453644" id="id5453644">
+<title>How a Texture Affects the Underlying Colors (Advanced)</title>
+<figure href="ch07.html#id5464070" id="id5464070">
+<title>Figure 7-3. Wrapping the Texture around the Object</title>
+</figure>
+</section>
+<section href="ch07.html#id5464276" id="id5464276">
+<title>Storing an Image (Advanced)</title>
+<section href="ch07.html#id5464360" id="id5464360">
+<title>Components of a Texture</title>
+</section>
+<section href="ch07.html#id5464504" id="id5464504">
+<title>Storing an Image in Memory</title>
+<figure href="ch07.html#id5464615" id="id5464615">
+<title>Figure 7-4. Format for Storing a One-Component Texture in Memory</title>
+</figure>
+<figure href="ch07.html#id5464677" id="id5464677">
+<title>Figure 7-5. Format for Storing a Two-Component Texture in Memory</title>
+</figure>
+<figure href="ch07.html#id5464724" id="id5464724">
+<title>Figure 7-6. Format for Storing a Three-Component Texture in Memory</title>
+</figure>
+</section>
+</section>
+</section>
+<section href="ch07.html#id5464748" id="id5464748">
+<title>SoTexture2 Node</title>
+<section href="ch07.html#id5464773" id="id5464773">
+<title>Fields of an SoTexture2 Node</title>
+</section>
+<section href="ch07.html#id5465113" id="id5465113">
+<title>Transforming a Texture Map</title>
+<figure href="ch07.html#id5465248" id="id5465248">
+<title>Figure 7-7. How the SoTexture2Transform Node Relates to the Texture Coordinates</title>
+</figure>
+<figure href="ch07.html#id5465517" id="id5465517">
+<title>Figure 7-8. Effects of Different Scale Factors on a Texture Map</title>
+</figure>
+</section>
+</section>
+<section href="ch07.html#id5465544" id="id5465544">
+<title>Mapping the Texture onto the Object</title>
+<section href="ch07.html#id5465642" id="id5465642">
+<title>Using the Default Texture Mapping</title>
+<section href="ch07.html#id5465806" id="id5465806">
+<title>SoSphere</title>
+<figure href="ch07.html#id5465848" id="id5465848">
+<title>Figure 7-9. Default Texture Mapping for SoSphere</title>
+</figure>
+</section>
+<section href="ch07.html#id5465900" id="id5465900">
+<title>SoCube</title>
+<figure href="ch07.html#id5465935" id="id5465935">
+<title>Figure 7-10. Default Texture Mapping for SoCube</title>
+</figure>
+</section>
+<section href="ch07.html#id5465956" id="id5465956">
+<title>SoCylinder</title>
+<figure href="ch07.html#id5466001" id="id5466001">
+<title>Figure 7-11. Default Texture Mapping for SoCylinder</title>
+</figure>
+</section>
+<section href="ch07.html#id5466042" id="id5466042">
+<title>SoCone</title>
+<figure href="ch07.html#id5466120" id="id5466120">
+<title>Figure 7-12. Default Texture Mapping for SoCone</title>
+</figure>
+</section>
+<section href="ch07.html#id5466141" id="id5466141">
+<title>SoNurbsSurface</title>
+<figure href="ch07.html#id5466169" id="id5466169">
+<title>Figure 7-13. Default Texture Mapping for SoNurbsSurface</title>
+</figure>
+</section>
+<section href="ch07.html#id5466211" id="id5466211">
+<title>SoText3</title>
+<figure href="ch07.html#id5466277" id="id5466277">
+<title>Figure 7-14. Default Texture Mapping for SoText3</title>
+</figure>
+</section>
+</section>
+<section href="ch07.html#id5466300" id="id5466300">
+<title>Specifying Texture Coordinates Explicitly (Advanced)</title>
+<example href="ch07.html#id5466422" id="id5466422">
+<title>Example 7-2. Specifying Texture Coordinates Explicitly</title>
+</example>
+</section>
+<section href="ch07.html#id5466515" id="id5466515">
+<title>Using a Texture-Coordinate Function</title>
+<section href="ch07.html#id5466713" id="id5466713">
+<title>SoTextureCoordinatePlane</title>
+<example href="ch07.html#id5466946" id="id5466946">
+<title>Example 7-3. Using SoTextureCoordinatePlane</title>
+</example>
+</section>
+<section href="ch07.html#id5467077" id="id5467077">
+<title>SoTextureCoordinateEnvironment</title>
+</section>
+</section>
+</section>
+</chapter>
+<chapter href="ch08.html" id="id5467254">
+<title>Chapter 8. Curves and Surfaces</title>
+<section href="ch08.html#id5467340" id="id5467340">
+<title>Overview</title>
+<section href="ch08.html#id5467364" id="id5467364">
+<title>Classes Used with NURBS Shapes</title>
+</section>
+<section href="ch08.html#id5467646" id="id5467646">
+<title>Parametric Curves</title>
+<figure href="ch08.html#id5467752" id="id5467752">
+<title>Figure 8-1. Mapping a Parametric Curve to Object Space</title>
+</figure>
+</section>
+</section>
+<section href="ch08.html#id5467779" id="id5467779">
+<title>Key Concepts</title>
+<figure href="ch08.html#id5467972" id="id5467972">
+<title>Figure 8-2. Using Control Points to Shape the Curve</title>
+</figure>
+<section href="ch08.html#id5468274" id="id5468274">
+<title>Control Points and Order</title>
+<figure href="ch08.html#id5468315" id="id5468315">
+<title>Figure 8-3. Piecewise Cubic Curve</title>
+</figure>
+</section>
+<section href="ch08.html#id5468359" id="id5468359">
+<title>Continuity of a Curve</title>
+<figure href="ch08.html#id5468582" id="id5468582">
+<title>Figure 8-4. Continuity of a Curve</title>
+</figure>
+</section>
+<section href="ch08.html#id5468622" id="id5468622">
+<title>Basis Function</title>
+<figure href="ch08.html#id5468669" id="id5468669">
+<title>Figure 8-5. Control Points Influence the Curve</title>
+</figure>
+<figure href="ch08.html#id5468765" id="id5468765">
+<title>Figure 8-6. B-Spline Basis Function</title>
+</figure>
+<section href="ch08.html#id5468809" id="id5468809">
+<title>Knot Sequence</title>
+<figure href="ch08.html#id5468904" id="id5468904">
+<title>Figure 8-7. Uniform Knot Sequence</title>
+</figure>
+</section>
+<section href="ch08.html#id5468925" id="id5468925">
+<title>Knot Multiplicity</title>
+<figure href="ch08.html#id5469073" id="id5469073">
+<title>Figure 8-8. Knot Multiplicity</title>
+</figure>
+<table href="ch08.html#id5469093" id="id5469093">
+<title>Table 8-1. Continuity and Knot Multiplicity for Cubic Curves</title>
+</table>
+</section>
+<section href="ch08.html#id5469288" id="id5469288">
+<title>Common Knot Sequences</title>
+<figure href="ch08.html#id5469488" id="id5469488">
+<title>Figure 8-9. Cubic Bezier Curve</title>
+</figure>
+</section>
+</section>
+<section href="ch08.html#id5469514" id="id5469514">
+<title>Summary of NURBS Relationships</title>
+</section>
+<section href="ch08.html#id5469661" id="id5469661">
+<title>Rational Curves</title>
+<figure href="ch08.html#id5469787" id="id5469787">
+<title>Figure 8-10. Rational Curves</title>
+</figure>
+</section>
+<section href="ch08.html#id5469828" id="id5469828">
+<title>N-U-R-B-S Spells NURBS</title>
+</section>
+</section>
+<section href="ch08.html#id5469903" id="id5469903">
+<title>Examples of NURBS Curves</title>
+<section href="ch08.html#id5469918" id="id5469918">
+<title>B-Spline Curve</title>
+<figure href="ch08.html#id5470024" id="id5470024">
+<title>Figure 8-11. Scene Graph for B-Spline Curve Example</title>
+</figure>
+<example href="ch08.html#id5470044" id="id5470044">
+<title>Example 8-1. Creating a B-Spline Curve</title>
+</example>
+</section>
+<section href="ch08.html#id5470112" id="id5470112">
+<title>Uniform B-Spline Curve Passing through Endpoints</title>
+<example href="ch08.html#id5470184" id="id5470184">
+<title>Example 8-2. Creating a Uniform B-Spline Curve</title>
+</example>
+</section>
+</section>
+<section href="ch08.html#id5470277" id="id5470277">
+<title>NURBS Surfaces</title>
+<figure href="ch08.html#id5470313" id="id5470313">
+<title>Figure 8-12. Curved Surfaces</title>
+</figure>
+<section href="ch08.html#id5470430" id="id5470430">
+<title>Bezier Surface</title>
+<figure href="ch08.html#id5470529" id="id5470529">
+<title>Figure 8-13. Scene Graph for a Bezier Surface</title>
+</figure>
+<example href="ch08.html#id5470569" id="id5470569">
+<title>Example 8-3. Bezier Surface</title>
+</example>
+</section>
+<section href="ch08.html#id5470707" id="id5470707">
+<title>Trimming NURBS Surfaces</title>
+<figure href="ch08.html#id5470949" id="id5470949">
+<title>Figure 8-14. Scene Graph for Trimmed Bezier Surface</title>
+</figure>
+<figure href="ch08.html#id5471097" id="id5471097">
+<title>Figure 8-15. Trim Curves Used in Example 8-4</title>
+</figure>
+<example href="ch08.html#id5471117" id="id5471117">
+<title>Example 8-4. Trimming a Bezier Surface</title>
+</example>
+</section>
+</section>
+<section href="ch08.html#id5471272" id="id5471272">
+<title>Suggestions for Further Reading</title>
+</section>
+</chapter>
+<chapter href="ch09.html" id="id5471313">
+<title>Chapter 9. Applying Actions</title>
+<section href="ch09.html#id5471447" id="id5471447">
+<title>Inventor Actions</title>
+<table href="ch09.html#id5471507" id="id5471507">
+<title>Table 9-1.  Using Inventor Actions</title>
+</table>
+<figure href="ch09.html#id5471869" id="id5471869">
+<title>Figure 9-1. Action Classes</title>
+</figure>
+</section>
+<section href="ch09.html#id5471894" id="id5471894">
+<title>General Model</title>
+</section>
+<section href="ch09.html#id5472126" id="id5472126">
+<title>Applying an Action</title>
+</section>
+<section href="ch09.html#id5472297" id="id5472297">
+<title>Rendering </title>
+<figure href="ch09.html#id5472554" id="id5472554">
+<title>Figure 9-2. Shared Instances of a Shape Node</title>
+</figure>
+<section href="ch09.html#id5472577" id="id5472577">
+<title>Setting the Transparency Quality</title>
+<section href="ch09.html#id5472670" id="id5472670">
+<title>Transparency Levels</title>
+</section>
+<section href="ch09.html#id5472930" id="id5472930">
+<title>Trade-offs</title>
+</section>
+</section>
+<section href="ch09.html#id5473136" id="id5473136">
+<title>Antialiasing</title>
+<section href="ch09.html#id5473200" id="id5473200">
+<title>Method 1:  Smoothing</title>
+</section>
+<section href="ch09.html#id5473268" id="id5473268">
+<title>Method 2:  Using the Accumulation Buffer</title>
+</section>
+</section>
+<section href="ch09.html#id5473380" id="id5473380">
+<title>Printing and Off-screen Rendering</title>
+<section href="ch09.html#id5473606" id="id5473606">
+<title>How to Generate a File for Printing</title>
+<example href="ch09.html#id5474005" id="id5474005">
+<title>Example 9-1. Printing</title>
+</example>
+</section>
+<section href="ch09.html#id5474119" id="id5474119">
+<title>Generating a Texture Map</title>
+<example href="ch09.html#id5474215" id="id5474215">
+<title>Example 9-2.  Generating a Texture Map</title>
+</example>
+</section>
+</section>
+<section href="ch09.html#id5474326" id="id5474326">
+<title>Caching</title>
+<section href="ch09.html#id5474581" id="id5474581">
+<title>How Caching Works</title>
+<figure href="ch09.html#id5474731" id="id5474731">
+<title>Figure 9-3. Caching a Shape</title>
+</figure>
+<figure href="ch09.html#id5474817" id="id5474817">
+<title>Figure 9-4. Caching a Shape along with a Changing Property Node</title>
+</figure>
+</section>
+<section href="ch09.html#id5474840" id="id5474840">
+<title>Trade-offs</title>
+</section>
+</section>
+<section href="ch09.html#id5474872" id="id5474872">
+<title>Culling Part of the Scene</title>
+</section>
+</section>
+<section href="ch09.html#id5475166" id="id5475166">
+<title>Calculating a Bounding Box</title>
+<section href="ch09.html#id5475246" id="id5475246">
+<title>Create an Instance of the Action</title>
+</section>
+<section href="ch09.html#id5475291" id="id5475291">
+<title>Apply the Action</title>
+</section>
+<section href="ch09.html#id5475346" id="id5475346">
+<title>Obtain Results</title>
+<example href="ch09.html#id5475613" id="id5475613">
+<title>Example 9-3.  Setting the Center Field of a Transform Node</title>
+</example>
+</section>
+</section>
+<section href="ch09.html#id5475641" id="id5475641">
+<title>Accumulating a Transformation Matrix</title>
+<section href="ch09.html#id5475758" id="id5475758">
+<title>Create an Instance of the Action</title>
+</section>
+<section href="ch09.html#id5475783" id="id5475783">
+<title>Apply the Action</title>
+</section>
+<section href="ch09.html#id5475797" id="id5475797">
+<title>Obtain Results</title>
+<figure href="ch09.html#id5475982" id="id5475982">
+<title>Figure 9-5. Applying SoGetMatrixAction to a Path</title>
+</figure>
+</section>
+</section>
+<section href="ch09.html#id5476131" id="id5476131">
+<title>Writing to a File</title>
+</section>
+<section href="ch09.html#id5476516" id="id5476516">
+<title>Searching for a Node</title>
+<section href="ch09.html#id5476570" id="id5476570">
+<title>Specify the Search Criteria</title>
+<section href="ch09.html#id5476580" id="id5476580">
+<title>Searching for a Node</title>
+</section>
+<section href="ch09.html#id5476643" id="id5476643">
+<title>Searching for a Node Type</title>
+</section>
+<section href="ch09.html#id5476725" id="id5476725">
+<title>Searching for a Name</title>
+</section>
+<section href="ch09.html#id5476755" id="id5476755">
+<title>Specify Whether to Find All Matches</title>
+</section>
+<section href="ch09.html#id5476836" id="id5476836">
+<title>Specify the Type of Traversal</title>
+</section>
+</section>
+<section href="ch09.html#id5476862" id="id5476862">
+<title>Apply the Action</title>
+</section>
+<section href="ch09.html#id5476877" id="id5476877">
+<title>Obtain the Results</title>
+</section>
+</section>
+<section href="ch09.html#id5477068" id="id5477068">
+<title>Picking</title>
+<section href="ch09.html#id5477204" id="id5477204">
+<title>Picking Style</title>
+</section>
+<section href="ch09.html#id5477294" id="id5477294">
+<title>Create an Instance of the Action</title>
+</section>
+<section href="ch09.html#id5477349" id="id5477349">
+<title>Set Parameters</title>
+<section href="ch09.html#id5477388" id="id5477388">
+<title>Specifying the Picking Ray with a Window Point</title>
+<figure href="ch09.html#id5477555" id="id5477555">
+<title>Figure 9-6. Cone Representing the Picking Ray for a Perspective Camera</title>
+</figure>
+</section>
+<section href="ch09.html#id5477580" id="id5477580">
+<title>Specifying the Picking Ray with a World-Space Ray</title>
+</section>
+<section href="ch09.html#id5477615" id="id5477615">
+<title>Picking the Closest Object </title>
+</section>
+</section>
+<section href="ch09.html#id5477661" id="id5477661">
+<title>Apply the Action</title>
+</section>
+<section href="ch09.html#id5477683" id="id5477683">
+<title>Obtain Results</title>
+<section href="ch09.html#id5477726" id="id5477726">
+<title>SoPickedPoint</title>
+<figure href="ch09.html#id5478167" id="id5478167">
+<title>Figure 9-7. Path to Picked Point and Detail List</title>
+</figure>
+</section>
+<section href="ch09.html#id5478192" id="id5478192">
+<title>Using an SoDetail</title>
+<figure href="ch09.html#id5478274" id="id5478274">
+<title>Figure 9-8. Detail Classes</title>
+</figure>
+<table href="ch09.html#id5478307" id="id5478307">
+<title>Table 9-2. Classes That Store an SoDetail</title>
+</table>
+</section>
+</section>
+<section href="ch09.html#id5478831" id="id5478831">
+<title>Using the Pick Action</title>
+<example href="ch09.html#id5478858" id="id5478858">
+<title>Example 9-4. Writing the Path to the Picked Object</title>
+</example>
+</section>
+</section>
+<section href="ch09.html#id5478905" id="id5478905">
+<title>Calling Back to the Application</title>
+<section href="ch09.html#id5479035" id="id5479035">
+<title>Create an Instance of the Action</title>
+</section>
+<section href="ch09.html#id5479060" id="id5479060">
+<title>Register Callback Functions</title>
+<section href="ch09.html#id5479074" id="id5479074">
+<title>General-Purpose Callback Functions</title>
+</section>
+<section href="ch09.html#id5479350" id="id5479350">
+<title>Primitive Generation</title>
+</section>
+</section>
+<section href="ch09.html#id5479762" id="id5479762">
+<title>Apply the Action</title>
+</section>
+<section href="ch09.html#id5479777" id="id5479777">
+<title>Using a Callback for Generated Primitives</title>
+<example href="ch09.html#id5479820" id="id5479820">
+<title>Example 9-5. Using a Triangle Callback Function</title>
+</example>
+</section>
+</section>
+</chapter>
+<chapter href="ch10.html" id="id5479888">
+<title>Chapter 10. Handling Events and Selection</title>
+<section href="ch10.html#id5480022" id="id5480022">
+<title>Overview</title>
+</section>
+<section href="ch10.html#id5480051" id="id5480051">
+<title>General Programming Model for Event Handling</title>
+<figure href="ch10.html#id5480115" id="id5480115">
+<title>Figure 10-1. Event Processing in Inventor</title>
+</figure>
+<section href="ch10.html#id5480142" id="id5480142">
+<title>Using the X Window System</title>
+</section>
+<section href="ch10.html#id5480375" id="id5480375">
+<title>Render Area</title>
+</section>
+<section href="ch10.html#id5480466" id="id5480466">
+<title>Inventor Events (SoEvent)</title>
+<figure href="ch10.html#id5480510" id="id5480510">
+<title>Figure 10-2. Event Classes</title>
+</figure>
+</section>
+<section href="ch10.html#id5480903" id="id5480903">
+<title>Scene Manager</title>
+</section>
+</section>
+<section href="ch10.html#id5480945" id="id5480945">
+<title>Inventor Event Handling</title>
+</section>
+<section href="ch10.html#id5481209" id="id5481209">
+<title>How Nodes Handle Events: SoHandleEventAction</title>
+<section href="ch10.html#id5481363" id="id5481363">
+<title>SoNode</title>
+</section>
+<section href="ch10.html#id5481381" id="id5481381">
+<title>SoGroup</title>
+</section>
+<section href="ch10.html#id5481484" id="id5481484">
+<title>SoManipulator</title>
+<section href="ch10.html#id5481600" id="id5481600">
+<title>Grabbing</title>
+</section>
+</section>
+<section href="ch10.html#id5481763" id="id5481763">
+<title>SoSelection</title>
+<figure href="ch10.html#id5481842" id="id5481842">
+<title>Figure 10-3. Inserting an SoSelection Node</title>
+</figure>
+<section href="ch10.html#id5481901" id="id5481901">
+<title>Picking</title>
+</section>
+<section href="ch10.html#id5481985" id="id5481985">
+<title>Selection Policy</title>
+</section>
+</section>
+<section href="ch10.html#id5482350" id="id5482350">
+<title>Finding the Event Handler</title>
+<figure href="ch10.html#id5482499" id="id5482499">
+<title>Figure 10-4. Scene Graph with Manipulators</title>
+</figure>
+<figure href="ch10.html#id5482598" id="id5482598">
+<title>Figure 10-5. Picking a Shape Node</title>
+</figure>
+</section>
+</section>
+<section href="ch10.html#id5482641" id="id5482641">
+<title>Using Event Callback Nodes (Advanced)</title>
+<example href="ch10.html#id5483231" id="id5483231">
+<title>Example 10-1. Using an Event Callback</title>
+</example>
+</section>
+<section href="ch10.html#id5483270" id="id5483270">
+<title>Sending Events Directly to the Application (Advanced)</title>
+<example href="ch10.html#id5483392" id="id5483392">
+<title>Example 10-2. Sending Events Directly to the Application</title>
+</example>
+</section>
+<section href="ch10.html#id5483449" id="id5483449">
+<title>Selection</title>
+<section href="ch10.html#id5483483" id="id5483483">
+<title>Managing the Selection List</title>
+<example href="ch10.html#id5483973" id="id5483973">
+<title>Example 10-3. Using a Motif-Style List to Select Objects</title>
+</example>
+<example href="ch10.html#id5484097" id="id5484097">
+<title>Example 10-4. Using the Selection List</title>
+</example>
+</section>
+<section href="ch10.html#id5484140" id="id5484140">
+<title>Highlighting Selected Objects</title>
+<figure href="ch10.html#id5484228" id="id5484228">
+<title>Figure 10-6. Highlight Classes</title>
+</figure>
+<section href="ch10.html#id5484337" id="id5484337">
+<title>How Highlighting Occurs</title>
+</section>
+<section href="ch10.html#id5484505" id="id5484505">
+<title>Custom Highlighting</title>
+</section>
+</section>
+<section href="ch10.html#id5484681" id="id5484681">
+<title>Callback Functions for Selection Changes</title>
+<example href="ch10.html#id5485132" id="id5485132">
+<title>Example 10-5. Using Selection Callback Functions</title>
+</example>
+<section href="ch10.html#id5485235" id="id5485235">
+<title>Pick Filter Callback (Advanced)</title>
+<figure href="ch10.html#id5485418" id="id5485418">
+<title>Figure 10-7. Top-Level Selection Policy (left) and Default Selection Policy (right)</title>
+</figure>
+<example href="ch10.html#id5485439" id="id5485439">
+<title>Example 10-6. Creating a Top-Level Selection Policy</title>
+</example>
+<example href="ch10.html#id5485538" id="id5485538">
+<title>Example 10-7. Picking through Manipulators</title>
+</example>
+<example href="ch10.html#id5485624" id="id5485624">
+<title>Example 10-8. Selecting Node Kits</title>
+</example>
+</section>
+</section>
+</section>
+</chapter>
+<chapter href="ch11.html" id="id5485694">
+<title>Chapter 11. File Format</title>
+<section href="ch11.html#id5485770" id="id5485770">
+<title>Writing a Scene Graph</title>
+</section>
+<section href="ch11.html#id5485835" id="id5485835">
+<title>Reading a File into the Database</title>
+</section>
+<section href="ch11.html#id5486121" id="id5486121">
+<title>File Format Syntax</title>
+<section href="ch11.html#id5486181" id="id5486181">
+<title>File Header</title>
+</section>
+<section href="ch11.html#id5486308" id="id5486308">
+<title>Writing a Node</title>
+</section>
+<section href="ch11.html#id5486377" id="id5486377">
+<title>Writing Values within a Field</title>
+</section>
+<section href="ch11.html#id5487003" id="id5487003">
+<title>Ignore Flag</title>
+</section>
+<section href="ch11.html#id5487082" id="id5487082">
+<title>Field Connections</title>
+</section>
+<section href="ch11.html#id5487158" id="id5487158">
+<title>Global Fields</title>
+</section>
+<section href="ch11.html#id5487290" id="id5487290">
+<title>Writing an Engine</title>
+</section>
+<section href="ch11.html#id5487380" id="id5487380">
+<title>Writing a Path</title>
+<figure href="ch11.html#id5487544" id="id5487544">
+<title>Figure 11-1. Adjusting Path Indices to Account for Separator Groups</title>
+</figure>
+<figure href="ch11.html#id5487688" id="id5487688">
+<title>Figure 11-2. Scene Graph for a Scene with Three Spheres</title>
+</figure>
+<example href="ch11.html#id5487736" id="id5487736">
+<title>Example 11-1. Writing a Path</title>
+</example>
+<figure href="ch11.html#id5487789" id="id5487789">
+<title>Figure 11-3. Pick Path for Violet Sphere</title>
+</figure>
+</section>
+<section href="ch11.html#id5487810" id="id5487810">
+<title>Defining and Using Shared Instances of Nodes</title>
+<figure href="ch11.html#id5487939" id="id5487939">
+<title>Figure 11-4. Shared Instances of Nodes</title>
+</figure>
+</section>
+<section href="ch11.html#id5487980" id="id5487980">
+<title>Writing a Node Kit</title>
+</section>
+<section href="ch11.html#id5488358" id="id5488358">
+<title>Including Other Files</title>
+</section>
+<section href="ch11.html#id5488592" id="id5488592">
+<title>ASCII and Binary Versions</title>
+</section>
+</section>
+<section href="ch11.html#id5488729" id="id5488729">
+<title>Reading in Extender Nodes and Engines</title>
+<section href="ch11.html#id5488786" id="id5488786">
+<title>File Format for Unknown Nodes and Engines</title>
+</section>
+<section href="ch11.html#id5488941" id="id5488941">
+<title>Alternate Representation</title>
+</section>
+</section>
+<section href="ch11.html#id5489020" id="id5489020">
+<title>Reading from a String</title>
+<example href="ch11.html#id5489074" id="id5489074">
+<title>Example 11-2. Reading from a String</title>
+</example>
+</section>
+</chapter>
+<chapter href="ch12.html" id="id5489132">
+<title>Chapter 12. Sensors</title>
+<section href="ch12.html#id5489220" id="id5489220">
+<title>Introduction to Sensors</title>
+<figure href="ch12.html#id5489306" id="id5489306">
+<title>Figure 12-1. Sensor Classes</title>
+</figure>
+<section href="ch12.html#id5489368" id="id5489368">
+<title>Sensor Queues</title>
+</section>
+<section href="ch12.html#id5489490" id="id5489490">
+<title>Key Terms</title>
+</section>
+</section>
+<section href="ch12.html#id5489558" id="id5489558">
+<title>Data Sensors</title>
+<section href="ch12.html#id5489828" id="id5489828">
+<title>General Sequence for Data Sensors</title>
+</section>
+<section href="ch12.html#id5489894" id="id5489894">
+<title>Callback Function</title>
+</section>
+<section href="ch12.html#id5490001" id="id5490001">
+<title>Priorities</title>
+</section>
+<section href="ch12.html#id5490156" id="id5490156">
+<title>Triggering a Data Sensor</title>
+</section>
+<section href="ch12.html#id5490249" id="id5490249">
+<title>Using a Field Sensor</title>
+<example href="ch12.html#id5490280" id="id5490280">
+<title>Example 12-1. Attaching a Field Sensor</title>
+</example>
+</section>
+<section href="ch12.html#id5490364" id="id5490364">
+<title>Using the Trigger Node and Field (Advanced)</title>
+<example href="ch12.html#id5490524" id="id5490524">
+<title>Example 12-2. Using the Trigger Node and Field</title>
+</example>
+</section>
+</section>
+<section href="ch12.html#id5490582" id="id5490582">
+<title>Other Delay-Queue Sensors</title>
+<section href="ch12.html#id5490632" id="id5490632">
+<title>General Sequence for One-Shot and Idle Sensors</title>
+</section>
+<section href="ch12.html#id5490760" id="id5490760">
+<title>SoOneShotSensor</title>
+</section>
+<section href="ch12.html#id5490962" id="id5490962">
+<title>SoIdleSensor</title>
+</section>
+</section>
+<section href="ch12.html#id5491039" id="id5491039">
+<title>Timer-Queue Sensors</title>
+<section href="ch12.html#id5491080" id="id5491080">
+<title>General Sequence for Timer-Queue Sensors</title>
+</section>
+<section href="ch12.html#id5491194" id="id5491194">
+<title>SoAlarmSensor</title>
+<example href="ch12.html#id5491396" id="id5491396">
+<title>Example 12-3. Using an Alarm Sensor
+
+
+</title>
+</example>
+</section>
+<section href="ch12.html#id5491444" id="id5491444">
+<title>SoTimerSensor</title>
+<example href="ch12.html#id5491658" id="id5491658">
+<title>Example 12-4. Using a Timer Sensor</title>
+</example>
+</section>
+<section href="ch12.html#id5491736" id="id5491736">
+<title>Processing the Sensor Queues (Advanced)</title>
+<figure href="ch12.html#id5491958" id="id5491958">
+<title>Figure 12-2. Triggering and Rescheduling Timers</title>
+</figure>
+</section>
+</section>
+</chapter>
+<chapter href="ch13.html" id="id5492035">
+<title>Chapter 13. Engines</title>
+<section href="ch13.html#id5492151" id="id5492151">
+<title>Introduction to Engines</title>
+<table href="ch13.html#id5492242" id="id5492242">
+<title>Table 13-1. Comparison of Sensors and Engines</title>
+</table>
+</section>
+<section href="ch13.html#id5492397" id="id5492397">
+<title>General Uses of Engines</title>
+<figure href="ch13.html#id5492530" id="id5492530">
+<title>Figure 13-1. Mechanisms Made from a Set of Link Classes</title>
+</figure>
+<figure href="ch13.html#id5492612" id="id5492612">
+<title>Figure 13-2. Objects That Use Engines for Animation and Placement</title>
+</figure>
+<figure href="ch13.html#id5492748" id="id5492748">
+<title>Figure 13-3. Anatomy of an Engine</title>
+</figure>
+</section>
+<section href="ch13.html#id5492871" id="id5492871">
+<title>Types of Engines</title>
+<figure href="ch13.html#id5493094" id="id5493094">
+<title>Figure 13-4. Engine Class Tree</title>
+</figure>
+</section>
+<section href="ch13.html#id5493141" id="id5493141">
+<title>Making Field Connections</title>
+<figure href="ch13.html#id5493403" id="id5493403">
+<title>Figure 13-5. Field-to-Field Connections</title>
+</figure>
+<section href="ch13.html#id5493493" id="id5493493">
+<title>Multiple Connections</title>
+<figure href="ch13.html#id5493554" id="id5493554">
+<title>Figure 13-6. Multiple Outputs Are Allowed</title>
+</figure>
+</section>
+<section href="ch13.html#id5493588" id="id5493588">
+<title>Field Conversion</title>
+</section>
+</section>
+<section href="ch13.html#id5493940" id="id5493940">
+<title>Reference Counting</title>
+</section>
+<section href="ch13.html#id5493966" id="id5493966">
+<title>Disabling a Connection</title>
+</section>
+<section href="ch13.html#id5494055" id="id5494055">
+<title>Updating Values</title>
+</section>
+<section href="ch13.html#id5494130" id="id5494130">
+<title>Global Fields</title>
+<example href="ch13.html#id5494401" id="id5494401">
+<title>Example 13-1. Using the Real-Time Global Field</title>
+</example>
+<figure href="ch13.html#id5494430" id="id5494430">
+<title>Figure 13-7. Scene Graph for the Digital Clock Example</title>
+</figure>
+<figure href="ch13.html#id5494480" id="id5494480">
+<title>Figure 13-8. Digital Clock That Uses the Real-Time Global Field</title>
+</figure>
+</section>
+<section href="ch13.html#id5494550" id="id5494550">
+<title>Animation Engines</title>
+<section href="ch13.html#id5494646" id="id5494646">
+<title>Elapsed-Time Engine</title>
+<figure href="ch13.html#id5494835" id="id5494835">
+<title>Figure 13-9. Scene Graph for Elapsed-Time Engine Example</title>
+</figure>
+<example href="ch13.html#id5494856" id="id5494856">
+<title>Example 13-2. Using an Elapsed-Time Engine</title>
+</example>
+</section>
+<section href="ch13.html#id5494901" id="id5494901">
+<title>One-Shot Engine</title>
+</section>
+<section href="ch13.html#id5495092" id="id5495092">
+<title>Time-Counter Engine</title>
+<figure href="ch13.html#id5495318" id="id5495318">
+<title>Figure 13-10. Scene Graph for the Time-Counter Example</title>
+</figure>
+<example href="ch13.html#id5495358" id="id5495358">
+<title>Example 13-3. Using Time-Counter Engines</title>
+</example>
+<figure href="ch13.html#id5495401" id="id5495401">
+<title>Figure 13-11. Controlling an Object's Movement Using Time-Counter Engines</title>
+</figure>
+</section>
+</section>
+<section href="ch13.html#id5495480" id="id5495480">
+<title>Gate Engine</title>
+<figure href="ch13.html#id5495716" id="id5495716">
+<title>Figure 13-12. Scene Graph for Gate Engine Example</title>
+</figure>
+<example href="ch13.html#id5495786" id="id5495786">
+<title>Example 13-4. Using a Gate Engine</title>
+</example>
+</section>
+<section href="ch13.html#id5495859" id="id5495859">
+<title>Arithmetic Engines</title>
+<section href="ch13.html#id5495930" id="id5495930">
+<title>Boolean Engine</title>
+<figure href="ch13.html#id5496006" id="id5496006">
+<title>Figure 13-13. SoBoolOperation Engine</title>
+</figure>
+<figure href="ch13.html#id5496555" id="id5496555">
+<title>Figure 13-14. Swimming Ducks Controlled by a Boolean Engine</title>
+</figure>
+<example href="ch13.html#id5496576" id="id5496576">
+<title>Example 13-5. Using a Boolean Engine</title>
+</example>
+</section>
+<section href="ch13.html#id5496678" id="id5496678">
+<title>Calculator Engine</title>
+<figure href="ch13.html#id5497234" id="id5497234">
+<title>Figure 13-15. SoCalculator Engine</title>
+</figure>
+</section>
+<section href="ch13.html#id5497448" id="id5497448">
+<title>Using the Calculator to Constrain Object Behavior</title>
+<figure href="ch13.html#id5497495" id="id5497495">
+<title>Figure 13-16. Scene Graph for Calculator Engine Example</title>
+</figure>
+<example href="ch13.html#id5497516" id="id5497516">
+<title>Example 13-6. Using a Calculator Engine</title>
+</example>
+<figure href="ch13.html#id5497577" id="id5497577">
+<title>Figure 13-17. Using a Calculator Engine to Constrain an Object's Movement</title>
+</figure>
+</section>
+</section>
+<section href="ch13.html#id5497637" id="id5497637">
+<title>Nodes Used for Animation</title>
+<section href="ch13.html#id5497764" id="id5497764">
+<title>Rotor Node</title>
+<example href="ch13.html#id5497919" id="id5497919">
+<title>Example 13-7. A Spinning Windmill Using an SoRotor Node</title>
+</example>
+<figure href="ch13.html#id5497982" id="id5497982">
+<title>Figure 13-18. Scene Graph for Rotor Node Example</title>
+</figure>
+</section>
+<section href="ch13.html#id5498078" id="id5498078">
+<title>Blinker Node</title>
+<figure href="ch13.html#id5498219" id="id5498219">
+<title>Figure 13-19. Flashing Sign Controlled by a Blinker Node</title>
+</figure>
+<example href="ch13.html#id5498236" id="id5498236">
+<title>Example 13-8. Using a Blinker Node to Make a Sign Flash</title>
+</example>
+</section>
+</section>
+</chapter>
+<chapter href="ch14.html" id="id5498283">
+<title>Chapter 14. Node Kits</title>
+<section href="ch14.html#id5498363" id="id5498363">
+<title>Why Node Kits?</title>
+</section>
+<section href="ch14.html#id5498510" id="id5498510">
+<title>Hidden Children and SoNodeKitPath</title>
+<figure href="ch14.html#id5498696" id="id5498696">
+<title>Figure 14-1. Different Types of Paths</title>
+</figure>
+</section>
+<section href="ch14.html#id5498741" id="id5498741">
+<title>Node-Kit Classes</title>
+<figure href="ch14.html#id5498785" id="id5498785">
+<title>Figure 14-2. Node-Kit Classes</title>
+</figure>
+</section>
+<section href="ch14.html#id5498839" id="id5498839">
+<title>Node-Kit Catalog</title>
+<figure href="ch14.html#id5498987" id="id5498987">
+<title>Figure 14-3. Catalog for SoShapeKit</title>
+</figure>
+<figure href="ch14.html#id5499006" id="id5499006">
+<title>Figure 14-4. Basic Version of an SoShapeKit</title>
+</figure>
+<figure href="ch14.html#id5499638" id="id5499638">
+<title>Figure 14-5. Catalog for SoAppearanceKit</title>
+</figure>
+</section>
+<section href="ch14.html#id5499659" id="id5499659">
+<title>Parts Created by Default</title>
+<figure href="ch14.html#id5499806" id="id5499806">
+<title>Figure 14-6. Creating an Instance of SoShapeKit</title>
+</figure>
+</section>
+<section href="ch14.html#id5499847" id="id5499847">
+<title>Selecting Parts and Setting Values</title>
+<figure href="ch14.html#id5500027" id="id5500027">
+<title>Figure 14-7. Adding the Material Node</title>
+</figure>
+<figure href="ch14.html#id5500080" id="id5500080">
+<title>Figure 14-8. Adding Draw-Style and Transform Nodes</title>
+</figure>
+</section>
+<section href="ch14.html#id5500183" id="id5500183">
+<title>Other Methods: getPart() and setPart()</title>
+<section href="ch14.html#id5500261" id="id5500261">
+<title>The getPart() Method</title>
+</section>
+<section href="ch14.html#id5500396" id="id5500396">
+<title>The setPart() Method</title>
+</section>
+</section>
+<section href="ch14.html#id5500536" id="id5500536">
+<title>Macros for Getting Parts</title>
+<section href="ch14.html#id5500598" id="id5500598">
+<title>The SO_GET_PART() Macro</title>
+</section>
+<section href="ch14.html#id5500692" id="id5500692">
+<title>The SO_CHECK_PART() Macro</title>
+</section>
+</section>
+<section href="ch14.html#id5500774" id="id5500774">
+<title>Specifying Part Names</title>
+<figure href="ch14.html#id5501145" id="id5501145">
+<title>Figure 14-9.   Three Node-Kit Classes for Making &#8220;Goons&#8221;</title>
+</figure>
+</section>
+<section href="ch14.html#id5501247" id="id5501247">
+<title>Creating Paths to Parts</title>
+<figure href="ch14.html#id5501497" id="id5501497">
+<title>Figure 14-10.  Obtaining the Path to a Given Part</title>
+</figure>
+<figure href="ch14.html#id5501620" id="id5501620">
+<title>Figure 14-11. Extending a Given Path to the Desired Part</title>
+</figure>
+</section>
+<section href="ch14.html#id5501642" id="id5501642">
+<title>Using List Parts</title>
+</section>
+<section href="ch14.html#id5501757" id="id5501757">
+<title>Using Separator Kits to Create 
+Motion Hierarchies</title>
+<figure href="ch14.html#id5501992" id="id5501992">
+<title>Figure 14-12. Hierarchical Motion Relationships</title>
+</figure>
+</section>
+<section href="ch14.html#id5502013" id="id5502013">
+<title>Examples</title>
+<section href="ch14.html#id5502072" id="id5502072">
+<title>Simple Use of Node Kits</title>
+<example href="ch14.html#id5502208" id="id5502208">
+<title>Example 14-1. Simple Use of Node Kits</title>
+</example>
+<figure href="ch14.html#id5502254" id="id5502254">
+<title>Figure 14-13.    Using an SoShapeKit with Engines</title>
+</figure>
+</section>
+<section href="ch14.html#id5502322" id="id5502322">
+<title>Using Node Kits with Editors</title>
+<example href="ch14.html#id5502372" id="id5502372">
+<title>Example 14-2. Using Node Kits and Editors</title>
+</example>
+<figure href="ch14.html#id5502432" id="id5502432">
+<title>Figure 14-14. Using an SoSceneKit with Directional Light and Material Editors</title>
+</figure>
+</section>
+<section href="ch14.html#id5502573" id="id5502573">
+<title>Creating a Motion Hierarchy</title>
+<figure href="ch14.html#id5502634" id="id5502634">
+<title>Figure 14-15. A Balance Scale Created with Node Kits</title>
+</figure>
+<example href="ch14.html#id5502654" id="id5502654">
+<title>Example 14-3. Using Node Kits to Create a Motion Hierarchy</title>
+</example>
+</section>
+</section>
+</chapter>
+<chapter href="ch15.html" id="id5502897">
+<title>Chapter 15. Draggers and Manipulators</title>
+<section href="ch15.html#id5502993" id="id5502993">
+<title>What Is a Dragger?</title>
+</section>
+<section href="ch15.html#id5503021" id="id5503021">
+<title>Types of Draggers</title>
+<figure href="ch15.html#id5503173" id="id5503173">
+<title>Figure 15-1. Dragger Classes</title>
+</figure>
+<table href="ch15.html#id5503253" id="id5503253">
+<title>Table 15-1. Uses of Draggers</title>
+</table>
+</section>
+<section href="ch15.html#id5503772" id="id5503772">
+<title>Manipulators versus Draggers</title>
+<figure href="ch15.html#id5503940" id="id5503940">
+<title>Figure 15-2. Manipulator Classes</title>
+</figure>
+<figure href="ch15.html#id5504089" id="id5504089">
+<title>Figure 15-3. Handle-Box Manipulator</title>
+</figure>
+<figure href="ch15.html#id5504111" id="id5504111">
+<title>Figure 15-4. Trackball Manipulator</title>
+</figure>
+</section>
+<section href="ch15.html#id5504136" id="id5504136">
+<title>Simple Draggers</title>
+<section href="ch15.html#id5504173" id="id5504173">
+<title>Field Connections</title>
+<figure href="ch15.html#id5504317" id="id5504317">
+<title>Figure 15-5. Connecting a Dragger's Field to Another Field in the Scene Graph</title>
+</figure>
+<example href="ch15.html#id5504361" id="id5504361">
+<title>Example 15-1. Using a Simple Dragger</title>
+</example>
+<figure href="ch15.html#id5504420" id="id5504420">
+<title>Figure 15-6. Using a Dragger and Engine to Edit the Radius of a Cone</title>
+</figure>
+</section>
+<section href="ch15.html#id5504487" id="id5504487">
+<title>Callback Functions</title>
+</section>
+<section href="ch15.html#id5504874" id="id5504874">
+<title>Using Multiple Draggers</title>
+<figure href="ch15.html#id5504925" id="id5504925">
+<title>Figure 15-7. A Slider Box That Uses Draggers and Engines to Move Text</title>
+</figure>
+<example href="ch15.html#id5504946" id="id5504946">
+<title>Example 15-2. Using Multiple Draggers</title>
+</example>
+</section>
+</section>
+<section href="ch15.html#id5505098" id="id5505098">
+<title>Manipulators</title>
+<section href="ch15.html#id5505258" id="id5505258">
+<title>Replacing a Node with a Manipulator</title>
+<section href="ch15.html#id5505369" id="id5505369">
+<title>Replacing a Node</title>
+<figure href="ch15.html#id5505482" id="id5505482">
+<title>Figure 15-8. Specifying the Path to the Target Node</title>
+</figure>
+</section>
+<section href="ch15.html#id5505503" id="id5505503">
+<title>Removing the Manipulator</title>
+</section>
+</section>
+<section href="ch15.html#id5505662" id="id5505662">
+<title>Using the replaceNode() Method</title>
+<example href="ch15.html#id5505853" id="id5505853">
+<title>Example 15-3. Using Manipulators to Transform Objects</title>
+</example>
+<figure href="ch15.html#id5505899" id="id5505899">
+<title>Figure 15-9. Adding Manipulators to a Scene</title>
+</figure>
+</section>
+</section>
+<section href="ch15.html#id5506278" id="id5506278">
+<title>Customizing a Dragger (Advanced)</title>
+<section href="ch15.html#id5506366" id="id5506366">
+<title>Parts of a Dragger</title>
+<table href="ch15.html#id5506529" id="id5506529">
+<title>Table 15-2. Selected Parts of the SoTrackballDragger</title>
+</table>
+</section>
+<section href="ch15.html#id5506734" id="id5506734">
+<title>Changing a Part after Building the Dragger</title>
+<figure href="ch15.html#id5506999" id="id5506999">
+<title>Figure 15-10. Changing the Dragger Parts to Cubes</title>
+</figure>
+<example href="ch15.html#id5507038" id="id5507038">
+<title>Example 15-4. Changing Parts after Building a Dragger</title>
+</example>
+</section>
+<section href="ch15.html#id5507094" id="id5507094">
+<title>Changing the Default Geometry for a Part</title>
+<section href="ch15.html#id5507113" id="id5507113">
+<title>Where a Dragger Looks for Defaults</title>
+</section>
+<section href="ch15.html#id5507180" id="id5507180">
+<title>How to Edit Your File</title>
+</section>
+</section>
+</section>
+</chapter>
+<chapter href="ch16.html" id="id5507529">
+<title>Chapter 16. Inventor Component Library</title>
+<section href="ch16.html#id5507679" id="id5507679">
+<title>Introduction to Components</title>
+</section>
+<section href="ch16.html#id5507768" id="id5507768">
+<title>Xt Utility Functions</title>
+</section>
+<section href="ch16.html#id5508001" id="id5508001">
+<title>Render Area</title>
+<section href="ch16.html#id5508034" id="id5508034">
+<title>Methods</title>
+</section>
+<section href="ch16.html#id5508353" id="id5508353">
+<title>Xt Devices</title>
+</section>
+<section href="ch16.html#id5508575" id="id5508575">
+<title>Using the Overlay Planes (Advanced)</title>
+<example href="ch16.html#id5508988" id="id5508988">
+<title>Example 16-1. Using the Overlay Planes</title>
+</example>
+</section>
+</section>
+<section href="ch16.html#id5509063" id="id5509063">
+<title>Xt Components</title>
+<figure href="ch16.html#id5509206" id="id5509206">
+<title>Figure 16-1. Component Classes</title>
+</figure>
+</section>
+<section href="ch16.html#id5509280" id="id5509280">
+<title>General Model</title>
+<section href="ch16.html#id5509325" id="id5509325">
+<title>Construct the Component</title>
+</section>
+<section href="ch16.html#id5509425" id="id5509425">
+<title>Show and Hide the Component</title>
+</section>
+<section href="ch16.html#id5509843" id="id5509843">
+<title>Passing Data to the Application</title>
+<section href="ch16.html#id5509921" id="id5509921">
+<title>Using Callbacks</title>
+<example href="ch16.html#id5510175" id="id5510175">
+<title>Example 16-2. Using a Callback Function</title>
+</example>
+</section>
+<section href="ch16.html#id5510253" id="id5510253">
+<title>Attaching a Component to a Scene Graph</title>
+<example href="ch16.html#id5510560" id="id5510560">
+<title>Example 16-3. Attaching a Material Editor</title>
+</example>
+<figure href="ch16.html#id5510609" id="id5510609">
+<title>Figure 16-2. Material Editor and Render Area Created in Separate Windows</title>
+</figure>
+<example href="ch16.html#id5510714" id="id5510714">
+<title>Example 16-4. Placing Two Components in the Same Window</title>
+</example>
+<figure href="ch16.html#id5510796" id="id5510796">
+<title>Figure 16-3. Using the Material Editor Component to Edit a Scene</title>
+</figure>
+</section>
+</section>
+</section>
+<section href="ch16.html#id5510851" id="id5510851">
+<title>Viewers</title>
+<section href="ch16.html#id5510954" id="id5510954">
+<title>Constructing a Viewer</title>
+</section>
+<section href="ch16.html#id5511146" id="id5511146">
+<title>Specifying the Scene Graph for the Viewer</title>
+<figure href="ch16.html#id5511195" id="id5511195">
+<title>Figure 16-4. Examiner Viewer</title>
+</figure>
+<section href="ch16.html#id5511218" id="id5511218">
+<title>Cameras</title>
+<figure href="ch16.html#id5511290" id="id5511290">
+<title>Figure 16-5. Inserting a Camera for an Editor Viewer</title>
+</figure>
+<figure href="ch16.html#id5511342" id="id5511342">
+<title>Figure 16-6. Inserting a Camera for a Browser Viewer</title>
+</figure>
+</section>
+<section href="ch16.html#id5511367" id="id5511367">
+<title>Lights</title>
+</section>
+<section href="ch16.html#id5511406" id="id5511406">
+<title>Viewer Draw-Style</title>
+<figure href="ch16.html#id5511598" id="id5511598">
+<title>Figure 16-7. Inserting Drawing Style and Lighting Model Nodes</title>
+</figure>
+</section>
+<section href="ch16.html#id5511644" id="id5511644">
+<title>Viewer Draw-Type</title>
+<figure href="ch16.html#id5511725" id="id5511725">
+<title>Figure 16-8. Viewer Pop-up Menu</title>
+</figure>
+</section>
+</section>
+<section href="ch16.html#id5511787" id="id5511787">
+<title>Methods for SoXtViewer</title>
+</section>
+<section href="ch16.html#id5512218" id="id5512218">
+<title>Methods for SoXtFullViewer</title>
+<example href="ch16.html#id5512422" id="id5512422">
+<title>Example 16-5. Using a Browser Examiner Viewer</title>
+</example>
+</section>
+</section>
+<section href="ch16.html#id5512495" id="id5512495">
+<title>Using the 3D Clipboard</title>
+<section href="ch16.html#id5512581" id="id5512581">
+<title>Creating an Instance of SoXtClipboard</title>
+</section>
+<section href="ch16.html#id5512680" id="id5512680">
+<title>Copying Data onto the Clipboard</title>
+</section>
+<section href="ch16.html#id5512820" id="id5512820">
+<title>Pasting Data from the Clipboard</title>
+</section>
+</section>
+</chapter>
+<chapter href="ch17.html" id="id5512950">
+<title>Chapter 17. Using Inventor with OpenGL</title>
+<section href="ch17.html#id5513131" id="id5513131">
+<title>Introduction</title>
+</section>
+<section href="ch17.html#id5513336" id="id5513336">
+<title>OpenGL State Variables and Inventor</title>
+<table href="ch17.html#id5513512" id="id5513512">
+<title>Table 17-1. OpenGL State Variables:  Current Values and Associated Data</title>
+</table>
+<table href="ch17.html#id5513734" id="id5513734">
+<title>Table 17-2. OpenGL State Variables:  Transformation State</title>
+</table>
+<table href="ch17.html#id5513948" id="id5513948">
+<title>Table 17-3. OpenGL State Variables:  Coloring</title>
+</table>
+<table href="ch17.html#id5514162" id="id5514162">
+<title>Table 17-4.  OpenGL State Variables:  Lighting</title>
+</table>
+<table href="ch17.html#id5514765" id="id5514765">
+<title>Table 17-5.   OpenGL State Variables:  Rasterization</title>
+</table>
+<table href="ch17.html#id5515016" id="id5515016">
+<title>Table 17-6. OpenGL State Variables:  Texturing</title>
+</table>
+<table href="ch17.html#id5515394" id="id5515394">
+<title>Table 17-7. OpenGL State Variables:  Pixel Operations</title>
+</table>
+<table href="ch17.html#id5515460" id="id5515460">
+<title>Table 17-8. OpenGL State Variables:  Pixels</title>
+</table>
+<table href="ch17.html#id5515568" id="id5515568">
+<title>Table 17-9. OpenGL State Variables:  Miscellaneous</title>
+</table>
+</section>
+<section href="ch17.html#id5515677" id="id5515677">
+<title>Color-Index Mode</title>
+<example href="ch17.html#id5515814" id="id5515814">
+<title>Example 17-1. Using Color Index Mode</title>
+</example>
+</section>
+<section href="ch17.html#id5515916" id="id5515916">
+<title>Using an SoCallback Node</title>
+<section href="ch17.html#id5515954" id="id5515954">
+<title>Caching</title>
+</section>
+<section href="ch17.html#id5516084" id="id5516084">
+<title>Using a Callback Node</title>
+<figure href="ch17.html#id5516148" id="id5516148">
+<title>Figure 17-1. Combining Use of Inventor and OpenGL</title>
+</figure>
+<example href="ch17.html#id5516217" id="id5516217">
+<title>Example 17-2. Using a Callback Node</title>
+</example>
+</section>
+</section>
+<section href="ch17.html#id5516317" id="id5516317">
+<title>Applying a Render Action Inside a GLX Window</title>
+<example href="ch17.html#id5516343" id="id5516343">
+<title>Example 17-3. Using a GLX Window</title>
+</example>
+</section>
+</chapter>
+<appendix href="apa.html" id="id5516550">
+<title>Appendix A. An Introduction to Object-Oriented Programming for C Programmers</title>
+<section href="apa.html#id5516670" id="id5516670">
+<title>What Is Object-Oriented Programming?</title>
+<section href="apa.html#id5516697" id="id5516697">
+<title>Data Abstraction</title>
+</section>
+<section href="apa.html#id5516859" id="id5516859">
+<title>Inheritance</title>
+</section>
+<section href="apa.html#id5516901" id="id5516901">
+<title>Implementing Data Abstraction and Inheritance: Classes</title>
+</section>
+<section href="apa.html#id5516997" id="id5516997">
+<title>Class Hierarchies</title>
+<figure href="apa.html#id5517087" id="id5517087">
+<title>Figure A-1. Sample Class Hierarchy Diagram</title>
+</figure>
+</section>
+</section>
+<section href="apa.html#id5517196" id="id5517196">
+<title>An Example of a Class: Sphere</title>
+<section href="apa.html#id5517460" id="id5517460">
+<title>An Example of Inheritance: HollowSphere</title>
+</section>
+</section>
+<section href="apa.html#id5517781" id="id5517781">
+<title>Suggested Reading</title>
+</section>
+</appendix>
+<appendix href="apb.html" id="id5517905">
+<title>Appendix B. An Introduction to the C API</title>
+<section href="apb.html#id5518165" id="id5518165">
+<title>Naming C Functions</title>
+</section>
+<section href="apb.html#id5518480" id="id5518480">
+<title>Abbreviating C Function Names</title>
+<table href="apb.html#id5518586" id="id5518586">
+<title>Table B-1. C Function Name Abbreviations</title>
+</table>
+</section>
+<section href="apb.html#id5520137" id="id5520137">
+<title>Creating and Deleting Objects from C</title>
+</section>
+<section href="apb.html#id5520278" id="id5520278">
+<title>Overloaded C++ Methods</title>
+</section>
+<section href="apb.html#id5520329" id="id5520329">
+<title>Calling Functions</title>
+</section>
+<section href="apb.html#id5520400" id="id5520400">
+<title>C Classes and Manual Pages</title>
+</section>
+<section href="apb.html#id5520483" id="id5520483">
+<title>A Sample Open Inventor Program in C</title>
+</section>
+</appendix>
+<appendix href="apc.html" id="id5520564">
+<title>Appendix C. Error Handling</title>
+<figure href="apc.html#id5520632" id="id5520632">
+<title>Figure C-1. SoError Class Tree</title>
+</figure>
+<section href="apc.html#id5520741" id="id5520741">
+<title>Runtime Type-Checking</title>
+</section>
+<section href="apc.html#id5520754" id="id5520754">
+<title>Posting an Error</title>
+</section>
+<section href="apc.html#id5520799" id="id5520799">
+<title>Handling an Error</title>
+</section>
+<section href="apc.html#id5520847" id="id5520847">
+<title>Debugging</title>
+</section>
+</appendix>
+<index href="ix01.html" id="ix">
+<title>Index</title>
+</index>
+</book>
+</toc>

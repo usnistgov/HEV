@@ -1,0 +1,14 @@
+# Add pointer to the MCP
+BUTTON pointer
+  FIRST EXEC ${HEVROOT}/idea/data/pointerTrigger.sh       > $IRIS_CONTROL_FIFO
+  FIRST WAIT echo SCS         ptrGlyph 0 0 0  0 0 0   1   > $IRIS_CONTROL_FIFO
+  FIRST WAIT echo LOAD        ptrGlyph0 pointerGlyph.osg  > $IRIS_CONTROL_FIFO
+  FIRST WAIT echo ADDCHILD    ptrGlyph0 ptrGlyph            > $IRIS_CONTROL_FIFO
+  FIRST WAIT echo ADDCHILD    ptrGlyph offsetWand         > $IRIS_CONTROL_FIFO
+  FIRST WAIT echo NOCLIP      ptrGlyph                    > $IRIS_CONTROL_FIFO
+
+  ON    EXEC echo NODEMASK    ptrGlyph ON                 > $IRIS_CONTROL_FIFO
+  ON    EXEC ${HEVROOT}/idea/data/pointerTrigger.sh       > $IRIS_CONTROL_FIFO
+
+  OFF   EXEC echo NODEMASK    ptrGlyph OFF                > $IRIS_CONTROL_FIFO
+  OFF   EXEC killall pointerTrigger.sh                    > $IRIS_CONTROL_FIFO

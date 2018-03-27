@@ -1,0 +1,38 @@
+.TH iris-xyzhprToMatrix 1 "June 2011"
+.SH NAME
+
+iris-xyzhprToMatrix
+
+.SH SYNOPSIS
+
+\fBiris-xyzhprToMatrix [--usleep t] xyzhprShm matrixShm
+
+.SH DESCRIPTION
+
+\fBiris-xyzhprToMatrix\fR converts a dtkCoord value in the DTK shared
+memory file named \fBxyzhprShm\fR to osg::Matrix coordinates in the DTK shared
+memory file named \fBmatrixShm\fR.
+
+If either xyzhprShm or matrixShm don't exist they will created.
+
+.SH OPTIONS
+
+.IP "--usleep t"
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.SH EXAMPLE
+
+echo exec iris-xyzhprToMatrix wand wandMatrix > $IRIS_CONTROL_FIFO
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/mcsd/mcsd/\fR
+

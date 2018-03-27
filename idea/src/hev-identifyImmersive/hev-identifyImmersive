@@ -1,0 +1,32 @@
+#! /bin/bash
+#
+# hev-testImmersive - identy type of immersive environment
+#
+#
+# SAVG/MCSD/ITL/NIST
+# John Kelso
+# kelso@nist.gov
+#
+# December 7, 2009
+# December 4, 2012 replace dradis with nickel -sgs
+# March 31, 2014 add acadie - sgs
+# August 4, 2014 add galifrey - sgs
+# July 2016 add HEV_TEST_IMMERSIVE_HOST - sgs
+# May 2017 remove acadie and nickel - sgs
+
+
+
+if [ -z $HEV_TEST_IMMERSIVE_HOST ]
+then
+    hostname=`hostname -s 2> /dev/null`
+else
+    hostname=$HEV_TEST_IMMERSIVE_HOST
+fi
+
+if [ "$hostname" = "tylium"  -o "$hostname" = "gallifrey"  -o "$hostname" = "dettol" ] ;then
+    echo rave
+elif  [ "$hostname" = "mgm" ] ;then
+    echo powerwall
+else 
+    echo desktop
+fi

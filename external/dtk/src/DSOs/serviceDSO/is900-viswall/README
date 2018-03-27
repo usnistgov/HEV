@@ -1,0 +1,55 @@
+DTK service is900
+
+for:
+  InterSense IS-900 Precision Motion Tracker for Virtual Environments
+
+
+This works on the Virginia Tech CAVE to serve the is900 Virtual
+Environments devices.
+
+ IS-900 Tracked Tracker
+ IS-900 Tracked Wand
+
+This is a featureless service.
+Edit config.h and is900.C to configure it.
+
+
+
+files installed and where and description
+-----------------------------------------
+
+
+ is900.so   `dtk-config --server-dso-dir`
+
+ A very simple featureless DTK service that serves two IS (Intersense
+Inc.) devices using the IS900 control box.  The devices are (port 1)
+"Tracked Tracker", head Tracker, and (port 2) "Tracked Wand", wand
+with tracker.  This is used in the Virginia Tech CAVE at the time of
+writing this.
+
+
+ dtk-is900  `dtk-config --root`/bin
+
+ A very small shell script used to start a DTK server with the above
+service.
+
+------------------------------------------------------------------------
+ The DIVERSE Toolkit
+Copyright (C) 2000 - 2003  Virginia Tech
+
+This is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License (GPL) as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+This software is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this software, in the top level source directory in a file
+named "COPYING.GPL"; if not, see it at:
+http://www.gnu.org/copyleft/gpl.html or write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA.

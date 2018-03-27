@@ -1,0 +1,42 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cxx}
+Function {make_main_window()} {open
+} {
+  Fl_Window {} {open
+    xywh {1276 928 255 40} type Double visible
+  } {
+    Fl_Light_Button {} {
+      label {on/off}
+      callback {onOff((bool)o->value()) ;}
+      xywh {10 10 74 20}
+      code0 {o->value(onOffState) ;}
+    }
+    Fl_Button {} {
+      label {go!}
+      callback {go() ;}
+      xywh {90 10 70 20}
+    }
+    Fl_Light_Button {} {
+      label {more...}
+      callback {more(bool(o->value()));} selected
+      xywh {170 10 74 20}
+      code0 {moreButton = o ;}
+      code1 {o->value(moreState) ;}
+    }
+  }
+} 
+
+Function {make_sub_window()} {open
+} {
+  Fl_Window {} {open
+    xywh {945 822 245 60} type Double visible
+  } {
+    Fl_Roller {} {
+      label {horizontal roller}
+      callback {roller((float)o->value()) ;}
+      xywh {25 15 195 15} type Horizontal
+    }
+  }
+} 

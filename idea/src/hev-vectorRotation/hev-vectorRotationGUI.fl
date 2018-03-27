@@ -1,0 +1,87 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+Function {make_window()} {open
+} {
+  Fl_Window {} {open
+    xywh {2279 694 295 205} type Double box BORDER_BOX labelsize 5
+    code0 {main_window = o ;} visible
+  } {
+    Fl_Light_Button {} {
+      label {show vector}
+      callback {vectorSwitch(bool(o->value())) ;}
+      xywh {165 135 115 20} value 1
+    }
+    Fl_Roller {} {
+      label {X:}
+      callback {updateX((double)o->value()) ;}
+      xywh {35 10 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.008
+      code0 {xRoller = o ;}
+      code1 {o->value(x) ;}
+    }
+    Fl_Roller {} {
+      label {Y:}
+      callback {updateY((double)o->value()) ;}
+      xywh {35 40 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.008
+      code0 {yRoller = o ;}
+      code1 {o->value(y) ;}
+    }
+    Fl_Roller {} {
+      label {Z:}
+      callback {updateZ((double)o->value()) ;}
+      xywh {35 70 160 20} type Horizontal align 4 minimum -1e+06 maximum 1e+06 step 0.008
+      code0 {zRoller = o ;}
+      code1 {o->value(z) ;}
+    }
+    Fl_Input {} {
+      callback {updateX(atof((char*)o->value())) ;}
+      xywh {200 10 75 20} when 1
+      code0 {xText = o ;}
+      code1 {o->value(xs.c_str()) ;}
+    }
+    Fl_Input {} {
+      callback {updateY(atof((char*)o->value())) ;}
+      xywh {200 40 75 20} when 1
+      code0 {yText = o ;}
+      code1 {o->value(ys.c_str()) ;}
+    }
+    Fl_Input {} {
+      callback {updateZ(atof((char*)o->value())) ;} selected
+      xywh {200 70 75 20} when 1
+      code0 {zText = o ;}
+      code1 {o->value(zs.c_str()) ;}
+    }
+    Fl_Roller {} {
+      label {@<->}
+      callback {updateRate((double)o->value()) ;}
+      xywh {35 100 160 20} type Horizontal labelsize 10 align 4 minimum -1e+06 maximum 1e+06 step 0.0002
+      code0 {rateRoller = o ;}
+      code1 {o->value(rate) ;}
+    }
+    Fl_Button {} {
+      label STOP
+      callback {stop() ;}
+      xywh {200 100 75 20} color 88
+    }
+    Fl_Button {} {
+      label {RESET ALL}
+      callback {reset() ;}
+      xywh {165 170 115 20}
+    }
+    Fl_Group {} {open
+      xywh {25 132 115 58}
+    } {
+      Fl_Round_Button {} {
+        label spin
+        callback {spinSwitch(bool(o->value())) ;}
+        xywh {40 135 100 20} type Radio down_box ROUND_DOWN_BOX value 1
+      }
+      Fl_Round_Button {} {
+        label wiggle
+        callback {spinSwitch(!bool(o->value())) ;}
+        xywh {40 170 100 20} type Radio down_box ROUND_DOWN_BOX
+      }
+    }
+  }
+} 

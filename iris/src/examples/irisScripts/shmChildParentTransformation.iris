@@ -1,0 +1,19 @@
+#This example uses the shmChildParentTransformation DSO to write to shared
+#memory, and a shmMatrixTransform node to read the shared memory when button
+#1 is pressed in the dtk-caveDeviveSimultor.  Two gnomons are loaded, and if
+#button 1 is pressed they should be in the same place!
+#
+#iris-viewer shmChildParentTransformation.iris
+#
+EXEC hev-writeButtons buttons 0
+AFTER REALIZE EXEC dtk-caveDeviceSimulator
+# writes to shared memory
+DSO shmChildParentTransformation INIT tmp/foo world scene
+# reads from shared memory
+SHMMATRIXTRANSFORM matTransform tmp/foo buttons 1
+ADDCHILD matTransform scene
+LOAD gnomon gnomon.osg
+ADDCHILD gnomon matTransform
+ADDCHILD gnomon world
+EXAMINE
+

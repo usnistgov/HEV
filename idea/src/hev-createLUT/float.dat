@@ -1,0 +1,8 @@
+# use this to test hev-LUT2plot for float values greater than 1
+#
+# hev-createLUT < float.dat > float.lut
+#
+# hev-LUT2plot float.lut
+  0   0    0    0   1
+128   3    1    .5  .5
+255   0    0    0   0

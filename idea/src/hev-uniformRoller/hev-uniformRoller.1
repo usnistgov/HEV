@@ -1,0 +1,58 @@
+.TH "hev-uniformRoller" 1 "Jan 7, 2010"
+.SH NAME
+
+hev-uniformRoller
+
+.SH SYNOPSIS
+
+\fBhev-uniformRoller node uniform [val min max]
+
+.SH DESCRIPTION
+
+\fBhev-uniformRoller\fR is a GUI which prints the SGE UNIFORM command 
+to change the value of a shader scalar vairable.
+
+.SH OPTIONS
+
+.IP \fBval\fR 
+specifies the initial value of the shader variable. If omitted, 0 is used.
+.IP \fBmin\fR 
+specifies the initial minimum for range of shader variable. If omitted, 0 is used.
+.IP \fBmax\fR 
+specifies the initial maximum for range of shader variable. If omitted, 1 is used.
+
+.SH EXAMPLE
+After a vizualization with point data is running and the fatpoint shader is 
+applied,
+
+  $hev-uniformRoller pts fatpointSize 0.1 0.0 0.2 | hev-sgeWriteFifo & 
+
+will create a roller with a range 0.0 to 0.2 and a starting value of 
+0.1 that will change the fatpointSize variable for everything under
+the node called pts. The output (SGE commands) from the roller are
+piped to the SGE FIFO using the \fBhev\-sgeWriteFifo\fR command. 
+
+Also see test.sh in $HEVROOT/savg/dgl/src/hev\-uniformRoller
+
+.SH NOTE
+
+The uniform variable must exist for the command to have any effect.
+
+The output from hev\-uniformRoller MUST be piped to hev\-sgeWriteFifo. 
+Otherwise the SGE commands are just printed to stdout.
+
+.SH BUGS
+
+No known bugs
+
+.SH AUTHOR
+
+.PP
+Terence Griffin <terence.griffin@nist.gov>
+.br
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/mcsd/savg/\fR
+

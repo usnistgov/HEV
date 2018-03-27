@@ -1,0 +1,3014 @@
+2009-12-17 John Wu <John.Wu at ACM.org>
+	* src/ibin.h, src/irelic.h: add using statements to quiet
+	complains about partially overwritten functions
+	* src/part.cpp: the function quickTest produced select clauses
+	without expected separators
+
+2009-12-16 John Wu <John.Wu at ACM.org>
+	* src/whereParser.yy: add rules to accept "name != 'string'" at
+	request of Alexandre Maurel
+	* tests/Makefile.am: add test case 3 in check-maurel to exercise
+	"name != 'string'"
+	* src/selectClause.cpp: change functions describe and fillNames to
+	produce external names with the aggregation function when no alias
+	is provided
+
+2009-12-15 John Wu <John.Wu at ACM.org>
+	* tests/readcsv.cpp: prefix the column names with comment
+	characters to allow other CSV reader to correctly read the CSV
+	file too, change the string type from text to category (to allow
+	indexing and searching)
+	* tests/Makefile.am: add check-maurel to exercise the test data
+	and queries contributed by Alexandre Maurel
+
+2009-12-14 John Wu <John.Wu at ACM.org>
+	* src/bord.cpp: update bord::part::groupby to work with count(*)
+	as a term in the select clause
+	* src/bundle.h, src/bundle.cpp: allow count(*) in the select
+	clauses, consolidate ibis::bundles::sort and ibis::bundles::sort2
+	* src/util.h, src/query.cpp: remove class ibis::selected (replaced
+	with ibis::selectClause)
+	* src/bundle.cpp: replace ibis::selected with ibis::nameList in
+	function bundles::tuncate and bundles::reorder
+	* src/selectParser.ll: add keyword countdistinct
+	* test/Makefile.am: change test case 7 to avoid in-line editing of
+	output file
+	* src/util.cpp: change ibis::util::strMatch to make sure an empty
+	string can match the wild character '%' (zero or more of any
+	character - a problem reported by Jan Hapke)
+
+2009-12-13 John Wu <John.Wu at ACM.org>
+	* src/qExpr.h:214 construtor of qContinuous assigned operations to
+	the wrong side (a problem reported by Jan Hapke)
+	* src/countQuery.cpp:45 change conds.getString() to simply conds
+	(to make use of the operator<< defined in whereClause.h) to avoid
+	the problem with getString() returning nil pointer (which happens
+	when the query expression is directly passed in from the caller)
+
+2009-12-12 John Wu <John.Wu at ACM.org>
+	* src/bundle.h, src/bundle.cpp: add function bundles::sort2 to
+	handle the cases where the aggregation functions appear in the
+	middle of the select clause (the previous attempt to address this
+	issue on 12-10 neglected to move the aggregation functions with
+	the column values, and therefore produces the incorrect result.
+	Problem reported by Jan Hapke)
+
+2009-12-11 John Wu <John.Wu at ACM.org>
+	* src/query.cpp: make sure ierr is set for LOGICAL_NOT operator
+	(address a problem reported by Alexandre Maurel)
+	* src/array_t.cpp: change nosharing to make a copy when m_begin !=
+	actual->begin()
+	* src/fileManager.cpp: constructor of fileManager::rofSegment
+	neglected to record the memory it allocated (address a problem
+	reported by Jan Hapke)
+	* win/*.vcproj: restore the Debug configurations to use Debug
+	options (they were accidentally change to use Release options)
+
+2009-12-10 John Wu <John.Wu at ACM.org>
+	* src/bundle.cpp: add code to temporarily move the aggregation
+	functions to the end of the list of columns for easier sorting (to
+	address the problem with aggregations appears before the group-by
+	keys in the selected clause observed by Jan Hapke)
+	* src/util.h: consolidate the checking of atomic operations on
+	windows platforms
+	* src/selectClause.h: rename innerName to argName and outerName to
+	termName
+	* win/trydll.cpp: replace ibis::selected with ibis::selectClause
+
+2009-12-08 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp: move the mutex lock outside to the caller
+	because most of the callers have already a mutex lock, which
+	causes dead lock
+	* src/whereParser.yy: introduce special cases of operator IN
+	involving string literals (to address a problem reported by
+	Alexandre Maurel)
+	* src/qExpr.h: add qLike to represent the operator Like
+	* src/whereLexer.ll, src/whereParser.yy: add LIKEOP and defintion
+	of operator LIKE
+	* src/category.h, src/category.cpp, src/query.cpp,
+	src/countQuery.cpp, src/whereClause.cpp: update to work with
+	ibis::qLike through ibis::util::strMatch
+
+2009-12-07 John Wu <John.Wu at ACM.org>
+	* win/win.Mak: remove '-o' from commands that build object files,
+	visual studio has deprecated -o
+	* src/array_t.cpp:301 check for nil m_begin or m_end
+	* src/bitvector.cpp: 454 check for nil m_vec.begin() or
+	m_vec.end()
+	* src/*.cpp: address issues raised by g++ -Wall, only warnings
+	left should be unused variables starting with g, which are
+	ibis::util::guard objects meant to be automatically cleaned by the
+	compiler
+	* src/fileManager.cpp: comment out line 1161 and 1162 to prevent
+	duplicate calls to fileManager::increaseUse, consolidate the
+	recording of files in getFile and tryGetFile with recordFile
+	(previous version may record roFile objects that have been deleted)
+
+2009-12-06 John Wu <John.Wu at ACM.org>
+	* src/util.cpp: change util::userName to prefer getpwuid_r, add
+	call to delete the object pass (under valgrind, this variable is
+	always shown as lost)
+
+2009-12-05 John Wu <John.Wu at ACM.org>
+	* src/qExpr.h, src/qExpr.cpp: change all 'inline virtual'
+	functions to virtual functions (without inlining) (an attempt to
+	reduce the linking problems on cygwin with gcc)
+
+2009-12-04 John Wu <John.Wu at ACM.org>
+	* src/qExpr.cpp: change the default option in printFull to call
+	the print function, change the defaul options in both print and
+	printFull to use the output stream given by Jochen Schlosser
+	* src/fileManager.cpp, src/fileManager.h: remove
+	fileManager::mutexLock, use ibis::util::mutexLock instead
+	* src/part.h, src/parti.h, src/part.cpp: add function emptyCache,
+	replace ibis::part::mutexLock with ibis::util::mutexLock
+	* src/array_t.h, src/array_t.cpp: move function freeMemory from
+	array_t.h to array_t.cpp, add log statements to match the log
+	statement in the constructors
+
+2009-12-03 John Wu <John.Wu at ACM.org>
+	* src/tafel.cpp: change tablex::readNamesAndTypes to read
+	-part.txt as well, change ibis::tafel::writeMetaData to write the
+	columns in the order given on input
+	* src/whereLexer.ll: change return type of {QUOED} to STRLIT
+	(return the return type of the number sequence to NUMSEQ as it
+	should be, the previous modfication was incorrect)
+	* src/whereParse.yy: uncomment the rules for producing
+	ibis::qString, modify the rule on line 419 to provide a
+	work-around for the shift/reduce conflict
+	* tests/Makefile.am: add test cases for "index = none"
+	* src/bitvector.cpp: invoke nosharing on m_vec in all four
+	versions of bitwise logical operations that modifies the left-hand
+	side (only operator-= was doing it in some cases).  This might
+	address the problem reported by Jochen Schlosser because the
+	modified mask vector may still be using a map of the old mask file.
+
+2009-12-02 John Wu <John.Wu at ACM.org>
+	* configure.ac: generate Makefile in contrib/fbmerge
+	* INSTALL: add note about floating-point value variations, remove
+	note about valgrind warning
+
+2009-12-01 John Wu <John.Wu at ACM.org>
+	* src/selectClause.cpp:10 move assignment of clause_ to the body
+	of the constructor to avoid problem with input argument being a
+	nil pointer
+	* src/query.cpp:2463 change else if block to else block to always
+	initialize the bitvector mask
+	* src/query.cpp:340-344 compute verified with sc (instead of
+	comps)
+	* tests/Makefile.am: add a new test case 5 to check-text to test
+	the new order by functionality (requested by Jan Hapke)
+	* contrib: add contrib directory to cvs/svn along with fbmerge.cpp
+	from Luca Deri
+
+2009-11-30 John Wu <John.Wu at ACM.org>
+	* src/mensa.cpp: consolidate two nearly identical versions of
+	ibis::table::select
+	* src/selectClause.h: add a constructor that takes
+	ibis::table::stringList
+	* src/bord.h, src/bord.cpp: change ibis::bord::part::groupby to
+	take ibis::selectClause as argument instead of a list of strings
+	(to better handle the aliases)
+	* src/query.h, src/query.cpp: replace ibis::select with
+	ibis::selectClause (to consolidate handling of select clauses)
+
+2009-11-28 John Wu <John.Wu at ACM.org>
+	* src/bord.cpp: include typeinfo to add compilation problem with
+	gcc 4.4.x (a problem reported by Jan Hapke)
+
+2009-11-25 John Wu <John.Wu at ACM.org>
+	* src/utilidor.cpp: add try-catch block in util::sortStrings
+	* examples/ibis.cpp:3997 add statements to work with order by
+	clauses with ASC and DESC keywords but without LIMIT clause (a
+	problem reported by Jan Hapke)
+	* src/bord.cpp: in bord::column::reverseRows and
+	bord::column::limit add code to handle string values
+	* src/colValues.cpp: in two versions of colStrings::sort, change
+	sep from std::string& to std::string
+	* tests/Makefile.am: add keyword DESC to the order by clause used
+	in check-marsdb case 3 (to verify the problem reported by Jan is
+	fixed)
+	* src/bundle.cpp:1627 i <= ngroups should be i < ngroups
+	(otherwise it writes to an element beyond the allocated memory for
+	starts)
+	* tests/marksdb-3: update the file to correct printout
+
+2009-11-24 John Wu <John.Wu at ACM.org>
+	* src/bord.cpp: add function ibis::bord::part::sortStrings, rename
+	some reorderValues that actually performs sorting to sortValues
+
+2009-11-23 John Wu <John.Wu at ACM.org>
+	* src/selectParser.yy, src/whereParser.yy: change the
+	associativities of unary operators +, - and ! (not) to be right
+	associative following the common convention.  This also addresses
+	the problem reported by Andrew Olson about failure to parse
+	expression "stop-start+1"
+	* src/whereLexer.ll: change the return type of quoted string
+	literal from NOUNSTR to STRSEQ to ensure that the quoted strings
+	are recognized as string literals.  This addresses the problem
+	reported by Alexandre Maurel where the value of a string literal
+	is also the name of another column.
+
+2009-11-21 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp: change doQuery to directly use an
+	ibis::bundle object (instead of routing the function calls through
+	the query object).  This addresses the issue on the order by
+	clause and the limit clause raised by Jan Hapke (but only for
+	queries not invoving any arithmetic expressions or aggregation
+	functions).
+
+2009-11-20 John Wu <John.Wu at ACM.org>
+	* src/colValues.cpp: an incorrect use of
+	std::vector<std::string>::reference causes it to overwrite some
+	values, which was the cause of a problem observed by Jan Hapke
+	* examples/ibis.cpp: modify doAppend to check whether the second
+	argument to -a is a directory name (to mimic a utility function
+	written by Luca Deri)
+	* examples/ibis.cpp: neglected to check the error code returned by
+	query::orderby and query::limit, which is the source of a couple of
+	problems reported by Jan Hapke.  Modify parseString to bypass the
+	problems.
+	* src/mensa.cpp: the function ibis::table::parseNames neglected
+	the underscore '_'
+
+2009-11-16 John Wu <John.Wu at ACM.org>
+	* src/array_t.cpp: in function nosharing, change the test to use
+	filename() != 0 instead of isFileMap() because named files are
+	tracked by the file manager and may be shared with others later
+	* src/bundle.cpp, src/colValues.cpp: add calls to nosharing before
+	modifying the content of the bundle or column values (to address
+	an issue raised by Alexandre Maurel)
+
+2009-11-10 John Wu <John.Wu at ACM.org>
+	* src/ixfuzz.cpp:51-52 remove statements that blindly refers to
+	offset32
+	* src/ixfuzz.cpp:485 neglected to test for size of coffset64
+	* src/colValues.cpp: remove extra statement ++ j in various
+	implementation of function segment to address the issue raised by
+	Alexandre Maurel
+	* src/ibis.h, src/index.h: remove warning about 32-bit bitmap
+	offsets
+
+2009-11-09 John Wu <John.Wu at ACM.org>
+	* src/fileManager.h: add operator[] to storage object, make it
+	possible to shorten st->begin()[6] to (*st)[6]
+	* src/ibin.cpp:205-207 change sizeof(uint32_t) to (*st)[6]
+	* src/ifade.cpp:77-85 change sizeof(int32_t) to (*st)[6]
+	* src/ixzona.cpp: the constructor used offset32 blindly, change
+	hit1+1 to hit1 in function evaluate
+
+2009-11-06 John Wu <John.Wu at ACM.org>
+	* src/ixambit.cpp, src/ixpack.cpp, src/ixpale.cpp, src/ixzone.cpp:
+	capture the return from writing the elements of sub
+	* src/irange.cpp:529 change 4*(nobs+1) to sizeof(int64_t)*(nobs+1)
+	* src/bitvector.cpp:3285, src/bitvector64:2503 replace call to
+	flip with explict code to flip the bits in m_vec, the function
+	flip also turns the active bits which need to be handled
+	separately in this case
+	* src/islice.cpp, src/ifade.cpp: write32 and write64 mistakenly
+	used nbos in places of card
+	* src/ibin.cpp:484 the starting position of the offsets should be
+	8+2*sizeof(uint32_t) not 8+sizeof(uint32_t)
+	* src/imesa.cpp: remove mesa::write32 and mesa::write64, they are
+	the same as bin::write32 and bin::write64
+	* src/ixbylt.cpp:1220 add case for when c1 is in the unrecorded bin
+
+2009-11-05 John Wu <John.Wu at ACM.org>
+	* src/ibin.cpp:457 sizeof(int32_t) to st->begin()[6]
+	* src/icegale.cpp: in function read(storage*) update computation
+	of offsets and add code for cnts
+	* src/ixzona.cpp:611 offset32 should be offset64
+	* src/ibin.cpp:5126 sizeof(int32_t) should be sizeof(int64_t)
+	* src/ixpale.cpp:509 sizeof(int32_t) should be sizeof(int64_t)
+	* src/islice.cpp: functions write32 and write64 handles offsets
+	incorrectly
+	* src/ixpack.cpp:519 change sizeof(int32_t) to sizeof(int64_t)
+	* src/ibin.cpp: change ibis::bin::write to call bin::write32 and
+	write64
+	* src/irange.cpp: change ibis::range::write to use write32 and
+	write64, correct the statement in write64 that actually write the
+	64-bit offsets
+	* src/imesa.cpp: change ibis::mesa::write to use write32 and
+	write64 to reduce the code size
+
+2009-11-04 John Wu <John.Wu at ACM.org>
+	* src/capi.cpp, src/fileManager.cpp, src/tafel.cpp,
+	examples/thula.cpp: get rid off warnings issued by g++ compiler
+	* src/ixzone.cpp: in the constructor from a storage object,
+	mistakenly placed the offsets for the next level into offset64 and
+	offset32
+	* src/irange.cpp:461, src/irelic.cpp:549, src/islice.cpp:451,
+	src/ixbylt.cpp:2073, src/ixfuzz.cpp:381, src/ixpack.cpp:687 change
+	sizeof(int32_t) to header[6], corrects address computations
+	* src/ixfuge.cpp: in two version of read function, many instances
+	of offset32 should be offset64
+
+2009-11-03 John Wu <John.Wu at ACM.org>
+	* src/bitvector.h: change copy_runs and copy_runsn to chech the
+	values of nw before calling run::decode.  This avoids the warnings
+	from valgrind and make it a little easier to debug the rest of the
+	code.
+	* src/ixbylt.cpp:1224 cbounds[0] should be cbounds[c0]
+	* src/ixbylt.cpp: check the value of c0 in casues where c0-1 and
+	c0-2 are used as indices to arrays (in functions evaluate and
+	estimateCost)
+
+2009-11-02 John Wu <John.Wu at ACM.org>
+	* src/i*.cpp: add compiler macro FASTBIT_USE_LONG_OFFSETS to force
+	it to always use 64-bit bitmap offsets (even if the index sizes
+	are small)
+	* INSTALL: add a note about FASTBIT_USE_LONG_OFFSETS
+	* src/ixfuge.cpp:1574 offset64.size() > cbits.size() should be
+	coffset64.size() > cbits.size()
+	* src/ixbylt.cpp:669 coffset64.size() > bits.size() should be
+	offset64.size() > bits.size()
+	* src/ixbylt.cpp:1131 add condition c1-1 < ncoarse, the coarse bin
+	may be the unrecorded bin, which means cbits[c1-1] is not defined
+	* src/ixbylt.cpp:853,1346 the branch for 64-bit offsets mistakenly used
+	32-bit offsets
+	* src/ixbylt.cpp: in functions estimateCost and evaluate, move the
+	case for handling unrecorded bin up the list of if blocks
+
+2009-11-01 John Wu <John.Wu at ACM.org>
+	* src/bundle.cpp:1706 same problem as identified by Luca
+
+2009-11-01 Luca Deri <deri at ntop.org>
+	* src/bundle.cpp:1416 change cols[i] to cols[j].  The incorrect
+	index to cols causes core dump
+
+2009-10-30 Jan Steemann <Jan.Steemann at globalpark.com>
+	* examples/ibis.cpp, examples/thula.cpp, src/bundle.cpp,
+	src/colValues.cpp src/ibis.h, src/mensa.cpp, src/query.cpp,
+	src/query.h, src/selectClause.h, src/selectClause.cpp,
+	src/SelectLexer.ll, src/selectParser.yy, src/table.h, src/util.h:
+	add aggregate functions stdpop, stdsamp, varpop, varsamp, and
+	distinct to the select clause
+
+2009-10-30 John Wu <John.Wu at ACM.org>
+	* src/ixpale.cpp: in function write32 and write64, update the
+	computation of offset32[0] and offset64[0]
+	* src/icegale.cpp: in functions write32 and write64, the offsets
+	array need to have nbits+1 elements not nobs+1 elements
+
+2009-10-29 John Wu <John.Wu at ACM.org>
+	* src/ifade.cpp: in function write, update the value of header[6].
+	in functions write32 and write64, update the computation of
+	position of the 1st bitmap
+	* src/irange.cpp:472 the element size should be 4 instead of 8
+	* src/icegale.cpp:416, src/icfuge.cpp:253 header[6] was entered
+	wrongly
+	* src/ixfuge.cpp, src/ixbylt.cpp, src/ixfuzz.cpp, src/ixzona.cpp:
+	change the function write to detect whether a coarse level index
+	is actually present before calling the function to write the
+	coarse level indexes
+	* src/ixbylt.cpp:215 should call reserve not resize
+	* src/horometer.h: add information about MinGW.  It has
+	sys/timer.h, but not sys/resource.h
+
+2009-10-28 John Wu <John.Wu at ACM.org>
+	* src/i*.cpp: many write functions neglected to initialize the
+	new offset32 and offset64 to the proper size before using them
+	* src/ixbylt.cpp: writeCoarse32 and writeCoarse64 used offset32
+	and offset64 instead of coffset32 and coffset64
+	* src/index.cpp: update all versions of activate function to use
+	LOGGER for messages
+	* src/idirekte.cpp, src/ikeywords.cpp: invoked initOffsets with
+	wrong start address
+	* configure.ac: add option --with-pthread=dir to use non-standard
+	pthread library (first used on MinGW)
+
+2009-10-27 John Wu <John.Wu at ACM.org>
+	* src/irelic.h, src/ixzona.cpp: modify ibis::zona to use coffset64
+	and coffeset32 to replace coffsets, use offset64 and offset32 to
+	replace offsets
+	* src/irelic.h, src/ixfuzz.cpp: modify ibis::fuzz to use coffset64
+	and coffeset32 to replace coffsets, use offset64 and offset32 to
+	replace offsets
+
+2009-10-26 John Wu <John.Wu at ACM.org>
+	* src/irelic.h, src/ixbylt.cpp: modify ibis::bylt to use coffset64
+	and coffeset32 to replace coffsets, use offset64 and offset32 to
+	replace offsets
+
+2009-10-23 John Wu <John.Wu at ACM.org>
+	* src/irelic.h, src/ifade.cpp: modify ibis::fade to use offset64
+	* src/isbiad.cpp, src/isapid.cpp: modify ibis::sbiad and
+	ibis::sapid
+
+2009-10-22 John Wu <John.Wu at ACM.org>
+	* src/ikeywords.cpp: modify ibis::keywords to use offset64 and
+	offset32
+	* src/idirekte.h, src/idirekte.cpp: modify ibis::direkte to use
+	offset64 and offset32
+	* src/irelic.cpp: modify ibis::relic to use offset64
+	* src/islice.cpp: modify ibis::slice to use offset64
+
+2009-10-21 John Wu <John.Wu at ACM.org>
+	* src/ibin.h, src/ixfuge.cpp: modify ibis::fuge
+
+2009-10-20 John Wu <John.Wu at ACM.org>
+	* src/ibin.h, src/ixpack.cpp: modify ibis::pack class
+	* src/ibin.h, src/ixzone.cpp: modify ibis::zone class
+	* src/idbak.cpp, src/idbak2.cpp: change function write to call
+	ibis::bin::write instead -- no longer will produce indexes of type
+	ibis::BAK nor ibis::BAK2
+	* src/icegale.cpp, src/icmoins.cpp, src/icentre.cpp: modify
+	ibis::egale, ibis::moins and ibis::entre
+	* src/ibin.h, src/ixfuge.cpp: add coffset64 to ibis::fuge, rename
+	coffsets to coffset32
+
+2009-10-19 John Wu <John.Wu at ACM.org>
+	* src/ibin.h, src/ixpale.cpp: modify ibis::pale class
+
+2009-10-18 John Wu <John.Wu at ACM.org>
+	* src/ibin.h, src/ixambit.cpp: modify ibis::ambit class
+
+2009-10-16 John Wu <John.Wu at ACM.org>
+	* src/ibin.h, src/imesa.cpp: modify ibis::mesa class
+
+2009-10-15 John Wu <John.Wu at ACM.org>
+	* src/ibin.h, src/irange.cpp: modify ibis::range class
+
+2009-10-14 John Wu <John.Wu at ACM.org>
+	* doc/contact.html: add new contact information
+
+2009-10-12 John Wu <John.Wu at ACM.org>
+	* src/fileManager.h, src/util.h: move the macro HAVE_FILE_MAP and
+	FASTBIT_MIN_MAP_SIZE to util.h to be accessible to more files
+	* src/ibin.h, src/ibin.cpp: modified ibis::bin class to use
+	offset64 and offset32 at the same time
+
+2009-10-09 John Wu <John.Wu at ACM.org>
+	* src/fileManager.h, src/fileManager.cpp: change size information
+	for ibis::storage to be stored in a size_t (instead of a uint32_t)
+	* src/array_t.h, src/array_t.cpp: change size related variables
+	from uint32_t to size_t, but keep sorting functions using uint32_t
+	for indices (add statements to check that uint32_t is sufficient
+	for the tasks)
+	* src/index.h, src/index.cpp: add member variable offset64
+	* src/colValues.h, src/colValues.cpp: change all lengths and sizes
+	from uint32_t to size_t
+
+2009-10-08 John Wu <John.Wu at ACM.org>
+	* src: use the refactoring capability of eclipse to rename
+	index::offsets to index::ofset32, in preparation of adding
+	index::offset64
+
+2009-10-07 John Wu <John.Wu at ACM.org>
+	* src/ibis.h, src/index.h: add warning about index size limitation
+	of 2^32 bytes
+
+2009-10-04 John Wu <John.Wu at ACM.org>
+	* doc/header.html: add header file to insert description and
+	keywords meta tags to all html pages
+	* doc/footer.html: add google custom search to the end of all html
+	documents generated by doxygen
+
+2009-09-12 John Wu <John.Wu at ACM.org>
+	* configure.ac: change the square bracket for defaults in
+	AS_HELP_STRING to parentheses (avoids problem with autoconf);
+	regenerate configure with "aclocal-1.11 && automake-1.11 &&
+	autoconf-2.64"
+
+2009-09-10 John Wu <John.Wu at ACM.org>
+	* src/util.h, src/column.cpp, src/tafel.cpp: add new macro
+	OPEN_WRITEADD and use it in function append with fix-sized
+	columns, change the macro OPEN_WRITEONLY to OPEN_WRITENEW to
+	indicate that it truncates existing file and is intended to write
+	new files.  The append operation was using OPEN_APPENDONLY which
+	was always adding new bytes, but the append operation may need to
+	overwrite certain existing bytes.  The earlier attempt to change
+	them to OPEN_WRITEONLY has caused the existing data to be wiped
+	out (an error discovered with regression testing).
+	* src/tafel.cpp: in function writeRaw, add statments to write the
+	initial 0 to the .sp file, add statement to ensure the correct
+	totmask before adding newmask, add function preferredSize to
+	compute the number of rows to store in memory based on available
+	memory
+	* src/category.cpp: add error checking to ibis::text::readString
+
+2009-09-09 John Wu <John.Wu at ACM.org>
+	* src/table.h: change prototype of readCSV and readSQLDump to make
+	it possible for these functions to write out content as they read
+	* src/tafel.h, src/tafel.cpp: update implementation of readCSV and
+	readSQLDump to write content when running out of memory
+	* src/mensa.cpp: update cursor::fillBuffers and cursor::fillBuffer
+	to reflect the fact that the bufferElements are no longer storing
+	fileManager::storage objects but array_t objects instead
+
+2009-09-08 John Wu <John.Wu at ACM.org>
+	* src/table.h: add blobsnames and blobsvalues to ibis::table::row,
+	note this version of ibis::table::row use std::string to hold
+	blobs, which may have problems with null characters on some
+	systems
+	* src/mensa.h, src/mensa.cpp: add starts to
+	ibis::mensa::cursor::bufferElement, use void* for both starts and
+	cval (use the same type convention for cval as that of
+	ibis::tafel::column)
+	* src/category.h, src/category.cpp: add function getBlob and two
+	versions of readBlob
+
+2009-09-05 John Wu <John.Wu at ACM.org>
+	* src/tafel.cpp, src/category.cpp, src/column.cpp: change opening
+	mode from OPEN_APPENDONLY to OPEN_READWRITE for all .sp files,
+	change some OPEN_APPENDONLY to OPEN_WRITEONLY because those
+	functions may move the file pointers from the end of the file to
+	somewhere in the middle of the file in case of unexpected file
+	sizes
+
+2009-09-04 John Wu <John.Wu at ACM.org>
+	* src/tafel.cpp: add minimal processing of column type set in
+	function createSQLTable, add handling of BLOB to most functions,
+	add handling of default for missing values
+
+2009-09-03 John Wu <John.Wu at ACM.org>
+	* examples/ardea.cpp: add code to invoke readSQLDump
+
+2009-09-02 John Wu <John.Wu at ACM.org>
+	* src/fileManager.h: add fileManager::buffer<T>::swap, hide copy
+	constructor and assignment operator
+	* src/table.h: remove ibis::tablex::SQLCreateTable, add
+	ibis::tablex::readSQLDump
+	* src/tafel.h, src/tafel.cpp: implement readSQLDump with functions
+	SQLCreateTable and readSQLStatement
+
+2009-09-01 John Wu <John.Wu at ACM.org>
+	* src/*.h, src/*.cpp: change all size_t back to uint32_t because
+	size_t some how is not one of intxx_t on cygwin -- my main
+	development environment.  In addition, there were ealier user
+	request to keep certain return values in uint32_t instead of
+	size_t.  The attempt to make array_t store more than 2^32 elements
+	is abandoned and should not be attempted again with this code
+	base!
+	* src/array_t.h, src/array_t.cpp: update push_back and three
+	versions of insert to use the copy-and-swap idiom if new space is
+	needed, add check for array size over 2^31
+
+2009-08-31 John Wu <John.Wu at ACM.org>
+	* src/colValues.h, src/colValues.cpp, utilidor.h, utilidor.cpp:
+	change array indices from uint32_t to size_t following the changes
+	to array_t
+
+2009-08-30 John Wu <John.Wu at ACM.org>
+	* src/category.cpp: add functions extractAll and extractSome to
+	ibis::blob
+
+2009-08-28 John Wu <John.Wu at ACM.org>
+	* src/array_t.h, src/array_t.cpp: change type of sizes from
+	uint32_t to size_t, difference_type to ptrdiff_t (use c++ header
+	cstddef).  The intention is to make array size go beyond 2^32
+	elements.
+
+2009-08-27 John Wu <John.Wu at ACM.org>
+	* src/table.h: add column type BLOB
+	* src/category.h, src/category.cpp: add column type ibis::blob
+	* src/util.h: add ibis::util::guard, ibis::util::makeGuard and
+	supporting functions to implement objects for clean up after
+	resources such as file pointers.  This is to simply the handling
+	of file pointers used in functions such as ibis::blob::append.
+	* src/colValues.cpp: rearrange the loops in all versions of
+	ibis::colValues::segement to initialize the segmentation process
+	within each existing segement, to address an issue reported by
+	Alexandre Maurel <alexandre dot maurel at gmail dot com>, who also
+	provided a fix ibis::colFloats::segement
+
+2009-08-27 Alexandre Maurel <alexandre dot maurel at gmail dot com>
+	* src/colValues.cpp: fix ibis::colFloats::segment to correct
+	handle existing segments with the same values
+
+2009-08-26 John Wu <John.Wu at ACM.org>
+	* src/table.h, src/mensa.h, src/mensa.cpp: rename
+	ibis::mensa::computeHits to ibis::table::computeHits, rename
+	ibis::mensa::doSelect to ibis::table::select.  Move the list of
+	data partitions to the from of the argument lists in these two
+	functions.  This change addresses a need brought up by Andrew
+	Olson.
+	* src/table.h, src/mensa.h: add a version of table::select and
+	table::computeHits that accept qExpr directly
+	* examples/thula.cpp: add a minimal test for the class functions
+	ibis::table::select
+	* src/table.h: add versions of the member function
+	ibis::table::estiamte and ibis::table::select to take query
+	expression in the form of ibis::qExpr*.
+
+2009-08-25 John Wu <John.Wu at ACM.org>
+	* src/qExpr.h: change values in ibis::qDiscreteRange and
+	ibis::qAnyAny from type std::vector<double> to
+	ibis::array_t<double> to better track the memory usage, change
+	related functions to use the new data type
+	* src/table.h: add function getPartitions to return a list of
+	ibis::part
+	* src/bitvector.h: modify all 8 versions of bitwise logical
+	operators to make sure the two operands represent the same number
+	of bits (to address problems reported by David Reynolds < David
+	dot Reynolds at 3ds dot com>)
+	* src/bitvector.h: rename setSize to sloppySize and clarify its
+	functionality in doxygen documents
+
+2009-08-24 John Wu <John.Wu at ACM.org>
+	* src/table.h: clarify that ibis::tablex::write also updates
+	metadata
+
+2009-08-13 John Wu <John.Wu at ACM.org>
+	* src/util.h:1173 change abs to fabs, apparently fabs is the only
+	name guaranteed to work on double values, the function abs may be
+	resolved to work with integers on some versions of libm
+
+2009-08-12 John Wu <John.Wu at ACM.org>
+	* src/ibin.cpp: print the result from function ibis::bin::locate
+	* src/util.h: update to the implementation of util::coarsen to
+	cope with round-off errors that may cause the same value to come
+	out differently, for example, 1e-14 and 10 x 1e-15 are observed to
+	come out slightly differently.
+
+2009-08-06 John Wu <John.Wu at ACM.org>
+	* src/idbak2.cpp:998 change && to || (this error can cause crashes
+	on some machines)
+
+2009-08-04 John Wu <John.Wu at ACM.org>
+	* src/idbak2.cpp: add bit vector to capture the locations of
+	values exactly equal to the low-precision target value.  This is
+	necessary to make the index resolve all boundary bonditions
+	involve low-precision values without needing candidate checks.
+	The previous implementation can resolve conditions such as "A >=
+	a" and "a <= A < b", but not "A = a", "A <= a", or "a <= A <= b".
+	* win/Win.mak, win/MinGW.mak: update the dependencies in the make
+	files
+	* src/util.cpp: change the constructor of ibis::util::timer to
+	only print a message if gVerbose level is no less than lvl+2
+	* src/selectClause.h, src/selectClause.cpp: add function to verify
+	some terms (instead of all terms)
+	* src/mensa.cpp:587 verify only those terms that are used for
+	retrieving values from the original data (which make it possible
+	to use aliases defined earlier in the select clauses)
+	* src/selectParser.yy: add special aggregator function
+	"count(*)".  Note: since the keyword "unique" is not supported,
+	all count() function calls are treated as "count(*)"!
+
+2009-08-02 John Wu <John.Wu at ACM.org>
+	* src/column.cpp: move the statement that increment idxcnt and
+	decrement idxcnt to be under the protection of a read lock on the
+	column to avoid possible confusion about the idxcnt in function
+	unloadIndex.  This and the change from yesterday together address
+	the issue of deadlock when the cleaner is invoked while activating
+	new bitmap of the bitmap index.  Because the activate function
+	holds a mutex lock which prevent the acquisition of mutex lock in
+	functioin unload.
+
+2009-08-01 John Wu <John.Wu at ACM.org>
+	* src/column.cpp:4786 remove the mutex lock from column::unloadIndex
+
+2009-07-31 John Wu <John.Wu at ACM.org>
+	* src/parth*.cpp: in function adaptivexDBins, decrement the scaling
+	factor after inversion to ensure it is small enough to never cause
+	the indices computed to be out of bounds.  The out of bounds
+	indices appared to be the root cause of the problem of the crashes
+	reported by Andrew Olson.
+	* src/parth*.cpp: replace all instances of ibis::query with
+	ibis::countQuery (which is simpler than ibis::query class)
+
+2009-07-30 John Wu <John.Wu at ACM.org>
+	* src/qExpr.cpp: change the print statements in qExpr::simplify
+	and qExpr::reorder to use the same verboseness level
+	* src/query.cpp, src/countQuery.cpp: neglected to set the proper
+	return values when comparing strings
+	* src/parth*.cpp: explicitly pass the argument false to function
+	query::evaluate
+
+2009-07-29 John Wu <John.Wu at ACM.org>
+	* src/parth*.cpp: add ibis::CATEGORY to cases for ibis::UINT.
+	This allows categorical values to be used in histogram functions.
+	Previously, only some of the cases for UINT has CATEGORY as well.
+	The inconsistency was revealed after Andrew Olson raised the
+	question about possibility of using categorical values in
+	histograms.
+	* win/MinGW.mak: change column type of t1/c from short to ushort
+	to match the changes in tests/Makefile.am
+
+2009-07-29 John Wu <John.Wu at ACM.org>
+	* src/irelic.cpp: change estimateCost to attempt to use bits
+	directly if offsets is not available
+	* src/countQuery.cpp: update doScan and doEvaluate to correct
+	error involving query conditions that return no hit (the same
+	problems in query.cpp were fixed on 7/16), make doScan and
+	doEvaluate consistently return the number of hits
+
+2009-07-28 John Wu <John.Wu at ACM.org>
+	* src/util.cpp: util::isortRIDs to util::sortRIDsi, fix leftover
+	problems with function names in utilidor.cpp
+	* src/index.cpp:7140 remove the if-block that preventing basis
+	size 2 being used, add case to handle base size 2 for all
+	components
+
+2009-07-16 John Wu <John.Wu at ACM.org>
+	* src/query.cpp: doEvaluate and doScan handled the LOGICAL_AND
+	operator incorrectly, when no hit is found, it neglected to set
+	the result bitvector, which causes other expressions to produce
+	incorrect answers (apparently, this is the root cuase of the
+	problem reported by Jochen Schlosser)
+	* tests/scripts/query-count.list: add empty conditions to exercise
+	the changes in query.cpp
+	* src/qExpr.h, src/qExpr.cpp: change print function to only print
+	one node, rename old print function (that recursively prints the
+	whole express tree) to printFull, removed qExpr::printRange
+	* src/category.cpp: call prepareMembers in category::selectUInts
+	(without it, the program ibis occasionally crashes)
+	* src/array_t.cpp: check for k being 0 in topk and bottomk,
+	initialize the array ind before calling qsort in topk and bottomk
+	(the zero value of k causes crashes in bottomk)
+	* src/bundles.cpp: in versions of truncate, make sure keep > 0
+
+2009-07-14 John Wu <John.Wu at ACM.org>
+	* src/mensa.cpp: in doSelect limit the number of characters from
+	cond is placed in de (to reduce the length of the new table)
+	* src/column.cpp: two versions of function selectValuesT
+	negelected to close fdes
+	* src/bord.h: ibis::bord::cursor::dumpIJ needs to cast char and
+	unsigned char to integers before printing to ensure they are
+	printed as integers
+
+2009-07-10 John Wu <John.Wu at ACM.org>
+	* src/mensa.cpp, src/bord.cpp: change group by operation involving
+	categorical values to use the integer representation instead of
+	the strings (should be faster than using strings)
+	* tests/Makefile.am: add test case to check-text to exercise group
+	by on categorical values
+	* src/bundle.cpp: add statements to check for nil pointers
+
+2009-07-09 John Wu <John.Wu at ACM.org>
+	* src/category.h, src/category.cpp: clean up the documentation
+	about members of ibis::dictionary and consolidate the null strings
+	into a single class variable ibis::dictionary::nullstring.
+	* src/colValues.h: add colStrings
+	* src/colValues.cpp: change all bubble sort code to use selection
+	sort to minimize the data movement
+	* src/bord.cpp: change bord::groupby to make use of the new
+	colStrings for TEXT and CATEGORY.  This makes it possible to
+	perform group by with string valued columns through ibis::table
+	interface (Andrew Olson needed this feature)
+
+2009-07-08 John Wu <John.Wu at ACM.org>
+	* INSTALL: clean up the file
+	* src/category.cpp: delay reading of dictionary and generating .sp
+	file as much as possible, define macro FASTBIT_EAGER_INIT_TEXT if
+	eager initialization is desired
+
+2009-07-06 John Wu <John.Wu at ACM.org>
+	* src/util.h: modify round_down and round_up to check for input
+	value out of the range of output value (with the use of
+	std::numeric_limits template) (to address an issue raised by
+	Jochen Schlosser)
+	* tests/Makefile.am: change the type of c from short to unsigned
+	short in t0 and t1, add query boundaries involving negative
+	numbers to catch the error reported by Jochen Schlosser
+	* src/whereClause.h, src/whereClause.cpp: add function
+	standardizeRange to deal with negative boundaries in range
+	expressions involving unsigned integer columns
+	* src/idirekte.cpp: update function locate to work better with
+	ranges including negative boundaries
+	* src/part.cpp: add code in template part::doScan and
+	part::doCount to modify the bounds and operators in case the input
+	boundaries are out of valid range of the data types, add
+	specificalization for float and double for template part::doScan
+	and part::doCount
+
+2009-07-01 John Wu <John.Wu at ACM.org>
+	* src/mensa.h: add ibis::liga as a simple container of externally
+	managed data partitions, it provides the ibis::table API but does
+	NOT manage the resources associated with the data partitions.
+
+2009-06-30 John Wu <John.Wu at ACM.org>
+	* examples/thula.cpp: expand the doxygen documentatation about the
+	program
+	* src/parti.cpp: modify part::purgeInactive to use the new
+	function saveSelected
+	* tests/Makefile.am: add test 4 to check-marksdb to exercise
+	group-by functions, add test 4 and 5 to check-text to excercise
+	the function to deactivate rows
+	* examples/ibis.cpp: update doxygen documentation
+
+2009-06-29 John Wu <John.Wu at ACM.org>
+	* src/const.h: change macro DIRSEP to FASTBIT_DIRSEP
+	* src/category.h, src/category.cpp: add functions
+	text::saveSelected and text::writeStrings to wrie selected string
+	values
+
+2009-06-26 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp: change the constructor fileManager::roFile
+	so that it is only usable by friends, change macro
+	FILEMANAGER_UNLOAD_TIME to FASTBIT_UNLOAD_LIMIT, MIN_DOMAP_SIZE to
+	FASTBIT_MIN_MAP_SIZE
+	* src/i*.cpp: change the macro ALWAY_READ_BITVECTOR0 to
+	FASTBIT_READ_BITVECTOR0 (the word always was misspelled anyway)
+	* src/mensa.cpp: in doSelect collect data only from unique columns
+	* src/bord.cpp: in the constructor of ibis::bord::part delete the
+	buf of duplicate names (buffer associated with duplicate names are
+	lost, a problem report by Shane Adams)
+
+2009-06-25 John Wu <John.Wu at ACM.org>
+	* src/array_t.cpp: change the constructor of ibis::array_t that
+	takes storage& to take storage* (to match the other one that
+	already accepts storage*, having one of them taking storage& and
+	the other taking sotrage* is confusing to be sure)
+
+2009-06-23 John Wu <John.Wu at ACM.org>
+	* src/bitvector.cpp: in function subset, try to avoid access nil
+	pointer (to address a problem reported by Jochen Schlosser)
+
+2009-06-19 John Wu <John.Wu at ACM.org>
+	* src/category.cpp:1185 add test for currentDataDir() to prevent
+	strcmp from using nil pointer (a problem reported by Jochen
+	Schlosser)
+	* src/part.cpp:346 remove test on nEvent to generate m_name
+	regardless of the value of nEvents
+	* src/part.cpp: add check for nEvents being zero in functions that
+	deactivates rows
+
+2009-06-18 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: writeMetaData check the validity of activeDir
+	before write it as alternative directory
+	* examples/thula.cpp:607 allow the selection to be printed without
+	-v option
+
+2009-06-17 John Wu <John.Wu at ACM.org>
+	* doc/dataLoading.html: add note about support for unsigned
+	integers
+	* src/array_t.h: update documentation about the class to reflect
+	the change in name space (notice by Matthias Vallentin)
+	* src/part.h: change nEvent from type size_t to uint32_t
+	* src/column.cpp: in function append (that takes directory name as
+	input), remove the dependencies on thePart->currentDataDir (a
+	problem reported by Jochen Schlosser)
+
+2009-06-16 John Wu <John.Wu at ACM.org>
+	* src/category.cpp:1216 add check for state of the partition
+	before truncating the data file and .sp file in
+	ibis::text::startPositions (a problem noticed by Jochen Schlosser)
+	* src/array_t.h: put array_t template into namespace ibis (a
+	change requested by Matthias Vallentin)
+
+2009-06-12 John Wu <John.Wu at ACM.org>
+	* src/table.h: add optional argument to ibis::tablex::addColumn
+	and ibis::tablex::write to specify indexing options, add function
+	ibis::tablex::writeMetaData
+	* src/part.cpp: remove the special case for creating new directory
+	from the constructor that takes two directory names as arguments
+	* src/ibis.h: update the acknowledgement section in the doxygen
+	documentation
+	* src/column.h, src/column.cpp: move the decision of whether to
+	load index under a mutex lock in the constructor of indexLock and
+	in function loadIndex.  This should prevent an thread from using a
+	partially constructed index (being created by another thread)
+
+2009-06-11 John Wu <John.Wu at ACM.org>
+	* src/index.cpp:2549 change the test to use sampled histogram in
+	more cases (in a case with 20 million unique values, the histogram
+	data structure caused segmentation violations)
+
+2009-06-10 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: print the error code if the query evaluation fails
+	in ibis_part_threadedTestFun2
+	* src/category.cpp: add timer to text::startPositions
+	* src/column.cpp: add log statements to the constructors to pair
+	up with the log statement in the destructor
+
+2009-06-09 John Wu <John.Wu at ACM.org>
+	* src/column.cpp: in column::getNullMask comparisons involving
+	mask.size() need to taking into account of the state of data
+	partition.  This is the root cause of the problem observed by
+	Jochen Schlosser.  A better solution might be to create indexes
+	without the use of null masks.
+	* src/util.cpp: clean up the log message from util::removeDir,
+	if the argument leaveDir is set, do not remove the subdirectories
+	either (when used from ibis::part and ibis::query, only the files
+	in the current current directories need to be removed, the
+	subdirectories should be saved)
+	* src/ixbylt.cpp: bylt::evaluate used c0 incorrectly when the
+	query range is open to the right side
+	* src/*.cpp: remove the integer constants passed to the
+	constructor of ibis::util::logger class to make the printout more
+	uniform
+	* src/util.h, src/util.cpp: change util::uniqueNumber to
+	util::serialNumber and use sharedInt32 instead of explicitly using
+	a mutex lock
+
+2009-06-08 John Wu <John.Wu at ACM.org>
+	* src/column.cpp: warn about file size over 2GB in
+	ibis::column::append, simplify the logic regarding the existing
+	mask file
+	* src/column.cpp update column::mask_ in column::append to address
+	a problem reported by Jochen Schlosser
+	* src/part.cpp: in function init, check parameter useBackupDir
+
+2009-06-04 John Wu <John.Wu at ACM.org>
+	* src/qExpr.cpp: constructors of qDiscreteRange negelcted to set
+	the type of the expression
+	* src/qExpr.h: change qRange to not set query expression type, add
+	code to set query expression type in all constructors of
+	ibis::qContinuousRange
+
+2009-06-03 John Wu <John.Wu at ACM.org>
+	* src/table.h: change return value of ibis::table::addPartition to
+	return the number of partitions found on success (instead of
+	returning 0)
+
+2009-06-02 John Wu <John.Wu at ACM.org>
+	* src/table.h: clarify the logic of tablex::reserveSpace
+	* src/tafel.h, src/tafel.cpp: add function doReserve and
+	reimplement reserveSpace by calling doReserve, make reserveSpace
+	more robust, add documentation about the function
+
+2009-06-01 John Wu <John.Wu at ACM.org>
+	* tests/script/fastbit-config.in: add new file to report the
+	compilation flags
+
+2009-05-29 John Wu <John.Wu at ACM.org>
+	* src/part.cpp, src/parti.cpp: examine the logic of assigning the
+	initial state in the constructor of ibis::part to address a
+	question raised by Jochen Schlosser
+	* src/utilidor.cpp: add explicit template instantiations for
+	sortKeys with array_t<ibis::rid_t> as payload (make it easier to
+	perform joins outside of FastBit code)
+
+2009-05-28 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp: print the names of files as they being
+	removed by fileManager::flushFile and fileManager::flushDir when
+	the verbose level is larger than 7
+
+2009-05-27 John Wu <John.Wu at ACM.org>
+	* src/column.cpp: in column::appendValues and
+	column::appendStrings, add UnixClose to close the file and add
+	statements to write the mask fo the column
+
+2009-05-26 John Wu <John.Wu at ACM.org>
+	* src/tafel.cpp: in both versions of tafel::appendRow, only
+	increment mrows if all fields have been added, change normalize to
+	compute the value of mrows, in appendRow that takes
+	ibis::table::row, call normalize only if the number of columns is
+	the same as the number of column of the current data partition
+	(otherwise only work with the few columns indicated in the
+	incoming data structure)
+	* src/table.h: add function table::row::nColumns
+	* src/tafel.cpp:717 add a line to capture the new mask found
+	through name matching
+
+2009-05-22 John Wu <John.Wu at ACM.org>
+	* src/util.cpp: extend util::charTable to contain 65 characters
+	instead of 64 just in case someone is using the util::charIndex as
+	indices into util::charTable
+	* src/tafel.h: change the definition of tafel::column from
+	protected to public to make it possible to directly access the
+	in-memory columns
+	* src/column.h, src/column.cpp: add a new variant of function
+	append with two functions appendValues and appendString to direct
+	add values to the active data file
+
+2009-05-21 John Wu <John.Wu at ACM.org>
+	* src/array_t.cpp: replace all calls to util::logMessage with
+	calls to LOGGER
+
+2009-05-15 John Wu <John.Wu at ACM.org>
+	* src/table.h, src/tafel.cpp: add ibis::tablex::readNamesAndTypes
+	and ibis::tablex::parseNamesAndTypes, implement them in
+	src/tafel.cpp, addressing an issue of column names not accepting
+	underscore (a problem first reported by Nicolae Mihalache <mache
+	at abcpages dot com>)
+	* examples/ardea.cpp: add option -M to accept a metadata file name
+	for metadata that includes a large number of columns (to
+	accomodate the need to read metadata of wide tables)
+
+2009-05-14 John Wu <John.Wu at ACM.org>
+	* src/table.h, src/tafel.h: change tablex::nRows to tablex::mRows,
+	tablex::nColumns to tablex::mColumns to avoid possible name
+	conflict when table and tablex are used together
+	* tests/readcsv.cpp:298 add check for buf == 0 after call to new
+	* src/fileManager.h: add function resize to
+	ibis::fileManager::buffer, add call to initialize file manager in
+	function fileManager::byteFree
+	* src/tafel.cpp: in tafel::readCSV increase the size of linebuf to
+	accomodate data files with wide rows (a problem first reported by
+	Nicolae Mihalache <mache at abcpages dot com>)
+
+2009-05-13 John Wu <John.Wu at ACM.org>
+	* src/tafel.cpp: add more print statements to tafel::write
+	* configure.ac: rename src/config.h.in to
+	src/fastbit-config.h.in (effectively renamed config.h to
+	fastbit-config.h, something suggested by Hank Childs, but was
+	neglected earlier)
+
+2009-05-12 John Wu <John.Wu at ACM.org>
+	* tests/Makefile.am: capture the return code of ibis and print it
+	out in cases of error (in large-append-test)
+	* src/irange.cpp:3206 add case for empty upper bound
+	* all: marked current files as ibis1.0.9
+
+2009-05-11 John Wu <John.Wu at ACM.org>
+	* src/ixpack.cpp, src/ixpale.cpp, src/ixambit.cpp, src/zone.cpp:
+	neglected to handle the case where cand0 >= cand1 (no hit); when
+	both left operator and right operator are undefined, change return
+	value of the function estimate to empty bitmpas instead of
+	undefined values
+	* src/ixpack.cpp: in estimate when the left operator is <= and
+	right operator is <=, the right boundary is not handled correctly
+	* src/ibin.cpp: tests bin1 > nobs should be bin1 >= nobs
+	* src/part.h, src/part.cpp, src/parti.cpp: rename readTDC to
+	readMetaData, writeTDC to writeMetaData, and updateTDC to
+	updateMetaData
+
+2009-05-09 John Wu <John.Wu at ACM.org>
+	* src/ixpack.cpp, src/ixpale.cpp, src/ixambit.cpp, src/zone.cpp:
+	fix more bugs in function estimate (involving operator cobinations
+	that can not be accessed through the query parser)
+
+2009-05-08 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: fixing cases involving x < a >= x or x <= a > x in
+	doScan and doCount; add code to unload indexes and retry the
+	evaluateRange call
+	* src/countQuery.cpp: minor clean up of log messages
+	* src/range.cpp: a couple of bin1 should have been bin0 in
+	range::locate, a couple hit1 should be hit0
+	* src/icentre.cpp: in entre::estimate cand1+1 >= bounds.size()
+	should have been cand1 >= bounds.size() (the error causes
+	incorrect answers when the query boundary is in the next to the
+	last bin)
+	* examples/ibis.cpp: add code in doQuery to exercise the
+	countQuery class
+	* src/ixpack.cpp: fixing bugs in pack::estimate
+
+2009-05-07 John Wu <John.Wu at ACM.org>
+	* configure.ac: uncomment AC_FUNC_VPRINTF, otherwise the log
+	functions logMessage, logWarning and logError are crippled
+	* src/part.cpp:5996 change the constant expression so that rid1
+	will never be resized to an empty array
+	* examples.cpp: minor adjustment the function clean_up and print
+	out
+	* src/ibin.cpp, src/irange.cpp, src/imesa.cpp: in function
+	construct set the values of offsets
+	* src/column.cpp: in searchSortedICC and searchSortedOOCC, call
+	round_up for some of the comparison operators
+
+2009-05-06 John Wu <John.Wu at ACM.org>
+	* src/i*.cpp: remove (or comment out) calls to function write from
+	all versions of concrete implementations of ibis::index::append
+	* src/part.cpp: in verifyBackupDir, set backupDir to nil (0) if
+	makeDir fails
+	* src/ibin.cpp: handle the case where the existing index is not of
+	the currect size in ibis::bin::append, change all implementations
+	of ibis::index::append to check for the value of nrows against
+	nold
+	* configure.ac, src/config.h.in: use extra AC_OUTPUT_COMMANDS to
+	rename PACKAGE_VERSION and friends to FASTBIT_VERSION etc.  This
+	is to avoid possible conflict with other packages with the default
+	names (a problem reported by Prabhat)
+	* src/ibis.h: move call to util::setLogFileName ahead of
+	gParameters().read
+	* src/const.h: add a backup definition for FASTBIT_STRING
+	(otherwise cannot use FASTBIT_STRING without checking)
+	* src/util.cpp: change the initial message print to a log file to
+	include FastBit version and bug report information
+	* src/ibin.cpp: add new function construct to consolidate the
+	construction of a binned index
+	* src/index.cpp: in index::create add more print statement in case
+	of abnormal indexes
+
+2009-05-05 John Wu <John.Wu at ACM.org>
+	* src/part.h, src/part.cpp: rename buildIndex, loadIndex, and
+	unloadIndex to buildIndexes, loadIndexes, and unloadIndexes
+	* INSTALL, win/README: add notes about the new macro
+	WITHOUT_FASTBIT_CONFIG_H
+	* src/const.h, src/capi.h: don't include config.h under
+	VisualStudio on Win32
+	* src/part.cpp: in part::init, try to preserve the backupDir read
+	from metadata file; in function doScan remove calls to
+	foldBoundaries and foldUnsignedBoundaries before calling the
+	template doScan; the case for rng.rightOperator() == OP_EQ  did
+	not check that the rounded boundary actually equal to the original
+	query boundary
+	* configure.ac:325 need to define WITHOUT_FASTBIT_CONFIG_H when
+	trying to compile wherelexer.cc
+	* src/idirekte.cpp: implement direkte::append
+	* src/ibin.cpp ...: in all concrete versions of
+	ibis::index::write, add calls to fileManager::flushFile after
+	failure to open the index file
+
+2009-05-04 John Wu <John.Wu at ACM.org>
+	* src/ibin.cpp, src/irelic.cpp, src/idirekte.cpp: in estimateCost
+	for qContinuousRange, take into account of the complement option
+	* src/util.h:1072 in the round_up that outputs float, only invoke
+	nextafter if the initial rounding produce a value that is less
+	than the input value
+	* src/idirekte.cpp: update function locate for all combinations
+	that can be generated
+	* src/qExpr.cpp: simplify qContinuousRange::print to more
+	faithfully print the actually expression
+	* src/qExpr.h: make leftBound and rightBound of qContinuousRange
+	simply return lower and upper
+	* src/capi.h, src/const.h, src/util.h: remove the macro
+	HAVE_CONFIG_H, add WITHOUT_FASTBIT_CONFIG_H.  On systems that can
+	not run the configure script, the user must define
+	WITHOUT_FASTBIT_CONFIG_H (to address a problem reported by Hank
+	Childs)
+
+2009-05-03 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: correct template doScan and doCount (that makes
+	use of std::binder1st and std::biner2nd) to make use of the new
+	function round_up, simplify their comparisons by taking into
+	account of conditions that might contain each other; change the
+	answer to ill-formed range expressions to be 0; change
+	part::selfTest to pick a random column for testRangeOperators
+	instead of using the sorted one
+
+2009-05-02 John Wu <John.Wu at ACM.org>
+	* src/util.h: add templates ibis::util::round_down and
+	ibis::util::round_up (with specializations)
+	* configure.ac: add check for function nextafter, to be used in
+	incrDouble, round_up and friends in util.h
+
+2009-05-01 John Wu <John.Wu at ACM.org>
+	* src/column.h, src/column.cpp: rename getRawData to
+	getValuesArray
+
+2009-04-30 John Wu <John.Wu at ACM.org>
+	* src/parth2d.cpp, src/parth3d?.cpp: when getRawData fails try
+	selectTypes again.  Because getRawData is not a virtual function,
+	client code may not be able to access them correctly.  This cause
+	problems in applications like HDF5_FastQuery (reported by Allen
+	Sanderson)
+	* src/part.h: make templated version of doScan static member
+	functions to indicate they are not usable for inherening
+	* src/column.h, src/column.cpp: rename existing templated
+	selectValues to selectValuesT, add virtual function selectValues
+	that uses void* to pass the values; change template getRawData to
+	a virtual function with void* for the values.  These virtual
+	functions are to be overwritten in derived classes to provide
+	different ways of accessing the base data.
+
+2009-04-29 John Wu <John.Wu at ACM.org>
+	* src/ibin.cpp:5750 further refine the cost estimation to taking
+	into account of how many edge bins are needed for candidate check
+	* src/ibin.cpp, src/irelic.cpp: clean up in-line documentation
+
+2009-04-28 John Wu <John.Wu at ACM.org>
+	* src/ibin.cpp:5745 ibis::bin::estimateCost mistakenly compares
+	cand1 against bits.size, more natural to use offsets.size();
+	change the version of locate called to get a more accurate
+	information about the query processing cost (a problem that was
+	originally noticed by Prabhat and Allen Sanderson)
+
+2009-04-24 John Wu <John.Wu at ACM.org>
+	* src/tafel.cpp:1624 delete the line that changes ierr to 0 and -1
+	* src/tafel.cpp:1055 in function write, add code to check for
+	index specification in gParameters
+	* tests/Makefile.am: make test failure message more consistent,
+	they now all starts with 'Did NOT pass' such-and-such test
+	* examples/tcapi.c: add explicit casting to match the types
+	specified in the print format (otherwise prints wront value for
+	64-bit integers on Mac under gcc 4.0.0)
+
+2009-04-23 John Wu <John.Wu at ACM.org>
+	* src/parti.cpp: prevent current versions of part::reorder from
+	working on partitions with string values, they simply will not
+	work.  Add code to deal with external RIDs if they are present.
+	* INSTALL: add note (13) regarding the user of prefix and Java
+	native interface
+	* src/bundle.h, src/bundle.cpp: clean up in-line documentation,
+	add getLong and getULong to ibis::query::result
+	* src/whereClause.h, src/selectClause.h: clean up in-line
+	documentation -- whereClause was not showing up in the doxygen
+	documents
+	* src/part.h, src/part.cpp: add selectBytes, selectUBytes,
+	selectShort, selectUShort, and selectULong
+	* src/query.h, src/query.cpp: add getQualifiedBytes,
+	getQualifiedUBytes, getQualifiedShorts, getQualifiedUShorts,
+	getQualifiedLongs, and getQualifiedULongs
+	* src/table.h, src/tafel.cpp: change tablex::appendRow to return
+	the number of values added, change tablex::appendRows to return
+	the number of rows added
+
+2009-04-22 John Wu <John.Wu at ACM.org>
+	* src/query.h, src/query.cpp: add function getQualifiedStrings
+	* src/part.h, src/part.cpp: add function selectStrings
+	* src/utilidor.h: clean up errors in in-line documentation
+
+2009-04-18 John Wu <John.Wu at ACM.org>
+	* configure.ac: actually try to compile src/whereLexer.cc to
+	determine whether to use win/FlexLexer.h or not
+
+2009-04-17 John Wu <John.Wu at ACM.org>
+	* src/table.h, src/tab.h, src/bord.h, src/join.h, src/joinin.h:
+	change the return value type from point to reference to reduce the
+	need to check the validity of the pointers (existing code did not
+	check them anyway)
+	* src/bord.cpp, src/mensa.cpp: in getColumnAsString move statement
+	copying oss.str() to individual cases, previously this was done at
+	the end, which causes all string values to returned as empty string
+
+2009-04-16 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp:670 need to multiply page size to
+	pi.PhysicalTotal to get bytes
+	* src/tafel.cpp, src/tafel.h: add masks to functions locate,
+	locateString, append, and appendString -- to ensure the masks are
+	extended as the values are added through ibis::table::row
+	* src/mensa.cpp: change the behavior of ibis::mensa::addPartition
+	to examine the global configuration entries when the input
+	directory name is not a valid string
+
+2009-04-15 John Wu <John.Wu at ACM.org>
+	* configure.ac: change the handling of debug and xopt options to
+	preserve the existing CXXFLAGS specified by the user.  change
+	version number to 1.0.7
+	* src/tafel:1207 move the line that clears col.mask into the
+	if-block for nil pointers (in ibis::tafel::capacity).  Previously,
+	the mask is cleared for no reason at all.
+
+2009-04-14 John Wu <John.Wu at ACM.org>
+	* src/tafel.cpp: in tafel::normalize add statement to make sure
+	col.mask is of the correct size
+	* src/tafel.h: remove const from the template tafel::append and
+	function tafel::appendString, the const keyword is preventing the
+	modified values being propergating back to the callers
+	* src/qExpr.cpp:125 the right-hand side should be tm1 instead of
+	tm2 (tm2 has been deleted in the previous line) -- a bug reported
+	by Hank Childs and Prabhat
+	* src/qExpr.cpp:755 change the output statement to check whether
+	or not the output pointer is nil
+
+2009-04-10 John Wu <John.Wu at ACM.org>
+	* src/bundle.cpp, src/part.cpp, src/parti.cpp, src/query.cpp;
+	change the name of data file for the explicit RIDs from "rids" to
+	"-rids".  Since no valid column name can start with a dash, this
+	removes any possibility of name collision.
+	* src/part.cpp, src/query.cpp: change getRIDs to output implicit
+	RIDs if no explicit ones are available
+	* src: add macro FASTBIT_SYNC_WRITE to control whether to make a
+	fsync call before closing a file opened for write.  If it is
+	defined and _POSIX_FSYNC is also defined, then fsync will be
+	called
+	* src/table.h, src/tafel.h, src/tafel.cpp: add function capacity
+	to report the maximum number of rows that can be stored with the
+	current memory allocated
+	* src/array_t.h: add function capacity
+
+2009-04-09 John Wu <John.Wu at ACM.org>
+	* src/part.cpp:4784 change the message to more accurately reflect
+	the fact ibis::part::buildIndex merely goes through each column,
+	not necessarily builds any indexes
+	* src/bitvector.cpp:3700 update the message printed from
+	ibis::bitvector::reserve to indicate it is reserving the specified
+	number of words not bytes
+	* src/util.cpp:1272 add conditions to avoid copying the message
+	string in an attempt to make the timer class light-wiehgt
+	* src/column.cpp:8992 through some timing measurements on
+	hutch.lbl.gov, decided on a new test for choosing between binary
+	search and linear matching in ibis::column::searchSortedICD, add
+	statement to reserve space for hits (but timing measurements do
+	not show any advantage of doing it, keeping it anyway because it
+	seem to make sense)
+
+2009-04-07 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp:1714 need to multiply by sizeof(T) when
+	recording the size of the buffer.  This error was causing the file
+	manager to incorrectly counting the number of bytes in memory and
+	causing the it to attempt to free memory that are not there.  Have
+	confirmed with valgrind that there is actually no memory leak at
+	this time.
+	* src/util.h:58&65 Andrey Kolchanov report that on MacOS gcc 4
+	does not yet support atomic operations.  In class util::counter,
+	make use of macro HAVE_GCC_ATOMIC32 instead of relying on GCC
+	version to avoid the problem reported by Andrey
+	* src/util.cpp: re-enable printing of leading space in the
+	constructor of ibis::util::logger class as indicated in the
+	documentation of the function, remove extra parameters to most of
+	the invocations of the constructor of logger
+
+2009-04-06 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp: add two more try-catch blocks to make a
+	total of eight layers as promised in the documentation of the
+	constructor if ibis::fileManager::buffer
+	* src/qExpr.h: add constructor for ibis::qDiscreteRange to make
+	use of array_t<double>
+
+2009-04-04 John Wu <John.Wu at ACM.org>
+	* src/tafel.cpp: in tafel::write reusing the variable olddesc
+	causes incorrect description to be printed at the end
+
+2009-04-03 John Wu <John.Wu at ACM.org>
+	* src/table.h, src/tafel.h: add reserveSpace to ibis::tablex.
+	* src/tafel.cpp: add LOGGER statements before all statements that
+	returns a negative number
+
+2009-04-02 John Wu <John.Wu at ACM.org>
+	* src, examples: address warnings raised by the gcc compiler
+	* tests/Makefile.am: reorder the final output of appendTest0 from
+	do-large-append (so the built-in tests will invoke the new
+	functions on sorted data)
+	* src/column.cpp: re-arrange code to recover from error
+	searchSorted
+	* src/column.h: make searchSorted virtual so that HDF5_FastQuery
+	can redefine them
+
+2009-04-01 John Wu <John.Wu at ACM.org>
+	* configure.ac: change handling of --with-java option to only
+	check for the javac if the JAVA directory (either specified
+	through --with-java or environment variable JAVA_HOME) actually
+	exists
+	* tests/Makefile.am: add a test case in check-ibis to try the
+	weighted histogram computations
+
+2009-03-31 John Wu <John.Wu at ACM.org>
+	* src/fileManager.h, src/fileManager.cpp: add functions
+	adjustCacheSize and currentCacheSize at the request of Jochen
+	Schlosser, update in-line documentation of some functions
+	* src/part.h: add weighted versions of get1DBins, get2DBins, and
+	get3DBins
+	* src/parth3dw.cpp: add separate file for an implementation of
+	get3DBins with weighting
+	* src/column.cpp: avoid ibis::roster if currentDataDir() returns
+	nil, a problem encountered in HDF5_FastQuery reported by Oliver
+	Ruebel
+	* examples/ibis.cpp: add a new print weighted command to test the
+	new weighted histogram functions, add calls to ibis::util::clean
+	to free vector<bitvector*> allocated with get1DBins, get2DBins,
+	and get3DBins.
+	* src/parth.cpp: get1DDistribution returns the number of rows
+	selected instead of the number of bins
+
+2009-03-30 John Wu <John.Wu at ACM.org>
+	* src/part.h: start implementing functions to compute weighted
+	histograms at the request of Oliver Ruebel
+
+2009-03-27 John Wu <John.Wu at ACM.org>
+	* src/qExpr.h: update the binary search procedure in
+	qDiscreteRange::inRange to check the last values[m]
+	* examples/ibis.cpp: in findMissingValues, count the values that
+	match and report if query 1 found less instances than query 0,
+	print all values if more than half will be printed
+	* tests/Makefile.am: add a new test case to exercise the new test
+	implemented in tableSelect of examples/ibis.cpp (with option -r)
+
+2009-03-26 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp: in the loop to handle reordering of data
+	partitions, delete str at the end (instead of in the middle)
+	* src/part.h, src/part.cpp: change m_desc from char* to
+	std::string
+	* src/parti.cpp: add note to m_desc to indicate the data has been
+	reordered, add call to computeMinMax if the min/max are not set
+	when deciding whether to use the column as a key for sorting (in
+	ibis::part::reorder)
+	* src/column.h, src/part.h: add call to strerror to explain errors
+	from pthread functions
+	* src/query.cpp:660 avoid print extremely long query expressions
+	* src/column.cpp, src/part.cpp: change the print out of the column
+	name only (no the list of values, which can be awfully long)
+	* examples/ibis.cpp: add code to chech the values returned by qq0
+	and qq1 in tableSelect (function findMissingValues and
+	findMissingValuesT actually does the work)
+
+2009-03-25 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp: reduce the threshold for invoking default
+	maxBytes computation to MIN_DOMAP_SIZE from 10 MB, to allow for
+	maxBytes to be very small so that we can test the out-of-core
+	functions in column.cpp
+	* src/fileManager.cpp: change the constructor of
+	ibis::fileManager::buffer to check the amount of free memory
+	before allocating anything, make sure no more than 1/4th of the
+	free memory is given to a new buffer
+	* src/column.cpp:5276 add statement to indicate the data is no
+	longer sorted after an append operation
+
+2009-03-24 John Wu <John.Wu at ACM.org>
+	* src/column.cpp: add statements to read and write field named
+	"sorted", add functions searchSorted, searchSortedIC,
+	searchSortedOOC, isSorted, findLower and findUpper
+	* src/parti.cpp: add calls to ibis::column::isSorted to indicated
+	that some columns are completely sorted
+	* src/bord.cpp: add code to update m_sorted when reordering
+	columns
+	* src/countQuery.h, src/countQuery.cpp: add setWhereClause that
+	takes an ibis::qExpr object, add code to delete hits and cand after
+	modifying the query expression or data partition
+	* src/part.h, src/part.cpp: add function part::testRangeOperators
+	* src/ibin.cpp, src/irelic.cpp: set return values to indicate an
+	empty range in case of an ill-formed range expression
+	* src/qExpr.h: add virtual function nItems to ibis::qExpr to count
+	the number of items in a query expression tree
+	* examples/ibis.cpp: expand the handling of reordering option to
+	allow column names to be specified after a directory name
+	* src/array_t.h, src/array_t.cpp: add function find_upper to find
+	the upper bound (as in STL function upper_bound), the existing
+	function find is similar to STL function lower_bound
+
+2009-03-23 John Wu <John.Wu at ACM.org>
+	* src/table.h: add function getColumnAsDoubles that returns the
+	values in std::vector<double>
+	* examples/ibis.cpp: add code in tableSelect to directly generate
+	ibis::qDiscreteRange query expression (reuse the verify_rid flag
+	-r)
+	* src/column.h: add protected member m_sorted (default false)
+
+2009-03-17 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp: change all calls to util::logMessage to
+	LOGGER to avoid casting the integers
+
+2009-03-16 John Wu <John.Wu at ACM.org>
+	* tests/Makefile.am: add m4 files in tests/m4 to EXTRA_DIST
+
+2009-03-11 John Wu <John.Wu at ACM.org>
+	* src/ibis.h: add countQuery.h
+	* src/utl.h, src/part.cpp: add ibis::util::clean for ibis::partList
+
+2009-03-09 John Wu <John.Wu at ACM.org>
+	* tests/Makefile.am: add check-marksdb to run through the three
+	queries provided by David B. Marks <marksdb @ cox.net>
+	* src/qExpr.h, src/qExpr.cpp: add
+	ibis::math::preserveInputExpressions to make it possible to bypass
+	optimization of arithmetic expressions
+
+2009-03-08 John Wu <John.Wu at ACM.org>
+	* src/Doxyfile: include directory java/gov/lbl/fastbit
+	* java/README: add mention of FastBitStringWriter and
+	FastBitStringReader
+	* java/gov/lbl/fastbit/*.java: update in-line documentation
+
+2009-03-07 John Wu <John.Wu at ACM.org>
+	* tests/readcsv.cpp: add new function readALine to handle comment
+	lines started with # and --, to match the comments accepted by
+	ibis::tafel::readCSV
+
+2009-03-06 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp:922 remove mit and reuse variable it,
+	statements 924 and 925 mistakenly used it instead of mit and was
+	causing problems (a problem reported by Andrey Kolchanov)
+	* src/util.h: clean up the documentation about envLock
+	* src/query.h: change readLock and writeLock to from protected to
+	public
+	* src/capi.cpp: make use of the ibis::query::writeLock instead of
+	ibis::util::envLock when manipulating the content cached for each
+	query
+	* src/resource.cpp: in resource::add remove the statements that
+	delete the group with the same name as a value being added
+	* win/Win.mak, win/MinGW.mak: include the new file countQuery.cpp
+
+2009-03-05 John Wu <John.Wu at ACM.org>
+	* src/bitvector64.cpp:1070 same problem at Norbert found in
+	bitvector.cpp
+
+2009-03-05 Norbert Heusser <heusser at online.de>
+	* src/bitvector.cpp:1353 add call to nosharing() before modifying
+	m_vec
+
+2009-03-04 John Wu <John.Wu at ACM.org>
+	* configure.ac: add AC_LAN(C++) to make the default language to be
+	C++, fix the problem with header file FlexLexer.h
+	* INSTALL: add note 10 about java compilation problem
+	* Makefile.am, src/Makefile.am, java/Makefile.am,
+	tests/Makefile.am: use EXTRA_DIST to replace dist_data...
+	* java/README: update to reflect the new files from Andrey
+	* AUTHORS: update list of contributors to include Andrey
+
+2009-03-04 Andrey Kolchanov <kolchanov at gmail.com>
+	* java/build.xml, java/tests,
+	java/gov/lbl/fastbit/FastBitStringReader.java,
+	java/gov/lbl/fastbit/FastBitStringReaderException.java,
+	java/gov/lbl/fastbit/FastBitStringWriter.java,
+	java/gov/lbl/fastbit/FastBitStringWriterException.java:
+	add java unit test function and string handling functions.  This
+	set of files require Apache ant to build.  Additional dependencies
+	are distributed under tests/lib as jar files.
+
+2009-03-03 John Wu <John.Wu at ACM.org>
+	* src/mensa.cpp: add calls to countQuery::setSelectClause in
+	mensa::doSelect to make use of the capability to handle aliases
+	* src/whereClause.cpp: on line 123 and 210, tm->getType() should
+	be tmp->termType()
+	* src/qExpr.cpp: change compRange::print to avoid print unknown
+	operators
+	* src/qExpr.h: ibis::compRange::inRange() neglected to check for
+	nil pointers
+	* src/qExpr.cpp: ibis::bediener::reduce mishandles a number of
+	different cases, ibis::stdFunction1::reduce neglect to set ret to
+	nil where it should have set it to this
+
+2009-03-02 John Wu <John.Wu at ACM.org>
+	* src/part.h, src/parti.cpp: add two variants of addColumn to
+	evaluate an arithmetic expression and produce a new column
+	* src/column.h, src/column.cpp: add castAndWrite to support
+	addColumn
+	* src/whereClause.cpp: change _verify to take a selectClause as an
+	argument and check for aliases in column names for simple
+	expressions
+	* src/countQuery.h, src/countQuery.cpp: add new class
+	ibis::countQuery
+	* src/mensa.cpp: change all references to ibis::query to
+	ibis::countQuery
+
+2009-02-18 John Wu <John.Wu at ACM.org>
+        * src/index.cpp: in doxygen documentation for index::create
+        update the parameter name to dfname
+
+2009-02-17 John Wu <John.Wu at ACM.org>
+	* src/column.cpp: add codes to evaluateRange to answer
+	qDiscreteRange queries with sorted list of data if they are
+	present
+	* examples/ibis.cpp: add option '-sort column-name' to allow the
+	user to sort selected columns of a data partition
+	* src/part.cpp: prevent the use of categorical values in either
+	queryTest or quickTest (both of which may invoke doScan
+	which are not available on string valued columns)
+	* src/part.cpp: recursiveQuery checks against nEvents, but should
+	have used the number of ones in the column mask
+	* src/part.h: getMask --> getNullMask, to be consistent with the
+	function names elsewhere
+
+2009-02-16 John Wu <John.Wu at ACM.org>
+	* src/iroster.h, src/iroster.cpp: reorganize ibis::roster
+
+2009-02-15 John Wu <John.Wu at ACM.org>
+	* src/util.h, src/fileManager.h, etc: move util::buffer to
+	fileManager::buffer and add code to track to its memory usage
+
+2009-02-13 John Wu <John.Wu at ACM.org>
+	* src/table.h, src/tafel.h, src/tafel.cpp, examples/ardea.cpp: add
+	an optional argument to readCSV for user to specify the maximum
+	number of rows expected from the input file, add user to specify
+	the maximum number of rows on the command line of ardea (a
+	suggestion from Norbert Heusser <heusser at online.de>)
+	* src/category.cpp: add a buffer to store starting positions in
+	text::startPosition to reduce the numbre of calls to fwrite
+	* src/mensa.cpp: the constructor is cursor may divide by zero is
+	the table contains only string-valued data, in this case, assume
+	each value takes no more than 1024 bytes
+	* src/category.cpp: add a buffer to store the starting positions
+	in text::search to reduce the number of read operations, unroll
+	the loop for matching strings, make the comparisons
+	case-insensitive
+
+2009-02-12 John Wu <John.Wu at ACM.org>
+	* configure.ac: added space surrounding expression of the form
+	"test a=b"
+	* src/tafel.cpp: variable cnt needs to be set to zero for every
+	line of input text in ibis::tafel::readCSV, change all default
+	delimiter string from ", " to ","
+	* src/util.cpp: add special cases in ibis::util::getString
+	(3-argument version) to avoid calls to strchr
+
+2009-02-10 John Wu <John.Wu at ACM.org>
+	* src/qExpr.cpp: use an integer array to sort the incoming values
+	instead of a std::set (at the suggestion of Alesandro Capucci)
+	* examples/ibis.cpp, doc/ibisCommandLine.html: change the print
+	out to indicate that tableSelect is producing another table as
+	output and the "count(*)" will produce a table of one row and one
+	column, update the documentation about the ibis command line to
+	reflect this fact (not a new feature but a clarification of
+	behavior)
+	* src/category.cpp: the computation to carry the leftover bytes in
+	function startPositions had an extra accumulation of offset, a
+	problem first reported by Andrey Kolchanov
+
+2009-02-06 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp: add calls to unload in mapFile and doRead
+	after they fail for the first time (to address a problem reported
+	by Alessandro Capucci)
+	* tests/Makefile.am: remove - from test 3 of check-tcapi, the sh
+	on a BSD machine does not like it
+
+2009-02-05 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp: add indications of total number of hits in
+	addition to how many are printed in function tableSelect (to
+	address a problem encountered by Alessandro Capucci)
+	* configure.ac: if --enable-xopt is specified by nothing is
+	specified for debug, use -O3, which is more widely supported than
+	-O5
+
+2009-02-04 John Wu <John.Wu at ACM.org>
+	* src/column.cpp, src/category.cpp: updated documentations while
+	looking for clues to the problem reported by Alessandro Capucci
+	<alessandro at totalwire.it>
+
+2009-02-03 John Wu <John.Wu at ACM.org>
+	* src/table.h: move two inlined functions ibis::table::groupby and
+	ibis::table::orderby to mensa.cpp to make the header file more
+	self contained.  Those two function requires
+	ibis::table::parseNames, which is already in mensa.cpp, change
+	parseNames to be class function
+	* src/whereLexer.ll: change a number sequence to require at least
+	three numbers, change {WS}* after the first string in the
+	definition of string sequence to be {SEP}+ -- to address a problem
+	reported by David Marks <marksdb at cox.net>
+	* src/whereParser.yy: add special cases for IN predicate with one-
+	and two-number sequences on the right-hand side
+	* tests/Makefile.am, win/MinGW.mak: change case 2 of check-ibis to
+	test for a simplified version of problem reported to cause problem
+	for David Mark
+	* src/qExpr.cpp: in math::stdFunction1::reduce, add special case
+	to absorb pairs of consecutive log and exp functions
+
+2009-02-02 John Wu <John.Wu at ACM.org>
+	* src/parth3d.cpp: add macro FASTBIT_EXPAND_ALL_TYPES to control
+	whether the BYTE, UBYTE, SHORT, USHORT and ULONG are handled
+	separately with different template instances.  If
+	FASTBIT_EXPAND_ALL_TYPES is defined, all ten fixed-size column
+	types are expanded to have their own instances of the template
+	functions.  However, with three levels of expansion, it creates
+	thousands of instances of the template function and takes a very
+	long time to compile.  If the macro is not defined, the default
+	behavior, only five template instances are created at each level.
+	Overall, this should reduce the number of template instances by a
+	factor eight.  Should improve the compile time without sacrifice
+	too much run-time performance.
+	* src/parth3da.cpp, src/parth3db.cpp: split the two get3DBins
+	functions from src/parth3d.cpp to reduce compilation time
+	* tests/Makefile.am: remove 2>&1, it somehow cause errors on
+	cygwin during 'make check'
+	* configure.ac: move the block for handling --enable-debug and
+	--enable-xopt to the beginning of the custome code in configure.ac
+	to set the initial value of CFLAGS, let the default CFLAGS pass
+	through when neither debug nor xopt is set
+
+2009-02-01 John Wu <John.Wu at ACM.org>
+	* tests/Makefile.am: add check-tcapi test 3 to confirm the output
+	from text::selectLongs, add tcapi-3 to the list dist_data_DATA
+
+2009-01-30 John Wu <John.Wu at ACM.org>
+	* src/capi.cpp:632 add ibis::TEXT and ibis::CATEGORY as acceptable
+	column types for fastbit_get_qualified_longs (bug found by Andrey
+	Kolchanov)
+	* java/milky.java, examples/tcapi.c: add a case for retrieving
+	values as 64-bit integers
+	* configure.ac: change the code used for testing atomic function,
+	change how the CFLAGS is carried through the configure script
+
+2009-01-29 John Wu <John.Wu at ACM.org>
+	* src/index.h: add the 4th argument to index::create to determine
+	whether to load an index in its entirety, previously, this option
+	is available through a undocumented global variable (a feature
+	requested by Jochen Schlosser)
+	* src/column.h, src/part.h: add the 2nd argument to the function
+	loadIndex to make use of the new argument in ibis::index::create
+	* src/resource.h: update documentation to a couple of functions
+	* doc/index.html, doc/rara.html: refer to the new html file
+	rara.html in index.html, change < and > to &lt; and &gt; in
+	rara.html
+
+2009-01-28 John Wu <John.Wu at ACM.org>
+	* src/FastBit.java: update internal documentation about the
+	functions.
+	* src/util.h: add checks on WINVER to avoid invokding 64-bit
+	atomic functions on non-64-bit machines under windows (in
+	ibis::util::sharedInt64)
+	* src/mensa.h, mensa.cpp: change curPart to be an integer
+	* src/util.h, src/mensa.cpp, src/capi.cpp, src/part.cpp,
+	src/query.cpp: change ibis::partList into a std::vector, rename
+	the old associative array into partAssoc -- only use it within the
+	scope of individual functions.  A unsuccessfull attempt to figure
+	out why win/trydll.cpp fails to clean up the variable tlist --
+	probably the same old problem with dll export.
+
+2009-01-22 John Wu <John.Wu at ACM.org>
+	* src/rara.cpp: add a small test program named after the smallest
+	ibis
+	* doc/rara.html: add annotation for the small example rara.cpp
+	* src/util.h: remove const qualifier from the return type of
+	operator() for sharedInt32 and sharedInt64, change the definition
+	of HAVE_GCC_ATOMIC[32|64] to trust the definition from config.h
+
+2009-01-21 John Wu <John.Wu at ACM.org>
+	* win/trydll.cpp: update the call to constructor of
+	util::quietLock and util::counter to the new argument lists
+	* src/index.cpp: restore the use of ibis::relic when the index
+	specification is "relic" -- existing code attempts to use
+	ibis::direkte in some cases when "relic" is requested
+	* src/irelic.cpp: in ibis::relic::read check for valid type codes
+	explicitly
+	* src/ibis.h: add conditional code to increase the verbose level
+	if DEBUG or _DEBUG is defined
+	* java/README.txt: update instructions related to the new package
+	name gov.lbl.fastbit
+
+2009-01-20 John Wu <John.Wu at ACM.org>
+	* src/util.h: use the new macros defined in src/config.h
+	(HAVE_GCC_ATOMIC32 and HAVE_GCC_ATOMIC64) for help
+	determining the presence of atomic operations
+	* src/column.h: change member variable idxcnt from uint32_t to
+	ibis::util::sharedInt32 to provide more consistent tracking of
+	index usage
+	* src/part.h: add get1DBins and get2DBins that return
+	std::vector<ibis::bitvector*> based on the experience of Oliver
+	who observed that using the null pointers instead of allocating
+	empty bitmaps can reduce the execution of his program by about
+	half.  Note that Oliver was using get3DBins which is much more
+	likely to produce empty bins than get2DBins and get1DBins,
+	therefore the benefit of returning null pointers might be less.
+
+2009-01-19 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp: update the messages printed out from
+	fileManager::getFile that actually does the reading, to enable the
+	printing of the address of the allocated memory
+	* src/util.h: add conditions to prevent the use of
+	__sync_add_and_fetch and friends on 8-byte integers under GCC
+	4.1.x (need to find a better way to detect when to use this GCC
+	extension)
+	* configure.ac: add two sections to figure out whether
+	__sync_add_and_fetch is supported, regenerate src/config.h.in with
+	autoheader
+
+2009-01-18 John Wu <John.Wu at ACM.org>
+	* src/category.h, src/category.cpp: add ibis::text::selectLongs to
+	extract the starting positions of the selected strings (so that
+	the caller may read the string values directly, a hack for Andrey
+	Kolchanov)
+	* src/fileManager.cpp: simplify the print logic in
+	storage::enlarge, ensure all memory allocations are recorded
+
+2009-01-16 John Wu <John.Wu at ACM.org>
+	* src/util.h: change ibis::util::counter to use GCC atomic
+	extension as well
+	* src/util.h: remove the unused member variable mesg from
+	ibis::util::counter, add code to use interlocked variables in
+	ibis::util::counter
+	* src/util.h: change sharedInt template to two versions for
+	uint32_t and uint64_t to take advantage of atomic functions
+	available on windows under visual studio 9
+	* src/fileManger.h, src/fileManager.cpp: remove countMutex,
+	change totalBytes to be ibis::util::sharedInt64, change
+	storage::nref from unsigned to ibis::util::sharedInt32
+	* win/MinGW.mak: add case 10 to check-ibis
+
+2009-01-15 John Wu <John.Wu at ACM.org>
+	* src/util.h: add ibis::util::sharedInt template to make use of
+	GCC extension for atomic operations on integers
+
+2009-01-14 John Wu <John.Wu at ACM.org>
+	* src/resource.h: separate the default constructor from the
+	constructor that takes a string argument based on a suggestion
+	from Niklas Bulitta.  Note that the function ibis::gParameter()
+	only uses the default constructor.  Update the documentation of
+	the functions in ibis::resource.
+	* tests/Makefile.am: add test case 10 to check-ibis to exercise
+	the new built-in tests for multi-threaded query evaluations
+
+2009-01-13 John Wu <John.Wu at ACM.org>
+	* src/part.h: start to implement a set of function that use a
+	thread pool to answer different queries --
+	ibis::part::buildQueryList and ibis::part::checkQueryList
+	* src/part.cpp: rename ibis_part_startTests to
+	ibis_part_threadedTestFun1, add ibis_part_threadedTestFun2 to
+	process the list of queries generated by buildQueryList
+
+2009-01-09 John Wu <John.Wu at ACM.org>
+	* java/FastBit.java: change package name to be gov.lbl.fastbit,
+	add FastBitJNI group to doxygen documentation
+	* src/Doxyfile: add java/FastBit.java and the example files in
+	examples to the list of source files
+	* src/query.cpp:6584 add OPEN_FILEMODE as the 3rd argument to
+	UnixOpen function call (an error spotted by Niklas Bulitta)
+	* src/query.cpp:1712 add local static variable myhostid to cache
+	the host ID instead of making the system call every time
+	(suggested by Niklas Bulitta)
+	* src/parth3d.cpp: add a variantion of get3DBins that returns
+	bitmaps in container std::vector<ibis::bitvector*>.  Based on the
+	timing measurements from Oliver, keeping empty bitmaps as nil
+	pointers might be able to reduce the memory usage reduce overall
+	execution time of get3DBins, especially if the majority of the
+	bins are empty.
+	* examples/ibis.cpp: add code in print3DDistributiion to test the
+	new get3DBins that returns std::vector<ibis::bitvector*>
+
+2009-01-08 John Wu <John.Wu at ACM.org>
+	* win/MinGW.mak: add check-ibis
+	* java/FastBit.java, java/FastBit.c: following a suggestion from
+	Andrey Kolchanov <kolchanov at gmail.com> and placed JNI code in a
+	package named gov.lbl.sdm
+
+2009-01-07 John Wu <John.Wu at ACM.org>
+	* win/MinGW.mak, win/Win.mak: update these make files for the two
+	new source files
+	* win/*.vcproj: include parth2d.cpp and parth3d.cpp in the
+	VisualStudio project files
+
+2009-01-06 John Wu <John.Wu at ACM.org>
+	* src/parth2d.cpp, src/parth3d.cpp, src/parth.pp: split parth.cpp
+	into three file to reduce the time needed for compilation
+	* src, examples: change copyright year to include 2009
+
+2009-01-05 John Wu <John.Wu at ACM.org>
+	* src/util.h, src/util.cpp: add ibis::util::compactValue2 to
+	compute the most compact binary value in a given range
+	* examples/ibis.cpp: compute stride values in print2DDistribution
+	and print3DDistribution using compact binary values to make the
+	arithmetic computation less affected by rounding.  This is mostly
+	to avoid visual mismatches, for example, the value 0.1 printed on
+	screen is actually slightly larger than the precise value of 0.1
+	inside the computer.  Given begin=0 and stride=0.1, one may expect
+	the value 1.0 to be in bin 10, but it actually ends up in bin 9.
+	The apparent unexpected placement of values can be to diagnose.
+
+2009-01-02 John Wu <John.Wu at ACM.org>
+	* src/array_t.cpp: in constructors assign m_begin to 0 in the
+	initialization lists, assign values to m_begin in the constructor
+	body after checking the values of actual
+	* src/bitvector.cpp:393 add call to m_vec.nosharing() to
+	ibis::bitvector::setBit (when a std::vector<ibis::bitvector> is
+	resized, it creates multiple copies of a dummy bitvector)
+	* src/parth.cpp: line 3011, vals2 should have been vals3, lines
+	2987 and 2974, end2 should have been end3!
+	* src/bitvector.cpp: count bitmaps as in decompressed state only
+	if the m_vec contain some (> 0) bits -- this avoids the invocation
+	of functions xx_c0 that assume the raw pointers can be used
+	directly (in case of an empty m_vec, the raw pointer can not be
+	used because it might be nil)
+	* win/ibis.vcproj: add . to the include directories for the
+	Release build
+
+2008-12-26 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp: rename the existing print2DDistribution and
+	print3DDistribution with ones that uses (begin, end, stride) to
+	specify fixed bins -- to exercise the new get2DBins and get3DBins
+
+2008-12-24 John Wu <John.Wu at ACM.org>
+	* src/bitvector.cpp:4093 add statement to delete tmp, add call to
+	compress and copy the resulting bit vector which typically reduces
+	the memory usage
+	* src/bitvector.cpp:4116 reorganize the triple-nested loop to
+	reduce the number of temporary variables generated, add call to
+	compress, and copy the result to reduce memory footprint held by
+	the result bit vectors
+	* src/parth.cpp in adaptiveIntsDetailed and adaptiveFloatsDetailed
+	add function calls to compress the bit vectors generated from
+	sumBits
+
+2008-12-23 John Wu <John.Wu at ACM.org>
+	* src/part.h: add get1DBins, get2DBins and get3DBins that takes
+	(begin, end, stride) triples to define exact bin boundaries (a
+	feature requested by Prabhat and Oliver Ruebel)
+
+2008-12-18 John Wu <John.Wu at ACM.org>
+	* src/mensa.h, src/mensa.cpp, src/bord.cpp: add function dumpNames
+	* examples/ibis.cpp: add outputnamestoo to capture the request to
+	also output the column names in the output file
+	* doc/ibisCommandLine.html: update the description of option
+	-output to indicate the new variant -output-with-header
+	* tests/Makefile.am: capitalize the word NOT to make failure
+	messages stand out a little bit more
+	* src/selectClause.h:72 add (required) return statement
+
+2008-12-17 John Wu <John.Wu at ACM.org>
+	* src/table.h, src/tab.h, src/bord.h: add function dumpNames to
+	print a one-line header for CSV output
+
+2008-12-9 John Wu <John.Wu at ACM.org>
+	* src/ixbylt.cpp, src/ixfuge.cpp, src/ixfuzz.cpp: the function
+	coarsen contains an incorrect test, the condition (ncoarse < 5 ||
+	ncoarse <= nobs) should be (ncoarse < 5 || ncoarse >= nobs)
+	* src: minor tinkering with the print-out (while debugging an
+	application)
+
+2008-12-4 John Wu <John.Wu at ACM.org>
+	* win/Win.mak, win/MinGW.mak: update makefiles for Visual Studio's
+	nmake and GNU make under MinGW/MinSYS
+	* src/util.cpp: add conditional comiplation macro for MinGW32 in
+	ibis::util::userName()
+
+2008-12-1 John Wu <John.Wu at ACM.org>
+	* README, win/README, tests/README: update the instructions
+	following an inquiry from a new user
+
+2008-11-28 John Wu <John.Wu at ACM.org>
+	* src/category.cpp:201 incremented it by (newentry-1) instead of
+	newentry
+	* tests/readcsv.cpp: change header files to satisfy g++-4 under
+	cygwin
+
+2008-11-25 John Wu <John.Wu at ACM.org>
+	* src/ibin.cpp:3850 make the lower bound larger to create more
+	bins for larger values in log-scale -- this affects the case of
+	indexing integer values as floating-point values and the minimum
+	value is exactly 0, in which case the majority of the bin
+	boundaries are less than 1 and useless
+	* src/column.cpp:4696 add a statement in evaluateRange to clear
+	the existing content of result variable (low), later statements
+	depend on the size of this variable to determine what to do
+	* configure.ac: update to autoconf 2.63
+	* src/fileManager.cpp: in function unload, clean up the usage of
+	variable sum, simplify the logic for determining what objects to
+	remove.  The previous usage of sum is incorrect in the loop
+	to free candiates.
+	* src/fileManager.cpp: add call to sysctl on BSD flavored machines
+	to find out the physical memory size
+	* tests: completed more-check successfully on portnoy (FreeBSD),
+	davinci(linux), data2 (linux), starsky(Darwin), and bit (cygwin)
+
+2008-11-24 John Wu <John.Wu at ACM.org>
+	* src/parth.cpp:3091 change "i > 1" to "i > 0" in
+	ibis::part::get1DDistribution to fix an error in histogram
+	computation found by Niklas Bulitta
+	* src/parth.cpp:3102 change test to produce a tighter upper bound
+	for the last bin boundary
+	* src/part.cpp: add write lock to computeMinMax and buildIndex
+	* examples/ibis.cpp:679 change ibis::gVerbose > 0 to
+	ibis::gVerbose >= 0, to print selected values without requiring -v
+	option
+	* src/ifade.cpp, src/isapid.cpp, src/isbiad.cpp, src/islice.cpp:
+	add cases to handle 6 more different types of integer values --
+	fixes an error observed by Niklas Bulitta
+	* tests/scripts/matchCounts.pl:45 change fgrep to egrep to catch
+	a larger variety of error messages
+	* tests/scripts/matchCounts.pl:38 convert all non-alphanumeric
+	characters in query condition to underscore so that the backup
+	file names may be acceptable on windows (under cygwin)
+	* src/utilidor.cpp:1281 add definition for nelm (used in DEBUG
+	code)
+	* src/part.cpp:4535 removed invalid DEBUG code
+	* src/whereLexer.ll:129 change STRSEQ to contain at least three
+	strings (to avoid trouble with one- and two-argument functions),
+	this also means that the string form of the 'IN' operator must
+	have at least three strings on the right-hand side
+
+2008-11-20 John Wu <John.Wu at ACM.org>
+	* examples/ardea.cpp:696 separate out the default branch in
+	parseNamesTypes to print a warning message (suggested by Niklas
+	Bulitta)
+
+2008-11-12 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp:1666 change == to !=, write output file if it
+	is NOT /dev/null
+	* tests/Makefile.am:57,59,61 modify tests to accommodate the new
+	output format used by ibis.cpp (output from function tableSelect)
+
+2008-11-10 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp: add calls to get2DBins and get3DBins in
+	print2DDistribution and print3DDistribution as sanity check for
+	these functions, add call to get1DBins in printColumn (Caution:
+	due the different number of internal bins used, the function that
+	retrieve the counts only, getxDDistributions, may not
+	produce exactly the same output as those compute the bit vectors,
+	getxDBins)
+	* src/mensa.h: add default constructor to ibis::mensa
+	* example/ibis.cpp: add function tableSelect to process queries
+	using the select function of ibis::table interface (which can
+	handle arithmetic expressions in the select clauses and combines
+	answers from different data partitions)
+
+2008-11-09 John Wu <John.Wu at ACM.org>
+	* src/part.h, src/parth.cpp: add get1DBins, get2DBins, and
+	get3DBins and supporting functions
+
+2008-11-07 John Wu <John.Wu at ACM.org>
+	* src/parth.cpp: move histogram functions from part.cpp to
+	parth.cpp
+	* src/index.h: swap two pairs of names, addBins and addBits,
+	sumBins and sumBits in ibis::index; move functions addBits and
+	sumBits into public scope
+	* src/part.h, src/parth.cpp: add adaptiveIntsDetailed and
+	adaptiveFloatsDetailed, change all adaptive binning templates to
+	return long
+	* src/util.h, src/bitvector.cpp: add two versions of function
+	ibis::util::intersect, rename ibis::outProduct to be
+	ibis::util::outerProduct
+
+2008-11-06 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: add an element of 0 to bnds[123] to simplify the
+	loops in ibis::part::adaptive3DBins, delete val2 in
+	get2DDistribution, round up bin boundaries for integers in
+	get2DDistribution and get3DDistribution, fix errors in
+	get3DDistribution, make sure the bin boundaries does not round
+	down to values that are included in the bin to its left (this
+	could happen because the bin numbers are computed using the
+	differences which could be smaller, when these differences are
+	added back, the rounding may lead to smaller bin boundaries)
+	* tests/Makefile.am: add test case check-ibis 9 to try out the 3D
+	histogramming function
+
+2008-11-05 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp: add statements to print out the return code
+	in three functions that computes joint distributions
+	* win: change the version numbers in the VisualStudio project
+	files lower so it can work with the 2003 version
+	* examples/ibis.cpp:505 missing col3 in the calling sequence of
+	get3DDistribution
+
+2008-11-03 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp:482 add print3DDistribution to exercise new
+	functions in ibis::part
+	* src/part.cpp:12186&12195 add statements to initialize counts
+	array
+
+2008-10-31 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp:2637 add check for the content of indexing
+	option before changing the existing indexing option.  When the
+	user supplied indexing option is different from what is in the
+	data partition, remove the existing index files so that a fresh
+	set of indexes are built.
+	* src/part.h, src/part.cpp: add adpative binning version of
+	get3DDistribution
+
+2008-10-23 John Wu <John.Wu at ACM.org>
+	* src/mensa.cpp: add statement to skip extra spaces and delimiters
+	in ibis::table::parseNames
+	* src/mensa.cpp: implement ibis::mensa::doSelect
+	* src/part.cpp:16043 change ibis::part::barrel::read to use 8
+	fixed-size integers instead of just "int" and "unsigned int"
+	* src/qExpr.cpp:31 operator_name array missed "%" (for remainder)
+	* tests/Makefile.am: add two test case under check-thula to
+	exercise the new arithmetic expression handling in funct
+	ibis::table::select
+
+2008-10-22 John Wu <John.Wu at ACM.org>
+	* src: unify the display of time duration to be "%g sec(CPU), %g
+	sec(elapsed)"
+	* examples/thula.cpp: modify it to use the new select function
+	with arithmetic expressions
+	* Makefile.am:12 add java/FastBit.java and java/milky.java for
+	source tar distribution (an omission reported by Niklas Bulitta
+	<officeman at freenet.de>)
+
+2008-10-21 John Wu <John.Wu at ACM.org>
+	* src/query.h: rename setTable to setPartition
+	* src/query.cpp: change word "table" to "data partition" or "partition"
+	* src/capi.h: adjust the LOGGER statements to make them line up
+	nicer
+	* src/menda.h: add doSelect to handle the non-trivial cases of
+	selection
+
+2008-10-20 John Wu <John.Wu at ACM.org>
+	* src: add selectClause.cpp, selectClause.h, selectLexer.cc,
+	selectLexer.h, selectLexer.ll, selectParser.cc, selectParser.hh,
+	and selectParser.yy
+	* configure.ac: add statements to check for the presence of
+	FlexLexer.h
+
+2008-10-02 John Wu <John.Wu at ACM.org>
+	* src: move ibis::query::verifyPredicate to
+	ibis::whereClause::verify, move ibis::query::addJoinConstraints to
+	ibis::whereClause::amplify
+
+2008-09-29 John Wu <John.Wu at ACM.org>
+	* src: start using a new set of query parser for where clause: add
+	whereClause.cpp, whereLexer.h; rename predicate.h -->
+	whereClause.h, predicate.l --> whereLexer.ll predicate.y -->
+	whereParser.yy, predicate.yy.cpp --> whereLexer.cc predicate.tab.h
+	--> whereParser.hh, predicate.tab.cpp --> whereParser.cc
+
+2008-09-29 John Wu <John.Wu at ACM.org>
+	* src/qExpr.h, src/qExpr.cpp: move ibis::compRange::term and
+	derived classes out of ibis::compRange and into ibis::math, change
+	ibis::compRange::barrel to be ibis::math::barrel.
+
+2008-09-26 John Wu <John.Wu at ACM.org>
+	* src/qExpr.h, src/qExpr.cpp: add a new constructor of qAnyAny
+	that takes a double value as the second argument, add proper
+	prototype for operator<< that takes ibis::qExpr on the right-hand
+	side, add detection of coma delimiter for unquoted strings in a
+	sequence of strings in the constructor of qMultiString
+
+2008-09-24 John Wu <John.Wu at ACM.org>
+	* src/table.h, src/tab.h, src/bord.h, src/mensa.h: add an optional
+	argument to ibis::table::dump that prints the first few rows of a
+	table at the suggestion of David Kantowitz.
+
+2008-09-22 David Kantowitz <dkantowitz at thinktradellc.com>
+	* src/bord.h, src/bord.cpp: add derived version of getString to
+	ibis::bord::column
+
+2008-09-22 John Wu <John.Wu at ACM.org>
+	* src/util.h, src/util.cpp, src/utilidor.h, src/utlidor.cpp: move
+	the sorting function related to RIDSets to utilidor.h/cpp to limit
+	the dependencies of util.h
+
+2008-09-19 John Wu <John.Wu at ACM.org>
+	* src/mensa.cpp:2275 add check to make sure the column type is not
+	text or category, an error spotted by David Kantowitz <dkantowitz
+	at thinktradellc dot com>
+	* src/mensa.cpp:2504&2516 buffer[j].cval used as a pointer to
+	std::vector<std::string>, but should be a pointer to ibis::column
+	(more specifically ibis::text or ibis::category)
+
+2008-09-17 John Wu <John.Wu at ACM.org>
+	* src/part.cpp:11365 check whether the empty bins exist before
+	adding new bin boundaries
+	* win/*.vcproj: change _USRDLL to CXX_USE_DLL
+
+2008-09-15 John Wu <John.Wu at ACM.org>
+	* win: Update visual studio project files for the new Visual
+	Studio 2008
+
+2008-08-22 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: in adaptive2DBins, change the upper bound on the
+	number of bins from 1000 to 2048 to tests used by Prabhat to run
+	without surprises.  If a user asks for more than 2048 bins in each
+	dimension, they will be reduced to limit the memory required for
+	computing the fine bins
+	* tests/Makefile.am: update test functions to exercise
+	two-dimensional histogram functions, update expected output
+
+2008-08-20 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: change ibis::part::adaptiveBins into two functions
+	adaptiveInts and adaptiveFloats
+	* src/part.cpp: implement two new get2DDistribution for computing
+	2D histograms (both conditional and unconditional) based on the
+	template function adaptive2DBins.  The new implementation avoids
+	the binary look up used in the previous implementation.
+
+2008-08-19 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: add get1DDistribution to compute conditional
+	histograms with adaptive bins (supported with template function
+	ibis::part::adaptiveBins)
+
+2008-08-18 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: mark the functions that returns bins with open
+	ends as deprecated
+
+2008-08-15 John Wu <John.Wu at ACM.org>
+	* src/mensa.cpp: cursor::dumpSome performed extra call to
+	fillBuffers
+	* doc/index.html, doc/dataLoading.html: add references to sample
+	data
+
+2008-08-14 John Wu <John.Wu at ACM.org>
+	* src/table.h and friends: add function dump that only print the
+	first few rows (to allow ardea.cpp to only print a few rows
+	without reading all rows into memory)
+	* src/mensa.h, src/mensa.cpp: change ibis::mensa::cursor to read a
+	small number of rows into memory at a time (instead of always read
+	a whole partition into memory as a time)
+	* src/utilidor.cpp:1103 disable global optimization for
+	ibis::util::sortStrings_partition when using MS VisualStudio
+
+2008-08-13 John Wu <John.Wu at ACM.org>
+	* examples/ardea.cpp:788 change "> 0" to "== 0" (intended to
+	print only small tables, but existing condition got it wrong)
+
+2008-08-12 John Wu <John.Wu at ACM.org>
+	* src/utilidor.cpp:5 include typeinfo (NOTE: gcc 3.3.3 complains
+	about the explicit instantiation of the function templates
+	ibis::util::sortKeys)
+
+2008-08-11 John Wu <John.Wu at ACM.org>
+	* src/qExpr.cpp:2123 correct the loop that eliminates duplicate
+	values (an error first encountered by Prabhat)
+	* src: add doxygen groups FastBitIBIS, FastBitMain, and FastBitCAPI
+
+2008-08-01 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: clean up the in-line documentation about various
+	functions related to the computation of histograms.
+	* src/part.cpp: change get2DDistributionD to get2DDistributionU
+	* src/part.cpp: add get2DDistributionA and adapative2DBins to
+	implement adapative binning with base data for get2DDistribution
+	(without any condition)
+
+2008-07-30 John Wu <John.Wu at ACM.org>
+	* src/const.h:211-251 change the conditional compilation to more
+	precisely manage the definitions of exact-width integer types --
+	addressing a compatibility issue with VisIt encountered by Gunther
+	Weber
+
+2008-07-22 John Wu <John.Wu at ACM.org>
+	* src, examples: remove some unused variables and functions
+
+2008-07-18 John Wu <John.Wu at ACM.org>
+	* src/ifase.cpp, src/isapid.cpp, src/isbiad.cpp, src/islice.cpp:
+	add a local block to limit the scope of variable hst (histogram)
+	to take advantage of the automatical deallocation.  Jochen has
+	report a small memory leak in ibis::fade::construct2, which could
+	be related to this
+
+2008-07-01 John Wu <John.Wu at ACM.org>
+	* src/mensa.cpp, src/bord.h: change precisions of ASCII
+	representation of floats and doubles to 8 and 18 respectively
+	(default is 6)
+	* examples/ardea.cpp, examples/thula.cpp: change the output
+	precisions of floats and doubles to match src/mensa.cpp
+	* examples/ardea.cpp: change it to write data after reading each
+	CSV file
+
+2008-06-24 John Wu <John.Wu at ACM.org>
+	* examples/thula.cpp: add option -x for exporting content of tables
+
+2008-06-18 John Wu <John.Wu at ACM.org>
+	* utilidor.cpp: add ibis::util::sort_heap to implement heap sort
+	as the backup function for sort_quick (quick sort function), most
+	the prototype information for most of the helper function for
+	sorting into utilidor.cpp to hide them from the user
+
+2008-06-17 John Wu <John.Wu at ACM.org>
+	* array_t.h, array_t.cpp: add hsort (heap sort) and change qsort
+	to make use of hsort at deep recursion level, set the maximum
+	recursion depth to 20 in qsort
+	* column.cpp:4674 add call to check the cost of using an index
+	before actually use it
+
+2008-06-06 John Wu <John.Wu at ACM.org>
+	* utilidor.h, utilido.cpp, join.h, joinin.h, joinin.cpp: add files
+	that performs radix sort and in-memory equi-join from the branch
+	ibis-branch-080429
+	* src/Makefile.am:5 change versioninfo to version-info
+	* tests/Makefile.am:44 change option -j to -y to match with the
+	new ibis.cpp
+	* src/ixfuge.cpp, src/ixfuzz.cpp, and src/ixbylt.cpp: add code to
+	ensure the number of coarse bins is not more than the number of
+	distinct values (bins)
+	* Makefile.am, tests/Makefile.am: change quick-check to check, and
+	check to more-check, so the default check does a minimal amount of
+	testing as not to surprise the user with the excessive long run
+	time on some platfoms
+
+2008-06-05 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: lines 1341 and 1342 are swapped (a bug reported by
+	Xufei Qian of SDSC)
+
+2008-06-04 John Wu <John.Wu at ACM.org>
+	* src/query.cpp: change ibis::query::evaluate and
+	ibis::query::computeHits to accept empty where clause when the
+	select clause is specified
+	* example/ibis.cpp: accept query string without a where clause if
+	it has a select clause (request from Ross Bates)
+
+2008-05-29 John Wu <John.Wu at ACM.org>
+	* src/colValues.h: add function nosharing to ibis::colValues.
+	This addresses a problem reported by Ross Bates.  When all records
+	are selected, the previous code attempts to sort an array that was
+	based on a read-only memory map.
+	* src/bundle.cpp: add calls to ibis::colValues::nosharing before
+	sorting the bundles
+
+2008-05-27 John Wu <John.Wu at ACM.org>
+	* src/util.cpp:882: add the case of using getpwuid back to
+	function ibis::util::userName.  Ross Bates just pointed out that
+	the function getlogin requires an actual login session (as
+	indicated by the presence of a utmp entry or a TTY).  The function
+	getlogin fails with a segfault if it is not able to determine the
+	TTY or utmp entry.
+
+2008-05-22 John Wu <John.Wu at ACM.org>
+	* src/ibbylt.cpp, src/ixfuzz.cpp, src/ixfuge.cpp: change the
+	default value computation for ncoarse to use the one with smaller
+	objective function value (rather than rounding the analytical
+	expression).  This produces a more stable default value especially
+	when the number of coarse bins is small.
+
+2008-05-15 John Wu <John.Wu at ACM.org>
+	* src/ixbylt.cpp, src/ixfuge.cpp, src/ixfuzz.cpp: change the
+	default number of coarse bins (ncoarse) to make use of the coarse
+	level index size, previous default values assume uniform random
+	data, the new default values only assume the coarse level will be
+	uncompressible, which is more general
+	* tests/Makefile.am: change quick-chek to make sure the TESTDIR is
+	cleared first, change the word 'failed' to 'did not pass' to make
+	the message longer and stand out more
+
+2008-05-15 John Wu <John.Wu at ACM.org>
+	* src/ixbylt.cpp: add code to read option ncoarse in index
+	specification, change default ncoarse to 31 based on the
+	heuristics of neutral space-time trade-off
+	* src/ixfuge.cpp:715, src/ixfuzz.cpp:135, change default ncoarse
+	to 44 based on the heuristics of neutral space-time trade-off
+	* src/ixpack.cpp: change the default number of coarse bins to 31
+
+2008-04-30 John Wu <John.Wu at ACM.org>
+	* src/joinin.cpp: complete initial implementation of ibis::joinIN
+	* examples/ibis.cpp: change the operation delete row to use -yank,
+	add -join to test the class ibis::joinIN
+	* src/Makefile.am: add entries for the new files, utilidor.cpp,
+	joinin.cpp, utilidor.h, joinin.h and join.h
+
+2008-04-29 John Wu <John.Wu at ACM.org>
+	* src/utilidor.h, src/utilidor.cpp: separate the sorting functions
+	in namespace ibis::util from joinin.cpp and array_t.cpp.  Timing
+	measurements show that the radix sort is the most efficient if
+	there are more than a few thousand elements in the array to be
+	sorted.  Change ibis::util::sort to ibis::util::sortall because it
+	sorts all arrays passed to it.  Rename the newer sorting function
+	to be ibis::util::sortkeys because they only sort according to the
+	arrays keys.
+	* *: create new tag on trunk (ibis-base-080429) and a new branch
+	ibis-branch-080429, discard the branch b093pre-addjoin
+	* src/utilidor.cpp: implement ibis::util::sortMerge
+	* src/joinin.cpp: implement ibis::joinIN::evaluate
+
+2008-04-27 John Wu <John.Wu at ACM.org>
+	* src/joinin.cpp: add radix sort functions
+
+2008-04-28 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp:2240 add code to match the SQL patterns in
+	data partition names (a feature that was promised in
+	ibisCommandLine.html but was lost somehow)
+	* src/query.cpp: add function ibis::util::nameList::add
+	* src/mensa.h: add function select2
+	* src/util.cpp: change ibis::util::strMatch to be case insensitive
+	* examples/thula.cpp: add option -f requested by Jon Strabala
+
+2008-04-26 John Wu <John.Wu at ACM.org>
+	* src/part.h: change ibis::util::tablesFrom??? to return the
+	number of new partition they create
+	* src/table.h: add function addPartition
+	* src/mensa.cpp: add function addPartiton
+	* src/query.cpp:199 add statements to delete dslock in
+	ibis::query::setTable
+
+2008-04-16 John Wu <John.Wu at ACM.org>
+	* tests/Makefile.am: add test case 3 to check-text to exercise the
+	operator IN
+
+2008-04-15 John Wu <John.Wu at ACM.org>
+	* src/bitvector.cpp: replace calls to append individual bits with
+	appendFill in function erase
+	* src/util.cpp: change conditional compilation instruction for
+	using getlogin_r in userName
+	* src/bitvector.cpp:2129 remove extra conditions in the if statement
+	* src/bitvector.h: in copy_runs and copy_runsn, change the code to
+	not use it.nWords in cases where it.isFill is not true
+	* src/bitvector64.h: change copy_runs and copy_runsn to no use
+	it.nWords when it.isFill is 0
+	* src/ifade.cpp, src/irelic.cpp, src/isapid.cpp, src/isbiad.cpp,
+	src/islice.cpp: locate(vals[i]) should be locate(varr[i]) in
+	functions that process ibis::qDiscreteRange (an error first
+	reported by Prabhat)
+
+2008-04-11 John Wu <John.Wu at ACM.org>
+	* src/bitvector.h: add function empty
+
+2008-04-10 John Wu <John.Wu at ACM.org>
+	* src/irelic.cpp: update a number of implementation if
+	read(ibis::fileManager::storage*) to remove the statements that
+	deletes str -- this should not have been done
+
+2008-04-04 John Wu <John.Wu at ACM.org>
+	* src/table.h, src/tafel.h, src/tafel.cpp: add function clearData
+	* src/qExpr.cpp:2111 add check to see if the array is sorted
+	before calling the sorting function
+
+2008-04-02 John Wu <John.Wu at ACM.org>
+	* src/index.cpp:3358 need to resize bdry before assignments
+	* src/qExpr.cpp:1367 check expr->left and expr->right
+
+2008-04-01 John Wu <John.Wu at ACM.org>
+	* src/util.cpp: change userName to use getlogin_r as the primary
+	method
+	* src/category.cpp: change the starting positions of strings from
+	type long to type int64_t, make it possible to remove explicit
+	instantiation of array_t<long>, which may conflict with other
+	explicit instantiations
+
+2008-03-31 John Wu <John.Wu at ACM.org>
+	* src/fileManager.cpp: add new lines between some consecutive
+	printing statements
+	* examples/ibis.cpp: treat multiple printing options specified on
+	command line independently, previously they are combined into one
+	operation
+	* src/part.cpp: in get2DDistributionD, refine the computation of
+	stride1 and stride2 for integer values
+
+2008-03-30 John Wu <John.Wu at ACM.org>
+	* src/index.cpp:3700 add test to ensure avg is not assigned 0
+	becasuse it is used in divisions later
+	* src/util.cpp:973 change && to || in the conditions
+
+2008-03-26 John Wu <John.Wu at ACM.org>
+	* src/column.h: add keyword virtual to ibis::column::getActual???
+	to allow FastQuery to override them
+	* src/part.cpp: add setprecision(18) to the queries conditions
+	genereated by various getxDDistribution functions.  A problem
+	first observed by Prabhat.
+	* src/index.cpp: change decisions to use the priority queue to
+	put the number of bitmaps through the function square instead of
+	log.  This improves the performance in a project with Prabhat.
+
+2008-03-24 John Wu <John.Wu at ACM.org>
+	* src/util.h: add ibis::util::timer class to print out timing
+	information in a fixed format, try the first case in
+	ibis::bin::binOrderT
+	* src/Doxyfile:1008 add FASTBIT_CXX_DLLSPEC to PREDEFINED, change
+	EXTRACT_ALL back to NO
+
+2008-03-23 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: remove the call to function std::floor before
+	calling static_cast<uint32>
+	* src/array_t.cpp:248 check for empty array before continuing
+	* src/array_t.cpp:275 add check for empty array and array of
+	size 1
+
+2008-03-22 John Wu <John.Wu at ACM.org>
+	* src/qExpr.cpp: add more cases to ibis::qExpr::simplify, to
+	enable merging of simple range conditions right next to each other
+
+2008-03-21 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp: update the use of LOGGER macro to match the
+	new definition -- fix error in test cases check-ibis 7 and 8
+	* tests/Makefile.am: change check-text to redirect normal output
+	from ibis to /dev/null so as to not cluter the output
+	* src/index.h: change most of the pure virtual functions in
+	ibis::index to have a default implementation so as to minimize the
+	required functions to be implemented by a derived class
+	* src/part.h:312 add an optional argument to get2DDistribution to
+	let the caller choose whether to use the indexes or base data,
+	requested by Prabhat
+	* src/index.h: change functions read and write to return int
+	instead of void
+	* src/qExpr.h: rewrite the function reduce to absorb consecutive
+	pairs of cos and acos, sin and asin, tan and atan.
+
+2008-03-20 John Wu <John.Wu at ACM.org>
+	* src/column.cpp:3899 modify the decision on when to use unix read
+	operationis to invoke them if only a few seeks are needed.  This
+	should reduce the time needed for operations that only require a
+	small number of values from a large dataset.  Previous decision
+	relies more in the file mapping mechanism.
+	* src/column.cpp: update functions selectTypes to use the new
+	selectValues function
+	* src/irelic.cpp:556 move the assignment of nrows to the beginning
+	of the function to ensure all subsequence function can access the
+	the correct value
+	* src/ibin.cpp:852,903,2574 add assignment of nrows, without them
+	the function ibis::index::optionalUnpack will make the wrong
+	decision in some cases (a buf encountered by Prabhat)
+	* doc/indexSpec.html: change < and > to &lt; and &gt; in sample
+	index specifications
+	* src/part.cpp: introduce more rnadomness to the test queries by
+	using ibis::util::compactValues in generating intermediate query
+	boundaries
+
+2008-03-19 John Wu <John.Wu at ACM.org>
+	* util.h:170 change LOGGER macro to take a logical expression
+	instead of an integer, this make the dependency on ibis::gVerbose
+	explicit
+
+2008-03-18 John Wu <John.Wu at ACM.org>
+	* src/part.h, src/part.cpp: add explicit template instantiation
+	of ibis::part::equalWeightBins for float and double, attempting to
+	reduce the time and memory needed to generate equal-weight bins
+	* src/array_t.h, src/array_t.cpp: add a new sorting function
+	ibis::util::sort to sort two arrays together
+	* src/part.cpp: add calls to ibis::util::sort to sort values
+	before counting 2D bins (attempting to improve efficiency for
+	get2DDistribution)
+
+2008-03-18 Matthias Vallentin <vallentin at icsi.berkeley.edu>
+	* src/column.cpp:15 include <typeinfo>
+
+2008-03-17 John Wu <John.Wu at ACM.org>
+	* src/query.cpp:4168 limit the number of values to be printed
+	* win/tcapi.vcproj: add macro _USRDLL, make sure all Debug versions
+	of the projects compile code with full buffer check
+	* const.h: redefine FASTBIT_DLLSPEC to FASTBIT_CXX_DLLSPEC, change
+	DLL library to only export C API -- did not fix the problem with tcapi
+
+2008-03-16 John Wu <John.Wu at ACM.org>
+	* src/part.cpp:3618 initialize ierr to 0 (fix a run-time error
+	reported by VisualStudio)
+	* src/const.h:274 make sure PTHREAD_RWLOCK_INITIALIZER is not
+	defined before defining it on Mac (problem reported by Matthias
+	Vallentin)
+	* src/util.h:14 check for the inclusion of stdlib.h for all known
+	unix type of systems (problem reported by Matthias Vallentin)
+
+2008-03-14 John Wu <John.Wu at ACM.org>
+	* tests/Makefile.am: update the definition of test case 7 and 8
+	for check-ibis to correct failure of these test cases, remove
+	match-counts from large-tests (unnecessary because it is already
+	run under the normal check)
+	* win/ibis.sln: enable assembly debugging of DLL project in Debug
+	mode
+
+2008-03-13 John Wu <John.Wu at ACM.org>
+	* src/qExpr.h:302 change the construct of qDiscreteRange that
+	takes an array of doubles to sort the incoming values and remove
+	duplicates
+	* win/ibis.sln: change visual studio solutioni file to build dll
+	and trydll by default in both Debug and Release mode
+	* win/java.vcproj: failed to compile because of missing
+	DLL_EXPORTS macro (problem reported by Mark Sordo)
+	* src/query.h:286 remove static private member variable purgeFiles
+	* src/util.h: remove static private memeber variable delimiters
+	from ibis::selected and ibis::nameList, replace it with
+	ibis::util::delimiters
+	* src/query.cpp: change ibis::nameList and ibis::selected to use
+	ibis::util::delimiters
+	* src/part.cpp: adjust the printing statements in various
+	histograming functions to make them produce timing information
+	when ibis::gVerbose is larger than 0
+	* src/part.cpp: add a query involving arithmetic expression in
+	ibis::part::quickTest, to check for a problem encountered while
+	running the JNI test program
+	* tests/scripts/query-count.list: changed four expressions to use
+	some arithmatic functions
+
+2008-03-12 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: replace the calls to bitwise AND operator with the
+	new count function in get2DDistributionI
+	* src/query.cpp: do not generate the query string from an
+	explicitly set query expression, add code to check for null
+	condition string in printing statements, change SET_PREDICATE
+	condition to base on whether member variable is a valid pointer.
+	This is to accommodate the situation where Prabhat and Oliver sets
+	a range condition with thousands of values of are requested in one
+	query expression.
+	* src/bitvector.cpp: lines 856 and 860 swapped, similarly, lines
+	660 and 664 in src/bitvector64.cpp are also swapped.  This errors
+	causes the variable nbits to be computed incorrectly, which can in
+	turn cause other problems later.  This was the cause of a problem
+	noticed by Prabhat.
+	* src/query.cpp, src/column.h, src/part.h: replace @pre with @code
+	and @endcode pairs
+	* src/query.cpp:2878 remove the statement, it assumes the wrong
+	return value
+
+2008-03-11 John Wu <John.Wu at ACM.org>
+	* src/part.h, src/part.cpp: add a new variation of
+	get2DDistribution that computes equal-weight bins for a 2D
+	histogram with specified number of bins as requested by Prabhat
+	and Oliver
+	* examples/ibis.cpp: modify print function to exercise the new
+	get2DDistribution function
+	* src/bitvector.h, src/bitvector.cpp: add function to count the
+	number of bits that are 1 for two bitvectors.  This function can
+	be used to by-pass the need to first compute a bitwise logical AND
+	operation and reduce the time needed to compute histogram through
+	bitmap indexes
+
+2008-03-10 John Wu <John.Wu at ACM.org>
+	* src/Doxyfile: change EXTRACT_ALL to YES, removed invalid command
+	endpre from column.h, part.h, and query.cpp
+
+2008-03-09 John Wu <John.Wu at ACM.org>
+	* src/imesa.cpp:26 move variable b2 outside of the try-block so it
+	can be used in the catch-block to clean up the bitvectors it held
+	* src/isbiad.cpp: add try-catch-block to free array beq in both
+	sbiad::construct1 and sbiad::construct2, this avoids memory leaks
+	in case of exceptions
+
+2008-03-08 John Wu <John.Wu at ACM.org>
+	* src/index.cpp, src/ixbylt.cpp, src/ixfuzz.cpp, src/ixzona.cpp,
+	src/ixfuge.cpp: add logging function calls to print out the
+	progress information to help debugging
+	* src/ixbylt.cpp, src/ixfuzz.cpp, src/ixzona.cpp, src/ixfuge.cpp:
+	the two argument version of activateCoarse contain if-test on
+	bits[i] == 0, but they should have been cbits[i] == 0.  This
+	causes the two-level bitmap indexes to compute wrong answers in
+	some cases, especially in large selt tests where bits[i] is more
+	likely to have been used before.  In which case, cbits[i] will not
+	be activated.  On the other hand, if bits[i] was never used
+	(remaining 0), then it is possible for cbits[i] to be activated
+	multiple times.  Each time during the activation, it also acquires
+	a read lock on the file, however, it is only destroyed once which
+	release the lock on the file once.  Therefore, it is possible for
+	read locks on the index file to be left intact after the program
+	completes.  This causes the clean up function in the file manager
+	to fail to acquire a write lock and hung forever.
+
+2008-03-07 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: change get2DDistributionI and coarsenBins to
+	bypass the ibis::query layer to directly use the index object for
+	query evaluations, add a try-catch block in get2DDistribution to
+	clean up after the array of pointers to bitvectors
+	* src/index.cpp: add more functions to print progress messages (to
+	help with debugging the deadlock at the clean up stage, bug 8)
+	* src/ixbylt.cpp, src/ixfuzz.cpp, src/ixzona.cpp, src/ixfuge.cpp:
+	change remaining unsigned types to uint32_t in variables written
+	to or read from files
+
+2008-03-06 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp: add a function (getJointDistribution) to
+	excercise the new get2DDistribition
+	* src/part.cpp: add calls to timing functions and logging
+	functions in ibis::part::get2DDistributionI and get2DDistributionD
+
+2008-03-05 John Wu <John.Wu at ACM.org>
+	* src/column.h, src/column.cpp: change dataFileName and
+	nullMaskName to return the file names in std::string instead of
+	raw char*
+	* src/column.h, src/column.cpp: add function indexSize
+	* src/part.h, src/part.cpp: add function get1DDistribution and
+	get2DDistribution with support functions to compute the histograms
+	with the specified number of bins by using either the indexes or
+	the base data depending on which are smaller (Requested by Probhat
+	and Oliver)
+
+2008-03-04 John Wu <John.Wu at ACM.org>
+	* src/column.cpp: change ibis::column::loadIndex to modify the
+	in-memory version index specification for the column to prevent it
+	from trying to build an index again in the same run.  The
+	configuration parameter "disableIndexOnFailure" affects whether
+	the new index specification is written down to the metadata file
+	-part.txt.
+	* Makefile.am, tests/Makefile.am: reorganize the top-level targets
+	for checking the correctness of FastBit into three levels of
+	thoroughness: quick-check, check, and full-check.  Note:
+	full-check replaces the earlier target check-all.
+
+2008-03-03 John Wu <John.Wu at ACM.org>
+	* src/bitvector.cpp:261 throw ibis::bad_alloc exception instead of
+	just printing a warning message in case of memory allocation
+	failure
+	* src/array.h:107 add function incore to tell caller whether the
+	content of the array is in memory
+	* src/bitvector:159 add check in ibis::bitvector::compress to not
+	attempt to compress bitvector not in memory.  Because the file
+	associated with the array was opened read-only, modifying it will
+	cause segmentation fault.
+	* src/tafel.cpp: modify appendRow and readCSV to allow the caller
+	to completely override the default delimiters (in response to
+	question from Devin McNamara)
+	* examples/ardea.cpp: add option -b to accept user to pass in a
+	set of breaks (or more commonly known as delimiters) for the text
+	file/lines to be parsed
+	* src/ibin.h: add destructor to ibis::bak::grain and
+	ibis::bak2::grain
+	* src/util.h: delete getBuffer, add ibis::util::buffer, replace
+	all calls to getBuffer to a buffer object.  This should provide
+	better buffer management than using raw pointer.
+	* src/mensa.h:271 explicitly cast col to use ibis::text::getString
+	(same problem as reported by Ross Bates <rbates@gmail.com>)
+	* src/idirekte.cpp: use mask to limit the number of elements
+	examined in function ibis::direkte::construct
+	* src/tafel.cpp: add check for '/' in ibis::tafel::write to remove
+	the possbility of having a data partition name starting with '/'
+	* tests/Makefile.am: add target test-text to check for categorical
+	values to always check for the problem reported by Ross
+
+2008-03-02 John Wu <John.Wu at ACM.org>
+	* src/colValues.h: combines the cases for ibis::CATEGORY and
+	ibis::text, remove the previous code for ibis::CATEGORY that
+	returns null string (problem reported by Ross Bates
+	<rbates@gmail.com>)
+	* src/column.h:109 remove getString that returns char*, no longer
+	used
+	* src/category.h: add ibis::category::getString
+	* tests/Makefile.am: add -z option to ibis commands with -b option
+	* src/column.cpp:4375 check that idx is a valid pointer before
+	using it  (a problem revealed with make check-all, which involves
+	tests cases of relatively large datasets but a very restrictive
+	memory upper bound)
+
+2008-02-29 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: fix count2DBins and count3DBins had logical
+	problems
+
+2008-02-22 John Wu <John.Wu at ACM.org>
+	* src/Doxyfile:1008 enable PREDEFINED macro expansion to make sure
+	FASTBIT_DLLSPEC is blank so that doxygen can process the file
+	correctly
+	* src/bitvector.cpp: update the documentation of bitwise logical
+	operations.
+
+2008-02-21 John Wu <John.Wu at ACM.org>
+	* src/part.cpp:4639 remove calls to function flushDir, then
+	require a mutex lock on the file manager can cause deadlock
+	* src/column.cpp: in evaluateRange, limit the scope of indexLock
+	to reduce the chance of deadlock (when memory is running low)
+	* src/column.h: add softWriteLock class to try to acquire lock
+	when possible -- used in ibis::column::unloadIndex.  While working
+	with an index (i.e., holding a read lock), it may be necessary to
+	free some memory, which can invoke the unloadIndex function.
+	Changing to a soft write lock would allow the invocation to
+	complete and avoid deadlock.
+
+2008-02-20 John Wu <John.Wu at ACM.org>
+	* src/ifade.cpp:69&74 correct the offset set calculations, was
+	only counting two leading integers.  This causes crashes when
+	multi-level range and interval encodings are used without binning
+	* src/part.cpp:5869 wrong formula for variable j -- this is
+	probably the real cause of the problem observed by Jochen on Feb
+	18
+	* src/part.cpp: in queryTest and quickTest, call unloadIndex if
+	query::evaluate returns an error
+	* src/ibin.cpp: modify ibis::bin constructors to consistently fill
+	the content of array offsets, ibis::fuge depends on this
+
+2008-02-19 John Wu <John.Wu at ACM.org>
+	* Makefile.am, tests/Makefile.am: change target all-tests to
+	check-all and have it include both small and large tests
+	* src/column.h: remove mutex lock from ibis::column::indexLock
+	class, having it causes deadlocks when multiple threads tries to
+	access the same index.
+
+2008-02-18 John Wu <John.Wu at ACM.org>
+	* src/column.cpp: add try-catch blocks in the error-handling code
+	of ibis::column::evaluateRange (attempt to address problems
+	observed by Jochen on Feb 18)
+	* tests/Makefile.am: add test cases in large-sanity-check to limit
+	the memory usage during build-in tests
+
+2008-02-17 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: add try-catch block in selectInts, selectUInts,
+	selectLongs, selectFloats, and selectDoubles to address the
+	seg fault reported by Jochen on Feb 16.
+	* src/query.cpp: update the use of variable newlock to make them
+	more consistent across functions
+
+2008-02-14 John Wu <John.Wu at ACM.org>
+	* src/part.h, src/part.cpp: change <size_t> to <uint32_t> for
+	get[1|2|3]DDistribution and supporting functions (requested by
+	Prabhat)
+	* src/bord.cpp, src/mensa.cpp: update to accomodate the changes to
+	get[1|2|3]DDistribution
+
+2008-02-14 John Wu <John.Wu at ACM.org>
+	* src/part.cpp: change doScan and doCompare to return long
+	* src/part.cpp:2890&2911 change calls to doIntCompare to
+	doCompare<int64_t> and doCompare<uint64_t>
+	* src/part.h, src/part.cpp: replace comparison functions for
+	specific element types with the template functions
+	* src/part.cpp:10486&10695: arguments constraints and name were in
+	wrong order (problem first reported by Mr. Prabhat)
+	* src/column.h: add virtual keyword to selectBytes and friends
+	* src/part.cpp: check the return values of selectBytes and friends
+	in getDistribution and varients
+	* tests/test0.csv, tests/test1.csv: add decimal points to induce
+	readcsv.cpp to interpret some columns as double.  This introduces
+	one more type of data tested by the automatic test program
+	* examples/ibis.cpp:223 swap cname and cond
+	* tests/hist0, tests/hist1: add two files for testing
+	histogramming functions
+	* tests/Makefile.am: add two test cases under check-ibis to test
+	histograming functions
+
+2008-02-12 John Wu <John.Wu at ACM.org>
+	* src/part.cpp:2815 add return value -4 when elementSize() is not
+	a positive number
+	* src/category.cpp, src/column.cpp, src/ibin.cpp, src/icegale.cpp,
+	src/ifade.cpp, src/imesa.cpp, src/irange.cpp, src/ixambit.cpp,
+	src/ixpack.cpp, src/ixpale.cpp, src/part.cpp: capture the return
+	value of call to UnixSeek in an attempt to prevent a segementation
+	fault encounted by Jochen who removes the base data files
+
+2008-02-06 John Wu <John.Wu at ACM.org>
+	* src/ibin.cpp: change all decisions regarding when to use
+	single-valued bins to use than when there are number of distinct
+	values is no more than 3/2 of specified bins.
+
+2008-02-04 John Wu <John.Wu at ACM.org>
+	* src/qExpr.cpp:1314-1318 comment out the section that converts a
+	discrete range into a set of continuous ranges
+	* src/index.h:192 add function evaluate for ibis::qDiscreteRange
+	* src/part.h, src/column.h, src/part.cpp, src/column.cpp: add
+	function to evaluate qDiscreteRange
+	* tests/scripts/query-count.list:28&29 modified queries to use
+	long lists
+	* src/ibin.cpp:3467 col->type() == ibis::DOUBLE should be
+	col->type != ibis::DOUBLE; update the block to produce at least
+	one bin boundary per inner loop
+
+2008-01-25 John Wu <John.Wu at ACM.org>
+	* src/idirekte.cpp:482&483 add conditions to prevent casting
+	negative floarting-point numbers to unsigned integers
+	* tests/scripts/query-count.list: modify some of the 0 query
+	boundaries to be negative numbers to exercise the above fix
+
+2008-01-23 John Wu <John.Wu at ACM.org>
+	* src/ibin.cpp:3929 add fudge factor of 3/2 to allow 50% more bins
+	than specified when it can put each value in its own bin.  A user
+	was specifying nbins=72 for a variable with 73 distinct values,
+	and was confused about why FastBit put two values in the same
+	bin.  This should avoid that type of situation.
+	* src/index.cpp:534&841 add additional condition to make sure when
+	ibis::index::create invokes ibis::direkte, the actual minimum is
+	not a negative number.  In a case where the user specified
+	minimum=0, but the actual minimum is -1, FastBit crashes when
+	building an index
+
+2008-01-16 John Wu <John.Wu at ACM.org>
+	* src/column.cpp:4412 remove the line that assigns ierr from low.cnt()
+
+2008-01-16 Jochen Schlosser <schlosser at zbh.uni-hamburg.de>
+	* src/part.cpp:2791 add 'delete [] file;' before return statement,
+	fix memory leak.  The problem is that the pointer returned by
+	dataFileName is not deleted before exiting the function.  The same
+	problem appears in a number of different places in src/part.cpp,
+	src/parti.cpp and src/party.cpp.
+
+2008-01-15 John Wu <John.Wu at ACM.org>
+	* src/column.cpp: in column::evaluateRange, add better detection
+	for the need of invoking doScan, add print statements
+	* src/array_c.cpp: add statements to check for nil pointers in all
+	constructors
+	* src/fileManager.cpp: add statements to prevent printStatus from
+	dereferencing nil pointers
+
+2008-01-14 John Wu <John.Wu at ACM.org>
+	* src/query.cpp: the return values of a few calls to
+	ibis::part::doScan did not get passed back to the caller
+
+2008-01-08 John Wu <John.Wu at ACM.org>
+	* src/column.cpp: comment out most of the calls to purgeIndexFiles
+	* src/part.cpp: add checks for the existence of raw data file before
+	attempting to scan the values
+	* src/query.h and src/query.cpp: add functioins to accept new
+	forms of query conditions, allow return values to propergate from
+	ibis::part and ibis::column functions to ibis::query::evaluate
+	* examples/ibis.cpp: add code to check the return values of
+	ibis::query::estimate and ibis::query::evaluate
+
+2007-12-22 John Wu <John.Wu at ACM.org>
+	* util.h: add explicit O_BINARY in the macros for file modes,
+	without this option, the files are opened in text-mode under MinGW
+	following the default on MS Windows systems (there are already
+	explicit calls to _setmode under MS Visual Studio environment).
+	* util.cpp:104 add execute bit to the mode for the directory
+	created by ibis::util::makeDir, a recent change has messed this
+	one up
+
+2007-12-20 John Wu <John.Wu at ACM.org>
+	* add FASTBIT_DLLSPEC to table.h, remove FASTBIT_DLLSPEC from
+	explicit instantiation of array_t
+	* update win/Win.mak and win/MinGW.mak to add dependcies for
+	trydll.cpp
+
+2007-12-14 John Wu <John.Wu at ACM.org>
+	* add documentation to ibis::qContinuousRange
+
+2007-12-14 John Wu <John.Wu at ACM.org>
+	* change all DLLSPEC to FASTBIT_DLLSPEC
+	* add win/MinGW.mak to compile under MinGW/MSYS with GNU g++
+
+2007-12-12 John Wu <John.Wu at ACM.org>
+	* add DLLSPEC to classes part, part::info, quey, query::result,
+	all members of ibis::bundle hierarchy and many more
+	* add win/trydll.cpp to test the new DLL library
+
+2007-12-11 John Wu <John.Wu at ACM.org>
+	* src/part.cpp:908 update the names used in readMeshShape to match
+	those in readTDC
+	* src/ibis.h: correct typos in the doxygen documentation
+
+2007-12-10 John Wu <John.Wu at ACM.org>
+	* src/capi.h:209 partitioin -> partition
+	* examples/tcapi.h:56 missed dir (to match %s in fprintf)
+
+2007-12-6 John Wu <John.Wu at ACM.org>
+	* change all LOGGER(ibis::gVerbose) to LOGGER(0)
+	* const.h:252 & 254 -- add definition of DLLSPEC
+	* capi.h:46-54 -- add macro DLLSPEC because it does not include const.h
+
+2007-10-29 John Wu <John.Wu at ACM.org>
+	* src/index.cpp:539&846: switch > to <
+
+2007-10-25 John Wu <John.Wu at ACM.org>
+	* src/meshQuery.*: change getHitsAsRanges to getHitsAsBlocks
+
+2007-10-24 John Wu <John.Wu at ACM.org>
+	* src/capi.h and src/capi.cpp: add two functions to accept new
+	data records.
+	* examples/tcapi.c: add test case for the two new functions in C
+	API
+	* java: add new functions to allow a java program to input data to
+	Fastbit, add a small test section to milky.cpp to be executed when
+	no arguments are provided
+	* src/tafel.cpp:740 add a line to assign value to tdesc
+	* src/capi.cpp:84 add a block to check for the size of the data
+	partition found
+
+2007-10-18 John Wu <John.Wu at ACM.org>
+	* src/bitvector.h:814&844, add check for nw > 0 *
+	src/bitvector64.h:724&754, add check for nw > 0.  These two fix a
+	problem caused by a particular word that causes
+	ibis::bitvector::copy_runs to pass beyond the end of the array
+	m_vec.  This can happen when the word beyond the last element of
+	the m_vec is equivalent to a 0-length fill.  Out of 4 billion
+	possible values in a 32-bit word just beyond the end of the array
+	in a bitvector, 2 of them can do this and they are somehow used by
+	the GNU C++ compiler on the intel-based Mac probably for some
+	internal marking.
+
+2007-10-17 John Wu <John.Wu at ACM.org>
+	* src/tafel.cpp:901 add statement to prevent FastBit from
+	attempting to build indexes for arbitrary strings (ibis::TEXT).
+	To build an index for such type of column, FastBit requires
+	something called a term-document list (matrix), which most users
+	are unlikely to have.  This removes the warning messages when
+	running examples/ardea.cpp without any arguments.
+
+2007-10-16 John Wu <John.Wu at ACM.org>
+	* java/Makefile.am: add the initial version of automake file
+	* tests/scripts/matchCounts.pl: add additional check for error messages
+
+2007-10-14 John Wu <John.Wu at ACM.org>
+	* java/milky.java: add a test program that mirrors examples/tcapi.c
+
+2007-10-13 John Wu <John.Wu at ACM.org>
+	* capi.h, capi.cpp: update the C API in preparation for java
+	interface
+
+2007-10-11 John Wu <John.Wu at ACM.org>
+	* src/resoruce.cpp: change all calls to logMessage to use LOGGER
+	macro
+	* src/predicate.l, src/predicate.y, src/qExpr.h: add operator %
+
+2007-10-07 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp -- add reverseDeletion and option -k to exercise
+	the function ibis::part::reactivate (change doDelete to doDeletion)
+	* tests/Makefile.am -- add a small test case for -j and -k options
+	of ibis, correct the test cases for check-tcapi
+	* src/index.cpp -- in function create, add calls to compute the
+	actual min and max when deciding what index to build for default
+	options
+	* src/array_t.cpp:187 -- add check for isFileMap, otherwise, some
+	functions may attempt to modify files open in read-only mode
+	* src/array_t.cpp: -- add checks for uninitialized m_begin
+	* renamed all dataTable() to partition(), theTable to thePart
+
+2007-10-07 Matthias Vallentin <vallentin at icsi.berkeley.edu>
+	* src/parti.cpp:1261 -- change deactivate to reactivate
+
+2007-10-07 John Wu <John.Wu at ACM.org>
+	* src/tafel.cpp: line 912 -- add call to flushDir to remove stale
+	references to files.  This may be related to a crash experienced
+	by Matthias Vallentin, but I am not able reproduce the crash on
+	a MacOS accessible to me.  Add a call to flushDir in
+	ibis::part::append1 (in parti.cpp) to address the same problem.
+	* tests/Makefile.am: add a second run of ardea to generate 200
+	rows of test data for checking the three test programs.  In the
+	previous version of the code, running ardea a second time would
+	cause errors.
+
+2007-10-05 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp: add command line option -l for user to
+	specify a file to log error messages
+
+2007-10-04 John Wu <John.Wu at ACM.org>
+	* src/util.h, ...: add functions ibis::util::getLogFile and
+	ibis::util::setLogFile, add class ibis::util::logger, replace all
+	explicit use of std::cout, std::cerr, and std::clog with calls to
+	ibis::util::logger
+
+2007-09-24 John Wu <John.Wu at ACM.org>
+	* ixfuge.cpp: add this file to implement ibis::fuge class
+	for interval-equality encoding with binning
+
+2007-09-17 John Wu <John.Wu at ACM.org>
+	* examples/ibis.cpp: add option -j to deactivate rows (reuse -z as
+	secondary option to actually expunge the inactive rows)
+
+2007-09-13 John Wu <John.Wu at ACM.org>
+	* src/i*.cpp: change most references to col->dataTable->nRows() to
+	nrows stored in the index class.  This change is required to make
+	it possible to use index built earlier for a partition with a
+	smaller number of rows.
+
+2007-08-30 John Wu <John.Wu at ACM.org>
+	* ibis::part: add five new functions to allow existing rows to be
+	marked inactive or removed
+
+2007-08-29 John Wu <John.Wu at ACM.org>
+	* src/column.cpp: add code to make use of indexes built form
+	smaller number of rows than currently available
+
+2007-08-23 Matthias Vallentin <vallentin at icsi.berkeley.edu>
+	* examples/ardea.cpp:53-54 fix wrong flags in usage example
+
+2007-08-23 John Wu <John.Wu at ACM.org>
+	* src/capi.h: add conditional macros to include config.h
+	* tests/readcsv.cpp: add conditional macro __APPLE__ for compiling
+	on Apple MacOS
+	* tests/Makefile.am: change ++ to expr expression for
+	compatibility with bourne shell
+
+2007-08-22 John Wu <John.Wu at ACM.org>
+	* src/bundle.cpp: in ibis::bundles::sort add special case for
+	nPlain() == 0
+	* src/mensa.cpp: change ibis::nameList to ibis::selected to
+	correct problems with select clauses containing functions
+	* examples/thula.cpp: terminate doQuery when the select clause
+	contains functions (as indicated by the presence of '(')
+
+2007-08-11 John Wu <John.Wu at ACM.org>
+	* tests/Makefile.am: add case number in print out and count the
+	number of successful test cases in match-counts
+
+2007-08-10 John Wu <John.Wu at ACM.org>
+	* array_t.cpp: change the variables used to store differences
+	between two pointers to type size_t or off_t instead of uint32_t
+	or int32_t
+
+	* category.cpp: to avoid problems with bad data files, swap
+	arguements 2 and 3, truncate large files that have extra records
+	(keeping only the first nRows), check number of records in
+	function fillIndex when working with a stable copy of the current
+	data
+
+	* tests/Makefile.am: add more operations to run for target check
+
+	* doc/quickstart.html: currect typoes and formating mistakes
+
+	* examples/ibis.cpp:2191 add test to prevent the call to indexSpec
+	when the user did not specify an indexing option.  Without this
+	check, it removes the existing indexing specification when nothing
+	is specified.  Change all table to partition in the comments.
+
+2007-08-09 John Wu <John.Wu at ACM.org>
+	* tests/Makefile.am: add test case check-ardea to check for the
+	problem found by Mark
+
+	* query.cpp: add code to accept count(*) as select clause
+
+	* ibis.cpp: allow multiple threads being used on MS windows; set
+	the default number of threads to the number of processors online
+	(minus one if more than than two processors are on line)
+
+2007-08-09 Mark Sordo <msordo at yahoo-inc.com>
+	* tafel.cpp:746 add tname != 0 to if test
+
+2007-07-27 John Wu <John.Wu at ACM.org>
+	* copied files into this new directory structure, start building a
+	new set of autoconf/automake scripts.
+
+	* designate the current version a0.7.

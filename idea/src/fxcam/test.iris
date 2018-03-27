@@ -1,0 +1,27 @@
+# test file for fxcam
+# just view with irisfly, should show three intersecting tape measures
+
+# create test node + pre_test and post_test
+LOAD test test.fxcam
+
+# load it into the scenegraph so the child nodes of test will be found
+ADDCHILD test world
+
+# restore geometry rendered in pre_test
+LOAD copyFrame fxCopyFrame.osg
+ADDCHILD copyFrame post_test
+
+# create some test geometry
+LOAD tape tape.osg
+
+SCS tape2 0 2 -2  0 90 0
+ADDCHILD tape tape2
+
+SCS tape3 1.5 2.5 0  90 0 0
+ADDCHILD tape tape3
+
+# attach test geometry to different nodes of fxcam
+ADDCHILD tape test
+ADDCHILD tape2 pre_test
+ADDCHILD tape3 post_test
+

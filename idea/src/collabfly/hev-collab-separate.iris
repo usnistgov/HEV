@@ -1,0 +1,1 @@
+EXEC hev-masterControlPanel -ti collabfly --noescape hev-collab.mcp > $IRIS_CONTROL_FIFO

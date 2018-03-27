@@ -1,0 +1,97 @@
+#! /bin/bash
+
+# hev-framelock - This command enables Frame Lock needed for stereo on multiple screens
+#
+#      June 28, 2017 At this time, only Gallifrey has the frame lock hardware since its
+#                    the ony CAVE host with multiple cards.
+#
+# steve@nist.gov
+# July 2017
+
+function usage {
+    echo "Usage: hev-framelock [--help] [--verbose]   [status | on | off]"
+    echo
+    echo "       If no parameters specified, framelock is turned on"
+    exit
+
+}
+
+
+function fl_status_gallifrey {
+    nvidia-settings --no-config --ctrl-display=:0 \
+	-q [gpu:0]/FrameLockEnable -q [gpu:1]/FrameLockEnable
+}
+
+function fl_off_gallifrey {
+    nvidia-settings --no-config --ctrl-display=:0 \
+	-a [gpu:0]/FrameLockEnable=0 -a [gpu:1]/FrameLockEnable=0
+}
+
+function fl_on_gallifrey {
+    config=$HEV_IDEA_DIR/etc/hev-framelock/data/nvidia-settings.txt
+    # echo config $config
+    # cat $config
+    nvidia-settings  --load-config-only --ctrl-display=:0 \
+         -config=$config
+
+    nvidia-settings  --load-config-only --ctrl-display=:0 \
+        -a [gpu:0]/FrameLockEnable=1  -a [gpu:1]/FrameLockEnable=1
+}
+
+
+
+function fl {
+    if [ "$verbose" == "1" ]
+    then
+	fl_${1}_gallifrey
+    else
+	fl_${1}_gallifrey &> /dev/null
+    fi
+}
+
+
+
+#################################################################################
+
+h=$(hostname -s)
+
+chost=gallifrey
+
+if [ "$h" != "$chost" ]
+then
+    [ "$verbose" == "1" ] && echo "$(hostname -s) is not gallifrey, nothing to do"
+    exit
+fi
+
+
+case $1 in
+-h*|--h*)
+	usage
+	;;
+esac
+
+
+verbose=0
+case $1 in
+-v*|--v*)
+	verbose=1
+	shift
+	;;
+esac
+
+
+case $1 in
+s|stat|status)
+	verbose=1
+	fl status
+	;;
+
+off|on)
+	fl $1
+	;;
+
+*)
+	fl on
+	;;
+esac
+

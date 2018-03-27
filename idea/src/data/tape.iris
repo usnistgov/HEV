@@ -1,0 +1,11 @@
+# iris-DCS applied the following options to create the DCS:
+#  nodeName = "tape"
+#  center 0.000000 0.000000 0.000000
+# and loaded the following files:
+#  "tape2.osg" with node name "tape2.osg"
+#center: radius = 0.999999, center = -0.000004 1.999998 -0.000000
+#bound: radius = 0.999999, center = -0.000004 1.999998 -0.000000
+DCS "tape" 4.3511421807806983e-06 -1.9999991655333531 5.9604687407954771e-08  -0 0 -0  1.0000007152557373
+LOAD "tape2.osg" "tape2.osg"
+ADDCHILD "tape2.osg" "tape"
+RETURN "tape"

@@ -1,0 +1,18 @@
+#!/bin/sh
+
+###############################
+# qvd-ants - a script to generate a list
+# of commands in the QVD family of
+# the "Army of Ants"  in $PATH. This
+# calls one or more helper script(s) so
+# the calling environment must be correctly
+# set to find them, usually by modifying
+# the PATH env var.
+#
+# $SUBSTRING is an exported var set in qvd-findAnts
+#Debug echo "qvd-ants: Starting..."
+echo
+echo "QVD Tools: " $@
+echo ---------
+${PRIVATE_BINS}/compc qvd- $@
+echo

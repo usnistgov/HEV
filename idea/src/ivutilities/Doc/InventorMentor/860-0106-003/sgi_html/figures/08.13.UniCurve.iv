@@ -1,0 +1,41 @@
+#Inventor V2.0 ascii
+
+Separator {
+    LightModel {
+	model	BASE_COLOR
+    }
+    BaseColor {
+	rgb	1 0 0.1
+    }
+    Separator {
+	DrawStyle {
+	    lineWidth	4
+	}
+	Complexity {
+	    value	0.8
+	}
+	Coordinate3 {
+	    point	[ 6 0 6,
+			      -5.5 0.5 5.5,
+			      -5 1 -5,
+			      4.5 1.5 -4.5,
+			      4 2 4,
+			      -3.5 2.5 3.5,
+			      -3 3 -3,
+			      2.5 3.5 -2.5,
+			      2 4 2,
+			      -1.5 4.5 1.5,
+			      -1 5 -1,
+			      0.5 5.5 -0.5,
+			      0 6 0 ]
+	}
+	NurbsCurve {
+	    numControlPoints	13
+	    knotVector	[ 0, 0, 0, 0,
+			      1, 2, 3, 4,
+			      5, 6, 7, 8,
+			      9, 10, 10, 10,
+			      10 ]
+	}
+    }
+}

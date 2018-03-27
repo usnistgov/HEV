@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/979/trunk/dtk/DSOs/serviceDSO/wanda
+END
+wanda.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/diverse/!svn/ver/979/trunk/dtk/DSOs/serviceDSO/wanda/wanda.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/diverse/!svn/ver/915/trunk/dtk/DSOs/serviceDSO/wanda/CMakeLists.txt
+END
+wanda.config
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/wanda/wanda.config
+END

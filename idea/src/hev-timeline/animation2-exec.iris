@@ -1,0 +1,2 @@
+# run the shell scrip- it automatically gets killed when irisfly exits
+EXEC ./animation2-looper.sh

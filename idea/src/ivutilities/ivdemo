@@ -1,0 +1,6 @@
+#! /bin/sh
+
+DIR=${HEV_SAVG_DIR}/etc/ivutilities/data
+
+cat ${DIR}/ivexample
+

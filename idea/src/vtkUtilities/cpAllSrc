@@ -1,0 +1,7 @@
+
+
+mkdir scripts
+mkdir scripts/testresults
+./cpSrcFiles /home/backhaus/VTK/dennis/projectparts scripts Dennis.list
+./cpSrcFiles /home/hagedorn/Vis/vtk/jgh scripts JGH.list
+

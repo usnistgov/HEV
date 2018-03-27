@@ -1,0 +1,526 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 8. Curves and Surfaces</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch07.html" title="Chapter 7. Textures"><link rel="next" href="ch09.html" title="Chapter 9. Applying Actions"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 8. Curves and Surfaces</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch07.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch09.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5467254"></a>Chapter 8. <a name="id16021"></a>Curves and Surfaces</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Create a variety of curves and surfaces</p>
+</li>
+<li><p>Trim areas of NURBS surfaces</p>
+</li>
+<li><p>Use NURBS profiles to specify the beveled edges of 3D text</p>
+</li>
+</ul></div><p><i>(Advanced)</i> <br>
+Curves and curved surfaces provide a convenient mathematical means of describing a geometric model. Instead of using drawings, metal strips, or clay models, designers can use these mathematical expressions to represent the surfaces used on airplane wings, automobile bodies, machine parts, or other smooth curves and surfaces. Inventor uses a particular type of parametric polynomial, a NURBS (Non-Uniform Rational B-Spline), to represent curves and surfaces. This entire chapter can be considered advanced material.<a name="idch081"></a></p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5467340"></a>Overview</h2></div></div>
+<p>To use NURBS curves and surfaces in an Inventor program, you need to develop an intuitive feel for a number of basic concepts. This section defines these key concepts and shows how they pertain to the various Inventor NURBS-related classes. For a more rigorous mathematical description of a NURBS, see <a href="ch08.html#id20005">&#8220;Suggestions for Further Reading&#8221;</a> at the end of this chapter.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5467364"></a>Classes Used with NURBS Shapes</h3></div></div>
+<p>This chapter describes use of the following classes:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><a name="idch082"></a><span class="bold"><b>SoNurbsCurve</b></span> </span></td><td width="10"> </td><td><p><br>
+represents a NURBS curve. (This is where the knot sequence is specified.)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch083"></a><span class="bold"><b>SoNurbsSurface</b></span></span></td><td width="10"> </td><td><p><br>
+represents a NURBS surface. (This is where the knot sequence is specified.)<a name="idch084"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SoNurbsProfile<a name="idch085"></a></b></span></span></td><td width="10"> </td><td><p>	<br>
+trims regions from a NURBS surface using a NURBS curve.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch086"></a><span class="bold"><b>SoLinearProfile</b></span></span></td><td width="10"> </td><td><p><br>
+trims regions from a NURBS surface using connected line segments.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch087"></a><span class="bold"><b>SoProfileCoordinate2</b></span></span></td><td width="10"> </td><td><p><br>
+specifies 2D coordinates for trim curves.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch088"></a><span class="bold"><b>SoProfileCoordinate3</b></span>
+</span></td><td width="10"> </td><td><p><span class="bold"><b>
+
+
+<br>
+</b></span>	specifies rational 2D coordinates for trim curves.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><a name="idch089"></a><span class="bold"><b>SoCoordinate3</b></span></span></td><td width="10"> </td><td><p><br>
+specifies the control points of a NURBS surface or curve.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>SoCoordinate4 <a name="idch0810"></a></b></span></span></td><td width="10"> </td><td><p><br>
+specifies rational control points of a NURBS surface or curve.</p>
+
+</td></tr></table></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5467646"></a>Parametric Curves</h3></div></div>
+<p>For simplicity, this discussion first explains the important NURBS concepts in terms of <a name="idch0811"></a><i>curves</i>, which are lines in 3D space, such as a helix. Once you understand how to define a NURBS curve, defining a NURBS surface is a simple extension of your knowledge (see <a href="ch08.html#id53818">&#8220;NURBS Surfaces&#8221;</a>).</p>
+<p>A NURBS curve or surface is <i>parametric</i>&#8212;that is, the equations that describe it depend on variables (or <i>parameters</i>) that are not explicitly part of the geometry. A NURBS curve is described in terms of one parameter, <i>u</i>. The following three functions map this single parameter into <i>x</i>-<i>y</i>-<i>z</i> space:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+x = f(u)
+y = g(u)
+z = h(u)
+</pre></td></tr></table><p>By sweeping through different values of <i>u</i> (that is, through parameter space), it is possible to evaluate the equations and determine the<i> x</i>, <i>y</i>, and <i>z</i> values for points on the curve in object space. <a href="ch08.html#id32030">Figure 8-1</a> represents this mapping of parameter space to object space. </p>
+<p><div class="figure"><p><a name="id5467752"></a><b>Figure 8-1. <a name="id32030"></a><a name="idch0812"></a>Mapping a Parametric Curve to Object Space</b></p>
+<div class="mediaobject"><img src="figures/ch08-2.gif"></div></div><br>
+</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5467779"></a>Key Concepts<a name="idch0813"></a></h2></div></div>
+<p>Your job as programmer is to define the components that make up the parametric functions, referred to as <i>f()</i>, <i>g()</i>, and <i>h()</i> in the previous section. Instead of explicitly specifying the equations, you specify the following three things:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Control points&#8212;using <span class="bold"><b>SoCoordinate3</b></span> or <span class="bold"><b>SoCoordinate4</b></span> nodes</p>
+</li>
+<li><p>Knot sequence&#8212;using <span class="bold"><b>SoNurbsCurve</b></span> or <span class="bold"><b>SoIndexedNurbsCurve</b></span> nodes</p>
+</li>
+<li><p>Order&#8212;implicitly defined by number of control points and number of knots</p>
+</li>
+</ul></div><p>A brief description of each is provided in this section, along with discussions of how they are related and how continuity is defined. A more elaborate description is provided in <a href="ch08.html#id17075">&#8220;Basis Function&#8221;</a>.</p>
+<p><i>Control points<a name="idch0814"></a></i> are points in object space that affect the shape of the curve in some way. The curve may pass near the control points, as shown at the left in <a name="idch0815"></a><a href="ch08.html#id38555">Figure 8-2</a>, or pass through some of them, as shown at the right in the figure. The control points can be a set of data points through which you want to fit a curve, or a grid of points used to describe a curved surface such as the hood of a car. In Inventor, control points are specified in an <span class="bold"><b>SoCoordinate3</b></span> or <span class="bold"><b>SoCoordinate4</b></span> node.</p>
+<p><div class="figure"><p><a name="id5467972"></a><b>Figure 8-2. <a name="id38555"></a>Using Control Points to Shape the Curve</b></p>
+<div class="mediaobject"><img src="figures/ch08-3.gif"></div></div><br>
+</p>
+<p>The <a name="idch0816"></a><i>knot sequence</i> defines how the control points affect the curve. The knot sequence is simply a list of nondecreasing numbers.  These numbers determine whether the curve passes through and interpolates between some of the control points (an interpolating curve) or passes near the control points (an approximating curve). In Inventor, the knot sequence is specified in an <a name="idch0817"></a><a name="idch0818"></a><span class="bold"><b>SoNurbsCurve</b></span> or <span class="bold"><b>SoNurbsSurface</b></span> (or <span class="bold"><b>SoIndexedNurbsCurve</b></span>, <span class="bold"><b>SoIndexedNurbsSurface</b></span>) node.</p>
+<p>The<i> order<a name="idch0819"></a></i> of a curve determines the form of the parametric equations. The order is equal to one plus the maximum exponent (<i>degree</i>) of the variables in the parametric equations. For example, the parametric equations of a cubic curve (<i>degree</i> = 3, <i>order</i> = 4) have the following form:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+<i>x(u) = Axu3 + Bxu2 + Cxu + Dx</i>
+<i>y(u) = Ayu3 + Byu2 + Cyu + Dy</i>
+<i>z(u) = Azu3 + Bzu2 + Czu + Dz</i>
+</pre></td></tr></table><p>Similarly, the parametric equations of a quadratic curve (<a name="idch0820"></a><i>degree</i> = 2, <br>
+<i>order</i> = 3) have the following form:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+<i>x(u) = Axu2 + Bxu + Cx</i>
+<i>y(u) = Ayu2 + Byu + Cy</i>
+<i>z(u) = Azu2 + Bzu + Cz</i>
+</pre></td></tr></table><p>Alternatively, you may wish to think of the order as the number of coefficients in the parametric equation. The order of a curve affects how smooth the curve can be (see <a href="ch08.html#id33682">&#8220;Continuity of a Curve&#8221;</a>).</p>
+<p>In Inventor, the order of a curve is not explicily specified.  Order is equal to </p>
+<p><i>number_of_knots</i>  -  <i>number_of_control_points</i></p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5468274"></a>Control Points and Order<a name="idch0821"></a></h3></div></div>
+<p>The order of the curve determines the minimum number of control points necessary to define the curve. You must have at least <i>order</i> control points to define a curve. (So for a curve of order 4, you must have at least four control points.)  To make curves with more than order control points, you can join two or more curve segments into a <a name="idch0822"></a><i>piecewise curve</i> (see <a href="ch08.html#id17030">Figure 8-3</a>).</p>
+<p><div class="figure"><p><a name="id5468315"></a><b>Figure 8-3. <a name="id17030"></a>Piecewise Cubic Curve</b></p>
+<div class="mediaobject"><img src="figures/ch08-5.gif"></div></div><br>
+</p>
+<p>The order of the curve also affects how the curve behaves when a control <br>
+point is moved. In Inventor, a NURBS curve can have an order up to 8. However, higher orders introduce oscillation into the curve and can behave unpredictably when a control point moves.  <a name="idch0823"></a><i>Cubic curves</i> (order of 4) are the most commonly used curves, since they provide enough control for most geometric modeling applications without the drawbacks of higher-order curves.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5468359"></a><a name="id33682"></a>Continuity of a Curve</h3></div></div>
+<p>A <a name="idch0824"></a><i>breakpoint</i> is where two curve segments meet within a piecewise curve. The <i>continuity</i> of a curve at a breakpoint describes how those curves meet at the breakpoint. <a href="ch08.html#id13811">Figure 8-4</a> shows four possible types of continuity:<a name="idch0825"></a></p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><i>No continuity</i> </span></td><td width="10"> </td><td><p>The curves do not meet at all.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><i>C</i><sup>0 </sup><i>continuity </i>
+</span></td><td width="10"> </td><td><p><i></i>The endpoints of the two curves meet (the curves have positional continuity only). There may be a sharp point where they meet.</p>
+
+</td></tr><tr valign="top"><td><span class="term"><i>C</i><sup>1</sup><i> continuity </i>
+</span></td><td width="10"> </td><td><p><i></i>The curves have identical tangents at the breakpoint. (The tangent is the <a name="idch0826"></a><i>slope</i> at the breakpoint.) The curves join smoothly. C<sup>1</sup> curves also have positional continuity.<a name="idch0827"></a></p>
+
+</td></tr><tr valign="top"><td><span class="term">C<sup>2</sup> <i>continuity</i> </span></td><td width="10"> </td><td><p>The curves have identical curvature at the breakpoint. (<i>Curvature</i> is defined as the rate of change of the tangents.) Curvature continuity implies both tangential and positional continuity.</p>
+
+</td></tr></table></div><p>The order of a curve determines the maximum continuity possible. Thus, you may need a higher order curve if you need more continuity. The maximum continuity is <i>order</i> - 2. For example, for cubic curves, the maximum continuity possible is C<a name="idch0828"></a><sup>2</sup> (curvature continuity).</p>
+<p><div class="figure"><p><a name="id5468582"></a><b>Figure 8-4. <a name="id13811"></a>Continuity of a Curve</b></p>
+<div class="mediaobject"><img src="figures/ch08-6.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5468622"></a><a name="id17075"></a>Basis Function</h3></div></div>
+<p>Each control point is like a magnet tugging on the curve (see <a href="ch08.html#id42331">Figure 8-5</a>). The strength and extent of these magnets is described mathematically by a particular basis function. For a NURBS, this function is the <i>B-spline</i> basis function. (See <a href="ch08.html#id20005">&#8220;Suggestions for Further Reading&#8221;</a> for references presenting a more thorough derivation of the B-spline basis function.)<a name="idch0829"></a></p>
+<p><div class="figure"><p><a name="id5468669"></a><b>Figure 8-5. <a name="id42331"></a>Control Points Influence the Curve</b></p>
+<div class="mediaobject"><img src="figures/ch08-7.gif"></div></div><br>
+</p>
+<p>The B-spline basis function (<a href="ch08.html#id18821">Figure 8-6</a>) describes the curve in parameter (<i>u</i>) space. For each value of <i>u</i>:</p>
+<p>contribution_of_each_control_point  =  location * its_basis _function</p>
+<p>The resulting curve is equal to the <i>sum</i> of the contributions from each control point. Note that often a control point (a &#8220;magnet&#8221;) affects the entire curve, although its influence becomes weaker as you move away from it. The exact extent of the influence is determined by the knot sequence.</p>
+<p><div class="figure"><p><a name="id5468765"></a><b>Figure 8-6. <a name="id18821"></a><a name="idch0830"></a>B-Spline Basis Function</b></p>
+<div class="mediaobject"><img src="figures/ch08-8.gif"></div></div><br>
+</p>
+<div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5468809"></a>Knot Sequence</h4></div></div>
+<p>The distribution of basis functions in parameter space is controlled by the <i>knot sequence</i> (also referred to as the <a name="idch0831"></a><i>knot vector</i>, or <i>the knots</i>). The knot sequence is a list of nondecreasing values. Each knot defines the beginning and end of a basis function. There must be exactly<i> (order + number of control points)</i> values in the knot sequence. The curve is defined only where <i>order</i> basis functions overlap (as shown in <a href="ch08.html#id24534">Figure 8-7</a>). If the knot values are singular (no repeating values) and regularly spaced, the curve is a <a name="idch0832"></a><i>uniform B-spline</i> (as shown in <a href="ch08.html#id24534">Figure 8-7</a>).</p>
+<p><a href="ch08.html#id24534">Figure 8-7</a> shows a uniform knot sequence. Four control points are defined (in object space). The top of the figure illustrates the four basis functions for each of the control points. The basis functions overlap where <i>u</i> = 3.0 to<br>
+<i>u</i> = 4.0, as indicated by the shaded portion.  This figure also illustrates another important NURBS relationship: at any point where the curve is defined, the sum of all basis functions is equal to 1. </p>
+<p><div class="figure"><p><a name="id5468904"></a><b>Figure 8-7. <a name="id24534"></a>Uniform Knot Sequence</b></p>
+<div class="mediaobject"><img src="figures/ch08-9.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5468925"></a>Knot Multiplicity</h4></div></div>
+<p>Distinct knot values define <i>segments</i>.  A basis function always spans <i>order</i> segments. In <a href="ch08.html#id24534">Figure 8-7</a>, for example, the basis function beginning at 0 and ending at 4 spans four segments (knot 0 to knot 1; knot 1 to knot 2; knot 2 to knot 3; and knot 3 to knot 4). </p>
+<p>Duplicating values in the knot sequence increases that value's<a name="idch0833"></a><i> multiplicity</i> and causes more than one basis function to start at that point. This also causes a corresponding decrease in the continuity of the curve. <a href="ch08.html#id11743">Figure 8-8</a> uses the same two sets of control points, with different knot sequences for the top and bottom curves. Notice how the bottom curve has C0 continuity, and the top curve has C2 continuity. This relationship between multiplicity and the continuity of the curve can be expressed mathematically as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+CORD - (M + 1)
+</pre></td></tr></table><p>where <i>ORD</i> equals the order of the curve and <i>M</i> is the multiplicity.</p>
+<p>The maximum multiplicity (maximum times you can repeat a knot) is <i>order</i>. <a href="ch08.html#id29658">Table 8-1</a> shows knot multiplicity and the resulting continuity.</p>
+<p><div class="figure"><p><a name="id5469073"></a><b>Figure 8-8. <a name="id11743"></a>Knot Multiplicity</b></p>
+<div class="mediaobject"><img src="figures/ch08-4.gif"></div></div><br>
+</p>
+<div class="table"><p><a name="id5469093"></a><b>Table 8-1. <a name="id29658"></a>Continuity and Knot Multiplicity for Cubic Curves</b></p>
+<table summary="Continuity and Knot Multiplicity for Cubic Curves" border="1"><colgroup><col><col><col></colgroup><thead><tr valign="top"><th valign="top"><p>Knot Multiplicity</p>
+</th><th valign="top"><p>Continuity<br>
+Conditions</p>
+</th><th valign="top"><p>Continuity</p>
+</th></tr></thead><tbody><tr valign="top"><td valign="top"><p>1</p>
+</td><td valign="top"><p>positional<br>
+tangential<br>
+curvature</p>
+</td><td valign="top"><p>C<sup>2</sup></p>
+</td></tr><tr valign="top"><td valign="top"><p>2</p>
+</td><td valign="top"><p>positional<br>
+tangential</p>
+</td><td valign="top"><p>C<sup>1</sup></p>
+</td></tr><tr valign="top"><td valign="top"><p>3</p>
+</td><td valign="top"><p>positional</p>
+</td><td valign="top"><p>C<sup>0</sup></p>
+</td></tr><tr valign="top"><td valign="top"><p>4</p>
+</td><td valign="top"><p>none</p>
+</td><td valign="top"><p>none</p>
+</td></tr></tbody></table></div><br></div><div class="section"><div class="titlepage"><div><h4 class="title"><a name="id5469288"></a>Common Knot Sequences<a name="idch0834"></a></h4></div></div>
+<p>Several common knot sequences are extremely useful for a wide variety of applications:</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><i>Uniform cubic B-spline<a name="idch0835"></a></i> </span></td><td width="10"> </td><td><p><br>
+knots are uniformly spaced; single multiplicity<br>
+(for example, 0, 1, 2, 3, 4, 5, 6, 7)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><i>Cubic Bezier curve<a name="idch0836"></a></i> </span></td><td width="10"> </td><td><p>multiplicity = 4 at beginning and end</p>
+<p>(for example, 0, 0, 0, 0, 1, 1, 1, 1)</p>
+
+</td></tr><tr valign="top"><td><span class="term"><i>Uniform cubic B-spline that passes through endpoints <a name="idch0837"></a></i></span></td><td width="10"> </td><td><p><br>
+multiplicity=  4 at beginning and end; uniformly spaced single knots between<br>
+(for example, 0, 0, 0, 0, 1, 2, 3, 4, 5, 5, 5, 5)</p>
+
+</td></tr></table></div><p>The behavior of the Bezier curve and the uniform cubic B-spline makes them ideal for geometric modeling and CAD applications.  The curve passes through the first and last control points (see <a href="ch08.html#id27822">Figure 8-9</a>). A line drawn through the first and second control points determines the tangent at the first endpoint. A line drawn through the last two control points determines the tangent at the second endpoint.</p>
+<p><div class="figure"><p><a name="id5469488"></a><b>Figure 8-9. <a name="id27822"></a><a name="idch0838"></a>Cubic Bezier Curve</b></p>
+<div class="mediaobject"><img src="figures/ch08-10.gif"></div></div><br>
+</p>
+</div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5469514"></a>Summary of NURBS Relationships</h3></div></div>
+<p>The previous pages have outlined important relationships among NURBS parameters. They can be summarized as follows:<a name="idch0839"></a></p>
+<div class="itemizedlist"><ul type="disc"><li><p><i>order</i> = <i>degree</i> + 1, where<br>
+<a name="idch0840"></a><i>degree</i> is the maximum exponent in the parametric equations</p>
+</li>
+<li><p>To define a curve, you need at least <i>order</i> control points<a name="idch0841"></a></p>
+</li>
+<li><p>Maximum continuity =<a name="idch0842"></a><i> order</i> - 2</p>
+</li>
+<li><p>Number of knots = <i>order</i> + number of control points</p>
+</li>
+<li><p>Knot values must be nondecreasing</p>
+</li>
+<li><p>Maximum knot multiplicity = <a name="idch0843"></a><i>order</i></p>
+</li>
+<li><p>Continuity = <a name="idch0844"></a><i>order</i> - ( multiplicity + 1 )</p>
+</li>
+</ul></div><p>Thus, for cubic curves, the order equals 4. You need at least four control points to define a cubic curve. The maximum continuity for cubics is C2 continuity. You need a minimum of eight knots in the knot sequence. The maximum knot multiplicity of cubics is 4.<a name="idch0845"></a></p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5469661"></a>Rational Curves<a name="idch0846"></a></h3></div></div>
+<p>Each control point has an associated <i>weight</i> that influences the shape of its basis function. As shown in <a href="ch08.html#id26417">Figure 8-10</a>, this is analogous to having magnets of differing sizes tugging on the curve.  For <a name="idch0847"></a><i>nonrational</i> curves, all control points have a weight of 1.0. For <i>rational</i> curves, the control points have differing weights.  If a control point has a weight greater than 1.0, its influence on the curve is greater than that of control points with weights <br>
+of 1.0.</p>
+<p>The parametric equations for rational curves have both a numerator and a denominator, which results in a <i>ratio</i>. (The numerator is the original parametric equation. The denominator is another parametric equation that takes the weight into account.) We recommend that the weight be a value greater than 0. Use an <a name="idch0848"></a><span class="bold"><b>SoCoordinate4</b></span> node to specify <i>x, y, z</i>, and <i>w</i> (weight) values. </p>
+<p>Rational curves and surfaces are required to accurately represent conic sections, spheres, and cylinders. For more information, see <a href="ch08.html#id20005">&#8220;Suggestions for Further Reading&#8221;</a>.</p>
+<p><div class="figure"><p><a name="id5469787"></a><b>Figure 8-10. <a name="id26417"></a>Rational Curves</b></p>
+<div class="mediaobject"><img src="figures/ch08-11.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5469828"></a>N-U-R-B-S Spells NURBS</h3></div></div>
+<p>If you've made it this far into the discussion of the NURBS, you now understand all the buzzwords that form this acronym:<a name="idch0849"></a></p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term">Non-Uniform</span></td><td width="10"> </td><td><p>Knot spacing need not be <i>uniform</i>.</p>
+
+</td></tr><tr valign="top"><td><span class="term">Rational</span></td><td width="10"> </td><td><p>The parametric equations describing the curve can have a denominator (that is, they can be <i>ratios</i>).</p>
+
+</td></tr><tr valign="top"><td><span class="term">B-Spline</span></td><td width="10"> </td><td><p>The influence of the control points is based on the <a name="idch0850"></a><i>B-spline</i> basis function.</p>
+
+</td></tr></table></div></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5469903"></a>Examples of NURBS Curves<a name="idch0851"></a></h2></div></div>
+<p>This section provides two examples of NURBS curves:  a B-spline curve and a uniform B-spline curve that passes through the end control points.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5469918"></a>B-Spline Curve</h3></div></div>
+<p><a href="ch08.html#id17991">Example 8-1</a> creates and displays a B-spline curve. Seven control points are defined. The knot vector contains ten knots. Since</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+number_of_knots = order + number_of_control_points
+</pre></td></tr></table><p>this curve has an order of 3. It has a multiplicity of 2 (one knot is used twice). This curve has a continuity of C0.</p>
+<p><a href="ch08.html#id26561">Figure 8-11</a> shows the scene graph for the nodes in this example. <a href="">Figure 8-12</a>  shows the resulting curve.</p>
+<p><div class="figure"><p><a name="id5470024"></a><b>Figure 8-11. <a name="id26561"></a>Scene Graph for B-Spline Curve Example</b></p>
+<div class="mediaobject"><img src="figures/8-11.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5470044"></a><b>Example 8-1. <a name="id17991"></a>Creating a B-Spline Curve</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// The control points for this curve
+float pts[7][3] = {
+   { 4.0, -6.0,  6.0},
+   {-4.0,  1.0,  0.0},
+   {-1.5,  5.0, -6.0},
+   { 0.0,  2.0, -2.0},
+   { 1.5,  5.0, -6.0},
+   { 4.0,  1.0,  0.0},
+   {-4.0, -6.0,  6.0}};
+
+// The knot vector
+float knots[10] = {1, 2, 3, 4, 5, 5, 6, 7, 8, 9};
+
+// Create the nodes needed for the B-Spline curve.
+SoSeparator *
+makeCurve()
+{
+   SoSeparator *curveSep = new SoSeparator();
+   curveSep-&gt;ref();
+
+</pre></td></tr></table><p>   </p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   // Set the draw style of the curve.
+   SoDrawStyle *drawStyle  = new SoDrawStyle;
+   drawStyle-&gt;lineWidth = 4;
+   curveSep-&gt;addChild(drawStyle);
+
+   // Define the NURBS curve including the control points
+   // and a complexity.
+   SoComplexity  *complexity = new SoComplexity;
+   SoCoordinate3 *controlPts = new SoCoordinate3;
+   SoNurbsCurve  *curve      = new SoNurbsCurve;
+   complexity-&gt;value = 0.8;
+   controlPts-&gt;point.setValues(0, 7, pts);
+   curve-&gt;numControlPoints = 7;
+   curve-&gt;knotVector.setValues(0, 10, knots);
+   curveSep-&gt;addChild(complexity);
+   curveSep-&gt;addChild(controlPts);
+   curveSep-&gt;addChild(curve);
+
+   curveSep-&gt;unrefNoDelete();
+   return curveSep;
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5470112"></a>Uniform B-Spline Curve Passing through Endpoints<a name="idch0852"></a></h3></div></div>
+<p><a href="ch08.html#id19298">Example 8-2</a> creates a uniform B-spline curve that passes through the end control points. The knot sequence has a multiplicity of 4 at the beginning and end, which causes the curve to pass through the first and last control points. In between, the curve is uniform.</p>
+<p>The scene graph for the nodes in this example has the same structure as the scene graph shown in <a href="ch08.html#id26561">Figure 8-11</a>.  <a href="ch08.html#id15605">&#8220;A Uniform B-Spline Curve that Passes through the Endpoints&#8221;</a> shows the resulting curve.</p>
+<div class="example"><p><a name="id5470184"></a><b>Example 8-2. <a name="id19298"></a>Creating a Uniform B-Spline Curve</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// The control points for this curve
+float pts[13][3] = {
+   { 6.0,  0.0,  6.0},
+   {-5.5,  0.5,  5.5},
+   {-5.0,  1.0, -5.0},
+   { 4.5,  1.5, -4.5},
+   { 4.0,  2.0,  4.0},
+   {-3.5,  2.5,  3.5},
+   {-3.0,  3.0, -3.0},
+   { 2.5,  3.5, -2.5},
+   { 2.0,  4.0,  2.0},
+   {-1.5,  4.5,  1.5},
+   {-1.0,  5.0, -1.0},
+</pre></td></tr></table><p><a name="id15605"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/08.13.UniCurve.iv"><div class="caption"><p>A Uniform B-Spline Curve that Passes through the Endpoints</p>
+</div></a></blockquote></div>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   { 0.5,  5.5, -0.5},
+   { 0.0,  6.0,  0.0}};
+
+// The knot vector
+float knots[17] = {
+   0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10};
+
+// Create the nodes needed for the B-Spline curve.
+SoSeparator *
+makeCurve()
+{
+   SoSeparator *curveSep = new SoSeparator();
+   curveSep-&gt;ref();
+
+   // Set the draw style of the curve.
+   SoDrawStyle *drawStyle  = new SoDrawStyle;
+   drawStyle-&gt;lineWidth = 4;
+   curveSep-&gt;addChild(drawStyle);
+
+   // Define the NURBS curve including the control points
+   // and a complexity.
+   SoComplexity  *complexity = new SoComplexity;
+   SoCoordinate3 *controlPts = new SoCoordinate3;
+   SoNurbsCurve  *curve      = new SoNurbsCurve;
+   complexity-&gt;value = 0.8;
+   controlPts-&gt;point.setValues(0, 13, pts);
+   curve-&gt;numControlPoints = 13;
+   curve-&gt;knotVector.setValues(0, 17, knots);
+   curveSep-&gt;addChild(complexity);
+   curveSep-&gt;addChild(controlPts);
+   curveSep-&gt;addChild(curve);
+
+   curveSep-&gt;unrefNoDelete();
+   return curveSep;
+}
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5470277"></a><a name="id53818"></a>NURBS Surfaces<a name="idch0853"></a></h2></div></div>
+<p>A surface differs from a curve only in that it has two parametric directions (<i>u</i> and <i>v</i>) instead of one (<a href="ch08.html#id30677">Figure 8-14</a>), and that the order and knot vector must be specified for both parameters.</p>
+<p><div class="figure"><p><a name="id5470313"></a><b>Figure 8-12. <a name="id30677"></a>Curved Surfaces</b></p>
+<div class="mediaobject"><img src="figures/ch08-12.gif"></div></div><br>
+</p>
+<p>The two parametric dimensions, <i>u</i> and <i>v</i>, are mapped to 3D object space. As with curves, control points are specified in object space. The <i>u</i> and <i>v</i> parameters can have a different order, and a different knot sequence, although they are often the same. The order for each dimension is specified as </p>
+<p><i>order</i> = <i>number_of_knots</i> - <i>number_of_control_points</i></p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>Put NURBS shapes under their own separator to facilitate caching.<a name="idch0854"></a>
+</td></tr></table><hr noshade="noshade"></div><br><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5470430"></a>Bezier Surface<a name="idch0855"></a></h3></div></div>
+<p><a href="ch08.html#id28845">Example 8-3</a> creates a plain Bezier surface.  The knot vectors define a cubic Bezier surface (multiplicity 4 at beginning and end). The surface is order 4 with 16 control points arranged in a four-by-four grid.  The <i>u</i> and <i>v</i> knot vectors each have a length of 8. <a href="ch08.html#id42714">Figure 8-15</a> shows the scene graph for the nodes in this example. Notice that the points used as control points (<i>controlPts</i>) must precede the NURBS node (<i>surface</i>) in the scene graph.  <a href="ch08.html#id89633">&#8220;Bezier Surface&#8221;</a> shows the rendered image.</p>
+<p><div class="figure"><p><a name="id5470529"></a><b>Figure 8-13. <a name="id42714"></a>Scene Graph for a Bezier Surface</b></p>
+<div class="mediaobject"><img src="figures/8-15.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5470569"></a><b>Example 8-3. <a name="id28845"></a>Bezier Surface</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// The control points for this surface
+float pts[16][3] = {
+   {-4.5, -2.0,  8.0},
+   {-2.0,  1.0,  8.0},
+   { 2.0, -3.0,  6.0},
+   { 5.0, -1.0,  8.0},
+   {-3.0,  3.0,  4.0},
+   { 0.0, -1.0,  4.0},
+   { 1.0, -1.0,  4.0},
+   { 3.0,  2.0,  4.0},
+   {-5.0, -2.0, -2.0},
+   {-2.0, -4.0, -2.0},
+   { 2.0, -1.0, -2.0},
+   { 5.0,  0.0, -2.0},
+   {-4.5,  2.0, -6.0},
+   {-2.0, -4.0, -5.0},
+   { 2.0,  3.0, -5.0},
+   { 4.5, -2.0, -6.0}};
+
+// The knot vector
+float knots[8] = {
+   0, 0, 0, 0, 1, 1, 1, 1};
+</pre></td></tr></table><p><a name="id89633"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/08.16.BezSurf.iv"><div class="caption"><p>Bezier Surface</p>
+</div></a></blockquote></div>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Create the nodes needed for the Bezier surface.
+SoSeparator *
+makeSurface()
+{
+   SoSeparator *surfSep = new SoSeparator();
+   surfSep-&gt;ref();
+
+   // Define the Bezier surface including the control
+   // points and a complexity.
+   SoComplexity  *complexity = new SoComplexity;
+   SoCoordinate3 *controlPts = new SoCoordinate3;
+   SoNurbsSurface  *surface  = new SoNurbsSurface;
+   complexity-&gt;value = 0.7;
+   controlPts-&gt;point.setValues(0, 16, pts);
+   surface-&gt;numUControlPoints = 4;
+   surface-&gt;numVControlPoints = 4;
+   surface-&gt;uKnotVector.setValues(0, 8, knots);
+   surface-&gt;vKnotVector.setValues(0, 8, knots);
+   surfSep-&gt;addChild(complexity);
+   surfSep-&gt;addChild(controlPts);
+   surfSep-&gt;addChild(surface);
+
+   surfSep-&gt;unrefNoDelete();
+   return surfSep;
+}
+</pre></td></tr></table><br><div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>	If a NURBS surface is changing, inserting an <a name="idch0856"></a><span class="bold"><b>SoComplexity</b></span> node with SCREEN_SPACE specified as the <span class="bold"><b>type</b></span> may improve performance, especially if the NURBS surfaces are far away.
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5470707"></a>Trimming NURBS Surfaces<a name="idch0857"></a></h3></div></div>
+<p><i>Profile curves</i> are used to trim (cut areas away from) a NURBS surface.  Profile curves themselves are not rendered; they are simply used to trim any subsequent NURBS surfaces in the scene graph. Like transformations, profile curves are pushed and popped by separator groups, yet they accumulate with each other.</p>
+<p>Profile curves are often used to perform a stencil operation, such as cutting a shape out of a cloth surface with a pair of scissors. They are also used to remove sharp corners from a NURBS surface. See also Example 6-3, which uses a profile curve with 3D text.</p>
+<p>Trimming NURBS surfaces is considered an advanced topic. If this is your first exposure to a NURBS, experiment first with curves and surfaces, then move on to trimmed surfaces.</p>
+<p>A profile curve can consist of a linear profile curve (<a name="idch0858"></a><span class="bold"><b>SoLinearProfile</b></span>), a NURBS curve (<span class="bold"><b>SoNurbsProfileCurve<a name="idch0859"></a></b></span>), or a combination of the two. For coordinates, it uses either <a name="idch0860"></a><span class="bold"><b>SoProfileCoordinate2</b></span> (for nonrational profile curves)  or<span class="bold"><b> SoProfileCoordinate3<a name="idch0861"></a></b></span> (for rational profile curves). The main requirement is that the composite profile curve make a complete loop, with its first point repeated as its last point. In addition, it cannot be self-intersecting. </p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>If you want your profile curve to be straight but follow the surface, use an <a name="idch0862"></a><span class="bold"><b>SoNurbsProfileCurve</b></span> with an order 2 curve. (See <a href="ch08.html#id41447">Example 8-4</a>.) Linear profiles create straight trim edges in object space that do not follow the surface. You will seldom use an <span class="bold"><b>SoLinearProfile</b></span> to trim a NURBS surface.
+</td></tr></table><hr noshade="noshade"></div><p>The direction in which the points of a profile curve are defined is significant. If the profile curve is defined in a clockwise direction, the area inside the curve is discarded and the area outside the curve is retained. If the profile curve is defined in a counterclockwise direction, the area inside is retained and the area outside is discarded. Profile curves can be nested inside each other but cannot intersect each other. The outermost profile curve must be defined in a counterclockwise direction (see <a name="idch0863"></a><a href="ch08.html#id41447">Example 8-4</a>).</p>
+<p>Profile curves are defined in parameter  space, which is mapped to <br>
+object space.</p>
+<p><a href="ch08.html#id41447">Example 8-4</a> adds profile curves to the surface created in <a href="ch08.html#id28845">Example 8-3</a>. <a href="ch08.html#id23067">Figure 8-17</a> shows the scene graph for the nodes in this example. Notice that the points used as control points (<i>controlPts</i>) must precede the NURBS node (<i>surface</i>)  in the scene graph. Similarly, the points that define the profile curve (<i>trimPts</i>) must precede the profile-curve nodes (<i>nTrim1</i>, <i>nTrim2</i>, and <i>nTrim3</i>). And, naturally, the profile-curve nodes must precede the NURBS surface to be trimmed.</p>
+<p><div class="figure"><p><a name="id5470949"></a><b>Figure 8-14. <a name="id23067"></a>Scene Graph for Trimmed Bezier Surface</b></p>
+<div class="mediaobject"><img src="figures/8-17.gif"></div></div><br>
+</p>
+<p><a href="ch08.html#id35817">Figure 8-18</a> shows the trim curves used in <a href="ch08.html#id41447">Example 8-4</a>, mapped in parameter  (<i>u/v</i>) space. This example uses three NURBS profile curves. Each curve has its own knot vector. The first curve, <i>nTrim1</i>, has four segments and five control points (it starts and ends at the same point). It is an order 2 curve that passes through the endpoints. The second profile curve, <i>nTrim2</i>, is also linear. It passes through the endpoints and has three segments. The third profile curve, <i>nTrim3</i>, is a cubic curve (order = 4). It has a multiplicity 4 at beginning and end (which makes it a Bezier curve that passes through the endpoints).</p>
+<p>Notice that these trim curves are nested inside each other and that the outermost curve is counterclockwise. They do not intersect each other.  <a name="idch0864"></a><a href="ch08.html#id68440">&#8220;A Trimmed Bezier Surface&#8221;</a> shows the trimmed Bezier surface produced by <a href="ch08.html#id41447">Example 8-4</a>.</p>
+<p><div class="figure"><p><a name="id5471097"></a><b>Figure 8-15. <a name="id35817"></a>Trim Curves Used in Example 8-4</b></p>
+<div class="mediaobject"><img src="figures/fig8.19.gif"></div></div><br>
+</p>
+<div class="example"><p><a name="id5471117"></a><b>Example 8-4. <a name="id41447"></a>Trimming a Bezier Surface</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// The array of trim coordinates
+float tpts[12][2] = {
+   {0.0, 0.0},
+   {1.0, 0.0},
+   {1.0, 1.0},
+   {0.0, 1.0},
+   {0.2, 0.2},
+   {0.2, 0.7},
+   {0.9, 0.7},
+   {0.9, 0.2},
+   {0.7, 0.0},
+   {0.4, 0.8}};
+
+// The 16 coordinates defining the Bezier surface. 
+float pts[16][3] = {
+   {-4.5, -2.0,  8.0},
+   {-2.0,  1.0,  8.0},
+   { 2.0, -3.0,  6.0},
+</pre></td></tr></table><p><a name="id68440"></a><div class="mediaobject"><blockquote><a class="sgimedia" href="figures/08.19.TrimSurf.iv"><div class="caption"><p>A Trimmed Bezier Surface</p>
+</div></a></blockquote></div>
+</p>
+<p>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+   { 5.0, -1.0,  8.0},
+   {-3.0,  3.0,  4.0},
+   { 0.0, -1.0,  4.0},
+   { 1.0, -1.0,  4.0},
+   { 3.0,  2.0,  4.0},
+   {-5.0, -2.0, -2.0},
+   {-2.0, -4.0, -2.0},
+   { 2.0, -1.0, -2.0},
+   { 5.0,  0.0, -2.0},
+   {-4.5,  2.0, -6.0},
+   {-2.0, -4.0, -5.0},
+   { 2.0,  3.0, -5.0},
+   { 4.5, -2.0, -6.0}};
+
+// The 3 knot vectors for the 3 trim curves.
+float tknots1[7] = {0, 0, 1, 2, 3, 4, 4};
+float tknots2[6] = {0, 0, 1, 2, 3, 3};
+float tknots3[8] = {0, 0, 0, 0, 1, 1, 1, 1};
+
+// The Bezier knot vector for the surface.
+// This knot vector is used in both the U and
+// V directions.
+float knots[8] = {0, 0, 0, 0, 1, 1, 1, 1};
+
+// Create the nodes needed for the Bezier patch
+// and its trim curves.
+SoSeparator *
+makeSurface()
+{
+   SoSeparator *surfSep = new SoSeparator();
+   surfSep-&gt;ref();
+
+   // Define the Bezier surface including the control
+   // points, trim curve, and a complexity.
+   SoComplexity  *complexity     = new SoComplexity;
+   SoCoordinate3 *controlPts     = new SoCoordinate3;
+   SoNurbsSurface *surface       = new SoNurbsSurface;
+   complexity-&gt;value = 0.7;
+   controlPts-&gt;point.setValues(0, 16, pts);
+   surface-&gt;numUControlPoints.setValue(4);
+   surface-&gt;numVControlPoints.setValue(4);
+   surface-&gt;uKnotVector.setValues(0, 8, knots);
+   surface-&gt;vKnotVector.setValues(0, 8, knots);
+   surfSep-&gt;addChild(complexity);
+   surfSep-&gt;addChild(controlPts);
+
+   SoProfileCoordinate2 *trimPts = new SoProfileCoordinate2;
+   SoNurbsProfile *nTrim1        = new SoNurbsProfile;
+   SoNurbsProfile *nTrim2        = new SoNurbsProfile;
+   SoNurbsProfile *nTrim3        = new SoNurbsProfile;
+   long trimInds[5];
+
+   trimPts-&gt;point.setValues(0, 12, tpts);
+   trimInds[0] = 0;
+   trimInds[1] = 1;
+   trimInds[2] = 2;
+   trimInds[3] = 3;
+   trimInds[4] = 0;
+   nTrim1-&gt;index.setValues(0, 5, trimInds);
+   nTrim1-&gt;knotVector.setValues(0, 7, tknots1);
+   trimInds[0] = 4;
+   trimInds[1] = 5;
+   trimInds[2] = 6;
+   trimInds[3] = 7;
+   nTrim2-&gt;linkage.setValue(SoProfile::START_NEW);
+   nTrim2-&gt;index.setValues(0, 4, trimInds);
+   nTrim2-&gt;knotVector.setValues(0, 6, tknots2);
+   trimInds[0] = 7;
+   trimInds[1] = 8;
+   trimInds[2] = 9;
+   trimInds[3] = 4;
+   nTrim3-&gt;linkage.setValue(SoProfile::ADD_TO_CURRENT);
+   nTrim3-&gt;index.setValues(0, 4, trimInds);
+   nTrim3-&gt;knotVector.setValues(0, 8, tknots3);
+
+   surfSep-&gt;addChild(trimPts);
+   surfSep-&gt;addChild(nTrim1);
+   surfSep-&gt;addChild(nTrim2);
+   surfSep-&gt;addChild(nTrim3);
+   surfSep-&gt;addChild(surface);
+
+   surfSep-&gt;unrefNoDelete();
+   return surfSep;
+}
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5471272"></a><a name="id20005"></a>Suggestions for Further Reading<a name="idch0865"></a></h2></div></div>
+<p>The following texts provide more detailed information on NURBS curves and surfaces:</p>
+<p>Bartels, R., J. Beatty, and B. Barsky, <i>An Introduction to Splines for Use in Computer Graphics and Geometric Modeling</i>. Los Altos, Ca.: Morgan Kaufmann, 1987.</p>
+<p>Farin, G., <i>Curves and Surfaces for Computer Aided Geometric Design</i>, 2e. San Diego, Ca.: Academic Press, Inc., 1990.</p>
+</div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch07.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch09.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 7. Textures </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 9. Applying Actions </td></tr></table></div></body></html>

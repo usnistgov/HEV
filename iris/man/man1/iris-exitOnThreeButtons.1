@@ -1,0 +1,25 @@
+.TH iris-exitOnThreeButtons 1 "February 2011"
+
+.SH NAME
+iris-exitOnThreeButtons
+
+.SH SYNOPSIS 
+.B iris-exitOnThreeButtons
+
+.SH DESCRIPTION
+
+\fBiris-exitOnThreeButtons\fR is a shell script which in a loop reads the shared
+memory file named "buttons" and if the lower three bits are set, sends a
+"TERMINATE" control command to the IRIS control fifo.
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+ 

@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+import networkx as nx
+import sys
+
+if(len(sys.argv)==2):
+    myFile=open(sys.argv[1], 'r')
+else:
+    print("Error: wrong number of arguments given")
+    sys.exit()
+
+lines = []
+
+G=nx.MultiDiGraph()
+
+for edge in myFile:
+    lines.append(tuple(edge.split()))
+
+for item in lines:
+    G.add_edge(item[0], item[1])
+
+myFile.close()
+
+deg=G.in_degree()
+
+for key, value in deg.items():
+    print(key,value)
+
+myFile.close()

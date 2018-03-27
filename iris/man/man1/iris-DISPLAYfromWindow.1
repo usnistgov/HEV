@@ -1,0 +1,35 @@
+.TH iris-DISPLAYfromWindow 1 "February 2011"
+
+.SH NAME
+iris-DISPLAYfromWindow
+
+.SH SYNOPSIS 
+
+.B iris-DISPLAYfromWindow [ file ... ]
+
+.SH OPTIONS
+
+.TP 
+file
+.br
+the name of one or more files to be loaded
+
+.SH DESCRIPTION
+
+\fBiris-DISPLAYfromWindow\fR prints the X11 DISPLAY value that is used by
+the single iris::Window object loaded by the files specified on the command
+line or the IRIS_FILES environment variable. If exactly one iris::Window object was created
+\fBiris-DISPLAYfromWindow\fR prints its X11 DISPLAY value, otherwise it
+prints nothing.
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+ 

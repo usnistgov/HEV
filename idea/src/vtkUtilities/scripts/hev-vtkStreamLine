@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+
+import sys
+import vtk
+from optparse import OptionParser
+
+def showHelp():
+    sys.stderr.write('\nUsage:\nhev-vtkStreamLine [options] --startPos X Y Z inFName outFName\n')
+    sys.exit(1)
+
+use = "Usage: %prog [options] --startPos X Y Z inFName outFName"
+
+# PARSE COMMAND LINE
+parser = OptionParser(usage = use)
+
+# ASSIGN VALUES - TODO
+parser.add_option("--startPos", "--s", dest="startPos", type="float", nargs=3)
+parser.add_option("--maxTime", "--m", dest="maxTime", type="float", default="100")
+parser.add_option("--timeStep", "--t", dest="timeStep", type="float", default="1.0")
+parser.add_option("--lenStep", "--l", dest="lenStep", type="float", default="0.2")
+
+options, args = parser.parse_args()
+
+#SET INPUT AND OUTPUT FILE
+
+if len(args) != 2:
+    showHelp()
+
+inputdatafile = args[-2]
+outputdatafile = args[-1]
+
+#DATAREADER
+read = vtk.vtkGenericDataObjectReader()
+read.SetFileName(inputdatafile)
+
+#PROCESS
+stream = vtk.vtkStreamLine()
+stream.SetInputConnection(read.GetOutputPort())
+stream.SetStartPosition(options.startPos[0], options.startPos[1], options.startPos[2])
+stream.SetMaximumPropagationTime(options.maxTime)
+stream.SetStepLength(options.timeStep)
+stream.SetIntegrationStepLength(options.lenStep)
+  
+#FILEWRITER
+write = vtk.vtkGenericDataObjectWriter()
+write.SetFileTypeToASCII()
+write.SetInput(stream.GetOutput())
+write.SetFileName(outputdatafile)
+write.Write()
+write.Update()

@@ -1,0 +1,12 @@
+# need to set pixelsize so OpenGL can use it in the shader
+PIXELSIZE 1
+PROGRAM VERTEX fatglyph.vert
+PROGRAM FRAGMENT fatglyph.frag
+# a red point at the origin
+# the normal "0 .25 1" means :
+#  0: make it a circle
+#  size is .25*the uniform fatpointSize set in the sge file
+#  1: use object space instead of eyespace
+POINT
+0 0 0  1 0 0 0  0 .25 1 
+

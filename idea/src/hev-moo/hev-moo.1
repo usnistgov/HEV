@@ -1,0 +1,150 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.\" .TH hev-moo 1 "December 2011" "NIST/ACMD/HPCVG" "HEV"
+.\" .TH hev-moo 1 "August 2012" "NIST/ACMD/HPCVG" "HEV"
+.TH hev-moo 1 "June 2014" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-moo - Model On Off for irisfly
+
+
+.SH SYNOPSIS
+.B "hev-moo"
+[options] file ...
+
+
+.SH DESCRIPTION
+.PP
+.I
+\fBhev-moo\fR creates a \fI.iris\fR file on stdout which when used in
+conjunction with \fBirisfly(1)\fR will implement a GUI to turn
+loadable model files on and off. The file can be loaded by
+\fBirisfly(1)\fR at start up on the command line or at run time thru
+the IRIS Fifo.
+
+
+.SH "REQUIRED PARAMETERS"
+.PP
+At least one file is required. Typically multiple file names will be
+specified. Files are not modified. It is the users responsibility to
+ensure that are valid files loadable by \fBirisfly\fR.
+See additional notes on \fBFILES\fR below.
+
+.SH "OPTIONAL PARAMETERS"
+.TP
+.B "--id string"
+A unique string used to ensure internal node names are unique.
+Default is 'moo_${USER}_$$' ie. moo, underscore, user name, underscore
+and current process id.
+
+.TP
+.B "--examine"
+Causes \fIEXAMINE world\fR to be initiated after all files are loaded.
+See documentation for the IRIS control command. See also
+\fI--examine\fR in the \fBiris-viewer(1)\fR man page.
+
+.TP
+.B "--on"
+Causes all model files to be initially on. If not specified, all models are off.
+
+.TP
+.B "--separator string"
+when specified, is used to identify a special prefix on filenames which
+will be used as button labels. Normally the usual file basename is
+used as the label.
+
+.IP
+For example: specifying ':' as a separator, the name 'Foo:bar.osg'
+will load the file named \fIbar.osg\fR, and give it a label of
+\fBFoo\fR.
+
+.TP
+.B "--xsize x"
+specifies the X size of all buttons in pixels.
+The default is 75.
+
+.TP
+.B "--ysize y"
+specifies the Y size of all buttons in pixels.
+The default is 20.
+
+.TP
+.B "--columns c"
+specifies the number of columns used in the menu.
+The default is 3.
+
+
+			
+.SH "SPECIAL FILENAMES"
+.pp
+There are four special keywords which can be specified intermixed with
+filename.  These keywords are case sensitive.
+
+.IP
+radioStart       Starts a radio button group
+.br
+radioEnd         Terminates a radio button group
+.br
+menuStart-LABEL  Starts a labeled menu button for subsequent buttons.
+                 Replace "LABEL" with your desired button label.
+.br
+menuEnd          Terminates a menu button.
+
+.PP
+Refer to RADIO, MENU, END command of \fBhev-masterControlPanel(1)\fR.
+
+
+
+.SH EXAMPLE
+.PP
+Example files are located in
+$HEVROOT/idea/src/hev-moo/testmoo.
+See the README in that directory.
+Make a personal copy and experiment.
+
+
+.PP
+Here are some simple examples:
+.IP
+On command line:
+.br
+    hev-moo *.savg > moo.iris
+.br
+    irisfly --ex moo.iris
+.IP
+At run time:
+.br
+    irisfly NULL &
+.br
+    hev-moo --ex --sep ":" radioStart A:000.savg B:001.savg C:010.savg radioEnd  > $IRIS_CONTROL_FIFO 
+ 
+
+.PP
+The use of spaces in button labels are discouraged. However, in the
+following example use of single quotes and back-slash character
+escape seems to work.
+
+.IP
+hev-moo --sep ":" --ex "Wire\\\\\\ Frame:000.savg" "Blue\\\\\\ Cube:010.savg" > test.iris
+
+.SH BUGS
+
+.PP
+In the current implementation only one file created with \fBhev-moo\fR
+can not be used with \fBirisfly\fR.
+
+
+
+.SH "SEE ALSO"
+iris(1),
+irisfly(1),
+iris-viewer(1),
+hev-masterControlPanel(1)
+
+.SH AUTHOR
+.PP
+Steven G. Satterfield
+.br
+steve@nist.gov
+.br
+NIST/ITL/ACMD/HPCVG
+

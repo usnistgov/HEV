@@ -1,0 +1,47 @@
+#!/bin/sh
+
+if [ $# -ne 1 ]
+then dtk-msgError -p hev-newDemo Usage: hev-newDemo directory
+     exit 1
+fi
+
+if [ -e $1 ]
+then dtk-msgError -p hev-newDemo $1 already exists. exiting.
+     exit 1
+fi
+
+if (! mkdir $1 2>/dev/null)
+then dtk-msgError -p hev-newDemo unable to create directory $1. exiting.
+     exit 1
+fi
+
+GNUmakefile=$HEVROOT/demos/GNUmakefile.template
+if [ `grep myDemoDir $GNUmakefile 2>/dev/null | wc -l` != "3" ]
+then  dtk-msgError -p hev-newDemo $GNUmakefile has been modified. email kelso@nist.gov. exiting.
+fi
+
+chmod g+w $1
+chmod g+s $1
+chgrp diverse $1
+
+################
+cd $1
+priv=$HEV_IDEA_DIR/etc/hev-newDemo/data
+cp $priv/README .
+cp $priv/README.scientific .
+cp $priv/rundemo .
+chmod g+w *
+chgrp diverse *
+
+################
+mkdir src
+chmod g+w src
+chmod g+s src
+chgrp diverse src
+
+cd src
+sed -e "s/myDemoDir/$1/" < $GNUmakefile > GNUmakefile
+chmod g+w *
+chgrp diverse *
+
+printf "\n   New demo \"$1\" created.\n   You still need to edit GNUmakefile, README and README.scientific as well as\n   create your other demo related files.\n" >&2

@@ -1,0 +1,12 @@
+radioStart
+A:000.savg
+B:001.savg
+C:010.savg
+radioEnd
+D:011.savg
+E:100.savg
+menuStart-FGH
+F:101.savg
+G:110.savg
+H:111.savg
+menuEnd

@@ -1,0 +1,83 @@
+.TH hev\-savgSphere 1 "January 2010"
+
+.SH NAME
+hev-savgSphere
+.SH SYNOPSIS
+.B hev-savgSphere 
+[val]
+
+.SH DESCRIPTION 
+.I hev-savgSphere 
+creates a sphere centered on the origin with radius 1
+and writes its data in savg file format to 
+.I stdout.
+
+The sphere is approximated by parallel bands of triangles a single tristrip,
+using degenerate triangles to hop from band to band.
+
+.SH OPTIONS
+.TP
+.B val
+Indirectly specify the number of triangles used to approximate the sphere.
+
+.P
+\fBval\fR must be at least 3.  If omitted, \fBval\fR is set to 5.
+
+Here are some sample values of \fBval\fR and what is produced:
+
+.IP val=3
+3 bands, 24 points, 22 triangles, 4 degenerate
+
+.IP val=4
+7 bands, 112 points, 110 triangles, 12 degenerate
+
+.IP val=5
+15 bands, 480 points, 478 triangles, 28 degenerate
+
+.IP val=6
+31 bands, 1984 points, 1982 triangles, 60 degenerate
+
+.IP val=7
+63 bands, 8064 points, 8062 triangles, 124 degenerate
+
+.IP val=8
+127 bands, 32512 points, 32510 triangles, 252 degenerate
+
+.IP val=9
+255 bands, 130560 points, 130558 triangles, 508 degenerate
+
+.IP val=10
+511 bands, 523264 points, 523262 triangles, 1020 degenerate
+
+
+.SH EXAMPLES
+.TP
+.B "hev-savgSphere > sphere.savg"
+This creates a complete white (default) sphere at the origin made up of 460
+triangles in 15 parallel bands.
+
+.TP
+.B "hev-savgSphere 4 > sphere.savg"
+This creates a complete white (default) sphere at the origin made up of 98
+triangles in 7 parallel bands.
+
+
+.SH SEE ALSO
+savg, savg-sphere
+
+.SH AUTHORS
+.PP
+John Kelso
+.TP
+.br
+January 2010
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+

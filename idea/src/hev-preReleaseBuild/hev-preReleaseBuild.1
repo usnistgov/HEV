@@ -1,0 +1,78 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-preReleaseBuild 1 "April 2015" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-preReleaseBuild
+- perform an HEV build and scan build output for errors
+
+.SH SYNOPSIS
+.B hev-preReleaseBuild
+[--help] [--cpus N]   [--clean | --distclean | --noclean]
+
+.SH DESCRIPTION
+.PP
+.I hev-preReleaseBuild
+is a utility to build the HEV tree and scan the build output for
+errors, warnings and other messages that might indicate a problem with
+the build. Any messages found are printed to \fIstdout\fR.
+
+.PP
+\fBWarning:\fR \fIThis command attempts to delete much of the installed HEV
+directory and then re-builds. Be sure you really want to do this prior
+to executing this command.\fR
+
+
+
+.SH  OPTIONS
+.PP
+.TP
+.B --help
+print a help message.
+
+.TP
+.B "--cpus N"
+specifies the number of cores for make to use, i.e -jN If this not
+specified, then the number of available cores is used.
+
+.TP
+.B --clean
+causes the command to issue a \fBmake clean\fR instead of the default \fBmake distclean\fR.
+
+.TP
+.B --distclean
+causes the command to issue a \fBmake distclean\fR (the default).
+
+.TP
+.B --noclean
+execute \fBmake install\fR without either \fBmake clean\fR or \fBmake distclean.\fR 
+
+
+
+.SH NOTES
+\" .PP
+\" The method used to automatically determine the number of CPUs on the current system is the command:
+\" .IP
+\" getconf _NPROCESSORS_ONLN
+\"
+.PP
+This command does the following:
+
+.IP
+cd ${HEVROOT}
+.br
+make distclean  (or clean)
+.br
+make -jN install
+.br
+scans output and prints possible problems with the build
+
+
+
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov
+.br
+Original implementation April 23, 2015
+
+\"  LocalWords:  hev preReleaseBuild NIST cpus distclean fIstdout fR TP jN CPUs
+\"  LocalWords:  fBmake IP getconf NPROCESSORS ONLN cd HEVROOT br

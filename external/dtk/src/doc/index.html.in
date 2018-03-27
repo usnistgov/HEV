@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1">
+<link href="dtk.css" rel="stylesheet" type="text/css">
+<title>DIVERSE Toolkit</title>
+</head>
+<body>
+
+<table>
+<tr>
+<center>
+<td>
+<h1>The DIVERSE Toolkit</h1>
+</td>
+<td>
+
+<table>
+<tr>
+<td>
+<center>
+hosted by
+</center>
+</td>
+<td>
+<A href="http://sourceforge.net"> <IMG
+src="sflogo.png" border="0" alt="SourceForge.net Logo"></A>
+</td>
+</tr>
+</table>
+
+</td>
+</center>
+</tr>
+<tr>
+<td>
+
+The <b>DIVERSE Toolkit</b> (DTK) is a toolkit for building
+operator-in-the-loop real-time distributed simulations.
+
+</td>
+</td>
+</table>
+
+<p> DTK is a free, GNU <a
+href="http://www.gnu.org/copyleft/gpl.html">GPL</a> and <a
+href="http://www.gnu.org/copyleft/lesser.html">LGPL</a> licensed,
+software.&nbsp; It's ported to GNU/Linux, IRIX (6.5), Mac OS X, and MS
+Windows 2000/XP (using MS VC++ version 6).</p>
+
+
+
+<table class=index width="100%">
+<tr>
+<td>
+
+<ul>
+
+<li>
+<a href=installation.html>Installation Instructions</a>
+</li>
+
+<li>
+<a href="https://sourceforge.net/project/showfiles.php?group_id=70895">Download</a>
+</li>
+
+<li>
+<a href="gui_pictures.html">Screen Shots</a>
+</li>
+
+<!-- <li><a href="main.html">Doxygen Generated Documentation/Manual</a>
+</li> !-->
+
+<li>
+<a href="tutor_toc.html">Tutorial</a>
+</li>
+
+</ul>
+
+</td>
+<td>
+
+<ul>
+
+<li>
+<a href="https://sourceforge.net/projects/diverse/">SourceForge Project Summary</a></li>
+
+<li>
+<a href="https://sourceforge.net/cvs/?group_id=70895">SourceForge CVS
+page</a>
+</li>
+
+<li>
+<a href="ChangeLog">ChangeLog</a>
+</li>
+
+<li>
+<a href="http://diverse.sourceforge.net/historyAndAckn.html">History and Acknowledgments</a>
+</li>
+
+</ul>
+
+</td>
+</tr>
+</table>
+
+
+
+<p>The <b>DIVERSE Toolkit</b> (DTK) is made up of the:</p>
+
+<ul>
+
+<li> <b>DTK Server</b>, which reads and writes to hardware devices
+(including network hardware), and the </li>
+
+<li> <b>DTK Library</b>, a C++ API (Application Programming Interface)
+that provides utilities and an interface to the server, and the</li>
+
+<li> <b>Over 50 <a href="listProgramsHelp.html">DTK programs</a></b>,
+that provide utilities and an interface to the server.</li>
+
+</ul>
+
+<hr />
+
+<blockquote>
+
+<p> The DIVERSE Toolkit is designed for aiding in the building of
+distributed operator-in-the-loop simulators.&nbsp; We use it as the
+glue to tie together programs.&nbsp; We call it "simulator
+glue".&nbsp; It's an API that does <b>not</b> assume that it is the
+answer to all <a href="directives.html">your programming
+needs</a>.&nbsp; It glues stuff together, and we hope mixes well with
+other glues.</p>
+
+<p> Shared memory makes running programs easy to
+reconfigure, and DTK makes shared memory easy to use.</p>
+
+</blockquote>
+
+
+<h2>What's new in DTK, that can't be found elsewhere?</h2>
+
+<ol>
+
+<li> DTK introduces a new implementation of local shared memory.&nbsp;
+This shared memory is accessed using user named files in the file
+system.&nbsp; By using the file system the shared memory has a
+structured name space for the shared memory segments, which are each a
+file in the file system.&nbsp; So it's like arena files with an object
+oriented interface, a user friendly name space, and one arena file per
+shared memory segment.&nbsp; Local DTK shared memory does not memory
+map to the same address numbers for all processes, like IRIX arenas
+do, so it never creates virtual address space conflicts like IRIX
+arenas do.&nbsp; These shared memory segments (files) may be
+seamlessly queued, write counted, and write time stamped.</li>
+
+<p></p>
+
+<li> DTK introduces a new implementation of, outside of the kernel,
+remote shared memory.&nbsp; Remote shared memory extends inter-process
+(local) shared memory, on the fly, to Internet shared memory.&nbsp;
+DTK remote shared memory provides no default memory consistency and
+uses a "write push" to propagate the data.&nbsp; One might argue that
+it is not distributed shared memory (DSM) do to the lack of concern
+for data coherence of the networked data.&nbsp; But local DTK shared
+memory is always coherent.&nbsp; All interprocess and inter-computer
+interconnectivity is created on-the-fly.</li>
+
+<p></p>
+
+<li> The DTK server provides a "novel standard" for extending hardware
+drivers (not in the OS kernel driver sense) to inter-process and
+Internet hardware services with minimal coding.&nbsp; It does this by
+providing all the overhead of a networked (or non-networked) server to
+small device reading codes that are in the form of loadable dynamic
+shared objects (DSOs) plug-ins written in C++.&nbsp; The DTK server
+provides networking, data queuing and polling automatically for any
+number of loaded service plug-ins.&nbsp; The DTK library provides a common
+API interface to your hardware that is served by the DTK server.</li>
+
+</ol>
+
+<p></p>
+
+<h2>What's in the DIVERSE Toolkit API?</h2>
+
+<blockquote>
+
+Shared memory class, error message class, read/write locks wrapper,
+sockets wrapper, TCP/UDP remote shared memory, ldopen()
+(LoadLibrary()) wrapper for C++ Dynamic Shared Object (DSO) (DLL on
+windows) loading, and some general real-time operator-in-the-loop
+programming tools.
+
+
+<p>It's (libdtk) built on the standard C libraries, the standard C++
+libraries, the standard math library and pthreads.&nbsp; The additional
+library, libdtkX11, requires the X11 windows library in addition.&nbsp;
+It's also ported to MS Windows using win32 and with no MFC.</p>
+
+</blockquote>
+
+
+<h2>DSO plug-in modules versus configuration files</h2> 
+
+<blockquote>
+
+You may notice that in DTK we tend to think of C++ as the
+configuration language of choice.&nbsp; Given the trend that all
+configuration file formats evolve into a new computer language, we
+instead use the C++ language, and "pre-parse" this configuration file
+by compiling it into a loadable DSO plug-in.&nbsp; C++ is a very
+robust language and loading a pre compiled C++ DSO, in most cases, is
+faster than parsing an ASCII configuration file, and so instead of
+writing parser code we write "real" code.&nbsp; A large part of many
+APIs is parsing code, but this is not the case for DTK.&nbsp; The
+conventional script configuration can be built on top of this DSO
+plug-in methodology.
+
+<p> If you don't buy this take a look at the apache web server.&nbsp;
+The apache web server does exactly this.&nbsp; With DSO plug-in
+modules the apache web server would not be the <a
+href="http://www.apache.org/">apache</a> web server.&nbsp; The apache
+web server has a balance of text parsing configuration and DSO plug-in
+modules.</p>
+
+
+</blockquote>
+
+
+<h2>What's in a name?</h2> 
+
+<blockquote>
+
+<p> The DIVERSE Toolkit was developed for and was (or is) being
+used by <a href="http://diverse.sourceforge.net/">DIVERSE</a> (Device
+Independent Virtual Environment - Reconfigurable, Scalable,
+Extensible).&nbsp; So it acquired the name "DIVERSE Toolkit".&nbsp;
+Today DTK is an independent project, that is currently in some form
+used by the DIVERSE project, but is and always was intended for more
+general use.&nbsp; From time to time the DIVERSE project appears to be
+distributing other branches of DTK that are derived from this
+project.&nbsp; The DIVERSE project and the DTK project are no longer
+affiliated with each other.</p>
+
+</blockquote>
+
+

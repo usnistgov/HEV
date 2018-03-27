@@ -1,0 +1,371 @@
+#!/usr/bin/perl
+# create a cube with extra clipping-plane geometry for volume rendering
+
+use strict;
+
+use File::Basename;
+use Getopt::Long;
+
+# program base name for usage, directory for data
+my ($prog,$dir,$ext) = fileparse($0);
+
+# Find data directory -- if running installed version, use installed
+# data. If not, find data directory relative to hev-volume script location
+my $datadir = $dir;
+if ($ENV{HEVROOT} && $dir =~ m:^$ENV{HEVROOT}:) {
+  $datadir = "$ENV{HEV_IDEA_DIR}/etc/hev-voltrace/shader";
+}
+
+########################################
+# get arguments and check usage
+
+# options defaults
+my $XSIZE = 1;			# geometry dimensions
+my $YSIZE = 1;
+my $ZSIZE = 1;
+my $BOX = 1;			# include surrounding box
+my $DEPTH = 0;			# support depth texture for polygonal objects
+my $NEAR = 1;			# support near plane
+my $CLIP = 1;			# user clipping planes
+my $RANDSTEP = 1;		# random first step
+my $SLICES = 0;			# default no internal slices
+my $STEP = .5;			# minimum ray step in voxels
+my $VOLDATA = "lookup";		# volume data lookup type
+my $TRANSFER = "preint";	# transfer function type
+my $INTEGRATION = "point";	# integration type
+my @INCLUDE;			# directories to search for transfer function
+my $SCALE = 1;			# optical scale
+my $GEOMETRY = 1;		# generate geometry & shaders
+
+# command info
+sub usage {
+    print STDERR <<EOF
+Usage: $prog [options] [x-size y-size z-size] file.osg
+
+    Create OSG file of a rectangular prism for use in fragment ray
+    tracing based volume rendering.
+
+Options:
+    --geometry | --no-geometry (default --geometry)
+        Include volume geometry, or just shaders in the output file. The
+        no-geometry option can be used with hev-applyState to swap shaders
+        a volume.
+
+    --box | --no-box (default --box)
+        Include or don't include outer box
+
+    --objects | --no-objects (default --no-objects)
+        Include or don't include support for solid objects embedded in
+        the volume
+
+    --near | --no-near (default --near)
+        Include or don't include near clipping plane
+
+    --clip | --no-clip (default --clip)
+        Include or don't include user clipping planes
+
+    --randstep | --no-randstep (default --randstep)
+        Take a random partial first step in the ray tracing. Turns
+        some coherent artifacts from having all the rays marching
+        together into noise.
+
+    --slices <num> (default $SLICES)
+        Include given number of interior texture slices
+
+    --step <float> (default $STEP)
+        Minimum ray step to take, in voxel units. Larger values (up to
+        1 or even 2) will run faster, but also may jump over voxels
+        and miss data.
+
+    --voldata <type> (default $VOLDATA)
+        How to get volume data. Actual data will be defined by the
+        voldata() function in a shader file withthe name
+        voltrace-voldata-<type>.glsl. Predefined voldata functions
+        include:
+        * lookup = straight lookup in a 3D texture
+        * scaled = lookup in a 3D texture, then scale data range
+
+    --transfer <type> (default $TRANSFER)
+        What kind of transfer function to use. Actual transfer function
+        code will be defined by the transfer() function in a shader file
+        with the name voltrace-transfer-<type>.glsl. Predefined transfer
+        functions include:
+        * emit = emission/absorption model, no lighting
+        * lit = emission/absorption with direct lighting using volume gradient
+        * preint = use 2D preintegration table (use with --integrate constant)
+
+    --integration <type> (default $INTEGRATION)
+        What kind of ray integration to use. Actual integration step
+        will be defined by the integration() function in a shader file
+        with the name voltrace-integration-<type>.glsl. Predefined
+        integration functions include:
+        * point = point sample / piecewise constant approximation
+        * linear = Moreland approximation for linear interpolation of RGBA
+
+    --include <dir>
+        Add directories to be searched for the voldata, transfer and
+        integration files. May be repeated to add additional directories.
+
+    --scale <float> (default $SCALE)
+        Scaling of optical distance to volume distance to adjust
+        opacity of transfer function
+EOF
+;
+    exit(1);
+}
+
+usage() if (! GetOptions("geometry!"    =>\$GEOMETRY,
+			 "box!"    	=>\$BOX,
+			 "objects!"	=>\$DEPTH,
+			 "near!"   	=>\$NEAR,
+			 "clip!"   	=>\$CLIP,
+			 "slices=i"	=>\$SLICES,
+			 "scale=f"      =>\$SCALE,
+			 "randstep!"   	=>\$RANDSTEP,
+			 "step=f"  	=>\$STEP,
+			 "include=s"    =>\@INCLUDE,
+			 "voldata=s"    =>\$VOLDATA,
+			 "transfer=s"   =>\$TRANSFER,
+			 "integration=s"=>\$INTEGRATION));
+
+if ($CLIP) {$CLIP = 6;}		# 6 OpenGL clipping planes
+
+# reconstruct command string with all options explicitly specified
+my $cmd = $prog." "
+  .($GEOMETRY  ?"--geometry "  :"--no-geometry ")
+  .($BOX       ?"--box "       :"--no-box ")
+  .($DEPTH     ?"--objects "   :"--no-objects ")
+  .($NEAR      ?"--near "      :"--no-near ")
+  .($CLIP      ?"--clip "      :"--no-clip ")
+  .($RANDSTEP  ?"--randstep "  :"--no-randstep ")
+  ."--scale $SCALE "
+  ."--slices $SLICES "
+  ."--step $STEP "
+  ."--voldata $VOLDATA "
+  ."--transfer $TRANSFER "
+  ."--integration $INTEGRATION "
+  .join("",map("--include $_ ",@INCLUDE))
+  .join(" ",@ARGV);
+
+if ($#ARGV == 3) {
+    $XSIZE = shift;   usage() if ($XSIZE !~ /^[-+.eE\d]+$/ || $XSIZE < 0);
+    $YSIZE = shift;   usage() if ($YSIZE !~ /^[-+.eE\d]+$/ || $YSIZE < 0);
+    $ZSIZE = shift;   usage() if ($ZSIZE !~ /^[-+.eE\d]+$/ || $ZSIZE < 0);
+}
+usage() if ($#ARGV != 0);
+my $osgfile = shift;
+my $osgbase = fileparse($osgfile,qr/\.[^.]*/);
+
+# construct vertex and fragment shader strings
+my $shaderOptions = ($BOX?" -DBOX":"") . ($DEPTH?" -DDEPTH":"")
+  . ($NEAR?" -DNEAR":"") . ($CLIP?" -DCLIP":"") . ($RANDSTEP?" -DRANDSTEP":"")
+  . ($SLICES?" -DSLICES=$SLICES":"")
+  . " -DVOLDATA=\\\"voltrace-voldata-$VOLDATA.glsl\\\""
+  . " -DTRANSFER=\\\"voltrace-transfer-$TRANSFER.glsl\\\""
+  . " -DINTEGRATION=\\\"voltrace-integration-$INTEGRATION.glsl\\\""
+  . join("",map(" -I $_",@INCLUDE));
+
+my $vert = `cpp -nostdinc -I. $shaderOptions $datadir/volume.vert | \
+	       cat $datadir/pragma.glsl - | \
+           sed -e 's/^\\(# [0-9]* \".*\"\\).*/\\1/'`;
+my $frag = `cpp -nostdinc -I. $shaderOptions $datadir/volume.frag | \
+               cat $datadir/pragma.glsl - | \
+               sed -e 's/^\\(# [0-9]* \".*\"\\).*/\\1/'`;
+
+# start OSG file
+open(OSG,">$osgfile") || die("could not create $osgfile\n");
+
+print OSG "Group {\n";
+
+# common header containing command, start state set
+print OSG <<EOF
+  Comment {
+    generated with:
+    $cmd
+  }
+
+  StateSet {
+    DataVariance STATIC
+EOF
+  ;
+
+# geometry only: set render bin, culling & uniform sizes
+if ($GEOMETRY) {
+    print OSG <<EOF
+    rendering_hint TRANSPARENT_BIN
+    renderingBinMode USE
+
+    GL_CULL_FACE ON
+    CullFace {
+      DataVariance STATIC
+      mode BACK
+    }
+
+    GL_BLEND ON
+    BlendFunc {
+      DataVariance STATIC
+      source ONE
+      destination ONE_MINUS_SRC_ALPHA
+    }
+
+    Uniform {
+      DataVariance STATIC
+      name "volumeSize"
+      vec3 $XSIZE $YSIZE $ZSIZE
+    }
+    Uniform {
+      DataVariance DYNAMIC
+      name "opticalScale"
+      float $SCALE
+    }
+    Uniform {
+      DataVariance DYNAMIC
+      name "raystep"
+      float $STEP
+    }
+EOF
+      ;
+}
+
+# common: embed shaders
+print OSG <<EOF
+    Program {
+      DataVariance STATIC
+      num_shaders 2
+      Shader {
+        DataVariance STATIC
+        type VERTEX
+        code {
+'$vert'
+        }
+      }
+      Shader {
+        DataVariance STATIC
+        type FRAGMENT
+        code {
+'$frag'
+        }
+      }
+    }
+  }
+EOF
+  ;
+
+# do clipable geometry (box and slicing planes)
+if ($GEOMETRY) {
+    print OSG <<EOF
+  Geode {
+    Geometry {
+      DataVariance STATIC
+      useDisplayList TRUE
+      useVertexBufferObjects TRUE
+      PrimitiveSets 1 {
+EOF
+      ;
+
+    my $indent = 4;
+
+    # create index list
+    #
+    # one long triangle strip, connected by degenerate triangles
+    my $v=0;			# count for VertexArray
+    print(OSG "  "x $indent++,
+	  "DrawElementsUByte TRIANGLE_STRIP ",
+	  $SLICES*8 + $NEAR*8 + $CLIP*8 + $BOX*19," {\n");
+
+    # Each optional component includes an even number of vertices to
+    # maintain triangle strip handedness, with first and last vertex
+    # repeated to connect components with degenerate triangles. If
+    # ordering is important for transparency, back components should
+    # appear first.
+
+    if ($SLICES) {
+	# internal slicing planes
+	for (my $s=0; $s<$SLICES; ++$s) {
+	    print(OSG "  "x $indent, join(" ",map{$v+$_}(0,0..5,5)),"\n");
+	    $v += 6;
+	}
+    }
+
+    if ($NEAR) {
+	# near clipping plane
+	print(OSG "  "x $indent, join(" ",map{$v+$_}(0,0..5,5)),"\n");
+	$v += 6;
+    }
+
+    if ($CLIP) {
+	# user clipping planes
+	for (my $c=0; $c<$CLIP; ++$c) {
+	    print(OSG "  "x $indent, join(" ",map{$v+$_}(0,0..5,5)),"\n");
+	    $v += 6;
+	}
+    }
+
+    if ($BOX) {
+	# cube (derived manually by creating a little paper cube and numbering
+	# the vertices). Last vertex not repeated, since this is always last
+	print(OSG "  "x $indent, 
+	      join(" ",map{$v+$_}(0,0,1,2,3,3,7,2,6,0,4,1,5,3,7,7,5,6,4)),"\n");
+	$v += 8;
+    }
+
+    print OSG "  "x --$indent,"}\n"; # end of DrawElements
+    print OSG "  "x --$indent,"}\n"; # end of PrimitiveSet
+
+    # create vertex list
+    #
+    print(OSG "  "x $indent++,"VertexArray Vec3Array ",$v," {\n");
+
+
+    if ($SLICES) {
+	# slicing planes (x:vertex num, z:plane num) x!=0 && y==0
+	for (my $s=0; $s<$SLICES; ++$s) {
+	    for (my $i=0; $i<6; ++$i) {
+		print(OSG "  "x $indent,
+		      $XSIZE*($i/5-.5)," ",
+		      "0 ",
+		      $ZSIZE*(($s+.5)/$SLICES-.5),"\n");
+	    }
+	    print OSG "\n";
+	}
+    }
+
+    if ($NEAR) {
+	# near clipping plane (y:vertex num) x==0 && y!=0 && z==0
+	for (my $i=0; $i<6; ++$i) {
+	    print(OSG "  "x $indent,"0 ",$YSIZE*($i/5-.5)," 0\n");
+	}
+	print OSG "\n";
+    }
+
+    if ($CLIP) {
+	# user clipping planes (y:vertex num, z:plane num) x==0 && y!=0 && z!=0
+	for (my $c=0; $c<$CLIP; ++$c) {
+	    for (my $i=0; $i<6; ++$i) {
+		print(OSG "  "x $indent,
+		      "0 ",
+		      $YSIZE*($i/5-.5)," ",
+		      $ZSIZE*($c/($CLIP-1)-.5),"\n");
+	    }
+	    print OSG "\n";
+	}
+    }
+
+    if ($BOX) {
+	# outer box at +/- ($XSIZE,$YSIZE,$ZSIZE) -- x!=0 && y!=0 && z!=0
+	for (my $i=0; $i<8; ++$i) {
+	    print(OSG "  "x $indent,
+		  $XSIZE*(.5-!($i&1))," ",
+		  $YSIZE*(!($i&2)-.5)," ",
+		  $ZSIZE*(!($i&4)-.5),"\n");
+	}
+    }
+
+    print OSG "  "x --$indent,"}\n"; # end of VertexArray
+    print OSG "  "x --$indent,"}\n"; # end of Geometry
+    print OSG "  "x --$indent,"}\n"; # end of Geode
+}
+
+print OSG "}\n";# end of Group
+
+close(OSG);

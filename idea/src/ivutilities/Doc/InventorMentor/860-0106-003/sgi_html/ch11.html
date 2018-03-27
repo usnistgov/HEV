@@ -1,0 +1,611 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Chapter 11. File Format</title><meta name="generator" content="DocBook XSL Stylesheets V1.49"><meta name="generator" content="SGI XSL DocBook Customization Stylesheets V1.0"><link rel="home" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="up" href="index.html" title="The Inventor Mentor:
+
+Programming Object-Oriented 
+3D Graphics with Open Inventor&#8482;,
+Release 2"><link rel="previous" href="ch10.html" title="Chapter 10. Handling Events and Selection"><link rel="next" href="ch12.html" title="Chapter 12. Sensors"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 11. File Format</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch12.html">Next</a></td></tr></table><hr></div><!--CONTENT_BEGIN--><div class="chapter"><div class="titlepage"><div><h2 class="title"><a name="id5485694"></a>Chapter 11. <a name="id13752"></a>File Format</h2></div></div>
+<p><span class="bold"><b>Chapter Objectives</b></span></p>
+<p>After reading this chapter, you'll be able to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Write a scene graph to a file in ASCII or binary format</p>
+</li>
+<li><p>Read a file into the Inventor database</p>
+</li>
+<li><p>Use the Inventor file format as an alternative to creating scene graphs programmatically</p>
+</li>
+<li><p>Read a scene graph from a buffer in memory</p>
+</li>
+</ul></div><p>This chapter describes the Inventor ASCII file format. Whenever you apply a write action to a node, path, or path list, the output file is written in this format. You can read files that use this format into the Inventor scene database by using the read method on the database. The file format is also used for transferring 3D copy and paste data between processes.<a name="idch111"></a><a name="idch112"></a><a name="idch113"></a></p>
+<div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5485770"></a>Writing a Scene Graph<a name="idch114"></a></h2></div></div>
+<p>As described in <a href="ch09.html#id14375">Chapter 9</a>, you can apply a write action to a node, path, or path list. When the write action is applied to a node, it writes the entire subgraph rooted at that node.<a name="idch115"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoWriteAction 	writeAction;
+
+writeAction.apply(root); //writes the entire scene graph to stdout
+<a name="idch116"></a></pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5485835"></a><a name="id23641"></a>Reading a File into the Database<a name="idch117"></a></h2></div></div>
+<p>You can read a scene graph from a file into the scene database using the <span class="bold"><b>readAll()<a name="idch118"></a></b></span> method on the Inventor database. This example reads a file with the given filename and returns a separator containing the file. It returns NULL if there is an error reading the file.</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoSeparator *
+readFile(const char *filename)
+{
+   // Open the input file
+   SoInput mySceneInput;
+   if (!mySceneInput.openFile(filename)) {
+      fprintf(stderr, &quot;Cannot open file %s\n&quot;, filename);
+      return NULL;
+   }
+
+   // Read the whole file into the database
+   SoSeparator *myGraph = SoDB::readAll(&amp;mySceneInput);
+   if (myGraph == NULL) {
+      fprintf(stderr, &quot;Problem reading file\n&quot;);
+      return NULL;
+   } 
+   mySceneInput.closeFile();
+   return myGraph;
+}
+</pre></td></tr></table><p>There are two <span class="bold"><b>read()</b></span> methods.  One method reads a graph rooted by a node, returning a pointer to that node. The other reads a graph defined by a path. You must call the correct method, based on the contents of the input. When you read in a model, you usually read a node.  If you are cutting and pasting with paths, you will need to read a path.<a name="idch119"></a><a name="idch1110"></a></p>
+<p><span class="bold"><b>SoDB</b></span> uses the  class when reading Inventor data files. This class can also be used to read from a buffer in memory. By default, <span class="bold"><b>SoInput</b></span> looks for a specified file in the current directory (unless the specification begins with /). You can add directories to the search path with the <a name="idch1111"></a><a name="idch1112"></a><a name="idch1113"></a><span class="bold"><b>addDirectory-<br>
+First()</b></span> and <span class="bold"><b>addDirectoryLast()<a name="idch1114"></a></b></span> methods (see the <i>Open Inventor C++ Reference Manual</i> on <a name="idch1115"></a><span class="bold"><b>SoInput</b></span>).  Use the <a name="idch1116"></a><span class="bold"><b>clearDirectories()</b></span> method to clear the directory list.</p>
+<p>You can also add a list of directories that is specified as the value of an  environment variable. Use the following methods on <a name="idch1117"></a><span class="bold"><b>SoInput</b></span>:</p>
+<p><span class="bold"><b>addEnvDirectoriesFirst()<br>
+</b></span><br>
+<span class="bold"><b>addEnvDirectoriesLast()</b></span></p>
+</div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5486121"></a>File Format Syntax<a name="idch1118"></a></h2></div></div>
+<p>The following sections outline the syntax for the Inventor ASCII file format. In this file format, extra white space created by spaces, tabs, and new lines is ignored. Comments begin with a number sign (#) anywhere on a line and continue to the end of the line:<a name="idch1119"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+# this is a comment in the Inventor file format
+</pre></td></tr></table><p>For simplicity, this discussion focuses on <a name="idch1120"></a><i>writing</i> a scene graph to a file. This same format applies to files you create that will be <i>read</i> into the Inventor database.</p>
+<p>See the<i> Open Inventor C++ Reference Manual</i> for descriptions of the file format for each Inventor class.</p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5486181"></a><a name="id65876"></a>File Header</h3></div></div>
+<p>Every Inventor data file must have a standard header to identify it. This header is the first line of the file and has the following form:<a name="idch1121"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#Inventor V2.0 ascii
+</pre></td></tr></table><p>or</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#Inventor V2.0 binary
+</pre></td></tr></table><p>To determine whether a random file is an Inventor file, use the <a name="idch1122"></a><span class="bold"><b>SoDB::isValidHeader()<a name="idch1123"></a></b></span> method and pass in the beginning of the file in  question. Although the header may change from version to version (V2.0 is the current version), it is guaranteed to  begin with a # sign, be no more than 80 characters, and end at a newline. Therefore, the C () routine can be used. The <span class="bold"><b>isValidHeader()</b></span> method returns TRUE if the file contains an Inventor header. Inventor also reads older (V1.0) files and converts them.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5486308"></a>Writing a Node<a name="idch1124"></a></h3></div></div>
+<p>A node is written with the following elements:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>Name of the node (without the <span class="bold"><b>So</b></span> prefix)</p>
+</li>
+<li><p>Open brace ( { )</p>
+</li>
+<li><p><i>Fields</i> within the node (if any), followed by <i>children</i> of the node (if any)</p>
+</li>
+<li><p>Close brace ( } )</p>
+</li>
+</ul></div><p>For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+DrawStyle {
+   style	        LINES
+   lineWidth	    3
+   linePattern	  255
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5486377"></a>Writing Values within a Field<a name="idch1125"></a></h3></div></div>
+<p>Fields within a node are written as the name of the field, followed by the value or values contained in the field. If the field value has not been changed from its default value, that field is not written out. Fields within a node can be written in any order. An example of writing field values is as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Transform {
+	   translation	     0 -4 0.2
+}
+
+LightModel {
+   model	           BASE_COLOR
+}
+
+Material {
+   ambientColor   .3 .1 .1
+   diffuseColor  [.8 .7 .2,
+                   1 .2 .2,
+                  .2  1 .2,
+                  .2 .2  1]
+   specularColor  .4 .3 .1
+   emissiveColor  .1  0 .1
+}
+</pre></td></tr></table><p>Brackets surround multiple-value fields, with commas separating the values, as shown for the <a name="idch1126"></a><span class="bold"><b>diffuseColor</b></span> field in the preceding example. It's all right to have a comma after the last value as well:</p>
+<p>[<i>value1, value2, value3,</i>]</p>
+<p>Single-value () fields do not contain any brackets or commas. Multiple-value () fields usually have brackets, but they are not necessary if only one value is present:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+specularColor    .4 .3 .1
+</pre></td></tr></table><p>or</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+specularColor   [.4 .3 .1]
+</pre></td></tr></table><p>The value that is written depends on the type of the field, as described in the following list.</p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>Type of Field</b></span> </span></td><td width="10"> </td><td><p><span class="bold"><b>Acceptable Formats</b></span> </p>
+
+</td></tr><tr valign="top"><td><span class="term">longs, shorts, unsigned shorts</span></td><td width="10"> </td><td><p><br>
+integers, in decimal, hexadecimal, or octal; <br>
+For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+255
+0xff
+0177
+</pre></td></tr></table><br>
+</td></tr><tr valign="top"><td><span class="term">floats</span></td><td width="10"> </td><td><p>integer or floating point number. For example: <br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+		13
+	13.0
+	13.123
+	1.3e-2
+</pre></td></tr></table><br>
+</td></tr><tr valign="top"><td><span class="term">names, strings<a name="idch1127"></a></span></td><td width="10"> </td><td><p>double quotation marks ( &quot; &quot; ) around the name if it is more than one word, or just the name (with no white space) if it is a single word (quotation marks are optional). For example:<br>
+</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+label   &quot; front left leg &quot; 
+label   car
+</pre></td></tr></table><p>You can have any ASCII character in the string, including newlines and backslashes, except for double quotation marks. To include a double quotation mark in the string, precede it with a backslash (\&quot;).</p>
+
+</td></tr><tr valign="top"><td><span class="term">enums<a name="idch1128"></a></span></td><td width="10"> </td><td><p>either the mnemonic form of the enum or the integer form. (The mnemonic form is recommended, both for portability and readability of code.) For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+MaterialBinding {
+   value   PER_FACE
+	}
+</pre></td></tr></table><br>
+</td></tr><tr valign="top"><td><span class="term">bit mask<a name="idch1129"></a></span></td><td width="10"> </td><td><p>one or more mnemonic flags, separated by a vertical bar (|) if there are multiple flags. When more than one flag is used, parentheses are required:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+	Cylinder {
+	   parts   SIDES
+	}
+
+	Cylinder {
+	   parts   (SIDES | TOP)
+	}
+</pre></td></tr></table><br>
+</td></tr><tr valign="top"><td><span class="term">vectors <a name="idch1130"></a></span></td><td width="10"> </td><td><p><i>n</i> floats separated by white space:<br>
+(SbVec<i>n</i>f, where <i>n</i> is<br>
+the number of </p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+PerspectiveCamera {
+components of the	   position   0 0 9.5
+vector)	}
+</pre></td></tr></table><br>
+</td></tr><tr valign="top"><td><span class="term">colors <a name="idch1131"></a></span></td><td width="10"> </td><td><p>3 floats (RGB) separated by white space:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+	BaseColor {
+	   rgb   0.3 0.2 0.6
+	}
+</pre></td></tr></table><br>
+</td></tr><tr valign="top"><td><span class="term">rotation</span></td><td width="10"> </td><td><p>a 3-vector for the axis, followed by a float for the angle (in radians), separated by white space:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+	Transform {
+	   rotation   0 1 0 1.5708
+	   # y axis ... pi\xb9 /2 radians
+	}
+</pre></td></tr></table><br>
+</td></tr><tr valign="top"><td><span class="term">matrix</span></td><td width="10"> </td><td><p>16 floats, separated by white space</p>
+
+</td></tr><tr valign="top"><td><span class="term">path<a name="idch1132"></a></span></td><td width="10"> </td><td><p>an <span class="bold"><b>SFPath</b></span> has one value, a pointer to a path. To write this value, write the path (see <a href="ch11.html#id17707">&#8220;Writing a Path&#8221;</a>). An <span class="bold"><b>MFPath</b></span> has multiple values, which are all pointers to paths. To write this value, enclose the path list in brackets, and use commas to separate each path:</p>
+<p>[<i>first_path, second_path, ... nth_path</i>]</p>
+
+</td></tr><tr valign="top"><td><span class="term">node</span></td><td width="10"> </td><td><p>an <span class="bold"><b>SFNode</b></span> has one value, a pointer to a node. To write this value, write the node. An <span class="bold"><b>MFNode</b></span> has multiple values, which are all pointers to nodes. To write this value, enclose the node list in brackets, and use commas to separate each node:</p>
+<p>[<i>node1, node2, ... noden</i>]</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Boolean	TRUE, FALSE or 0, 1:
+	SoFile {
+	   isWriteBack   FALSE
+	}
+<a name="idch1133"></a></pre></td></tr></table><br>
+</td></tr></table></div></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5487003"></a>Ignore Flag</h3></div></div>
+<p>The Ignore flag for a field (see <a name="idch1134"></a><a href="ch03.html#id18184">Chapter 3</a>) is written as a tilde ( ~ ), either after or in place of the field value or values. For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+transparency [ .9, .1 ] ~
+</pre></td></tr></table><p>or</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+transparency ~
+</pre></td></tr></table><p>The first case preserves the values even though the field is ignored. The second case uses the default value but ignores the field.</p>
+<div class="tip"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/tip.png"></td><td align="left" valign="top"><b>Tip: </b>The Ignore flag applies only to properties. It is not used for cameras, lights, and shapes.
+</td></tr></table><hr noshade="noshade"></div><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5487082"></a>Field Connections</h3></div></div>
+<p>Connections are written as the object containing the field or output connected to the field, followed by a period (.) and then the name of the field or output. For example:<a name="idch1135"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Separator {
+	    DEF Trans Translation { translation  1 2 3 }
+	    Cube {}
+	}
+	Separator {
+	    Translation { translation 0 0 0 = USE Trans.translation }
+	    Cone {}
+	}
+</pre></td></tr></table><p>The value of a connected field (0 0 0 in this case) is optional, so the second <span class="bold"><b>Translation</b></span> node could be written as</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Translation { translation = USE Trans.translation }
+</pre></td></tr></table><p>If an ignored field is connected, the connection specification follows the Ignore flag:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+translation 000 ~ = USE Trans.translation
+#or
+translation ~ = USE Trans.translation
+</pre></td></tr></table><p>If a value is given as well as a connection, the value is used for the field. If a value is sent along the connection later, it will override the value.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5487158"></a>Global Fields</h3></div></div>
+<p>A global field needs to have at least one connection in order for it to be written out. It is written out in this format:<a name="idch1136"></a></p>
+<p><i>GlobalField</i> {<br>
+   <i>type<br>
+</i>   <i>value<br>
+</i>}</p>
+<p>The braces contain the type and value of the field. The name of the global field is stored as the name of the value field. For example, the <span class="bold"><b>Text3</b></span> node could be connected to a global field (here, <span class="bold"><b>currentFile</b></span>) that stores the current file name an application is working on. The <span class="bold"><b>Text3</b></span> node would then always display that current file name. Here is the ASCII file format for that connection:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Text3 {
+   string &quot;&quot; = GlobalField {
+      type SFString
+      currentFile &quot;aircar.iv&quot;
+   } . currentFile
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5487290"></a>Writing an Engine</h3></div></div>
+<p>The syntax for an engine definition is the same as that of a nongroup node:<a name="idch1137"></a></p>
+<p><i>EngineType</i><tt> {<br>
+</tt><i>   input_fields<br>
+</i><tt>}</tt></p>
+<p>Engines can't be written on their own; they must be connected to at least one part of the scene graph. A field-to-engine connection is specified as follows:</p>
+<p><i>fieldname  value</i> = <i>engine . outputname</i></p>
+<p>Here is an example of changing a sphere's radius using an <span class="bold"><b>SoOneShot</b></span> engine:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Sphere {
+   radius 0.5 = OneShot { duration 3.0 } . ramp
+}
+</pre></td></tr></table><p>For a more complex example, see <a href="ch11.html#id63147">&#8220;Defining and Using Shared Instances of Nodes&#8221;</a>.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5487380"></a><a name="id17707"></a>Writing a Path<a name="idch1138"></a></h3></div></div>
+<p>A path (see <a href="ch03.html#id18184">Chapter 3</a>) is written with the following elements:</p>
+<div class="itemizedlist"><ul type="disc"><li><p>The word <span class="bold"><b>Path</b></span> </p>
+</li>
+<li><p>Open brace (<span class="bold"><b>{</b></span> )</p>
+</li>
+<li><p>The entire subgraph that is rooted on the head node for the path</p>
+</li>
+<li><p>Number of indices in the rest of the path chain</p>
+</li>
+<li><p>The indices themselves</p>
+</li>
+<li><p>Close brace (<span class="bold"><b>}</b></span>)</p>
+</li>
+</ul></div><p>When Inventor encounters separator groups within the subgraph, it ignores them if they do not affect the nodes in the path chain. Written indices for the children within a group are adjusted to account for the skipped separator groups. For example, in <a href="ch11.html#id12355">Figure 11-1</a>, node <i>N</i> is counted as child index 1 when written, since the two previous children are separator groups that do not affect this node at all. (The indices in the path itself remain unchanged.)</p>
+<p><div class="figure"><p><a name="id5487544"></a><b>Figure 11-1. <a name="id12355"></a>Adjusting Path Indices to Account for Separator Groups</b></p>
+<div class="mediaobject"><img src="figures/fig11.1.pathIndices.gif"></div></div><br>
+</p>
+<div class="note"><hr noshade="noshade"><table border="0"><tr><td align="center" valign="top" width="25"><img src="figures/note.png"></td><td align="left" valign="top"><b>Note: </b>If a path contains connections to nodes that are not part of the path, these nodes are not written out. For example, if a path contains an engine connected to a node outside the path, the engine will be written, but the node will not be.
+</td></tr></table><hr noshade="noshade"></div><p><a href="ch11.html#id39924">Example 11-1</a> illustrates the process of writing a path to a file. First, here is the file for the scene graph, which creates chartreuse, rust, and violet spheres.</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Separator {
+   PerspectiveCamera {
+      position 0 0 9.53374
+      aspectRatio 1.09446
+      nearDistance 0.0953375
+      farDistance 19.0675
+      focalDistance 9.53374
+   }
+
+   DirectionalLight {
+   }
+
+   Transform {
+      rotation -0.189479 0.981839 -0.00950093 0.102051
+      center 0 0 0 
+   }
+
+   DrawStyle {
+   }
+
+   Separator {
+      LightModel {
+         model   BASE_COLOR
+      }
+      Separator {
+         Transform {
+            translation -2.2 0 0
+         }
+         BaseColor {
+            rgb .2 .6 .3   # chartreuse
+         }
+         Sphere { }
+      }
+      Separator {
+         BaseColor {
+            rgb .6 .3 .2   # rust
+         }
+         Sphere { }
+      }
+      Separator {
+         Transform {
+            translation 2.2 0 0 
+         }
+         BaseColor {
+            rgb .3 .2 .6   # violet
+         }
+         Sphere { }
+      }
+}
+</pre></td></tr></table><p><a href="ch11.html#id23415">Figure 11-2</a> shows the scene graph for this file.</p>
+<p><div class="figure"><p><a name="id5487688"></a><b>Figure 11-2. <a name="id23415"></a>Scene Graph for a Scene with Three Spheres</b></p>
+<div class="mediaobject"><img src="figures/fig11.2.ThreeSpheres.gif"></div></div><br>
+</p>
+<p>If you pick the third sphere (the violet one), the pick path could be written to a file as shown in <a href="ch11.html#id39924">Example 11-1</a>. First, the subgraph under the root node is written. This description is followed by the number of indices in the path (3), and the indices themselves (4, 1, 2), as shown in <a href="ch11.html#id11706">Figure 11-3</a>.</p>
+<div class="example"><p><a name="id5487736"></a><b>Example 11-1. <a name="id39924"></a>Writing a Path</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Path {
+   Separator {
+      PerspectiveCamera {
+         position 0 0 9.53374
+         aspectRatio 1.09446
+         nearDistance 0.0953375
+         farDistance 19.0675
+         focalDistance 9.53374
+      }
+      DirectionalLight {
+      }
+      Transform {
+         rotation -0.189479 0.981839 -0.00950093 0.102051
+      }
+      DrawStyle {
+      }
+      Separator {
+         LightModel {
+            model BASE_COLOR
+         }
+         Separator {
+            Transform {
+               translation 2.2 0 0
+            }
+            BaseColor {
+               rgb 0.3 0.2 0.6
+            }
+            Sphere {
+            }
+         }
+      }
+   }
+   3
+   4
+   1
+   2
+}
+</pre></td></tr></table><p><div class="figure"><p><a name="id5487789"></a><b>Figure 11-3. <a name="id11706"></a>Pick Path for Violet Sphere</b></p>
+<div class="mediaobject"><img src="figures/11-3.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5487810"></a><a name="id63147"></a>Defining and Using Shared Instances of Nodes<a name="idch1139"></a></h3></div></div>
+<p>In the file format, the keyword DEF introduces a named instance of a node, path, or engine. It can be referenced later with the USE keyword. For example:<a name="idch1140"></a><a name="idch1141"></a></p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// This example shows keeping a cone between two cubes using an
+// InterpolateVec3f engine.
+
+Separator {
+   DEF A Translation { translation -4 0 0 }
+   Cube { }
+}
+Separator {
+   DEF B Translation { translation 4 5 6 }
+   Cube { }
+}
+Separator {
+   Translation { translation 0 0 0 =
+                 InterpolateVec3f {
+                    input0 0 0 0 = USE A.translation
+                    input1 0 0 0 = USE B.translation
+                    alpha 0.5
+                 } . output
+               }
+   Cone { }
+}
+
+</pre></td></tr></table><p>The name can be any valid <a name="idch1142"></a><span class="bold"><b>SbName</b></span>. In certain cases, Inventor adds some extra characters to the name when the file is written out. For example, consider the somewhat unusual scene graph shown in <a href="ch11.html#id30833">Figure 11-4</a>. To indicate which instance of the beachball node is used by node B, the scene graph is written out as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Separator{
+   Separator{
+      DEF beachball+0
+      DEF beachball+1
+   }
+   Separator{
+      USE beachball+0
+      USE beachball+1
+   }
+}
+</pre></td></tr></table><p>When the scene graph is read back in, the original names are preserved, but the +<i>n</i> notations are discarded.</p>
+<p><div class="figure"><p><a name="id5487939"></a><b>Figure 11-4. <a name="id30833"></a>Shared Instances of Nodes</b></p>
+<div class="mediaobject"><img src="figures/11-4.gif"></div></div><br>
+</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5487980"></a>Writing a Node Kit<a name="idch1143"></a></h3></div></div>
+<p>When a node kit is written, it includes one field for each part.  For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+AppearanceKit {
+   lightModel			    LightModel { model PHONG }
+   drawStyle			     DrawStyle  { style LINES }
+   material			      Material   { diffuseColor .5 .5 .5 }
+   complexity	    Complexity { value .5 }
+}
+</pre></td></tr></table><p>In this format, the name of the field (<span class="bold"><b>lightModel</b></span>) is followed by the name of the node (<span class="bold"><b>LightModel</b></span>), and then the node's fields and values (each part is contained in an <span class="bold"><b>SoSFNode</b></span> field). If the part has not been created, or if it is NULL, it is not written out. However, if a part is created by default (such as the shape part in the <span class="bold"><b>SoShapeKit</b></span>), and if the part is explicitly set to NULL, it is written out.</p>
+<p>This example shows nesting node kits. Here, the appearance kit is the value for the <span class="bold"><b>appearance</b></span> field. The appearance kit, in turn, has a <span class="bold"><b>material</b></span> field.</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SeparatorKit {
+   appearance			    AppearanceKit {
+      material   				Material { diffuseColor	   1 1 1 }
+   }
+}
+</pre></td></tr></table><p>When Inventor writes out a node kit, it writes out the intermediate parts. When you enter the information yourself, you can use a shorthand method and omit the intermediate parts. For example, if you omit the <span class="bold"><b>AppearanceKit</b></span>, the <span class="bold"><b>SeparatorKit</b></span> knows to add an <span class="bold"><b>AppearanceKit</b></span> and put the <span class="bold"><b>Material</b></span> node inside. So, you could simply enter this:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SeparatorKit {
+   material   				Material { diffuseColor	   1 1 1 }
+}
+</pre></td></tr></table><p>The file format for list parts within node kits is a bit more specialized. Each list part has three standard fields:  <a name="idch1144"></a></p>
+<div class="variablelist"><table border="0" cellspacing="3"><tr valign="top"><td><span class="term"><span class="bold"><b>containerTypeName</b></span></span></td><td width="10"> </td><td><p><br>
+for example, separator or switch; in string format</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>childTypeName</b></span> </span></td><td width="10"> </td><td><p>an <span class="bold"><b>SoMFString</b></span> that lists the types of children that this node is allowed to contain</p>
+
+</td></tr><tr valign="top"><td><span class="term"><span class="bold"><b>containerNode</b></span> </span></td><td width="10"> </td><td><p>the node that contains the children</p>
+
+</td></tr></table></div><p>For example, here is the <span class="bold"><b>childList</b></span> part of an instance of <span class="bold"><b>SoSeparatorKit</b></span>:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SeparatorKit {
+   childList			    NodeKitListPart {
+      containerTypeName	   &quot;Separator&quot;
+      childTypeNames	      &quot;SeparatorKit&quot;
+      containerNode	        			Separator {
+         SeparatorKit {
+            transform	      Transform { translation 	1 0 0 }
+         }
+         SeparatorKit {
+            transform	      Transform { translation 	0 1 0 }
+         }
+         SeparatorKit {
+            transform	      Transform { translation 	0 0 1 }
+         }
+      }
+   }
+}
+</pre></td></tr></table><p>By default, Inventor does not write out the internal parts, such as separators and groups, or fields with default values. But if the node kit is in a path, everything is written out, as the following example shows. Generally, it writes out the parts in the reverse order they are defined in the catalog, with the leaf nodes first:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#Inventor V2.0 ascii
+
+SeparatorKit {
+   appearance	    DEF +0 AppearanceKit {
+      material   		DEF +1 Material {
+         diffuseColor	   1 0 1
+      }
+   }
+   childList	    DEF +2 NodeKitListPart {
+      containerTypeName   &quot;Separator&quot;
+      childTypeNames	       &quot;SeparatorKit&quot;
+      containerNode	   	     DEF +3 Separator {
+         ShapeKit {
+            appearance	   		  DEF +4 AppearanceKit {
+               material			    DEF +5 Material {}
+		            }
+            transform			   DEF +6 Transform {}
+            shape			   DEF +7 Cube {}
+		            topSeparator			  Separator {
+               USE +4
+               USE +6
+               DEF +8 Separator {
+                  USE +7
+               }
+            }
+
+            shapeSeparator  			USE +8
+        }
+   }
+}
+topSeparator	    Separator {
+   USE +0
+   USE +2
+   }
+}
+</pre></td></tr></table><br></div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5488358"></a>Including Other Files</h3></div></div>
+<p>To include a file within another file, use an <a name="idch1145"></a><a name="idch1146"></a><span class="bold"><b>SoFile</b></span> node. This node is useful when you are building scene graphs that include many objects.  The objects can reside in their own files, and <span class="bold"><b>SoFile</b></span> nodes can be used to refer to them without copying them directly into the new file. The <span class="bold"><b>SoFile</b></span> node is written as</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+File {
+   name &quot;myFile.iv&quot;
+}
+</pre></td></tr></table><p>where the <span class="bold"><b>name</b></span> field is the name of the file to be included. On read, the contents of the file myFile.iv are added as hidden children of <span class="bold"><b>SoFile</b></span>. On write, Inventor just writes the filename (but not the children).</p>
+<p>The objects within an <span class="bold"><b>SoFile</b></span> node are not editable.  You can copy the contents of an <span class="bold"><b>SoFile</b></span> node using the method</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+SoFile::copyChildren()
+</pre></td></tr></table><p>or you can modify the <span class="bold"><b>name</b></span> field of the <span class="bold"><b>SoFile</b></span> node. Whenever the value of the <span class="bold"><b>name</b></span> field changes, the new file is read in.  If the name is not an absolute path name, the list of directories set on <span class="bold"><b>SoInput</b></span> is used to search for the file (see <a href="ch11.html#id23641">&#8220;Reading a File into the Database&#8221;</a>).  automatically adds the directory of the file being read to 's list of directories to search. </p>
+<p>For example, suppose you have myFile.iv, which contains windmill.iv.</p>
+<p>Contents of /usr/tmp/myFile.iv:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#Inventor V2.0 ascii
+File { name &quot;myObjects/windmill.iv&quot; }
+</pre></td></tr></table><p>Contents of /usr/tmp/myObjects/windmill.iv:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+#Inventor V2.0 ascii
+//format to make the windmill
+</pre></td></tr></table><p>When /usr/tmp/myFile.iv is read in, /usr/tmp is added to the directory search list. When the <span class="bold"><b>SoFile</b></span> node in myFile.iv calls <span class="bold"><b>SoDB::read</b></span>, <span class="bold"><b>SoInput</b></span> will find /usr/tmp/myObjects/windmill.iv, and it will be read (the directory /usr/tmp/myObjects will also be added to the list of search directories). When reading finishes, /usr/tmp/myObjects and /usr/tmp will be removed from the search directories list.</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5488592"></a><a name="id10206"></a>ASCII and Binary Versions</h3></div></div>
+<p>The <a name="idch1147"></a><span class="bold"><b>SoOutput</b></span> object in an <span class="bold"><b>SoWriteAction</b></span> has a <a name="idch1148"></a><span class="bold"><b>setBinary() </b></span>method, which sets whether the output should be in ASCII (default) or binary format (see <a href="ch09.html#id14375">Chapter 9</a>). The <a name="idch1149"></a><span class="bold"><b>getOutput()</b></span> method returns a pointer to the <span class="bold"><b>SoOutput</b></span>. When a file is written, Inventor inserts a header line that indicates whether the file is in ASCII or binary format, as well as the Inventor version number (see <a name="idch1150"></a><a href="ch11.html#id65876">&#8220;File Header&#8221;</a>).</p>
+</div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5488729"></a>Reading in Extender Nodes and Engines</h2></div></div>
+<p>As described in <i>The Inventor Toolmaker</i>, developers can create their own nodes or engines and use them in new applications. This section describes what happens if you read in a file with references to extender nodes and engines whose code may or may not be accessible to your program. (In most cases, nodes and engines are interchangeable, so the discussion refers only to nodes for simplicity.  In cases where engines differ slightly from nodes, those differences are called out explicitly.)<a name="idch1151"></a><a name="idch1152"></a></p>
+<p>When an Inventor node is read from a file, Inventor first checks to see if the node's type has been registered. If the name is found, an instance of that node is created and the fields for the node are read in. This situation occurs if your program is linked with the code for the new node.</p>
+<p>However, if your program is not linked with the code for the new node, things become slightly more interesting.  If your system supports dynamic loading of compiled objects, Inventor can find the compiled object and recognize the new node.  In this case, the author of the new node supplies the compiled object for the node and places it in a directory that can be found by the system. (Check your release notes for information on whether your system supports dynamic loading of shared objects and how it implements searching directories for the objects.) <a name="idch1153"></a></p>
+<div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5488786"></a>File Format for Unknown Nodes and Engines</h3></div></div>
+<p>If Inventor is unable to locate the code for the new node or engine, it creates an instance of the class <a name="idch1154"></a><a name="idch1155"></a><span class="bold"><b>SoUnknownNode</b></span> or <span class="bold"><b>SoUnknownEngine</b></span>.  The first keyword in the file format for all new nodes is named <span class="bold"><b>fields</b></span>, and it is followed by the field type and name of all fields defined within the node.  For example:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+WeirdNode {
+   fields [ SFFloat length, SFLong data ]
+   length 5.3
+   Material {}
+   Cube {}
+}
+</pre></td></tr></table><p>This unknown node has two fields, <span class="bold"><b>length</b></span> and <span class="bold"><b>data</b></span>.  Because the <span class="bold"><b>data</b></span> field uses its default value, it is not written out. The node also has two children, an <span class="bold"><b>SoMaterial</b></span> and an <span class="bold"><b>SoCube</b></span>, which are listed after the fields of <span class="bold"><b>WeirdNode</b></span>. These nodes are treated as hidden children and are not used for rendering, picking, or searching. They are only used by the write action.<a name="idch1156"></a></p>
+<p>The file format for new engines contains descriptions of both the inputs and outputs for the engine, as follows:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+WeirdEngine {
+   inputs [ SFFloat factor, SFFloat seed ]
+   factor 100
+   seed 0.5
+   outputs [ SFFloat result ]
+}
+</pre></td></tr></table><p>Since no code accompanies the node, most operations on the unknown node will not function.  However, reading, writing, and searching can still be performed on this node (but not on its children).</p>
+</div><div class="section"><div class="titlepage"><div><h3 class="title"><a name="id5488941"></a>Alternate Representation<a name="idch1157"></a></h3></div></div>
+<p>The author of a new node class may also provide an alternate representation for the node, to be used in cases where the node is treated as an unknown node.  This representation is specified in the <span class="bold"><b>alternateRep</b></span> field for the node, which contains the complete scene graph for the alternate representation.  This scene graph will be used in place of the actual node for picking, rendering, and bounding-box actions. </p>
+<p>The following node kit provides an alternate representation:</p>
+<table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+Airplane {
+   fields [ SFNode wing, SFNode fuselage, SFNode alternateRep ]
+   wing Separator { ... the wing scene graph ... }
+   fuselage Separator { ... the fuselage scene graph ... }
+   alternateRep Separator {
+      Cube {}
+      Transform { translation 10 0 0 }
+      Cone {}
+   }
+}
+</pre></td></tr></table><br></div></div><div class="section"><div class="titlepage"><div><h2 class="title"><a name="id5489020"></a>Reading from a String<a name="idch1158"></a></h2></div></div>
+<p><a href="ch11.html#id23641">&#8220;Reading a File into the Database&#8221;</a> showed you how to read from a file. <a href="ch11.html#id14954">Example 11-2</a> shows how you can read from a string stored in memory. Note that when a graph is read from a buffer, you do not need the file-header string. This example creates a dodecahedron from an indexed face set.</p>
+<div class="example"><p><a name="id5489074"></a><b>Example 11-2. <a name="id14954"></a>Reading from a String</b></p>
+</div><br><table bgcolor="#E0E0E0" width="90%" border="1" cellpadding="10"><tr><td><pre class="literallayout">
+// Reads a dodecahedron from the following string: 
+// (Note: ANSI compilers automatically concatenate 
+// adjacent string literals together, so the compiler sees 
+// this as one big string)
+
+static char *dodecahedron =
+   &quot;Separator { &quot;
+      &quot;   Material { &quot;
+   &quot;      diffuseColor [ &quot;
+   &quot;         1  0  0,   0 1  0,   0  0 1,   0  1  1, &quot;
+   &quot;         1  0  1,  .5 1  0,  .5  0 1,  .5  1  1, &quot;
+   &quot;         1 .3 .7,  .3 1 .7,  .3 .7 1,  .5 .5 .8 &quot;
+   &quot;      ] &quot;
+   &quot;   } &quot;
+   &quot;   MaterialBinding { value PER_FACE } &quot;
+   &quot;   Coordinate3 { &quot;
+   &quot;      point [ &quot;
+   &quot;         1.7265 0 0.618,    1 1 1, &quot;
+   &quot;         0 0.618 1.7265,    0 -0.618 1.7265, &quot;
+   &quot;         1 -1 1,    -1 -1 1, &quot;
+   &quot;         -0.618 -1.7265 0,    0.618 -1.7265 0, &quot;
+   &quot;         1 -1 -1,    1.7265 0 -0.618, &quot;
+   &quot;         1 1 -1,    0.618 1.7265 0, &quot;
+   &quot;         -0.618 1.7265 0,    -1 1 1, &quot;
+   &quot;         -1.7265 0 0.618,    -1.7265 0 -0.618, &quot;
+   &quot;         -1 -1 -1,    0 -0.618 -1.7265, &quot;
+   &quot;         0 0.618 -1.7265,    -1 1 -1 &quot;
+   &quot;      ] &quot;
+   &quot;   } &quot;
+   &quot;   IndexedFaceSet { &quot;
+   &quot;      coordIndex [ &quot;
+   &quot;         1, 2, 3, 4, 0, -1,  0, 9, 10, 11, 1, -1, &quot;
+   &quot;         4, 7, 8, 9, 0, -1,  3, 5, 6, 7, 4, -1, &quot;
+   &quot;         2, 13, 14, 5, 3, -1,  1, 11, 12, 13, 2, -1, &quot;
+   &quot;         10, 18, 19, 12, 11, -1,  19, 15, 14, 13, 12, -1, &quot;
+   &quot;         15, 16, 6, 5, 14, -1,  8, 7, 6, 16, 17, -1, &quot;
+   &quot;         9, 8, 17, 18, 10, -1,  18, 17, 16, 15, 19, -1, &quot;
+   &quot;      ] &quot;
+   &quot;   } &quot;
+   &quot;}&quot;;
+
+// Routine to create a scene graph representing a dodecahedron
+SoNode *
+makeDodecahedron()
+{
+   // Read from the string.
+   SoInput in;
+   in.setBuffer(dodecahedron, strlen(dodecahedron));
+
+   SoNode *result;
+   SoDB::read(&amp;in, result);
+
+   return result;
+}
+
+</pre></td></tr></table><br></div></div><!--CONTENT_END--><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10.html">Prev</a> </td><td width="20%" align="center"><a accesskey="h" href="index.html">Table of Contents</a></td><td width="40%" align="right"> <a accesskey="n" href="ch12.html">Next</a></td></tr><tr><td width="40%" align="left">Chapter 10. Handling Events and Selection </td><td width="20%" align="center"> </td><td width="40%" align="right">Chapter 12. Sensors </td></tr></table></div></body></html>

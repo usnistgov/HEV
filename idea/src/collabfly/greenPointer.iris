@@ -1,0 +1,10 @@
+# iris-DCS applied the following options to create the DCS:
+#  nodeName = "greenPointer"
+#  center 0.000000 0.000000 0.000000
+# and loaded the following files:
+#  "greenPointer.savg" with node name "greenPointer.savg"
+#center: radius = 0.070887, center = 0.000000 0.385000 0.000000
+DCS "greenPointer" 0.000000 -0.385000 0.000000
+LOAD "greenPointer.savg" "greenPointer.savg"
+ADDCHILD "greenPointer.savg" "greenPointer"
+RETURN "greenPointer"

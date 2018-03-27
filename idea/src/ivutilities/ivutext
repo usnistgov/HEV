@@ -1,0 +1,38 @@
+#! /bin/sh
+
+# ivutext - output an iv file of 3D text suitable for the ivu loader
+
+usage()
+{
+  echo "Usage: ivutext string"
+  exit
+}
+
+case $# in
+1)
+   string="$1"
+   ;;
+
+*)
+   usage
+   esac
+
+
+#echo $r $g $b
+#echo $string
+#exit
+
+
+/bin/cat <<!end
+#Inventor V2.0 ascii
+Rotation { rotation 1 0 0 1.57079632679}
+Separator {
+ Font {
+  name  "Times-Roman"
+  size 2
+ }
+ Text3 {
+   string ["$string"]
+ }
+}
+!end

@@ -1,0 +1,36 @@
+#! /bin/sh
+
+# This is a shell script to demonstrate a few of the ivUtility commands
+
+
+ivcube 1 .01 .01 | ivrgba 1 0 0 1 | ivtranslate .5 0 0 > xaxis.iv
+ivcube .01 1 .01 | ivrgba 0 1 0 1 | ivtranslate 0 .5 0 > yaxis.iv
+ivcube .01 .01 1 | ivrgba 0 0 1 1 | ivtranslate 0 0 .5 > zaxis.iv
+
+ivcube .1 .1 .1 | ivrgba 1 1 0 1 | ivtranslate .2 .2 .2 > cube2.iv
+ivcube .1 .1 .1 | ivrgba 0 1 1 1 | ivtranslate .4 .4 .4 > cube4.iv
+ivcube .1 .1 .1 | ivrgba 1 0 1 1 | ivtranslate .6 .6 .6 > cube5.iv
+
+# convert degrees to radians
+ang45=`echo 45 | awk '{print $1*.0175;}'`
+ang90=`echo 90 | awk '{print $1*.0175;}'`
+
+ivsphere .5  | ivrgba 1 0 0 .5 | ivscale .2 .4 .1 | ivtranslate .2 .2 .2 > ellipse1.iv
+ivsphere .5  | ivrgba 0 1 0 .5 | ivscale .2 .4 .1 | ivrotate 1 0 0 $ang45 | ivtranslate .4 .4 .4 > ellipse2.iv
+ivsphere .5  | ivrgba 0 1 0 .5 | ivscale .2 .4 .1 | ivrotate 1 0 0 $ang90 | ivmatrixtransform 1 0 0 0  0 1 0 0  0 0 1  .6 .6 .6 .6 1 > ellipse3.iv
+
+ivtext "ivUtilities Example" | ivmaterial diffusecolor .2 .8 .8 -specularcolor 1 0 0 -shininess .5  | ivscale .05 .08 .02 | ivtranslate .2 .8 0 > tlabel.iv
+ivtext "0,0,0" | ivrgba 1 1 1 1 | ivscale .04 .06 .01 | ivtranslate -.1 -.1 0 > olabel.iv
+ivtext "1,0,0" | ivrgba 1 0 0 1 | ivscale .04 .06 .01 | ivtranslate .9 -.1 0 > xlabel.iv
+ivtext "0,1,0" | ivrgba 0 1 0 1 | ivscale .04 .06 .01 | ivtranslate -.1 1 0 > ylabel.iv
+ivtext "0,0,1" | ivrgba 0 0 1 1 | ivscale .04 .06 .01 | ivtranslate -.1 -.1 1 > zlabel.iv
+
+ivwirecube .005 .005 | ivscale 1.25 1.25 1.25 | ivtranslate .5 .5 .5 | ivtranslate -.0125 -.0125 -.0125 > wirecube.iv
+
+# ivview {x,y,z}axis.iv cube{2,4,5}.iv ellipse{1,2,3}.iv {t,o,x,y,z}label.iv wirecube.iv
+
+cat {x,y,z}axis.iv cube{2,4,5}.iv ellipse{1,2,3}.iv {t,o,x,y,z}label.iv wirecube.iv > temp.iv 
+
+(cat temp.iv | ivdef part1; ivuse part1 | ivtranslate 2 0 0 ) > demo.iv
+
+ivview demo.iv

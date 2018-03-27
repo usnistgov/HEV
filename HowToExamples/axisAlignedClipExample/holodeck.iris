@@ -1,0 +1,8 @@
+GROUP holodeck
+LOAD  holodeck0 holodeck.savg
+LOAD  holodeck1 holodeck_edges.savg
+ADDCHILD  holodeck0 holodeck
+ADDCHILD  holodeck1 holodeck
+NOCLIP    holodeck
+ NODEMASK   holodeck OFF
+ADDCHILD  holodeck scene

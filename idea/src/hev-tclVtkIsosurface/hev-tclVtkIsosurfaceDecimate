@@ -1,0 +1,125 @@
+#! /usr/bin/vtk
+
+# hev-tclVtkIsosurfaceDecimate
+#
+# steve@nist.gov
+# October 22, 2007
+# November 8, 2007
+#
+# Based on examples from:
+#      www.rug.nl/cit/hpcv/visualisation/VTK/rugVtk_text.html
+
+catch {load vtktcl}
+#source ~/.wishrc
+#source vtkInt.tcl
+#source colors.tcl
+
+##puts "nr arguments = $argc"
+##puts "argv = $argv"
+##puts "argv0 = $argv0"
+
+set argcount $argc
+##puts "argcount = $argcount"
+
+set deciPercent 0.0
+set topolgy 0
+if {$argcount == 4} {
+    set deciPercent [lindex $argv 3]
+    set argcount [expr $argcount - 1]
+    set topolgy 1
+}
+##puts "argcount = $argcount"
+
+if {$argcount != 3} {
+   puts "Usage: hev-tclVtkIsosurfaceDecimate value input.vtk output.iv \[decimationPercent\]"
+   puts "\n      When decimation is used, PerserveTopolgyOff is set"
+   puts "         PerserveTopolgyOff is casuing seg faults,"
+   puts "         so for now its on in both cases."
+   exit
+}
+
+
+set isoValue  [lindex $argv 0]
+set infile    [lindex $argv 1]
+set outfile   [lindex $argv 2]
+
+puts "isoValue = $isoValue"
+puts "infile = $infile"
+puts "outfile = $outfile"
+puts "deciPercent = $deciPercent"
+
+
+vtkRenderer ren1
+vtkRenderWindow renWin
+  renWin AddRenderer ren1
+vtkRenderWindowInteractor iren
+  iren SetRenderWindow renWin
+
+# create pipeline
+
+vtkStructuredPointsReader reader
+    reader SetFileName $infile
+# niet nodig reader Update
+
+set level $isoValue
+
+##puts "level = $level"
+
+#vtkMarchingCubes iso
+#    iso SetInput [reader GetOutput]
+#    iso SetValue 0 $level
+
+vtkContourFilter iso
+    iso SetInput [reader GetOutput]
+    iso SetValue 0 $level
+#    iso ComputeScalarsOff
+#    iso ComputeGradientsOff
+
+# Decimate the iso surface to reduce the size
+vtkDecimatePro deci
+    deci SetInput [iso GetOutput]
+    if { $topolgy == 0 } {
+       deci PreserveTopologyOn
+    } else {
+        #deci PreserveTopologyOff
+	# I am getting segnentation faults with PreserveTopologyOff
+	# so for now don't do that.
+        deci PreserveTopologyOn
+    }
+
+    # request a reduction of 20%
+    #deci SetTargetReduction .2
+
+    deci SetTargetReduction $deciPercent
+
+
+vtkPolyDataMapper isoMapper
+#    isoMapper SetInput [iso GetOutput]
+    isoMapper SetInput [deci GetOutput]
+    isoMapper ScalarVisibilityOff
+
+vtkActor isoActor
+    isoActor SetMapper isoMapper
+#    eval [isoActor GetProperty] SetColor $antique_white
+    eval [isoActor GetProperty] SetColor 0.9804 0.9216 0.8431
+
+# assign our actor to the renderer
+    ren1 AddActor isoActor
+
+#    ren1 SetBackground 1 1 1
+#    renWin SetSize 500 500
+
+
+vtkIVExporter iv
+  iv SetInput renWin
+#  iv SetFileName foo.iv
+  iv SetFileName $outfile
+  iv Write
+
+
+# render the image
+#iren Initialize
+
+# prevent the tk window from showing up then start the event loop
+#wm withdraw .
+exit

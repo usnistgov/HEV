@@ -1,0 +1,90 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-runParallel 1 "June 2011" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-runParallel
+- Run embarrassingly parallel commands read from stdin on multiple CPUs
+
+.SH SYNOPSIS
+.B hev-runParallel
+[--help] [--parallel n] [--verbose]
+
+.SH DESCRIPTION
+.PP
+.I hev-runParallel
+a utility for help with \fIembarrassingly parallel\fR
+applications. A list of shell commands are read from \fIstdin\fR. Each line of
+input must be a self contained command with no dependency on the other
+commands.  Each command will be executed in the background, in parallel up to
+the number of processes specified by the \fB--parallel\fR option.
+
+.PP
+When process finishes, a new command is executed. The idea is to keep all the
+CPUs busy, even if there is a mixture of long and short running processes.
+This command will wait til all children have finished.
+
+.PP
+The command are executed by \fB/bin/sh\fR.
+
+
+
+.SH  OPTIONS
+.PP
+.TP
+.B --help
+print a help message.
+
+.TP
+.B --parallel
+specifies how many concurrent processes to be run in parallel. On a 2
+CPU machine, n of 2 is a good number.
+If n is 0 or this option is not specified, then the
+number of CPUs used is automatically determined, hopefully,
+to match the current number of on the machine
+
+.TP 
+.B --verbose
+print a bit of verbosity
+
+
+
+
+.SH EXAMPLES
+.PP
+Assume you would like to convert a bunch of \fIsavg\fR files in the current
+directory to \fBive\fR format. The the following pipeline could be used to
+format the appropriate command line to be executed in parallel.
+.IP
+ls *.savg | sed 's/.savg//' | \
+awk '{printf "dosg-transform %s.iv %s.ive\n",$1,$1;} | hev-runParallel
+
+.PP
+More likely, you would build your commands into a file once and use the file as input:
+.IP
+	hev-runParallel < commands.dat
+.PP
+Use the \fB--verbose\fR to monitor progress. The commands are printed as they are executed.
+.IP
+	hev-runParallel --verbose < commands.dat
+
+.SH EXAMPLES
+.PP
+Assume you want to compress a bunch of files in the current directory.
+.IP
+ls | sed "s/^/gzip /" | hev-runParallel
+
+
+.SH NOTES
+.PP
+The method used to automatically determine the number of CPUs on the current system is the command:
+.IP
+getconf _NPROCESSORS_ONLN
+
+
+
+
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov
+.br
+Original implementation April 10, 2009.

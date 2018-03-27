@@ -1,0 +1,8 @@
+Some simple tests for gpuSPhere.iris
+
+
+./build1.sh   two spheres using UNIFORM fatpointSizet to specify radius
+
+./build2.sh   two spheres load gpuSphere.iris only once
+
+./build3.sh   lots of spheres varying radius

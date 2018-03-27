@@ -1,0 +1,66 @@
+.TH SAVG\-CONE 1 "16 July 2004"
+
+.SH NAME
+savg-cone \- SAVG Toolbox: cone
+.SH SYNOPSIS
+.B savg-cone
+[value] [open|closed] [origNormals|revisedNormals]
+
+.SH DESCRIPTION
+.I Savg-cone
+generates a unit-sized cone (1 unit tall, base with radius of 1 unit) to stdout.
+Usage messages are produced when options are incorrectly specified.
+.SH OPTIONS
+.PP
+.TP
+.B value
+Specify the number of outer polygons to be used for the cone. (default 16).
+.TP
+.B open | closed
+Tell it whether or not to put the bottom face on; i.e. 
+whether to leave the cone open.  
+If omitted, the bottom is closed.
+
+.TP
+.B origNormals | revisedNormals
+Indicates whether to use the original method 
+that was implemented for generating cone
+normals or whether to use a revised method. 
+If omitted, the original normal algorithm is used.
+
+The main difference between the two algorithms is that the original 
+method produces a normal at the apex of the cone that points directly
+up (away from the base).  
+This results in some odd effects when rendering.
+The new method produces normals at the apex vertices that vary depending
+on the orientation of the triangle of which the vertex is a part.  
+This results in some facetted appearance when rendering.
+
+.SH EXAMPLES
+.TP
+.B "savg-cone 30 > cone.savg"
+Creates a cone with 30 polygons around, a surface for the base, and puts it in the SAVG format file cone.savg.
+.TP
+.B "savg-cone 16 open > cone.savg"
+Creates a cone with no base surface and puts it in the SAVG format file cone.savg.
+.TP
+.B "savg-cone 50 closed revisedNormals > coneRev.savg"
+Creates a cone with 50 divisions, a closed base, and normals are generated
+using the revised method.
+.SH SEE ALSO
+savg-cylinder, savg-cube, savg-tetra, savg-octa, savg-sphere, savg-regpoly, savg-sor
+.PP
+.SH AUTHOR
+.PP
+Brandon M. Smith
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Summer 2004, modified June 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

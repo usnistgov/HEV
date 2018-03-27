@@ -1,0 +1,45 @@
+Volume rendering test. 
+
+Should show bucky ball volume in yellows and reds embedded in a
+polygonal airplane model. Requires write-permission to test directory.
+
+To run:
+  ./rundemo [volume|mixed] [point|linear|preint] [emit|lit|preint] <scale>
+  First argument = demo type:
+    "volume" shows volume alone
+    "mixed" shows volume embedded with polygonal airplane model
+  Second argument = integration type:
+    "point" does point sampling along rays
+    "linear" does linear interpolation between transfer colors
+    "preint" uses preintegrated transfer function table
+  Third argument = transfer function type
+    "emit" uses a simple emission/absorption model (for "point" or "linear")
+    "lit" uses a gradient-based lighting model (for "point" or "linear")
+    "preint" uses a preintegrated transfer function table (for "preint")
+  Final argument scales optical distance (20 works well for the example)
+
+To do live updates of transfer function
+  Edit transfer.dat
+  ./texture [point|linear|preint] <scale>
+  Arguments are integration type and scale as above
+
+To view current transfer function (does not track live updates):
+  osgviewer transferPlot.osg
+
+Files:
+  rundemo	= sample script to create and run volume renderer
+    texture	= script to load volume data and transfer function
+  volume.iris    = scene graph snippet to load volume only
+    mixed.iris   = scene graph snippet to combine volume and geometry
+  bucky.mha	= header describing volume data
+    bucky.raw	= raw volume data (need both bucky files)
+    tex3d.osg	= state file to load volume data
+  transfer.dat  = user-editable transfer function
+    preint.osg, transfer.osg = state files to load transfer lookup tables
+    emit.dat, lit.dat = sample transfer functions, copy to transfer.dat
+  transferPlot.osg = object to show transfer function on a checkered square
+
+Generated files
+  box.ive	= wireframe box to show volume size
+  bucky.osg	= volume rendering object
+  transfer.mhd  = processed transfer texture created from transfer.dat

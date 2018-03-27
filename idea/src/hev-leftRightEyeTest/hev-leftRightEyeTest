@@ -1,0 +1,60 @@
+#! /bin/bash
+
+case $1 in
+-h|--help)
+
+cat <<EOF
+Usage: hev-leftRightEyeTest [-h|--help]
+
+A simple stereo test for eye swap error.
+
+While viewing with glasses,
+
+   close left eye to see magenta "Right Eye",
+   close right eye to see cyan "Left Eye".
+
+With one eye closed, stereo of rotating paper airplane goes flat.
+With both eyes open, you should not see double lines.
+EOF
+exit
+
+;;
+esac
+
+
+# Kill background children processes on exit
+trap 'kill $(jobs -p)' 0
+
+EXE=leftRightEyeTest
+EXE2=stereotest-x11
+
+if [ -x $EXE ]
+then
+    DIR="."
+else
+    DIR=$HEVROOT/idea/etc/hev-leftRightEyeTest/bin
+fi
+
+WIN="-window"
+#WIN=" "
+
+H=$(hev-identifyImmersive)
+case $H in
+rave|cave)
+	env DISPLAY=:0.1 ${DIR}/${EXE} -geometry    +0+1000 ${WIN} &
+	env DISPLAY=:0.2 ${DIR}/${EXE} -geometry  +1300+1000 ${WIN} &
+	env DISPLAY=:0.3 ${DIR}/${EXE} -geometry  +1300+0 ${WIN} &
+
+	#env DISPLAY=:0.1 ${DIR}/${EXE2} -geometry    +500+500  &
+	#env DISPLAY=:0.2 ${DIR}/${EXE2} -geometry    +500+500  &
+	#env DISPLAY=:0.3 ${DIR}/${EXE2} -geometry    +500+500  &
+	;;
+*)
+	env DISPLAY=:0.1 ${DIR}/${EXE} -geometry  +800+600 ${WIN} &
+        ;;
+esac
+
+
+echo "Press Enter to exit all displays"
+read x
+ 

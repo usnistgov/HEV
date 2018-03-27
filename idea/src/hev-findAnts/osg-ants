@@ -1,0 +1,17 @@
+#!/bin/sh
+
+###############################
+# osg-ants - a script to generate a list
+# of commands in the OSG/DOSG familes of
+# the "Army of Ants"  in $PATH. This
+# calls one or more helper script(s) so
+# the calling environment must be correctly
+# set to find them, usually by modifying
+# the PATH env var.
+
+echo
+echo "OSG Tools: " $@
+echo ---------
+${PRIVATE_BINS}/compc osg $@
+${PRIVATE_BINS}/dosg-ants ${KSTR}
+echo

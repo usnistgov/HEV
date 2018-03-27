@@ -1,0 +1,35 @@
+.TH SAVG\-GRAPHFILTER 1 "February 2007"
+.SH NAME
+savg-graphFilter \- SAVG ToolBox: graphFilter
+.SH SYNOPSIS
+.B savg-graphFilter
+nodesfilename connectivityfilename
+.SH DESCRIPTION
+.I Savg-graphFilter
+reads in a savg file and creates a connectivity net.
+
+.SH OPTIONS
+.TP
+.B   nodesfilename
+file name for the collection of different points in the savg file
+.TP
+.B   connectivityfilename
+file name for the node numbers making up the connectivity net
+.SH EXAMPLES
+.TP
+.B cat file1.savg | savg-graphFilter points net1
+This reads in object information from file1savg and computes the nodal
+connectivity.
+.SH AUTHOR
+Adele peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+February 2007
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

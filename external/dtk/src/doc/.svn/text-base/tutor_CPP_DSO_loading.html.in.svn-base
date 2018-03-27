@@ -1,0 +1,64 @@
+<html>
+<header>
+<title>DTK Tutorial - Loading C++ from DSOs</title>
+</header>
+
+<a href="tutor_toc.html">toc</a> |
+<a href="tutor_realtime.html">prev</a>
+<hr>
+
+<h2>Loading C++ from DSOs</h2>
+
+The code for this section of the DTK tutorial is in <a
+href="examples/dtk/tutorial/loadDSO/">tutorial/loadDSO/</a>.  Find a
+copy of this directory and copy it to a convenient directory where you
+can hack it up.  If DTK is not installed, install DTK first.
+
+<p>
+
+Get yourself a copy of the loadDSO/ directory from in the tutorial
+directory as described above.  From in that directory run:
+
+<p>
+<blockquote>
+<pre>
+% <font color=green>gmake</font>
+</pre>
+</blockquote>
+<p>
+
+This should build the program <t>load</t> and the dynamic shared
+object (DSO) file <t>implement.so</t> .  If not make it so.
+
+<p>
+
+Now run:
+
+<p>
+<blockquote>
+<pre>
+% <font color=green>./load</font>
+calling A::A("Hello")
+calling B::B("Hello")
+calling Implementation::Implementation("Hello")
+calling Implementation::taskA()
+calling Implementation::taskB()
+calling Implementation::~Implementation()
+calling B::~B()
+calling A::~A()
+</pre>
+</blockquote>
+<p>
+
+<t>load</t> loaded the <t>implement.so</t> DSO and created a C++
+object from the DSO, called two of the objects methods, and than
+destroyed and unloaded the DSO.  To show a more generic case the
+loaded object used multiple inheritance. The loaded object inherited
+an object of class A and class B which are unrelated classes.
+
+<hr>
+
+
+<a href="tutor_toc.html">toc</a> |
+<a href="tutor_realtime.html">prev</a>
+

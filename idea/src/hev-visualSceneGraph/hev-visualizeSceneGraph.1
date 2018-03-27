@@ -1,0 +1,29 @@
+.TH HEV-VISUALIZESCENEGRAPH 1 "Sep 2015" "NIST/ACMD" "HPCVG/HEV"
+
+.SH NAME
+hev-visualizeSceneGraph
+- web-based visualization of the current scenegraph
+
+.SH DESCRIPTION
+
+\fBhev-visualizeSceneGraph\fR starts a web browser to visualize the current
+scenegraph in a running \fBiris-viewer\fR process.
+
+.PP
+The script assumes \fBiris-fly\fR has already been run and will request that
+process to execute Firefox after the script runs \fBiris-server\fR, which is a
+Node.js server that enables Firefox to communicate with \fBiris-viewer\fR.
+
+.SH EXAMPLE
+
+$ iris-fly --ex tape.osg
+$ hev-visualizeSceneGraph
+
+.SH AUTHOR
+Wesley Griffin <wesley.griffin@nist.gov>
+
+.SH SEE ALSO
+.BR iris (1),
+.BR iris-fly(1),
+.BR iris-viewer(1),
+.BR iris-server(1).

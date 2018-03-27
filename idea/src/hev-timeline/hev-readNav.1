@@ -1,0 +1,25 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-readNav 1 "November, 2011" "NIST/MCSD" "MCSD HEV"
+.SH NAME
+hev-readNav
+- writes the current navigation transformation
+
+
+.SH DESCRIPTION
+.B "hev-readNav"
+writes the current navigation transformation to standard output in the form
+of a "xyz hpr s" coordinate . The transformation is read from the DTK shared
+memory file iris/state/nav, and converted from a matrix to a coordinate
+using the hev-matrixToCoord(1) utility.
+
+This program can be used to cut/paste the coordinate into a timeline file,
+causing a navigation to the indicated coordinate.
+
+.SH SEE ALSO
+hev-matrixToCoord, hev-timeline
+
+.SH AUTHOR
+
+John Kelso, kelso@nist.gov,  NIST/ITL/MCSD
+

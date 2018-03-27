@@ -1,0 +1,85 @@
+#! /usr/bin/perl
+#
+# hev-dataRange - see usage message
+#
+# steve@nist.gov
+#
+
+$version="20090605";
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hev-dataRange [--help] < input
+
+    Print to stdout the data range, i.e. min and max, value of
+    the data read on stdin.
+
+    The input on stdin must be one ASCII number per line.
+
+     --help    print this help message
+
+     
+
+Version: $version
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+$helpFlag=0;
+
+
+GetOptions("debug"       => \$debugFlag,
+	   "help"        => \$helpFlag,
+           );
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "helpFlag= $helpFlag\n";
+    print STDERR "\n";
+}
+
+usage() if ($helpFlag);
+
+usage() if (@ARGV > 0);
+
+$firstFlag=1;
+while (<STDIN>) {
+    chop;
+    ($v)=split(' ', $_, -1);
+    if ($firstFlag) {
+	$min=$v;
+	$max=$v;
+	$firstFlag=0;
+    } else {
+	if ($v > $max) {$max=$v}
+	if ($v < $min) {$min=$v}
+    }
+}
+
+print "$min $max\n";
+
+# End
+

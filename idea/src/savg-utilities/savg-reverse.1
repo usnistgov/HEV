@@ -1,0 +1,27 @@
+.TH SAVG\-REVERSE 1 
+.SH NAME
+savg-reverse
+.SH SYNOPSIS
+.B savg-reverse [-noFlip]
+
+.SH DESCRIPTION
+.I savg-reverse
+reverses the order of vertices in polygons. 
+By default it also reverses the direction of normal vectors.
+
+Takes input in .savg format on stdin and writes 
+output in .savg format to stdout.
+
+.SH OPTIONS
+.TP
+.B -noFlip
+indicates that normal vectors should not be changed.
+
+.SH EXAMPLES
+.TP
+.B savg-reverse < surface.savg > surface.reverse.savg
+Reverse the order of vertices and the direction of normal vectors
+in the file surface.savg.
+
+.SH SEE ALSO
+savg-reverse-normals, savg-rm-normals, savg-add-normals, savg-output-normals

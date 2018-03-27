@@ -1,0 +1,8 @@
+#! /bin/sh
+
+# test ivstick
+
+ivstick 0 0 0      1 0 0 | ivcomplexity 0 | ivrgba 1 0 0 1
+ivstick 0 0 0      0 1 0 | ivcomplexity 0 | ivrgba 0 1 0 1
+ivstick 0 0 0      0 0 1 | ivcomplexity 0 | ivrgba 0 0 1 1
+ivstick .2 .2 .2   .8 .8 .8 | ivcomplexity 0 | ivrgba 1 1 0 .4

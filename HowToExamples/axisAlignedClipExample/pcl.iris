@@ -1,0 +1,7 @@
+dcs pcl 0 0 0   0 0 0  .5
+
+load p PCL.orange3.osg
+
+addchild p pcl
+
+return pcl

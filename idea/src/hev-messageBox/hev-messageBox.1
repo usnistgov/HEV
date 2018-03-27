@@ -1,0 +1,59 @@
+.TH hev-messageBox 1 "April 2011"
+.SH NAME
+
+hev-messageBox
+
+.SH SYNOPSIS
+
+\fBhev-messageBox [FLTK options]  [--columns N] [--rows N] [--scale scale]
+[--dynamic] [--noescape] [--usleep t]
+
+.SH DESCRIPTION
+
+\fBhev-messageBox\fR displays a text message in a window.  Text is read from
+stdin. 
+
+.SH OPTIONS
+
+.IP "\fBFLTK options\fR"
+are any standard FLTK options
+
+.IP "\fB--columns\fR \fIN\fR"
+display at most \fIN\fR characters per row.  A horizontal scrollbar will be
+added if any line of the data has more than \fIN\fR characters.
+
+
+.IP "\fB--rows\fR \fIN\fR"
+display at most \fIN\fR rows of data.  A vertical scrollbar will be added if
+there are more than \fIN\fR lines of data.
+
+.IP "\fB--scale\fR \fIS\fR"
+scales the text size by \fIS\fR.
+
+.IP "\fB--dynamic\fR"
+data will be continuously read from stdin.  --dynamic requires rows and
+columns to be specified so the window can be correctly sized.
+
+.IP "\fB--noescape\fR"
+specifies the window can't be closed by pressing escape 
+or the window manager's close button.
+
+.IP "\fB--usleep t\fR"
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.SH BUGS
+Scales other that one seem to not fit the window to the text very well.
+Email kelso@nist.gov if this is a problem.
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

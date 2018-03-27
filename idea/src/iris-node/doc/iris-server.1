@@ -1,0 +1,106 @@
+.TH IRIS-SERVER 1 "Dec 2013" "NIST/ACMD" "HPCVG HEV"
+
+.SH NAME
+iris-server
+- web server for controlling IRIS.
+
+.SH DESCRIPTION
+.BR iris-server
+is a web server to control IRIS. It listens on a port for HTTP requests and
+transmits IRIS commands from a WebSocket to IRIS.
+.PP
+Requires Node.js to be available:
+.IP
+$ source $HEVROOT/external/node/profile
+.br
+$ iris-server
+.PP
+Additionally, iris-server creates and listens on another FIFO, called the
+client notify FIFO, usually located at
+.IR /tmp/irisServerNotifyClientFifo-<username> .
+Text sent to this FIFO will be delivered to the web application via a "notify"
+message (see
+.BR EXAMPLE ).
+
+.SH EXAMPLE
+The following html file implements a simple html5 web application that uses
+.BR iris-server
+to control a running IRIS process. If saved as
+.IR echoping.html
+it can be used by starting
+.BR iris-server
+in the directory where
+.IR echoping.html
+resides (see
+.BR DESCRIPTION )
+and then loading
+.IR http://localhost:8080/
+in a web browser.
+.nf
+.sp
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>IRIS ECHO/PING TEST</title>
+    </head>
+    <body>
+        <form id="echo" class="singlecheck">
+            <p>
+                <input id="singlecheck-checkbox" type="checkbox" value="echo">
+                <input type="submit" value="Echo">
+            </p>
+        </form>
+        <form id="pingpong">
+            <p>
+                <input id="ping" type="text" width=100>
+                <input type="submit" value="Ping">
+            </p>
+            <p>
+                <input type="submit" value="Pong" disabled="true">
+                <input id="pong" type="text" width=100 readonly="true">
+            </p>
+        </form>
+
+        <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script>
+            $(function() {
+                var socket = io.connect("http://localhost");
+
+                $(".singlecheck").submit(function (event) {
+                    var chk = $("#" + this.id + " [type=checkbox]")
+                    var cmd = chk.val() + " " + (chk.prop("checked") ? "on" : "off");
+                    console.log("sending command: '" + cmd + "'");
+                    socket.emit("control", cmd);
+                    event.preventDefault();
+                });
+
+                $("#pingpong").submit(function (event) {
+                    var cmd = "QUERY PING " + $("#ping").val();
+                    console.log("sending command: '" + cmd + "'");
+                    socket.emit("control", cmd);
+                    event.preventDefault();
+                });
+
+                socket.on("response", function (resp) {
+                    console.log("received response: '" + resp + "'");
+                    $("#pong").val(resp.split(" ").slice(1).join(" "));
+                });
+
+                socket.on("notify", function (msg) {
+                    console.log("notify message: '" + msg + "'");
+                });
+            });
+        </script>
+    </body>
+</html>
+.fi
+
+.SH AUTHOR
+Wesley Griffin <wesley.griffin@nist.gov>
+
+.SH SEE ALSO
+.BR iris-node (7)
+

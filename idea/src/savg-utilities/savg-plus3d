@@ -1,0 +1,8 @@
+#!/bin/sh
+base='savg-cone 16 closed revisedNormals | savg-scale .2588 .2588 1 | savg-translate 0 0 -1'
+eval $base
+eval $base | savg-rotate 0 180 0
+eval $base | savg-rotate 0 90 0
+eval $base | savg-rotate 0 -90 0
+eval $base | savg-rotate 0 0 90
+eval $base | savg-rotate 0 0 -90

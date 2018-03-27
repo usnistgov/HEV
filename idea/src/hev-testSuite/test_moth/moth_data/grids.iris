@@ -1,0 +1,127 @@
+GROUP moth_Grids
+
+LOAD moth-0.0_Grid /home/griffin/hev/idea/testSuite/moth_data/0.0_Grid.ive
+NODEMASK moth-0.0_Grid OFF
+ADDCHILD moth-0.0_Grid moth_Grids
+
+
+LOAD moth-0.2_Grid /home/griffin/hev/idea/testSuite/moth_data/0.2_Grid.ive
+NODEMASK moth-0.2_Grid OFF
+ADDCHILD moth-0.2_Grid moth_Grids
+
+
+LOAD moth-0.4_Grid /home/griffin/hev/idea/testSuite/moth_data/0.4_Grid.ive
+NODEMASK moth-0.4_Grid OFF
+ADDCHILD moth-0.4_Grid moth_Grids
+
+
+LOAD moth-0.5_Grid /home/griffin/hev/idea/testSuite/moth_data/0.5_Grid.ive
+NODEMASK moth-0.5_Grid OFF
+ADDCHILD moth-0.5_Grid moth_Grids
+
+
+LOAD moth-0.7_Grid /home/griffin/hev/idea/testSuite/moth_data/0.7_Grid.ive
+NODEMASK moth-0.7_Grid OFF
+ADDCHILD moth-0.7_Grid moth_Grids
+
+
+LOAD moth-0.8_Grid /home/griffin/hev/idea/testSuite/moth_data/0.8_Grid.ive
+NODEMASK moth-0.8_Grid OFF
+ADDCHILD moth-0.8_Grid moth_Grids
+
+
+LOAD moth-1.0_Grid /home/griffin/hev/idea/testSuite/moth_data/1.0_Grid.ive
+NODEMASK moth-1.0_Grid OFF
+ADDCHILD moth-1.0_Grid moth_Grids
+
+
+LOAD moth-1.2_Grid /home/griffin/hev/idea/testSuite/moth_data/1.2_Grid.ive
+NODEMASK moth-1.2_Grid OFF
+ADDCHILD moth-1.2_Grid moth_Grids
+
+
+LOAD moth-1.4_Grid /home/griffin/hev/idea/testSuite/moth_data/1.4_Grid.ive
+NODEMASK moth-1.4_Grid OFF
+ADDCHILD moth-1.4_Grid moth_Grids
+
+
+LOAD moth-1.5_Grid /home/griffin/hev/idea/testSuite/moth_data/1.5_Grid.ive
+NODEMASK moth-1.5_Grid OFF
+ADDCHILD moth-1.5_Grid moth_Grids
+
+
+LOAD moth-1.7_Grid /home/griffin/hev/idea/testSuite/moth_data/1.7_Grid.ive
+NODEMASK moth-1.7_Grid OFF
+ADDCHILD moth-1.7_Grid moth_Grids
+
+
+LOAD moth-1.8_Grid /home/griffin/hev/idea/testSuite/moth_data/1.8_Grid.ive
+NODEMASK moth-1.8_Grid OFF
+ADDCHILD moth-1.8_Grid moth_Grids
+
+
+LOAD moth-2.0_Grid /home/griffin/hev/idea/testSuite/moth_data/2.0_Grid.ive
+NODEMASK moth-2.0_Grid OFF
+ADDCHILD moth-2.0_Grid moth_Grids
+
+
+LOAD moth-2.2_Grid /home/griffin/hev/idea/testSuite/moth_data/2.2_Grid.ive
+NODEMASK moth-2.2_Grid OFF
+ADDCHILD moth-2.2_Grid moth_Grids
+
+
+LOAD moth-2.4_Grid /home/griffin/hev/idea/testSuite/moth_data/2.4_Grid.ive
+NODEMASK moth-2.4_Grid OFF
+ADDCHILD moth-2.4_Grid moth_Grids
+
+
+LOAD moth-2.5_Grid /home/griffin/hev/idea/testSuite/moth_data/2.5_Grid.ive
+NODEMASK moth-2.5_Grid OFF
+ADDCHILD moth-2.5_Grid moth_Grids
+
+
+LOAD moth-2.7_Grid /home/griffin/hev/idea/testSuite/moth_data/2.7_Grid.ive
+NODEMASK moth-2.7_Grid OFF
+ADDCHILD moth-2.7_Grid moth_Grids
+
+
+LOAD moth-2.8_Grid /home/griffin/hev/idea/testSuite/moth_data/2.8_Grid.ive
+NODEMASK moth-2.8_Grid OFF
+ADDCHILD moth-2.8_Grid moth_Grids
+
+
+LOAD moth-3.0_Grid /home/griffin/hev/idea/testSuite/moth_data/3.0_Grid.ive
+NODEMASK moth-3.0_Grid OFF
+ADDCHILD moth-3.0_Grid moth_Grids
+
+
+LOAD moth-3.2_Grid /home/griffin/hev/idea/testSuite/moth_data/3.2_Grid.ive
+NODEMASK moth-3.2_Grid OFF
+ADDCHILD moth-3.2_Grid moth_Grids
+
+
+LOAD moth-3.4_Grid /home/griffin/hev/idea/testSuite/moth_data/3.4_Grid.ive
+NODEMASK moth-3.4_Grid OFF
+ADDCHILD moth-3.4_Grid moth_Grids
+
+
+LOAD moth-3.5_Grid /home/griffin/hev/idea/testSuite/moth_data/3.5_Grid.ive
+NODEMASK moth-3.5_Grid OFF
+ADDCHILD moth-3.5_Grid moth_Grids
+
+
+LOAD moth-3.7_Grid /home/griffin/hev/idea/testSuite/moth_data/3.7_Grid.ive
+NODEMASK moth-3.7_Grid OFF
+ADDCHILD moth-3.7_Grid moth_Grids
+
+
+LOAD moth-3.8_Grid /home/griffin/hev/idea/testSuite/moth_data/3.8_Grid.ive
+NODEMASK moth-3.8_Grid OFF
+ADDCHILD moth-3.8_Grid moth_Grids
+
+
+LOAD moth-4.0_Grid /home/griffin/hev/idea/testSuite/moth_data/4.0_Grid.ive
+NODEMASK moth-4.0_Grid OFF
+ADDCHILD moth-4.0_Grid moth_Grids
+
+RETURN moth_Grids

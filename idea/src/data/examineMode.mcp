@@ -1,0 +1,31 @@
+MENU eMode
+
+# Turn Examine mode on/off during runtime
+# 12/12/16 sgs
+
+
+BUTTON Examine
+
+ON EXAMINE world
+
+OFF matrix world 1 0 0 0  0 1 0 0  0 0 1 0  0 0 0 1
+
+
+
+BUTTON NavReset
+
+ON NAV Reset
+
+
+BUTTON Gnomon
+first load emode_axis gnomon.osg
+first nodemask emode_axis on
+first dcs emode_axix_mav 0 2 0 0 0 0 .5
+first addchild emode_axis emode_axix_mav
+first addchild emode_axix_mav nav
+
+on nodemask emode_axis on
+
+off nodemask emode_axis off
+
+END

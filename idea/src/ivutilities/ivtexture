@@ -1,0 +1,58 @@
+#! /bin/sh
+
+# ivtexture - texture map a rgb file to polygon
+# steve@nist.gov
+
+version="20080619"
+
+scaleFactor=1
+
+case $# in
+1)
+	case $1 in
+	-h|-help)
+		echo "Usage: ivtexture [-n count] file.rgb" > /dev/tty
+		echo > /dev/tty
+		echo "  count - number of times to repeat the image" > /dev/tty
+		echo > /dev/tty
+		echo "Version: $version" > /dev/tty
+		exit
+		;;
+	*)
+		TextureMap=$1
+		;;
+	esac
+	;;
+
+3)
+        case $1 in
+	-n|-scaleFactor)
+		scaleFactor=$2
+		TextureMap=$3
+		;;
+
+	*)
+	        ivtexture -help
+		exit
+		;;
+	esac
+	;;
+
+*)
+	ivtexture -help
+	exit
+	;;
+esac
+
+echo "#Inventor V2.0 ascii"
+echo "Separator {"
+echo "Texture2 {filename" ${TextureMap} "}"
+
+echo "Texture2Transform {scaleFactor" $scaleFactor $scaleFactor "}"
+
+echo "Coordinate3 {point [-1 -1 0, 1 -1 0, 1  1 0, -1  1 0 ]}"
+
+echo "TextureCoordinateBinding {value PER_VERTEX}"
+echo "TextureCoordinate2 {point [ 0 0, 1 0, 1 1, 0 1 ]}"
+echo "IndexedFaceSet {coordIndex [0,1,2,3]}"
+echo "}"

@@ -1,0 +1,5 @@
+#LOAD flashlight.iris
+LIGHTNODE flashlight ON POSITION 0 0 0 1 SPOT 0 10
+NODEMASK flashlight OFF
+ADDCHILD flashlight wand
+EXEC hev-collabButton --label spot --onString "NODEMASK flashlight ON"  --offString "NODEMASK flashlight OFF" > $IRIS_CONTROL_FIFO

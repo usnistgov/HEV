@@ -1,0 +1,6 @@
+#!/bin/sh
+if [ $# -ne 1 ] 
+then echo Usage: irisfly-removeAndHideWindow windowName
+else irisfly-removeWindowName $1
+    hev-hideWindow $1
+fi

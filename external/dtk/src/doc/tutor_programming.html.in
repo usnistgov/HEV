@@ -1,0 +1,283 @@
+<html>
+<header>
+<title>DTK Tutorial - Beginning Programming</title>
+</header>
+
+<a href="tutor_realtime.html">next</a> |
+<a href="tutor_toc.html">toc</a> |
+<a href="tutor_programs.html">prev</a>
+<hr>
+
+<h2>Beginning Programming</h2>
+
+The code for this section of the DTK tutorial is in <a
+href="examples/dtk/tutorial/">tutorial/</a>.&nbsp  Find a copy of this directory
+and copy it to a convenient directory
+where you can hack it up.&nbsp  If DTK is not installed, install DTK first.
+
+<hr>
+
+<a name="dtkSharedMem">
+<h3>dtkSharedMem</h3>
+
+
+There is one class, called dtkSharedMem, that is used to get DTK
+shared memory for both reading and writing.&nbsp You just need to
+construct a dtkSharedMem object and then you may read or write to it.
+
+<p>
+
+The following example, dtkSharedMem/read.cpp, opens and reads the DTK
+shared memory file "foobar" which is the size of one float.
+
+
+First we include two standard header files and the DTK header file.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;dtk.h&gt;
+
+int main(void)
+{
+</pre>
+</td></tr></table>
+</blockquote>
+
+Now we get a DTK shared memory object and initialize it with the value
+from x if the DTK shared memory file, "foobar", does not exist, or
+read the current value in x if the DTK shared memory file, "foobar",
+exists.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+  float x = 0.0f;
+  dtkSharedMem shm(sizeof(float), "foobar", &x);
+</pre>
+</td></tr></table>
+</blockquote>
+
+We check of an error.&nbsp  DTK does not throw exceptions.&nbsp  The
+dtkSharedMem constructor can fail for many reasons, like if the DTK
+shared memory file "foobar" exists and is not the requested size.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+  if(shm.isInvalid()) return 1; // error
+</pre>
+</td></tr></table>
+</blockquote>
+
+We enter the main loop.&nbsp  Reading from DTK shared memory and than write
+to standard output.&nbsp If this program reads a float from shared memory
+larger than or equal to 0.9 this program will exit.
+
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr>
+<td>
+<pre>
+  while(x &lt; 0.9f)
+    {
+      if(shm.read(&x)) return 1; // error
+      printf("%g\n", x);
+      sleep(1);
+    }
+  return 0;
+}
+</pre>
+</td></tr></table>
+</blockquote>
+
+<p>
+In a command shell change directory to the your copy of the
+tutorial/dtkSharedMem directory.
+
+<p>
+
+Now run:
+<pre>
+  % <font color=green>gmake</font> &nbsp;
+</pre>
+
+to make this program.
+
+<p>
+
+Next run:
+
+<pre>
+  % <font color=green>dtk-floatSliders foobar --number 1 &</font> &nbsp;
+</pre>
+
+Then in addition run:
+<pre>
+  % <font color=green>./read</font> &nbsp;
+</pre>
+
+<p>
+
+Then you change the slider value past 0.9 the ./read program will
+exit.
+
+
+<h3>More dtkSharedMem examples</h3>
+
+There is more example code that reads and writes to DTK shared memory that
+is queued, count stamped and time stamped in <a
+href="examples/dtk/examplesByClass/dtkSharedMem/">examplesByClass/dtkSharedMem/</a>.&nbsp
+
+
+<hr>
+
+<a name="hello Service">
+<h3>hello Service</h3>
+
+The program dtk-server is the DTK server.&nbsp dtk-server is somewhat
+of a generic server.&nbsp It loads DTK services in the form of dynamic
+shared objects (DSOs).&nbsp The hello service is a simple DTK service
+that reads from standard input and writes to DTK shared memory.&nbsp
+DTK services read from a serial devices, an Internet socket, or any
+device that can be read with a file descriptor.&nbsp DTK services
+typically write to DTK shared memory to provide "service".
+
+<p>
+
+The hello service code can be found in <a
+href="examples/dtk/tutorial/helloService/">examples/dtk/tutorial/helloService/</a>
+
+<p>
+
+The header include files dtk.h and dtk/dtkService.h are required for
+all DTK service DSOs.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr><td><pre>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;dtk.h&gt;
+#include &lt;dtk/dtkService.h&gt;
+#ifdef DTK_ARCH_IRIX // for bzero()
+# include &lt;bstring.h&gt;
+#endif
+
+#define SHM_SIZE 256
+</pre></td></tr></table>
+</blockquote>
+
+We declare the service constructor, Hello(), and serve() method.&nbsp
+We also declare a dtkSharedMem object, shm.&nbsp dtkService::serve()
+is a pure virtual method that must be overwritten.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr><td><pre>
+class Hello : public dtkService
+{
+public:
+  Hello(const char *name);
+  int serve(void);
+private:
+  dtkSharedMem shm;
+};
+</pre></td></tr></table>
+</blockquote>
+
+The Hello constructor must set fd to a valid file descriptor.
+The Hello constructor sets up the dtkSharedMem object shm.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr><td><pre>
+Hello::Hello(const char *name):
+  shm(SHM_SIZE, (name && name[0])?name:"hello")
+{
+  if(shm.isInvalid()) return; // failure, fd not set
+
+  printf(" type here ==> "); fflush(stdout);
+  fd = STDIN_FILENO; // success, fd set
+}
+</pre></td></tr></table>
+</blockquote>
+
+The serve() method reads from standard input and then writes to the
+DTK shared memory.&nbsp If writing to shared memory fails the return
+value DTKSERVICE_ERROR will cause the dtk-server programs to exit.
+Returning DTKSERVICE_CONTINUE will cause the dtk-server programs to
+continue running with this service loaded.&nbsp; Returning
+DTKSERVICE_UNLOAD with cause the dtk-server programs to continue
+running with this service unloaded.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr><td><pre>
+int Hello::serve(void)
+{
+  char str[SHM_SIZE];
+  bzero(str,SHM_SIZE);
+
+  if(fgets(str,SHM_SIZE,stdin) != NULL)
+    if(shm.write(str)) return DTKSERVICE_ERROR;
+
+  // Print the next prompt.
+  printf(" type here ==> "); fflush(stdout);
+
+  return DTKSERVICE_CONTINUE;
+}
+</pre></td></tr></table>
+</blockquote>
+
+The dtkDSO_loader and dtkDSO_unloader function must be defined.&nbsp  The
+service writer may put any code in them, but the function prototypes
+must not change.
+
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr><td><pre>
+static dtkService *dtkDSO_loader(const char *sharedMem_name)
+{
+  return new Hello(sharedMem_name);
+}
+</pre>
+</td></tr></table>
+</blockquote>
+<blockquote>
+<table bgcolor=#a0a0a0 width="80%"><tr><td><pre>
+static int dtkDSO_unloader(dtkService *hello)
+{
+  delete hello;
+  // Just add a new line for the last type here ==> prompt
+  printf("\n");
+  return DTKDSO_UNLOAD_CONTINUE; // success
+}
+</pre>
+</td></tr></table>
+</blockquote>
+
+There are other return value macros defined in dtk/service.h
+for both the dtkDSO_loader and dtkDSO_unloader functions.
+
+<p>
+
+There are other more useful DTK services that come with the DTK source
+in the serviceDSO/ subdirectory.
+
+You may be able to find the top DTK source directory from the output of
+
+<pre>
+  % <font color=green>dtk-config --source</font> &nbsp;
+</pre>
+
+unless someone removed it.
+
+
+<hr>
+
+<a href="tutor_realtime.html">next</a> |
+<a href="tutor_toc.html">toc</a> |
+<a href="tutor_programs.html">prev</a>
+
+

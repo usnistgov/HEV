@@ -1,0 +1,48 @@
+.TH hev-offsetY 1 "April 1, 2011 (no fooling!)"
+.SH NAME
+
+hev-offsetY
+
+.SH SYNOPSIS
+
+\fBhev-offsetY [--usleep t] baseShm lengthShm endpointShm
+
+.SH DESCRIPTION
+
+\fBhev-offsetY\fR reads two DTK shared memory files, \fBbaseShm\fR and
+\fBlengthShm\fR, and writes to one DTK shared memory file,
+\fBendpointShm\fR, whose names are given as parameters.
+
+.PP
+\fBbaseShm\fR contains 16 doubles, a matrix representing a coordinate
+position, and \fBlengthShm\fR contains a single float representing a length.
+
+.PP
+\fBhev-offsetY\fR calculates and writes to the DTK shared memory file
+\fBendpointShm\fR 16 doubles, a matrix representing the the coordinate
+position of the endpoint of the line segment starting at \fBbaseShm\fR and
+having length \fBlengthShm\fR.
+
+The shared memory files will be created if they don't exist.
+
+.SH OPTIONS
+
+.IP "--usleep t"
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.SH EXAMPLES
+
+See $HEVROOT/idea/src/irisfly/common.iris
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

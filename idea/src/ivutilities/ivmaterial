@@ -1,0 +1,67 @@
+#! /bin/sh
+
+if [ $# = 0 ]
+then
+
+    (echo "Usage: ivmaterial [-ambientcolor r g b] [-diffusecolor r g b] [-specularcolor r g b] [-emmissivecolor r g b] [-shininess s] [-transparency t]"
+    echo "or"
+    echo "       ivmaterial [-am r g b] [-di r g b] -sp [r g b] -em [r g b] [-sh s] [-tr t]"
+    echo
+    echo "Parameters are optional, but at least one must be specified." 
+    echo "Inventor defaults:"
+    echo "    ambientcolor .2 .2 .2"
+    echo "    diffusecolor .8 .8 .8"
+    echo "    specularcolor 0 0 0"
+    echo "    emmissivecolor 0 0 0"
+    echo "    shininess .2"
+    echo "    transparency 0") > /dev/tty
+
+   exit
+fi
+
+
+echo "#Inventor V2.0 ascii"
+echo "Separator {"
+echo "Material {"
+
+while /bin/true
+do
+	if [ $# = 0 ]
+	then
+	    break
+	fi
+	case $1 in
+	-a|-am|ambientcolor|-ambientcolor)
+		echo "ambientColor $2 $3 $4"
+		shift;shift;shift;shift
+		;;
+	-d|-di|diffusecolor|-diffusecolor)
+		echo "diffuseColor $2 $3 $4"
+		shift;shift;shift;shift
+		;;
+	-s|-sp|specularcolor|-specularcolor)
+		echo "specularColor $2 $3 $4"
+		shift;shift;shift;shift
+		;;
+	-e|-em|emissivecolor|-emissivecolor)
+		echo "emissiveColor $2 $3 $4"
+		shift;shift;shift;shift
+		;;
+	-sh|shininess|-shininess)
+		echo "shininess $2"
+		shift;shift;
+		;;
+	-t|-tr|transparency|-transparency)
+		echo "transparency $2"
+		shift;shift;
+		;;
+	*)
+		ivmaterial
+		exit
+	esac
+done
+echo "}"
+
+iv_stdin_out
+
+echo "}"

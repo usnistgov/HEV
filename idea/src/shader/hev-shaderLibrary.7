@@ -1,0 +1,80 @@
+.TH HEV-SHADERLIBRARY 7 "May 2013" "NIST/ACMD" "HCPVG HEV"
+
+.SH NAME
+hev-shaderLibrary
+- common GLSL functions.
+
+.SH DESCRIPTION
+
+\fBhev-shaderLibrary\fR is a library of common GLSL functions. The library is
+divided into several files, described in \fBLIBRARY FILES\fR, that can be
+included in other shaders. Including the library files is done in a
+\fIshader.vert.i\fR, \fIshader.geom.i\fR, or \fIshader.frag.i\fR like so:
+.IP
+#include <light.glsl>
+.PP
+at which point the functions defined in light.glsl can be used in the shader.
+The shader will need to be processed by adding the
+\fIshader.{vert,geom,frag}.i\fR file to either the
+\fBPUBLIC_SHADER_PROGRAMS\fR, \fBPRIVATE_SHADER_PROGRAMS\fR, or
+\fBDEMO_SHADER_PROGRAMS\fR lines in \fIGNUmakefile\fR.
+
+.SH LIBRARY FILES
+
+.TP 
+.B light.glsl
+Common lighting functions. See
+.BR hev-shaderLibrary-light (7).
+
+.TP
+.B matrix.glsl
+Common matrix math functions. See
+.BR hev-shaderLibrary-matrix (7).
+
+.TP
+.B noise.glsl
+A subset of the noise functions from Olano, Marc. "Modified Noise for
+Evaluation on Graphics Hardware". \fIProceedings of Graphics Hardware 2005\fR,
+Eurographics/ACM SIGGRAPH, July 2005. See
+.BR hev-shaderLibrary-noise (7).
+
+.TP
+.B number.glsl
+Print numbers in a fragment shader. See
+.BR hev-shaderLibrary-number (7).
+
+.TP
+.B quat.glsl
+Common quaternion math functions. See
+.BR hev-shaderLibrary-quaternion (7).
+
+.TP
+.B rand.glsl
+Random numbers usable in shaders based on Tiny Encryption Algorithm. See
+.BR hev-shaderLibrary-rand (7).
+
+.TP
+.B sphere.glsl
+Functions for drawing spheres using a single point. Based Jim Blinn's Corner,
+How to Draw a Sphere: Part 1, IEEE CG&A, January 1995. See
+.BR hev-shaderLibrary-sphere (7).
+
+.TP
+.B tim.glsl
+Functions for Things in Motion. See
+.BR hev-tim (1).
+
+.SH AUTHOR
+Marc Olano
+
+.SH SEE ALSO
+.BR hev-shaders (7),
+.BR hev-shaderLibrary-light (7),
+.BR hev-shaderLibrary-matrix (7),
+.BR hev-shaderLibrary-noise (7),
+.BR hev-shaderLibrary-number (7),
+.BR hev-shaderLibrary-quat (7),
+.BR hev-shaderLibrary-rand (7),
+.BR hev-shaderLibrary-sphere (7),
+.BR hev-tim (1).
+

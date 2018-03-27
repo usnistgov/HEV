@@ -1,0 +1,18 @@
+#! /bin/sh
+
+case $# in
+3)
+    true
+    ;;
+*)
+   echo "Usage: ivscale x y z" > /dev/tty
+   exit
+   ;;
+esac
+
+
+echo "#Inventor V2.0 ascii"
+echo "Separator {"
+echo "Scale { scaleFactor $1 $2 $3 }"
+iv_stdin_out
+echo "}"

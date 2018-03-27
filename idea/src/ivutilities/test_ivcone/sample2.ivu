@@ -1,0 +1,84 @@
+#Inventor V2.0 ascii
+Separator {
+# a=1 b=0 c=0 d=0
+#Inventor V2.0 ascii
+Separator {
+# a=0 b=0 c=1 d=1
+# Cylinder {radius 0.05 height 1}
+#Inventor V2.0 ascii
+Separator {
+Rotation { rotation    }
+Separator {
+Rotation { rotation 0 1 0 0}
+Separator {
+Scale { scaleFactor 1 1 1 }
+Separator {
+Material {
+diffuseColor 0 1 0
+transparency 0
+}
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+# a=-1 b=0 c=0 d=0
+#Inventor V2.0 ascii
+Separator {
+# a=0 b=0 c=-1 d=1
+# Cylinder {radius 0.05 height 1}
+#Inventor V2.0 ascii
+Separator {
+Rotation { rotation    }
+Separator {
+Rotation { rotation 0 1 0 0}
+Separator {
+Scale { scaleFactor 1 1 1 }
+Separator {
+Material {
+diffuseColor 1 0 1
+transparency 0
+}
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+}
+}
+}

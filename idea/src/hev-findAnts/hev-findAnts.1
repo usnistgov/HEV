@@ -1,0 +1,184 @@
+.TH hev-findAnts 1 "31 Aug 2012"
+.SH NAME
+hev-findAnts \- Find
+"Army of Ants" NIST/HPCVG visualization commands/tools.
+
+
+.SH SYNOPSIS
+.B hev-findAnts [-lmhnvisdogwa]
+
+
+.SH DESCRIPTION
+.PP
+.I
+hev-findAnts 
+finds commands or tools in directories specified in the
+.B PATH
+environment variable that are part of the
+"Army of Ants," small reusable applications
+NIST/HPCVG uses for generating visualizations.
+There are currently Twelve catagories of tools:
+.br
+
+.TP
+.B HEV
+(High End Visualization [NIST])
+.TP
+.B IRIS
+(Interpreted Runtime Immersive Scenegraph [NIST])
+.TP
+.B NETX
+(NetworkX Utilities [LANL])
+.TP
+.B QVD
+(QDPD VisData Utilities [NIST])
+.TP
+.B HYV
+(HydratiCA Visualization [NIST])
+.TP
+.B VTK
+(Visualization Toolkit [Kitware])
+.TP
+.B ITK
+(Insight Toolkit [Kitware])
+.TP
+.B SAVG
+(Scientific Application and Visualization Group
+[NIST])
+.TP
+.B SRT
+(Software and Rendering Tests)
+.TP
+.B DTK
+(DIVERSE Toolkit)
+.TP
+.B OSG
+(Open SceneGraph)
+.TP
+.B DGL
+(Distributed Graphics Library [SGI])
+.TP
+.B IV
+(Inventor/VRML(.wrl) 1.0 [SGI])
+.PP
+Command line options are used to select and control 
+the viewing order of each of these catagories. Paging 
+can be controlled with either the
+.I less
+command (default) or the
+.I more
+command.
+.\"
+.SS Options
+.TP
+.B l
+Display pages using
+.I less 
+command (default).
+.\"
+.TP
+.B m
+Display pages using
+.I more
+command.
+.\"
+.TP
+.B u
+Search in the user's environment. This may find pre-release, development 
+or unofficial versions. The default is search in a "clean" environment.
+This means an environment that has not had any user modifications applied.
+\.
+.TP
+.B c <num>
+Display pages in <num> columns. Default is 3.
+\.
+.TP
+.B h
+List HEV (High End Visualisation) Tools
+\.
+.TP
+.B r
+List IRIS (Immersive Scenegrah) Tools
+\.
+.TP
+.B n
+List NETX (NetworkX Utilities) Tools
+\.
+.TP
+.B q
+List QVD (Particle Dynamics Visualization) Tools
+\.
+.TP
+.B y
+List HYV (HydratiCA Visualization) Tools
+\.
+.TP
+.B v
+List VTK (Visulaization Toolkit) Tools
+\.
+.TP
+.B i
+List ITK (Insight Tookit) Tools
+\.
+.TP
+.B s
+List SAVG (Sci. App. Visualization Group) Tools
+\.
+.TP 
+.B t
+List SRT (Software and Render testing) Tools
+\.
+.TP 
+.B d
+List DTK (DIVERSE Tookit) Tools
+\.
+.TP
+.B o
+List OSG (Open Scene Grpah) Tools
+\.
+.TP
+.B g
+List DGL (Distributed Graphics Library) Tools
+\.
+.TP
+.B w
+List IV (Inventor/VRML/.wrl) Tools
+\.
+.TP
+.B a
+List all tools (default). If this option is used, the listed is ordered
+as if -hvisdogw had been specified.
+
+
+.SH Examples
+To find commands in all catagories containing "savg"
+   $ hev-findAnts | grep savg
+
+
+To find HEV commands containing "savg"
+    $ hev-findAnts -h | grep savg
+
+
+To find SAVG and HEV commands containing "savg"
+with any combination of cases, using the 'more' command instead 
+of 'less' for paging:
+    $ hev-findAnts -msh | grep [Ss][Aa][Vv][Gg]
+
+
+
+.SH NOTES
+The 'g' option is used for DGL Tools, 'w' is used for IV Tools and 't'
+is used for Software Render Test.
+
+The order the options specified will determine the order
+in which the catagories are listed. Only the first occurrence
+of each option is significant. Repeat occurrences will be ignored.
+
+The 'a' option overides any other catagory selections and orderings.
+
+The 'l' and 'm' options may occur anywhere without changing the order
+in which the catagories are displayed.
+
+.SH AUTHOR
+.PP
+Terence Griffin, NIST/ITL/ACMD/HPCVG

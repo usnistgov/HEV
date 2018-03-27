@@ -1,0 +1,198 @@
+#! /usr/bin/perl
+#
+# qvd-toIRIS  - convert qvisdat file to hev-tim files:
+#                     file.timo    TIM objects file
+#                     file.timf    TIM frames file
+#
+#
+#
+# steve@nist.gov
+#
+# Much credit goes to Marc Olano. Parsing of the qvisdat was borrowed
+# i.e directly lifted, from hev-qvToNpr
+#
+
+$version="20130114";
+
+
+use Getopt::Long;
+
+
+####################
+# Usage subroutine #
+####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: qvd-toIRIS [Options] rockTemplate inFile.qvisdat out.timo out.timf
+
+Version= $version
+
+ Options:
+
+    --verbose       lots of mildly interesting spewage.
+		    
+
+  Required:
+
+    rockTemplate    is a string which forms a printf-style template for existing
+                    polygonal rock shape files. These files must be savg format.
+             	    Example -
+                    
+                       rocks/rock.poly.%02d.savg
+
+
+    inFile.qvisdat  is the input file
+
+    out.timo        is the output TIM objects file, .timo
+
+    out.timf        is the output TIM frames file, .timf
+
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+############################
+# Subroutine for the rocks #
+############################
+
+sub rocksSub {
+
+  $firstFrame=0;
+
+  open(QVISDAT,"<$QVISDAT") || die("Error opening $QVISDAT\n");
+  $shape=0;
+
+  open(TIMO,">$TIMO") || die("Error opening $TIMO\n");
+  open(TIMF,">$TIMF") || die("Error opening $TIMF\n");
+  
+
+
+  while(<QVISDAT>) {
+    # number of rocks for indexing
+    if (/^ninc\s+(\d+)/) {
+	$ROCKS = $1; 
+	next;
+    }
+
+    # map rock shape to inclusion number
+    if (/^shape\s+(\d+)/) {
+	$rockfile=sprintf $ROCKFILES, $1;
+	printf (TIMO "$rockfile\n");
+
+	$shape++;
+	next;
+    }
+
+    # update frame counter
+    if (/^frame\s+(\d+)/) {
+	$frame=$1;
+
+	$firstFrame++;
+	next;
+    }
+
+    # recognize an inclusion
+    if (/^inclusion		# identify line
+	\s+(\d+)		# $1 = inclusion ID
+	\s+(\d+)		# $2 = number of closest points
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($3,$4,$5) = center of mass
+	\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+) # ($6,$7,$8,$9) = xyzw quaternion
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($10,$11,$12) = velocity
+	\s+(\S+)\s+(\S+)\s+(\S+)# ($13,$14,$15) = angular velocity
+	/x)			# allow spaces & comments in regexp
+    {
+	printf(TIMF "$3 $4 $5  $6 $7 $8 $9   1 0\n");
+
+	next;
+    }
+
+  }
+
+  close(QVISDAT);
+  close(TIMO);
+  close(TIMF);
+}
+
+# End of rocksSub
+
+
+
+
+####################
+# Main Begins here #
+####################
+
+if ($ENV{"HEVROOT"} eq "") {
+    print STDERR "HEVROOT is not defined\n";
+    exit(1);
+}
+
+
+############################
+# Process the command line #
+############################
+
+# Default values
+$verbose=0;
+$debug=0;
+
+#print "\@ARGV= @ARGV\n";
+
+GetOptions("debug"               => \$debug,
+           "verbose"             => \$verbose
+);
+
+
+usage() if (@ARGV != 4);
+
+# Get mandatory in and out file arguments
+$ROCKFILES= shift;
+$QVISDAT = shift;
+$TIMO = shift;
+$TIMF = shift;
+
+
+# --debug is a hidden option that will set this
+if ($debug) {
+    print STDERR "version= $version\n";
+    print STDERR "verbose= $verbose\n";
+
+    print STDERR "ROCKFILES= $ROCKFILES\n";
+    print STDERR "QVISDAT= $QVISDAT\n";
+    print STDERR "QVISDAT= $QVISDAT\n";
+    print STDERR "TIMO= $TIMO\n";
+    print STDERR "TIMF= $TIMF\n";
+
+    exit(1);
+}
+
+
+
+####################
+# Output TIM Files #
+####################
+
+
+print STDERR "Parsing qvisdat file\n" if ($verbose==1);
+
+rocksSub();
+
+print STDERR "Parsing qvisdat done\n" if ($verbose==1);
+
+
+
+############################################################
+# All done
+############################################################
+
+print STDERR "qvd-toIRISrocks all done\n" if ($verbose==1);

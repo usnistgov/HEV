@@ -1,0 +1,68 @@
+<html>
+<header>
+<title>DTK Tutorial - Introduction</title>
+</header>
+
+<a href="tutor_programs.html">next</a> |
+<a href="tutor_toc.html">toc</a>
+<hr>
+
+
+<h2>Introduction</h2>
+
+ The DIVERSE Toolkit (DTK) is a toolkit for building
+operator-in-the-loop real-time distributed simulations.&nbsp; It's
+made for gluing together programs into simulations.
+
+<p>The <b>DIVERSE Toolkit</b> (DTK) is made up of the:
+
+<ul>
+
+<li>
+<b>DTK Server</b>,
+which reads and writes to hardware devices (including network
+hardware), and the 
+</li>
+
+<li>
+<b>DTK Library</b>, a C++ API (Application Programming Interface)
+that provides utilities and an interface to the server, and the</li>
+</li>
+
+<li>
+<b>DTK programs</b>, that
+provide utilities and an interface to the server.</li>
+</li>
+
+</ul>
+
+
+<p> DTK introduces a new implementation of, outside of the kernel,
+remote shared memory.&nbsp; Remote shared memory extends inter-process
+shared memory to Internet shared memory.&nbsp; The code you write
+using DTK looks as though your just using local shared memory, but by
+using DTK shared memory a user can distribute this memory on IP
+networks.&nbsp; The networking is all done on-the-fly while your
+programs are running or not.
+
+<p> The DTK server provides a "novel standard" for extending hardware
+drivers (not in the OS kernel driver sense) to inter-process and
+Internet hardware services with minimal coding.&nbsp; It does this by
+providing all the overhead of a networked (or non-networked) server to
+small device reading codes that are in the form of loadable dynamic
+shared objects (DSOs) written in C++.&nbsp; The DTK server provides
+networking, data queuing and polling automatically for any number of
+loaded service DSOs.&nbsp; The DTK library provides a common API
+interface to your hardware that is served by the DTK server.
+
+<p> This tutorial serves to give someone with C++ programming
+experience an idea of how to use DTK remote shared memory, the DTK
+server, and other DTK utilities.&nbsp; We have strived to make the
+examples simple sometimes at the expense of not being robust.
+
+<hr>
+
+<a href="tutor_programs.html">next</a> |
+<a href="tutor_toc.html">toc</a>
+
+

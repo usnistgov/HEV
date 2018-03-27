@@ -1,0 +1,19 @@
+# CMakeLists.txt to build programs/fltk
+
+ADD_SUBDIRECTORY (buttons)
+ADD_SUBDIRECTORY (caveDeviceSimulator)
+ADD_SUBDIRECTORY (floatOutputGUIs)
+ADD_SUBDIRECTORY (scope)
+ADD_SUBDIRECTORY (timeControl)
+ADD_SUBDIRECTORY (gnomonDisplay)
+
+IF (NOT WIN32)
+	ADD_SUBDIRECTORY (demoRunner)
+	ADD_SUBDIRECTORY (launcher)
+	ADD_SUBDIRECTORY (configServices)
+ENDIF (NOT WIN32)
+
+IF (DTK_ARCH_UPPER MATCHES "LINUX")
+	ADD_SUBDIRECTORY (usbProbe)
+ENDIF (DTK_ARCH_UPPER MATCHES "LINUX")
+

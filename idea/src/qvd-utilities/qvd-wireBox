@@ -1,0 +1,148 @@
+#! /usr/bin/perl
+
+# steve@nist.gov
+#$version="20080417";
+$version="20120423";
+
+
+use Getopt::Long;
+use Scalar::Util qw(looks_like_number);
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: qvd-wireBox [--verbose] [--[no]clip] x y z [r g b] [outfile]
+
+  Create a wireframe box, wireBox.osgb, suitable for loading with irisfly.
+
+  --[no]clip  Indicates if wireBox.osgb will be affected by clipping planes
+              The default is clipping does not affect the box.
+
+  x y z   The size of the wireframe box
+
+  r g b   Optional specification for color of the box. Values in the
+          range 0.0 to 1.0. The default is white: 1 1 1
+
+  outfile   Optional output file name. The file type is typically .ive,
+            but .osg is also acceptable. 
+
+
+Version $version
+EOF
+;
+
+exit(1);
+
+}
+
+sub writeTempIrisFile {
+open(IRIS, ">$tempiris") || die("Error opening for output $tempiris\n");
+print IRIS <<EOF
+NOCLIP qvd_ncbox
+LOAD qvd_box $tempsavg
+ADDCHILD qvd_box qvd_ncbox
+RETURN qvd_ncbox
+EOF
+;
+close(IRIS);
+}
+
+
+$verboseFlag=0;
+$clipFlag=0;
+$outFile="box.osgb";
+
+GetOptions("clip!"    => \$clipFlag,
+           "verbose"  => \$verboseFlag);
+
+$r=1.0;
+$g=1.0;
+$b=1.0;
+
+
+usage() if (@ARGV < 3);
+
+$x = shift;
+$y = shift;
+$z = shift;
+$a=1;
+
+if ((@ARGV == 3) || (@ARGV == 4)) {
+    $r = shift;
+    if (!looks_like_number($r)) {
+	print STDERR "$r is not a number\n";
+	exit(1);
+    }
+
+    $g = shift;
+    if (!looks_like_number($g)) {
+	print STDERR "$g is not a number\n";
+	exit(1);
+    }
+
+    $b = shift;
+    if (!looks_like_number($b)) {
+	print STDERR "$b is not a number\n";
+	exit(1);
+    }
+
+}    
+
+if (@ARGV == 1 ) {
+    $outFile = shift;
+}
+
+usage() if (@ARGV != 0);
+
+if ($verboseFlag) {
+    print STDERR "clipFlag = $clipFlag\n";
+    print STDERR "x y z = $x $y $z\n";
+    print STDERR "r g b = $r $g $b\n";
+    print STDERR "outFile = $outFile\n";
+}
+
+$tempsavg="/tmp/qvd-wireBox_$$.savg";
+$tempiris="/tmp/qvd-wireBox_$$.iris";
+$x2=$x/2;
+$y2=$y/2;
+$z2=$z/2;
+
+open(WB, ">$tempsavg") || die("Error opening $tempsavg for output");
+print WB <<EOF
+# created by qvd-wireBox
+LINE $r $g $b $a
+ $x2  $y2  $z2
+ $x2  $y2 -$z2
+-$x2  $y2 -$z2
+-$x2  $y2  $z2
+ $x2  $y2  $z2
+#
+ $x2 -$y2  $z2
+ $x2 -$y2 -$z2
+-$x2 -$y2 -$z2
+-$x2 -$y2  $z2
+ $x2 -$y2  $z2
+LINE $r $g $b $a
+-$x2  $y2  $z2
+-$x2 -$y2  $z2
+LINE $r $g $b $a
+-$x2  $y2 -$z2
+-$x2 -$y2 -$z2
+LINE $r $g $b $a
+ $x2  $y2 -$z2
+ $x2 -$y2 -$z2
+EOF
+;
+close(WB);
+
+if ($clipFlag == 1) {
+    system("iris-convert --static $tempsavg $outFile");
+    system("rm -f $tempsavg");
+} else {
+    writeTempIrisFile();
+    system("iris-convert --static $tempiris $outFile");
+    system("rm -f $tempsavg $tempiris");
+}
+
+

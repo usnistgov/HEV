@@ -1,0 +1,146 @@
+From schanzle@nist.gov Mon Mar  9 19:37:32 2015
+Date: Mon, 9 Mar 2015 19:36:55 -0400
+From: Chris Schanzle <schanzle@nist.gov>
+To: Steve Satterfield <steve@nist.gov>
+Cc: "Koss Jr, Donald A." <donald.koss@nist.gov>, Wes Griffin <Wesley.Griffin@nist.gov>, John Hagedorn <hagedorn@nist.gov>, Terence Griffin <terence.griffin@nist.gov>
+Subject: Re: There new HEV commands added
+
+No, not a slow day by any means...
+
+Thanks for the reference to your homedir.
+
+In general, looks good.  Of course I have a few suggestions...mostly to reduce some clutter and extra work.
+
+
+1.  Don't use ssh -q, which suppresses all error messages, but rather use ssh -o LogLevel=error to only silence the /etc/issue login banner.
+
+2.  efficiency nitpicks, such as instead of this in nvCards function:
+
+echo `hostname` ; if [ -d /proc/driver/nvidia ] ; then \
+               cat /proc/driver/nvidia/gpus/*/information  |\
+               grep Model | sed "s/Model://" ; else echo "                 Directory: /proc/driver/nvidia not found" ; fi
+
+pertinent stuff could be (eliminate calls to hostname, grep and complexity)
+
+echo $HOSTNAME; [ -d /proc/driver/nvidia ] && cat /proc/driver/nvidia/gpus/*/information | sed -n 's/Model://p' || echo -e "\tDirectory: /proc/driver/nvidia not found"
+
+Note this will not work if the nvidia driver is not installed...perhaps this?  Seems simpler...
+
+lspci | sed -n 's/.* VGA compatible controller: //p'
+NVIDIA Corporation GT200GL [Quadro FX 5800] (rev a1)
+NVIDIA Corporation GT200GL [Quadro FX 5800] (rev a1)
+NVIDIA Corporation GT200GL [Quadro FX 5800] (rev a1)
+NVIDIA Corporation GT200GL [Quadro FX 5800] (rev a1)
+
+or just pick out just what's in the brackets for VGA can be done with a moderately challenging sed regular expression...I can walk you through it if interested/needed.
+
+[schanzle@copious tmp]$ lspci | sed -n 's/.* VGA compatible controller: .*\[\([^]]*\).*/\1/p'
+GeForce GT 430
+
+# similar to above, added \t for indenting
+[schanzle@tylium ~]$ lspci | sed -n 's/.* VGA compatible controller: .*\[\([^]]*\).*/\t\1/p'
+    Quadro FX 5800
+    Quadro FX 5800
+    Quadro FX 5800
+    Quadro FX 5800
+
+
+
+In centOSversion,you have:
+function centOSversion {
+        ssh -q $host 'echo `hostname` `cat /etc/redhat-release  |\
+        head -1`' |\
+        awk '{printf "%-30s %s %s %s %s\n", $1,$2,$3,$4,$5}'
+}
+
+rather than "cat ... | head -1" why not just "head -1 ..." ?
+And that long awk / printf -- why only the first 5 words?  Breaks on chinacat.
+host=chinacat centOSversion
+chinacat.cam.nist.gov          Fedora release 21 (Twenty
+
+Could you live with the simplified version below?
+
+function centOSversion {
+         ssh $host 'printf %-30s $HOSTNAME; head -1 /etc/redhat-release';
+}
+
+[schanzle@copious ~]$ host=chinacat centOSversion
+chinacat.cam.nist.gov         Fedora release 21 (Twenty One)
+[schanzle@copious ~]$ host=copious centOSversion
+copious.cam.nist.gov          CentOS Linux release 7.0.1406 (Core)
+[schanzle@copious ~]$ host=vail centOSversion
+vail.cam.nist.gov             CentOS release 6.6 (Final)
+
+
+and finally, for the nvidia driver version, I've used this in my update scripts which prints just the numeric version.
+
+f=/proc/driver/nvidia/version
+[ -e $f ] && echo `sed -n '1s/.*Module  \([^ ]*\).*/\1/p' $f` || echo "(kernel module not loaded)"
+
+It seems you cut off the year with your awk...need another %s and $16:
+
+$ host=tylium nvDriver
+tylium.cam.nist.gov            340.65            Dec 2 09:50:34 PST
+
+[schanzle@copious ~]$ ssh tylium cat /proc/driver/nvidia/version
+NVRM version: NVIDIA UNIX x86_64 Kernel Module  340.65  Tue Dec  2 09:50:34 PST 2014
+
+
+
+On 03/09/2015 03:36 PM, Steve Satterfield wrote:
+> Chris,
+>
+> They have been "git commit" to my copy of the develop branch and "git push origin develop" so I'm a little surprised you can't find them on troll.
+>
+> They are not yet on Dradis because no one has made a new HEV release
+> on Dradis. For small changes, we don't make a release and let them
+> accumulate until the "spirit moves" someone to make a release. A new
+> release re-builds everything on Dradis thus causing a big push of
+> everything to all HEV clients.
+>
+> Wes has documented the GIT procedures at:
+> https://snippet.cam.nist.gov:8000/rave/wiki/Notes_on_Using_Git_for_HEV
+>
+> As for where these commands are currently located for you to review
+> (you must be having a slow day today), feel free to look at
+> ~steve/hev/idea/src/hev-getHostInfo/
+>
+> -Steve
+>
+>
+>
+> On Mon, 9 Mar 2015, Chris Schanzle wrote:
+>
+>> I wanted to review how you did these to critique...
+>> but:
+>>  [schanzle@dradis ~]$ find /local/HEV/ -name hev-getCentOSversion
+>> came up empty.
+>>
+>> And thinking it was in the troll git repo:
+>>
+>>  [schanzle@troll ~]$ find /git/hev/ -name hev-getCentOSversion
+>>
+>> Where?
+>>
+>>
+>> On 03/09/2015 02:40 PM, Steve Satterfield wrote:
+>>>
+>>> I have created and checked into the HEV repository three new commands
+>>> for getting the CentOS version, Nvidia driver number and graphics
+>>> card model:
+>>>
+>>> hev-getCentOSversion
+>>> hev-getNVdriver
+>>> hev-getNVcards
+>>>
+>>> They will show up for general usage after the next HEV release is
+>>> created and pushed to all HEV clients.
+>>>
+>>> -Steve
+>>>
+>>>
+>>>
+>>>
+>>
+>
+

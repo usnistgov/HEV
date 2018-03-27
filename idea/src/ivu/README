@@ -1,0 +1,3 @@
+This simple file loader accepts a file with an "ivu" extension. It loads it
+with the OSG "iv" file loader and then adds a 90 pitch up- the "u" in "ivu"
+so the iv file is in OSG coordinates.

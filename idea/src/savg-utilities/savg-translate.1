@@ -1,0 +1,50 @@
+.TH SAVG\-TRANSLATE 1 "17 June 2004"
+.SH NAME
+savg-translate \- SAVG ToolBox: translation
+.SH SYNOPSIS
+.B savg-translate
+[xval] [yval] [zval]
+.SH DESCRIPTION
+.I Savg-translate
+is used to translate objects represented by savg files.
+It accepts the object from
+.I stdin
+and outputs to 
+.I stdout.
+At least one command line argument must be present or 
+a usage message will appear and the program will 
+terminate.  Each of \fI-x\fP, \fI-y\fP, and \fI-z\fP
+must have a value associated with it.  This value can be any real number. 
+
+.SH OPTIONS
+.TP
+.B xval yval zal
+This sets the amount of translation that will take place in the 
+x, y, and z directions.  These can be any real numbers.
+.SH EXAMPLES
+.TP
+.B savg-translate 5.6 0 0 < box.savg > outfile.savg
+This translates 
+.I box.savg
+5.6 units along the \fIx-axis\fP and outputs to 
+.I outfile.savg.
+.TP
+.B savg-translate 10 .2 -4 < box.savg > outfile.savg
+This translates 
+.I box.savg
+10 units along the \fIx-axis\fP, 0.2 units along the \fIy-axis\fP 
+and down 4 units, then outputs to 
+.I outfile.savg.
+.SH AUTHOR
+Brandon M. Smith
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+Summer 2004, modified June 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/

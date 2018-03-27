@@ -1,0 +1,4 @@
+BUTTON foo 
+  CLEANUP echo cleaning up foo
+  ON on foo!
+  INIT

@@ -1,0 +1,10 @@
+0.1 DSO frameGrabber RESET
+0.1 DSO frameGrabber SETSEQNUM 0
+0.0 0 0 0
+1.0 0 5 0
+#00 DSO frameGrabber FILESNAP solid1.pam
+0.1 DSO frameGrabber SNAP
+0.1 DSO frameGrabber FLUSH
+0.1 DSO frameGrabber RESET
+0.1 TERMINATE
+

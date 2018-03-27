@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svnroot/diverse/!svn/ver/915/trunk/dtk/lib/dtkX11
+END
+xkeyboard.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtkX11/xkeyboard.cpp
+END
+xevent.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtkX11/xevent.cpp
+END
+xwindowList.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svnroot/diverse/!svn/ver/782/trunk/dtk/lib/dtkX11/xwindowList.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/diverse/!svn/ver/915/trunk/dtk/lib/dtkX11/CMakeLists.txt
+END

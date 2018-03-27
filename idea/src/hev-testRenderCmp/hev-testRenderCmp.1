@@ -1,0 +1,48 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-testRenderCmp 1 "May 2015" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-testRenderCmp
+- test HEV rendering by comparing new image to baseline 
+
+.SH SYNOPSIS
+.B  hev-testRenderCmp
+baseLineImage newImage
+
+
+.SH DESCRIPTION
+.PP
+.B hev-testRenderCmp
+tests HEV rendering by comparing new image to a baseline image with
+the Linux command \fIcmp\fR. An exit status of 0 is return when the
+images are the same, indicating \fISuccess\fR, and and exit status of
+1 for \fIFailure\fR.
+
+.PP
+\fBThis command is primarily to act as an example for the student
+project during summer 2015. The suggestion is for rendering test
+commands to follow the basic model and be named in the form:
+hev-testRenderXXXX, where where XXXX is replaced with a word
+appropriate to the command.  New commands in this series can be
+implemented in any language, but the should exit with an
+Success/Failure exit status.\fR
+
+
+.SH  PARAMETERS
+.PP
+.TP
+.B baseLineImage
+is the original base line reference image
+
+.TP
+.B newImage
+is the newly created image being compared to the base line.
+
+
+.SH "SEE ALSO"
+cmp(1)
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov
+.br
+Original implementation May 2015.

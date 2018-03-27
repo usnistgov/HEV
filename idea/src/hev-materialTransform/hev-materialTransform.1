@@ -1,0 +1,196 @@
+
+.TH hev-materialTranform 1 "February 2012" 
+.SH NAME
+.B
+  hev-materialTransform 
+- Modify or add material properties to a model.
+
+
+
+.SH SYNOPSIS
+.B hev-materialTransform  
+[ options ]   [infile . . . ]  outfile
+
+.SH DESCRIPTION
+.PP
+.B
+hev-materialTransform
+enables the user to add or modify the material properties
+of models in files that can be read by OSG.
+
+.SH ARGUMENTS
+
+  (All option keywords can be shortened to the shortest
+   unique string.)
+
+  The usual options:
+
+      --help
+      --verbose
+
+
+  These options specify what to do with the data in the input files
+  before modifying their materials:
+
+      --rmMaterials    - Remove all materials before adding the
+                            new material.
+
+      --rmGeomColors   - Remove colors attached to points, lines,
+                            or polygons.
+
+  This option is used only when no input files are specified:
+
+      --noInput        - No input files are specified.
+                         This tells the program to generate a
+                         minimal data structure to receive the
+                         specified material parameters.
+
+  These options specify the material to be used to modify the
+  input data :
+
+      --sourceMaterial fileName  - Use material from indicated file.
+
+      --ambient front r g b a    - Ambient color of front face.
+      --ambient back  r g b a    - Ambient color of back face.
+      --ambient both  r g b a    - Ambient color of front and back.
+      --ambient       r g b a    - Ambient color of front and back.
+
+      --diffuse front r g b a
+      --diffuse back  r g b a
+      --diffuse both  r g b a
+      --diffuse       r g b a
+
+      --specular front r g b a
+      --specular back  r g b a
+      --specular both  r g b a
+      --specular       r g b a
+
+      --emission front r g b a
+      --emission back  r g b a
+      --emission both  r g b a
+      --emission       r g b a
+
+      --shininess front s
+      --shininess back  s
+      --shininess both  s
+      --shininess       s
+           Shininess is used in the calculation of the size of
+           specular highlights. It should be in the range from
+           0.0 to 128.0.
+
+      --colorMode       mode
+           The color mode specifies how to use colors that are
+           attached directly to vertices, lines, or polygons.
+           The possible modes are:
+               AMBIENT
+               DIFFUSE
+               AMBIENT_AND_DIFFUSE
+               SPECULAR
+               EMISSION
+               OFF
+
+
+  These options specify how to combine the material specified on the
+  command line with the material(s) already present in the input files:
+
+      --override          - Override all material parameters in the
+                            input file(s). Defaults are used for
+                            unspecified material parameters.
+
+                            If --override  is not specified, then
+                            only the material parameters specified on
+                            the command line are changed. In addition,
+                            nodes and objects without materials are
+                            left unchanged, except for the root node.
+                            A material data structure is created for
+                            the root node if one does not already
+                            exist.
+
+      --rootOnly          - Add or modify materials only at the root
+                            node.
+
+                            If this is not specified then materials
+                            are modified at all nodes and drawable
+                            objects.
+
+       If --override is specified and --rootOnly is not specified,
+       then a new material data structure is created for all nodes and
+       drawable objects that do not already have one.
+
+       As mentioned above, a material data structure is created
+       for the root node if one does not already exist.
+
+
+  Specification of input files: A list of input file names follows
+  all of the options:
+
+      [infile . . . ]
+
+  If no input files are specified, then the "--noInput" option
+  must also be present.  In this case, a minimal data structure
+  is created to receive the specified material parameters.
+
+
+  The specification of output file(s):
+
+      outfile
+
+  If the output file specification is "osg" or "ive" then one
+  output file is created for each input file.  The output file
+  name will be generated from the base file name of the input
+  file, followed by ".osg" or ".ive".  Otherwise, the output
+  file specification is taken to be a complete file name, and
+  data from all of the input files are grouped into that single
+  output file.
+
+
+.SH EXAMPLES
+
+  Change the diffuse material color to red:
+
+    hev-materialTransform --diff 1 0 0 1 cube.osg redCube.osg
+
+  Change the ambient and diffuse colors for several input files
+  and write a single output file:
+
+    hev-materialTransform --amb 0.8 0.8 0.8 1 --diff 1 0 0 1   \\
+          cube.osg sphere.ive sub.savg composite.ive
+
+  Change the color mode parameter for several input files and
+  write out one output file (in .ive format) for each input file:
+
+    hev-materialTransform --colormode DIFFUSE  \\
+          cube.osg sphere.ive sub.savg ive
+
+
+.SH NOTES
+
+  A complete description of the various material parameters can
+  be found in:
+
+    OpenGL Programming Guide, Second Edition
+    By Mason Woo, Jackie Neider, and Tom Davis
+
+  The appearance of an object is determined both by its material
+  properties and by the lighting environment. There is much
+  interaction between materials and lighting. For more information
+  about this, look at the OpenGL Programming Guide.
+
+  The option "--rmGeomColors" is (in some sense) not really needed.
+  You can get essentially the same effect with the option
+  "--colorMode OFF".
+
+  If you want to nullify all existing surface attributes in a file and
+  force the entire object have the same appearance, you can use this
+  set of options:  "--rmMaterials --colormode OFF --rootOnly"
+
+  There is some overlap between this program and the programs
+  hev-applyState and hev-mergeState.
+
+
+.SH SEE ALSO
+
+  hev-applyState, hev-mergeState
+
+
+

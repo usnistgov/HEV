@@ -1,0 +1,182 @@
+#! /bin/bash
+
+# hev-preReleaseBuild
+# Steve Satterfield
+# May 14, 2015
+# June 2017
+
+
+function usage {
+
+cat >&2 <<EOF
+
+Usage: hev-preReleaseBuild [--help] [--cpus N]   [--clean | --distclean | --noclean]
+
+        If --cpus not specifed, then N is set to number of available cores.
+
+        If --clean or --distclean not specified, then distclean is used.
+
+        --noclean will do "make install" without either "make clean" or "make distclean"
+EOF
+exit 1
+}
+
+# -------------------------------------------------------------------------
+
+function scanForErrors () {
+    context=$1
+
+    grep -E -w $context -e "error[:]+" -e "command not found"
+
+}
+
+
+# -------------------------------------------------------------------------
+
+
+
+
+N=$(getconf _NPROCESSORS_ONLN)
+CLEAN="distclean"
+
+while [ $# -gt 0 ]
+do
+    p=$1
+    case $p in
+	--h*|-h*)
+	    usage
+	    ;;
+	--cp*|-cp*)
+	    if [ $# == 1 ]
+	    then
+		usage
+	    fi
+	    shift
+	    N=$1
+	    ;;
+	--d*|-d*)
+	    CLEAN="distclean"
+	    ;;
+	--cl*|-cl*)
+	    CLEAN="clean"
+	    ;;
+	--n*|-n*)
+	    CLEAN="noclean"
+	    ;;
+	*)
+	    usage
+	    ;;
+    esac
+    shift
+
+done
+
+
+#echo CPU $N CLEAN $CLEAN
+#exit
+
+if [ "$HEVROOT" == "" ]
+then
+    echo "HEVROOT is not set, you probably forgot to set your HEV environment" >&2
+    exit 1
+fi
+
+
+printf "%d" $N  2> /dev/null > /dev/null
+i=$?
+if [ $i -ne 0 ]
+then
+    echo "N must b a positive integer" >&2
+    exit 1
+fi
+
+if [ "$N" -le "0" ]
+then
+    echo "N must be greater than 0" >&2
+    exit 1
+fi
+
+
+umask 2
+
+currentDir=$(pwd)
+
+cd $HEVROOT
+if [ ! -f ./GNUmakefile ]
+then
+    echo "Something is wrong. Expected to find './GNUmakefile' here:" >&2
+    echo "    " $(pwd) >&2
+    exit 1
+fi
+
+h=$(hostname -s)
+d=$(date "+%Y%m%d%H%M")
+LOG="/tmp/hev-preReleaseBuild-${h}-${USER}-${d}"
+OUTPUT=${LOG}_out
+CONTEXT=${LOG}_context
+
+trap "rm -f $OUTPUT $CONTEXT" 0
+
+echo -e "hev-preReleaseBuild output $(date)\n"  > $LOG
+
+if [ "$CLEAN" == "noclean" ]
+then
+  echo -e ">>> Skipping make clean and make distclean  <<<\n" >> $LOG
+else
+  echo -e ">>> make $CLEAN <<<\n" >> $LOG
+
+# make $CLEAN  >> $LOG 2>&1
+# To simplify, I decided to ignore errors in make clean -sgs 
+make $CLEAN  >> /dev/null 2>&1
+fi
+
+echo -e ">>> make -j${N} install <<<\n" >> $LOG
+
+(time make -j${N} install )  >> $LOG 2>&1
+
+cat -n $LOG | scanForErrors         > $OUTPUT
+
+cat -n $LOG | scanForErrors "-B 4"  > $CONTEXT
+
+
+error_count=$(wc -l $OUTPUT | awk '{print $1;}')
+
+echo "#########################################"
+echo "#                                       #"
+echo "# HEV preRelease Build                  #"
+echo "#                                       #"
+echo "#########################################"
+echo
+
+echo
+echo "Summary -" $(date)
+echo "--------------------------------------"
+echo
+echo "Full output:" $(hostname -s) "$LOG"
+echo "Results of scanning it for problems - errors"
+
+if [ "${error_count}" == "0" ]
+then
+    echo "   No problems found"
+    exitcode=0
+else
+    echo "    Here are possible problems found"
+    echo
+    head -100 $OUTPUT    # | awk 'BEGIN {n=1;i=1;}{printf "%5d: %s\n",n++,$0;}'
+    echo
+    echo
+    echo
+    echo "#########################################"
+    echo "#                                       #"
+    echo "#          Problems In Context          #"
+    echo "#                                       #"
+    echo "#########################################"
+    echo
+    head -400 $CONTEXT   # | awk 'BEGIN {n=1;}{printf "%5d: %s\n",n,$0; i++; if (i==5) {n++; i=0;}}' 
+
+    exitcode=1
+fi
+
+cd $currentDir
+exit $exitcode
+# All done

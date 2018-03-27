@@ -1,0 +1,29 @@
+
+All the software, parts, in this package is copyrighted by the GNU
+General Public License (GPL) except for the DIVERSE toolkit libraries
+and the DIVERSE toolkit server which are copyrighted by the GNU Lesser
+General Public License (LGPL).
+
+
+The DIVERSE toolkit consists of several parts: the DIVERSE toolkit
+library, the DIVERSE toolkit server, the DIVERSE toolkit services,
+programs, examples code, and documentation.
+
+
+The GNU General Public License that we refer to is published by the
+Free Software Foundation.  You should have received a copy of the GNU
+General Public License along with this DIVERSE Toolkit software, in
+the top level source directory in a file named "COPYING.GPL"; if not,
+see it at: http://www.gnu.org/copyleft/gpl.html or write to the Free
+Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+02111-1307 USA.
+
+
+The GNU Lesser General Public License that we refer to is published by
+the Free Software Foundation.  You should have received a copy of the
+GNU Lesser General Public License along with this DIVERSE Toolkit
+software, in the top level source directory in a file named
+"COPYING.LGPL"; if not, see it at:
+http://www.gnu.org/copyleft/lesser.html or write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA.

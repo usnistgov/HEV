@@ -1,0 +1,20 @@
+<RCC>
+  <qresource prefix="/icons">
+    <file alias="measure">icons/measure.svg</file>
+    <file alias="document-open">icons/document-open.svg</file>
+    <file alias="text-x-generic_with_pencil">icons/text-x-generic_with_pencil.svg</file>
+    <file alias="list-add">icons/list-add.svg</file>
+    <file alias="folder">icons/noun_folder_cc.svg</file>
+    <file alias="cropping-tool">icons/noun_cropping-tool_cc.svg</file>
+    <file alias="ruler">icons/noun_ruler_cc.svg</file>
+    <file alias="magnifier">icons/noun_magnifier_cc.svg</file>
+    <file alias="layers">icons/noun_layers_cc.svg</file>
+    <file alias="delete">icons/noun_delete_cc.svg</file>
+    <file alias="plus">icons/noun_plus_cc.svg</file>
+  </qresource>
+  <qresource prefix="/">
+    <file>kernels/isosurface.cl</file>
+    <file>shaders/hydview.vert</file>
+    <file>shaders/hydview.frag</file>
+  </qresource>
+</RCC>

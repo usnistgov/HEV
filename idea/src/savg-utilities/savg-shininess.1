@@ -1,0 +1,50 @@
+.TH SAVG\-SHININESS 1 "26 May 2009"
+.SH NAME
+savg-shininess \- SAVG ToolBox: shininess
+.SH SYNOPSIS
+.B savg-shininess r g b/default
+.SH DESCRIPTION
+.I savg-shininess
+sets the shininess level for \fIsavg\fP files (\fISAVG ToolBox\fP).  It 
+accepts input from
+.I stdin
+and outputs to
+.I stdout.
+If invalid arguments or no arguments are given, 
+then 
+.I savg-shininess (0-128)/default
+prints usage information and terminates.
+.SH OPTIONS
+.TP
+.B \   savg-shininess val or savg-shininess default
+Accepts floating 
+point numbers from 0 to 128.
+.SH EXAMPLES
+.TP
+.B savg-shininess 50 < in.savg > out.savg
+Reads from 
+.I in.savg
+and sets the shininess to 50.  Then outputs to 
+.I out.savg.
+.SH BUGS
+(none)
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+March 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

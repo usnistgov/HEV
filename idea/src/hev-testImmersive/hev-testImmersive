@@ -1,0 +1,116 @@
+#! /bin/bash
+#
+# hev-testImmersive - Test if executing on an immersive or desktop machine
+#
+#
+# SAVG/MCSD/ITL/NIST
+# Steve Satterfield
+# steve@nist.gov
+#
+# 11/20/2009 This command has replaced the old ravedev command
+# 12/04/2012 nickel replaces dradis
+# 03/31/2014 add acadie as a normally immersive host
+# 08/04/2014 add gallifrey as a normally immersive host
+# July 2016 add HEV_TEST_IMMERSIVE_HOST - sgs
+# May 2017  the CAVE hosts are Gallifrey, Tylium and Dettol (replacing Nickel)
+
+usage()
+{
+cat <<EOF
+
+Usage: hev-testImmersive [-h | -v]
+
+          -h prints this help message
+          -v prints a string: 'DESKTOP' or 'IMMERSIVE' instead of exit status
+
+     Normally returns an exit status:
+
+          0  yes, running on an immersive machine
+          1  no, running on a desktop machine
+
+  Version: 20190529
+
+  Example:
+
+     #!/bin/sh
+     if \`hev-testImmersive\`
+     then
+           echo You are running on an immersive machine
+     else
+           echo You are running on a desktop machine	 
+     fi
+
+EOF
+
+exit -1
+}
+
+
+
+if [ -z $HEV_TEST_IMMERSIVE_HOST ]
+then
+    hostname=`hostname -s 2> /dev/null`
+else
+    hostname=$HEV_TEST_IMMERSIVE_HOST
+fi
+
+
+device="DESKTOP"
+
+for H in gallifrey tylium dettol
+do
+  if [ "$hostname" == "${H}" ]
+  then
+	if [ "$DISPLAY" == ":0.0" ]
+	then
+		device="IMMERSIVE"
+	fi
+	if [ "$DISPLAY" == ":0" ]
+	then
+		device="IMMERSIVE"
+	fi
+	if [ "$DISPLAY" == "${H}.nist.gov:0.0" ]
+	then
+		device="IMMERSIVE"
+	fi
+	if [ "$DISPLAY" == "${H}.nist.gov:0" ]
+	then
+		device="IMMERSIVE"
+	fi
+  #
+  # One final test to see if this is an ssh connection
+  # which can some times look like a console connection
+  #
+	if [ ${#SSH_CONNECTION} -ne 0 ]
+	then
+		device="DESKTOP"
+	fi
+  fi
+done
+
+case $1 in
+-h|-he|-hel|-help|--h|--he|--hel|--help)
+	    usage
+esac
+
+
+
+case $# in
+1)
+   if [ "$1" == "-v" ]
+   then
+	echo $device
+   else
+        usage
+   fi
+
+   ;;
+esac
+  
+if [ "$device" == "IMMERSIVE" ]
+then
+	exit 0
+else
+	exit 1
+fi
+

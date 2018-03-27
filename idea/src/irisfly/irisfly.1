@@ -1,0 +1,275 @@
+.TH irisfly 1 "February 2011 (minor fix 2/2015, small update 8/2116)"
+
+.SH NAME
+irisfly
+
+.SH SYNOPSIS 
+.B irisfly
+[ -v ] [ -s ] [ -W ] [ -M ] [ -t ] [ --options ... ] file ... 
+
+.SH DESCRIPTION
+
+\fBirisfly\fR is a wrapper around the iris-viewer(1) command.  If loads iris-viewer and
+hev-masterControlPanel(1) initialization files (aka MCP files) based on command options and the
+runtime environment.
+
+.SH OPTIONS
+
+.IP -v 
+sets DTK_SPEW_LEVEL=info
+
+.IP -s 
+specifies simulator mode.
+
+.IP -W 
+causes iris-wandMouse(1) to not be run.  By default it is run on the RAVE or PowerWall.
+
+.IP -M 
+causes all graphics windows to be set to mono.
+
+.IP -t
+runs hev-trackerMonitor, putting its output into the file
+/tmp/hev-trackerMonitor-$USER. If the file already exists any new data will
+appended to it. If the file is zero bytes in size when irifly exits it will be
+deleted. To specify options to the hev-trackerMonitor command
+set the environment variable $IRISFLY_HEV_TRACKER_MONITOR_OPTIONS.
+
+.IP -l 
+adds a "logging" button to the control panel. See iris-viewer(1) for more
+information about logging.
+
+.IP --options
+are iris-viewer command-line options
+
+.IP "file ..."
+is any iris-loadable file, which can be a model file, an iris file or the
+name of a DSO.  If \fIfile\fR is "NULL" no files will be loaded.
+
+.SH ENVIRONMENT VARIABLES
+
+\fBirisfly\fR uses a whole slew of environment variables to allow its behavior to
+be modified by the user and to report to the user in what sort of environment
+\fBirisfly\fR is running.  
+
+Many of the environment variables have default values that are file
+names. All of these files can be found in $HEVROOT/idea/etc/irisfly/data.
+
+After processing the command line arguments and sniffing the runtime
+environment, \fBirisfly\fR sets $IRISFLY_ENV to be either "desktop",
+"simulator" or "immersive".  It also sets $IRISFLY_DESKTOP_ENV=1 if in desktop
+mode, sets $IRISFLY_SIMULATOR_ENV=1 if in simulator mode, and sets
+$IRISFLY_IMMERSIVE_ENV to either "rave" or "powerwall" as appropriate.  These
+can be used by other programs as needed.
+
+The rest of the environment variables augment and override the default
+settings, so \fBirisfly\fR can be modified to do pretty much anything
+needed.
+
+iris-viewer loads files based on the value of the $IRIS_FILES environment
+variable, as well as the arguments on the command line, using the path in
+$OSG_FILE_PATH. \fBirisfly\fR adds additional files to the iris-viewer
+command line, just before the files specified by the user, and the directory
+containing these files is appended to $OSG_FILE_PATH.
+
+\fBNote\fR: The $OSG_FILE_PATH environment variable specifies the directories to
+search for OSG loadable files, including savg and iris files.  The
+$IRIS_DSO_PATH is used to specify directories to search for IRIS DSO
+files.  There are two different variables because OSG loadable files are
+loaded by OSG file loaders, and tend to be placed in data directories,
+whereas DSOs are loaded by the DTK loader and tend to be placed in library
+directories.  As a convenience, iris-viewer allows both file names and DSO names
+to be given in $IRIS_FILES and the iris-viewer command line.  If a file name
+does not end in a suffix (such as desktopWindow) it is assumed to be a DSO
+and passed to the DSO loader; otherwise it is passed to the OSG loader.
+
+The following environment variables are used by \fBirisfly\fR to 
+generate a list of additional files to load.  The $IRIS_FILES environment
+variable is not modified by irisfly.
+
+.IP $IRISFLY_DESKTOP_DISPLAY
+if set, its value will be appended to list of files to be loaded.  If
+not set, then the file "desktopDisplay.iris" is appended.  Note that the
+desktop display is always loaded.
+
+.IP $IRISFLY_SIMULATOR_DISPLAY
+if in simulator mode and set, its value will be appended to list of files to be loaded.  If
+not set and in simulator mode, then the file "simulatorDisplay.iris" is appended.
+
+.IP $IRISFLY_IMMERSIVE_DISPLAY
+if in immersive mode and set, its value will be appended to list of files to be loaded.  If
+not set and in immersive mode, then either the file "raveDisplay.iris" or "powerwallDislay.iris" will be
+loaded, depending on the output of the hev-identifyImmersive(1) command.
+
+.IP $IRISFLY_COMMON
+if set, its value will be appended to list of files to be loaded.  If not set, then file
+"common.iris" is appended.  Be careful if using a different file here, as
+common.iris runs a couple of background utilities and sets up shared memory
+values that other programs and iris files assume exist.  If possible it
+might be safer and easier to use common.iris and also another iris file
+loaded on the command line.
+
+.IP $IRISFLY_DESKTOP
+if set, its value will be appended to list of files to be loaded.  If
+not set, then the file "desktop.iris" is appended.  Note that the
+desktop display is always loaded.
+
+.IP $IRISFLY_SIMULATOR
+if in simulator mode and set, its value will be appended to list of files to be loaded.  If
+not set and in simulator mode, then the file "simulator.iris" is appended.
+
+.IP $IRISFLY_IMMERSIVE
+if in immersive mode and set, its value will be appended to list of files to be loaded.  If
+not set and in immersive mode, then the file "immersive.iris" is appended.
+
+.IP $IRISFLY_WANDMOUSE
+if in immersive mode and the -W option was not given, its value will be appended to list of files to be loaded.  If
+not set and the -W option was not given, then the file "wandMouse.iris" is appended.
+
+.IP $IRISFLY_MONO
+if the -M option was given, its value will be appended to list of files to be loaded.  If
+not set and the -M option was given, then the file "mono.iris" is appended.
+
+.IP $IRISFLY_INTEROCULAR_DISTANCE
+sets the default inteocular distance: the distance between the eyes
+in an immersive system. $IRISFLY_INTEROCULAR_DISTANCE is set to .1
+if not already set.
+
+.P
+\fBIrisfly\fR also runs hev-masterControlPanel and loads files into it based
+on the specified configuration.  hev-masterControlPanel reads $MCP_FILES for
+a list of files to load, using the path in $MCP_FILE_PATH.  \fBIrisfly\fR
+modifies the value of $MCP_FILES to include the directory containing the MCP
+files it uses.
+
+The irisfly-addToMCP(1) command will load an MCP file into the control panel
+created by irisfly.
+
+The following environment variables are used by \fBirisfly\fR to determine
+which MCP files to be loaded:
+
+.IP $IRISFLY_COMMON_MCP
+if set, its value will be appended to list of files to be loaded.  If
+not set, then file "common.mcp" is appended.
+
+.IP $IRISFLY_DISPLAY_MCP
+will be read in by "common.mcp".  If set, its value is used.  If not set,
+the next three envvars are used to set it.
+
+.IP $IRISFLY_DESKTOP_MCP
+if in desktop mode, if $IRISFLY_DESKTOP_MCP is set its value will be used to
+set $IRISFLY_DISPLAY_MCP, otherwise $IRISFLY_DISPLAY_MCP will be set to "desktop.mcp".
+
+.IP $IRISFLY_SIMULATOR_MCP
+if in simulator mode, if $IRISFLY_SIMULATOR_MCP is set its value will be used to
+set $IRISFLY_DISPLAY_MCP, otherwise $IRISFLY_DISPLAY_MCP will be set to "simulator.mcp".
+
+.IP $IRISFLY_IMMERSIVE_MCP
+if in immersive mode, if $IRISFLY_IMMERSIVE_MCP is set its value will be used to
+set $IRISFLY_DISPLAY_MCP, otherwise $IRISFLY_DISPLAY_MCP will be set to "immersive.mcp".
+
+.IP $IRISFLY_LAST_MCP
+The above files are loaded after any files specified in $MCP_FILES.  To add
+files after all of the above, specify files in $IRISFLY_LAST_MCP
+
+.IP $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS
+is used to pass X11 options to programs started by the
+\fBirisfly\fR-supplied MCP files in an immersive environment.  If the
+environment is not immersive, $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS is ignored.
+If $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS is set, \fBirisfly\fR will just pass
+it through unmodified.  If $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS is not set it
+will get set to the value "-geometry +512+0".  The motivation behind
+$IRISFLY_MCP_X11_IMMERSIVE_OPTIONS is to cause GUI windows to be positioned
+within the viewport of the immersive screen.
+
+.IP $IRISFLY_HEV_TRACKER_MONITOR_OPTIONS
+can be used to pass options to the hev-trackerMonitor program. See the -t
+option above for more details.
+
+.IP $__GL_FSAA_MODE
+is used to specify the Nvidia FSAA mode. The default is 14.
+To turn FSSA off, set to 0. To see a list execute the command:
+
+	\fBnvidia-settings --query=fsaa --verbose\fR
+
+For example: \fBenv __GL_FSAA_MODE=0 ./rundemo\fR
+
+ 
+.P
+The default MCP files read in other MCP files.  For example, desktop.mcp
+reads in desktopWand.mcp.
+To modify the desktop menus, $IRISFLY_DESKTOP_MCP could be set to
+an alternative file, or the default file desktopWand.mcp could be
+replaced by another file named desktopWand.mcp that is found earlier
+in $MCP_FILE_PATH.
+
+.P
+Some of the MCP files call hev-shmOnOff(1) to cause  
+
+
+programs to be run when
+their virtual button is clicked. (A click is an on-off sequence, so all of
+the hev-shmOnOff input files only specify what to do when the button is
+pressed, and ignores button releases.)  To allow the commands to be
+overridden, the hev-shmOnOff commands just run shell scripts, which can be
+replaced by other shell scripts with the same name that appear earlier in
+the $PATH envvar.
+
+.P
+\fBirisfly\fR sets the envvar $IRISFLY_HIDE_SHOW_WINDOWS to the name of a
+scratch file that will keep a list of X11 window names that will be passed
+to the irisfly-showWindows(1) and irisfly-hideWindows(1) commands.  Window
+names can be added to this file using the command irisfly-addWindowName(1),
+or just append the window name to the file, whatever's easier.  Similarly,
+irisfly-removeWindowName(1) can be used to remove a window name from the
+file. 
+
+irisfly-addAndShowWindow(1) can be handy to both hide and remove a window
+from the $IRISFLY_HIDE_SHOW_WINDOWS list, and and
+irisfly-removeAndHideWindow(1) can be handy to both show and add a window to
+the $IRISFLY_HIDE_SHOW_WINDOWS list.
+
+
+See iris.mcp for an example of adding a window name to this file, and
+immersive.mcp for an example of button that uses irisfly-showWindows and
+irisfly-hideWindows.
+
+.P
+Many HEV programs use the "selector" convention to designate when a program
+is active or inactive. An active program will consider data from shared
+system devices such as the wand to be directed to them, and when inactive it
+will ignore such input.  The convention is that a word is written into a
+shared memory file and if the word matches the application's self-chosen
+word then the application considers itself active and will respond to
+input from these devices. The irisfly-select(1) and irisfly-deselect(2)
+commands can be used to easily set and clear the word in the shared memory file. The
+hev-relativeMove(1) command contains a more thorough discussion of the
+selector. Also see hev-probe(1) for a simple example.
+
+.P
+Just before running iris-viewer, \fBirisfly\fR will run the command in the
+variable $IRISFLY_PRE_VIEWER_COMMANDS.
+
+Just after iris-viewer returns, \fBirisfly\fR will run the command in the
+variable $IRISFLY_POST_VIEWER_COMMANDS.
+
+Just before \fBirisfly\fR exits, \fBirisfly\fR will run the command in the
+variable $IRISFLY_EXIT_COMMANDS.
+
+.SH SEE ALSO
+
+hev-relativeMove(1), hev-probe(1), hev-shmOnOff(1), irisfly-addAndShowWindow(1),
+irisfly-addToMCP(1), irisfly-addWindowName(1), irisfly-deselect(1),
+irisfly-hideWindows(1), irisfly-removeAndHideWindow(1),
+irisfly-removeWindowName(1), irisfly-select(1), irisfly-showWindows
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

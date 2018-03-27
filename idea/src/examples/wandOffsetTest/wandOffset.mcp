@@ -1,0 +1,9 @@
+BUTTON offset
+ FIRST after realize exec dtk-floatRollers idea/wandOffsetDistance -N 1 --scale 0 -1 1 0 -l offset
+
+BUTTON glyph
+ FIRST load myPointer plus3d.osg
+ FIRST addchild myPointer offsetWand
+
+ ON nodemask myPointer on 
+ OFF nodemask myPointer off

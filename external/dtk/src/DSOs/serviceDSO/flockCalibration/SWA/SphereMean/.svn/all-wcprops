@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/SphereMean
+END
+testTry.c
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/SphereMean/testTry.c
+END
+try.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/SphereMean/try.cpp
+END
+SphereTriDiag.h
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/SphereMean/SphereTriDiag.h
+END
+try.h
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/SphereMean/try.h
+END
+sphericalWeightedAverage.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/SphereMean/sphericalWeightedAverage.cpp
+END
+SphereMean.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/SphereMean/SphereMean.cpp
+END
+SphereTriDiag.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/SphereMean/SphereTriDiag.cpp
+END
+testSWA.c
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/SphereMean/testSWA.c
+END
+sphericalWeightedAverage.h
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/SphereMean/sphericalWeightedAverage.h
+END
+SphereMean.h
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/SphereMean/SphereMean.h
+END

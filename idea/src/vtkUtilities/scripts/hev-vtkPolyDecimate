@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+
+import sys
+import vtk
+from optparse import OptionParser
+
+def showHelp():
+    sys.stderr.write('\nUsage:\nhev-vtkPolyDecimate [options] targetReduction inFName outFName\n')
+    sys.exit(1)
+
+use = "Usage: %prog [options] targetReduction inFName outFName"
+
+# PARSE COMMAND LINE
+parser = OptionParser(usage = use)
+
+# ASSIGN VALUES
+parser.add_option("--method", "--m", dest="method", type="string", default="pro")
+parser.add_option("--fangle", "--f", dest="fangle", type="float", default="15")
+parser.add_option("--sangle", "--s", dest="sangle", type="float", default="75")
+
+options, args = parser.parse_args()
+
+#SET INPUT AND OUTPUT FILE
+
+if len(args) != 3:
+    showHelp()
+
+reduction = float(args[-3])
+
+if reduction < 0 or reduction > 1:
+    print "Specify targetReduction between 0 and 1."
+    showHelp()
+
+inputdatafile = args[-2]
+outputdatafile = args[-1]
+
+#DATAREADER
+read = vtk.vtkPolyDataReader()
+read.SetFileName(inputdatafile)
+
+#PROCESS
+triangle = vtk.vtkTriangleFilter()
+triangle.PassVertsOn()
+triangle.PassLinesOn()
+triangle.SetInput(read.GetOutput())
+
+if options.method == "pro":
+    reduc = vtk.vtkDecimatePro()
+    reduc.SetInput(triangle.GetOutput())
+    reduc.PreserveTopologyOff()
+    reduc.SplittingOn()
+    reduc.BoundaryVertexDeletionOn()
+    reduc.SetFeatureAngle(options.fangle)
+    reduc.SetSplitAngle(options.sangle)
+    reduc.SetTargetReduction(reduction)
+
+elif options.method =="quad":
+    reduc = vtk.vtkQuadricDecimation()
+    reduc.SetInput(triangle.GetOutput())
+    reduc.SetTargetReduction(reduction)
+    reduc.AttributeErrorMetricOn()
+
+else:
+    print "--method METHOD. METHOD can either be 'pro' or 'quad'."
+    showHelp()
+    
+#FILEWRITER
+write = vtk.vtkGenericDataObjectWriter()
+write.SetFileTypeToASCII()
+write.SetInput(reduc.GetOutput())
+write.SetFileName(outputdatafile)
+write.Write()
+write.Update()

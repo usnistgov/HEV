@@ -1,0 +1,12 @@
+# Experiment with isosurface appearance
+# using --transfer lit
+# hev-createLUT < lit2.dat > lit2.lut
+# hev-LUT2plot lit2.lut
+# hev-LUT2png lit2.lut lit2.png
+# volumeAppBuilder --transfer lit --lut lit2.lut --dim 79 79 79 scaled_3Dcolorfield.ab
+  0  1   0     0   .5
+120 .25  0     0  1
+128  0   0     0   1
+130  0 .25     0  1
+255  0   1     0   .5
+

@@ -1,0 +1,96 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-initXscreens 1 "April 2013" "NIST/ACMD/HPCVG" "HEV"
+
+.SH NAME
+
+hev-initXscreens
+
+.SH SYNOPSIS
+
+The \fBhev-initXscreens [-v]\fR 
+
+.SH DESCRIPTION
+
+\fIhev-initXscreens\fR is used to setup the RAVE or PowerWall for
+proper immersive operation under CentOS 6. This setup applies only
+to the KDE graphical desktop environment. 
+This command must be
+executed once per login. The preferred method of execution is
+though the \fIAutostart\fR facility of KDE. See \fBAUTOSTART\fR below.
+
+.PP
+For proper raise/lower operation of windows created by the
+application, there are two KDE settings which must be set as follows
+using the KDE GUI:
+.PP
+KDE Menu->Computer->System Settings->Window Behavior->Focus 
+
+  Set \fIFocus stealing prevention level:\fB None\fR
+
+  Set \fIPolicy:\fB Focus Strictly Under Mouse\fR
+
+  Uncheck: Clicke raises active window
+
+.PP
+KDE Menu->Computer->System Settings->Window Behavior->Window Actions
+
+  Inactive Inner Window
+
+  Left button: Activate & Pass Click 
+
+
+
+
+.PP
+As part of the setup, this command also executes \fBhev-framelock\fR,
+so there is no need to run \fBhev-framelock\fR manually or via Autostart.
+.PP
+This command currently only applies to immersive hosts.  It doesn't do
+anything when executed on other systems.
+
+
+.SH AUTOSTART
+.PP
+While this command may be executed manually upon each login, it is
+typically more convenient to have the command executed automatically
+when logging on to the RAVE or PowerWall.  The recommended method is
+to setup your KDE Autostart directory using the following commands.
+
+.IP
+cd .kde/Autostart
+.br
+ln -s /usr/local/HEV/idea/bin/hev-initXscreens .
+
+.PP
+Some users may have the KDEHOME environment variable set to point to somewhere
+other than the default \.kde, in that case use:
+.IP
+cd $KDEHOME/Autostart
+.br
+ln -s /usr/local/HEV/idea/bin/hev-initXscreens .
+
+
+.PP
+Only do this setup only once.
+You should logout and back in.
+
+
+.SH OPTIONS
+.TP
+.B -v
+Verbose mode, otherwise the command executes silently
+
+
+.SH SEE ALSO
+hev-framelock(1)
+
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov
+
+\"  LocalWords:  hev initXscreens NIST fBhev fR fIhev PowerWall immersive login
+\"  LocalWords:  CentOS framelock KDE Autostart IP cd kde br ln KDEHOME logout
+\"  LocalWords:  TP fIAutostart fBAUTOSTART fIFocus

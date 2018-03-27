@@ -1,0 +1,97 @@
+.TH hev-annotate 1 "February 18, 2009"
+.SH NAME
+
+hev-annotate
+
+.SH SYNOPSIS
+
+\fBhev-annotate [--title name]  [--node name] [--pointer fileName] [--font fontName]
+[--size s] [--color r g b a] [ --hpr ] [--nounload] [--textXYZ x y z ] [--textHPR h p r]
+[--pointerXYZ x y z ] [--pointerHPR h p r] 
+[text]
+
+.SH DESCRIPTION
+
+\fBhev-annotate\fR displays a pointer and text in a running savgfly process'
+scenegraph.  GUIs are created which allow the the position of the pointer
+and text, and the color, size and contents of the text to be modified.
+
+Pressing control-C will terminate hev-annotate and all of the GUIs it
+creates.  By default it will also unload the text and pointer from the
+scenegraph.
+
+Multiple copies of hev-annotate can be run concurrently.
+
+.SH OPTIONS
+
+.IP \fI--title\ name\fR
+adds the string "name" to each GUI's titlebar.  This is useful if running
+multiple copies of hev-annotate.  By default name is blank.
+
+.IP \fI--node\ name\fR
+specifies the name of the node that hev-annotate creates for loading he
+pointer and text.  If not specified a random node name is used.
+
+.IP \fI--pointer\ fileName\fR
+specifies the name of a file to load as the pointer object.  If omitted the
+file pointerGlyph.osg is used.
+
+.IP \fI--font\ fontName\fR
+specifies the name of a font file ti use for the text.  If omitted the
+file arial.ttf is used.
+
+.IP \fI--size\ s\fR
+specifies the initial size of the text in dgl coordinates.  If omitted the
+.05 is used.
+
+.IP \fI--color\ r\ g\ b\ a\fR
+specifies the initial color of the text.  If omitted, r, g, b and a are set
+to 1.
+
+.IP \fI--hpr\fR
+specifies that text should be able to be rotated as well as translated.  By
+default text is billboarded so it it always upright and facing the dgl
+origin.
+
+.IP \fI--nounload\fR
+specifies that the text and pointer objects should not be unloaded from the
+scenegraph upon exit.
+
+.IP \fI--textXYZ\ x\ y\ z\fR
+specifies the position, in normalized coordinates, of the text string.  The
+default is 0,1,0.
+
+.IP \fI--textHPR\ h\ p\ r\fR
+specifies the orientation, in Euler angles, of the text string.  The
+default is 0,0,0.  If textHPR is specified, --hpr is assumed.
+
+.IP \fI--pointerXYZ\ x\ y\ z\fR
+specifies the position, in normalized coordinates, of the pointer.  The
+default is 0,1,0.
+
+.IP \fI--pointerHPR\ h\ p\ r\fR
+specifies the orientation, in Euler angles, of the pointer.  The
+default is 0,0,0.
+
+.IP \fItext\fR
+specifies the initial text string to be displayed.  If omitted, no text is
+initially displayed.
+
+.SH EXAMPLE
+
+Assuming that a savgfly process is running this command will bring up a
+pointer and text in the savgfly window:
+
+hev-annotate 
+
+and should then be killed with a control-C.  
+
+.SH AUTHOR
+
+.PP
+John Kelso <kelso@nist.gov>
+.br
+NIST
+.br
+\fBhttp://www.nist.gov/acmd/hpcvg/\fR
+

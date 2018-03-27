@@ -1,0 +1,29 @@
+
+IDEA Directories
+----------------
+
+In this directory, $HEVROOT/idea, all "source" files should be placed  
+in the src subdirectory. All of the other subdirectories are for the
+installed files that are accessed at run time. 
+
+These runtime directories are currently:
+
+    bin/
+    data/
+    doc/
+    etc/
+    examples/
+    include/
+    lib/
+    main/
+    shader/
+
+But other runtime subdirectories could be added.  Again, the only 
+subdirectory that is NOT a runtime directory is src.
+
+When IDEA is rebuilt, all files that are in the runtime directories are 
+deleted. Any files that should go into the runtime directories must by 
+placed there by one of the GNUmakefiles under the src directory.
+Specifically, "make install" should move required files into the runtime
+directories.
+

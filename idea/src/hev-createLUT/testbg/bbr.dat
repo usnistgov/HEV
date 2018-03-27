@@ -1,0 +1,12 @@
+# bbr.dat: Black Body Radiation
+# 7/5/2011 steve@nnist.gov 
+
+# hev-createLUT < bbr.dat > bbr.lut
+#
+# hev-LUT2png bbr.lut
+
+
+000  0  0  0  1
+085  1  0  0  1
+170  1  1  0  1
+255  1  1  1  1

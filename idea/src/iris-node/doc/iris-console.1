@@ -1,0 +1,31 @@
+.TH IRIS-CONSOLE 1 "Dec 2013" "NIST/ACMD" "HPCVG HEV"
+
+.SH NAME
+iris-console
+- terminal console for controlling IRIS.
+
+.SH DESCRIPTION
+.BR iris-console
+is a terminal console to control IRIS. It uses a Read-Eval-Print
+Loop (REPL) to:
+.IP
+- read IRIS control commands from the
+.IR iris>
+prompt,
+.br
+- send the commands over the control FIFO to a running IRIS process, and
+.br
+- print any response from IRIS.
+.PP
+Requires Node.js to be available:
+.IP
+$ source $HEVROOT/external/node/profile
+.br
+$ iris-console
+
+.SH AUTHOR
+Wesley Griffin <wesley.griffin@nist.gov>
+
+.SH SEE ALSO
+.BR iris-node (7)
+

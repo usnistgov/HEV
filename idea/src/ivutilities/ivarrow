@@ -1,0 +1,42 @@
+#! /bin/sh
+
+case $# in
+0)
+    s=.8
+    ;;
+1)
+    case $1 in
+    -h|-help|--h|--help)
+         echo "Usage: ivarrow [ratio]"
+	 echo
+	 echo "   Create an arrow glyph with length 1.0"
+	 echo
+	 echo "      ratio    of shaft to point length"
+	 echo "               Default is .8 (shaft =.8, point=.2)"
+	 echo
+	 exit
+	 ;;
+     *)
+	 s=$1
+	 ;;
+     esac
+esac
+
+awk -v s=$s '
+BEGIN {
+      #print "s is",s > "/dev/tty";
+      if ((s<0) || (s>1)) {
+	 printf "ratio must be in the range 0 to 1\n" > "/dev/tty";
+	 exit
+      }
+      a=1-s
+      b=a/2+s;
+      cmd=sprintf("ivcone .5 1  | ivscale .2 %g .2 | ivtranslate 0 %g 0",a,b);
+      system(cmd);
+      a=s;
+      b=a/2;
+      cmd=sprintf("ivcylinder .5 1 | ivscale .1 %g .1 | ivtranslate 0 %g 0",a,b);
+      system(cmd);
+
+}'
+

@@ -1,0 +1,37 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include "hev-frameGrabberControlFunctions.h"} {} 
+
+Function {make_main_window()} {open
+} {
+  Fl_Window main_window {open
+    xywh {903 46 375 70} type Double visible
+  } {
+    Fl_Light_Button recordButton {
+      label record
+      callback {record((bool)o->value()) ;}
+      tooltip {record every frame} xywh {5 5 75 20}
+    }
+    Fl_Button snapButton {
+      label snap
+      callback {snap() ;}
+      tooltip {record one frame} xywh {85 5 70 20}
+    }
+    Fl_Value_Input everyValuator {
+      label {rate: }
+      callback {every((float)o->value()) ;}
+      tooltip {when recording, how often to record frames} xywh {140 45 47 25} maximum 100 step 0.1 value 30
+    }
+    Fl_Menu_Button paneMenu {
+      label panes
+      callback {selectPanes(o) ;} open
+      tooltip {which pane(s) to record} xywh {5 45 75 20} align 20
+    } {}
+    Fl_Box {} {
+      label {fps (0=every frame)}
+      xywh {192 50 152 17} align 20
+    }
+  }
+} 

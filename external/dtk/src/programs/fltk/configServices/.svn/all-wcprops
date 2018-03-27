@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/diverse/!svn/ver/981/trunk/dtk/programs/fltk/configServices
+END
+config_widget.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/diverse/!svn/ver/981/trunk/dtk/programs/fltk/configServices/config_widget.cpp
+END
+dtk-configServices.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/diverse/!svn/ver/981/trunk/dtk/programs/fltk/configServices/dtk-configServices.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/916/trunk/dtk/programs/fltk/configServices/CMakeLists.txt
+END
+mainWindow.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/981/trunk/dtk/programs/fltk/configServices/mainWindow.cpp
+END
+config_widget.h
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/diverse/!svn/ver/569/trunk/dtk/programs/fltk/configServices/config_widget.h
+END

@@ -1,0 +1,5 @@
+SHMCOORD barnode bar
+ADDCHILD barnode world
+
+LOAD gnomon gnomon.osg
+ADDCHILD gnomon barnode

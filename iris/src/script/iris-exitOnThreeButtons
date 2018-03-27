@@ -1,0 +1,10 @@
+#!/bin/sh
+
+while ( ! dtk-readButtons -n 1 buttons | grep -e '^111' -q )
+do
+    #echo sleep
+    usleep 10000
+done
+
+dtk-msgNotice sending termintate command to iris
+echo terminate > $IRIS_CONTROL_FIFO

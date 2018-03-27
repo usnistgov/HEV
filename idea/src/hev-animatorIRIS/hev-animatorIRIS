@@ -1,0 +1,147 @@
+#! /bin/bash
+
+# hev-animatorIRIS
+# steve@nist.gov
+
+version="20120416"
+
+function usage {
+cat > /dev/tty <<EOF
+
+  Usage: hev-animatorIRIS [-h] [-nogeometry] uniqueID files ...  > out.iris
+
+      Create a .iris file on stdout suitable for use with
+      irisfly and hev-animator to produce an animation
+
+      Any irisfly load-able file can be specified.
+      Typically a sequence of frames is specified.
+
+      The "uniqueID" parameter is a unique so that internal names
+      will be unique
+
+      Use -nogeometry to create a file for hev-animator which will load quicky,
+      no geometry is needed.
+
+      If an integer number is given instead of a file name, then that number
+      padding empty frames will be inserted.
+
+
+  Version: $version
+EOF
+exit 1
+}
+
+function isaint()
+{
+   if ( printf "%d" $1 >/dev/null  2> /dev/null )
+   then
+     return 0
+   else
+     return 1
+   fi
+
+}
+
+
+#
+# Body of the script starts here
+#
+
+nogeod=0
+
+case $# in
+0)
+        usage
+	;;
+*)
+	case $1 in
+	-h*|--h*)
+		usage
+                ;;
+	-n*|--n*)
+	        nogeod=1
+		shift
+                ;;
+	esac
+
+	;;
+esac
+
+
+
+if [ $# == 0 ]
+then
+      usage
+fi
+
+# Get unique id
+if [ -f $1 ]
+then
+    echo "You probably forgot the uniqueID parameter." > /dev/tty
+    usage
+fi
+name=$1
+shift
+
+# Must have at least one file
+if [ $# == 0 ]
+then
+      usage
+fi
+
+
+echo "# animator iris contains" $# "files"
+echo "# Created by hev-animatorIRIS" `date`
+echo "# hev-animatorIRIX $*"
+echo "GROUP" $name
+
+i=1
+first=0
+
+for f in $*
+do
+    if [ "$first" == "0" ]
+    then
+	 nm="ON"
+	 first=1
+    else
+	 nm="OFF"
+    fi
+
+
+    if (isaint $f)
+    then
+
+	 for (( j=0; j<$f; j++))
+	 do
+	     printf "GROUP F_pad_%s%d\n" $name $i
+	     printf "NODEMASK F_pad_%s%d %s\n" $name $i $nm
+	     printf "ADDCHILD F_pad_%s%d %s\n" $name $i $name
+	     printf "\n"
+
+	     i=$((i+1))
+	 done
+     else
+	 if [ ! -f $f ]
+	 then
+	    echo "file $f not found" > /dev/tty
+	    exit 1
+         fi
+
+	 if [ "$nogeod" == "0" ]
+	 then
+	     printf "LOAD F_%s%d %s\n" $name $i $f
+	 else
+	     printf "GROUP F_%s%d\n" $name $i
+	 fi
+
+	 printf "NODEMASK F_%s%d %s\n" $name $i $nm
+	 printf "ADDCHILD F_%s%d %s\n" $name $i $name
+
+	 printf "\n"
+	 i=$((i+1))
+     fi
+
+done
+
+echo RETURN $name

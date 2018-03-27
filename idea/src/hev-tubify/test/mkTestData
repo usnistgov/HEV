@@ -1,0 +1,31 @@
+
+savg-regpoly 3 > poly3.in.savg
+savg-regpoly 4 | savg-translate 3 0 0 > poly4.in.savg
+savg-regpoly 8 | savg-translate 6 0 0 > poly8.in.savg
+
+sed -f polyToXYZ.sed < poly4.in.savg > line4.in.xyz
+sed -f polyToXYZ.sed < poly3.in.savg >> line4.in.xyz
+
+savg-rotate 0 90 0 < poly3.in.savg | sed -f polyToLine.sed >  line3.rot.in.savg
+savg-rotate 0 90 0 < poly4.in.savg | sed -f polyToLine.sed >  line4.rot.in.savg
+savg-rotate 0 90 0 < poly8.in.savg | sed -f polyToLine.sed >  line8.rot.in.savg
+
+
+
+
+cat line4.rot.in.savg > 1lineTest.in.savg
+cat line3.rot.in.savg line4.rot.in.savg > 2lineTest.in.savg
+cat line3.rot.in.savg line4.rot.in.savg line8.rot.in.savg > 3lineTest.in.savg
+
+cat poly3.in.savg > 1polyTest.in.savg
+cat poly3.in.savg poly4.in.savg > 2polyTest.in.savg
+cat poly3.in.savg poly4.in.savg poly8.in.savg > 3polyTest.in.savg
+
+cat poly3.in.savg line4.rot.in.savg > polyLineTest.in.savg
+cat line3.rot.in.savg poly8.in.savg > linePolyTest.in.savg
+
+cat poly3.in.savg line4.rot.in.savg poly4.in.savg > polyLinePolyTest.in.savg
+cat line8.rot.in.savg poly8.in.savg line3.rot.in.savg > linePolyLineTest.in.savg
+
+
+

@@ -1,0 +1,27 @@
+#!gmake
+
+# This is an inefficient hack.
+
+
+all:
+	pages=`find $(HEVROOT)/idea/man -type f` ; \
+	for f in $$pages ; \
+    	do  p=`basename $$f` ; \
+    		if [ ! -e "$$p" -o "$$f" -nt "$$p" ] ; \
+    		then dtk-msgNotice -p IDEA building $$p pdf and html ;  \
+	 		groff -mandoc $$f |  ps2pdf - > $$p.pdf ; \
+	 		groff -mandoc -Thtml $$f > $$p.html ; \
+    		fi ; \
+		done
+
+install: all
+	cp -fa *.pdf $(HEV_IDEA_DIR)/doc/pdf
+	cp -fa index.html.src $(HEV_IDEA_DIR)/doc/pdf/index.html
+	cp -fa *.html $(HEV_IDEA_DIR)/doc/html
+
+clean:
+	rm -f *.pdf *.html
+
+distclean: clean
+
+

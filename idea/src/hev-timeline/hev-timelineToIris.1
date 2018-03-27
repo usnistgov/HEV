@@ -1,0 +1,135 @@
+.TH hev-timelineToIris 1 "November 2011"
+
+.SH NAME
+hev-timelineToIris
+
+.SH SYNOPSIS 
+.B hev-timelineToIris [ --frameRate \fIf\fB ] [ --startTime \fIt\fB ] [ --absolute ] [ --deltaTrans \fIt\fB ] [ --deltaRot \fIa\fB ] [ --deltaScale \fIs\fB ]
+
+.SH OPTIONS
+
+.IP "--frameRate \fIf\fR"
+specifies the number of times per second \fBhev-timelineToIris\fR will interpolate
+the positions read from a timeline file.  For example, if a timeline file specifies a
+position should be moved over an elapsed time of 5 seconds, and frameRate is
+set to 60, then \fBhev-timelineToIris\fR will interpolate the position 300=5*60 times,
+sending out IRIS control commands whenever the position has changed more than the
+specified amount.
+
+If \fIframeRate\fR is not specified, 60 will be used.
+
+.IP "--absolute"
+specifies that the times used in the IRIS control commands be absolute
+times. i.e. OSG reference times. The default is to use time values that are
+relative to the time of the first control command written by \fBhev-pathNav\fR.
+
+.IP "--startTime \fIt\fR"
+specifies the initial time offset in seconds to be added to all IRIS control
+commands. The default value is 0.
+
+.IP "--deltaTrans \fIt\fR"
+specifies the amount that the navigation node's translation value needs to
+change before a control command is written. The amount is the distance from the
+last translation control command.
+
+If \fIdeltaTrans\fR is not specified, it defaults to .001.
+
+If \fIdeltaTrans\fR is set to zero a control command containing a translation
+value will be written \fIframeRate\fR times a second.
+
+If \fIdeltaTrans\fR is set to a negative number translation will be ignored
+when determining if a control command should be written.
+
+.IP "--deltaRot \fIa\fR"
+specifies the amount that the navigation node's rotation value needs to
+change before a control command is written. The amount is the angle in degrees
+from the last rotation control command.
+
+If \fIdeltaRot\fR is not specified, it defaults to .1 degrees.
+
+If \fIdeltaRot\fR is set to zero a control command containing a rotation
+value will be written \fIframeRate\fR times a second.
+
+If \fIdeltaRot\fR is set to a negative number rotation will be ignored
+when determining if a control command should be written.
+
+.IP "--deltaScale \fIs\fR"
+specifies the amount that the navigation node's scale value needs to change
+before a control command is written. The amount is the geometric difference from the last
+written scale control command, or its inverse, whichever is largest.
+
+If \fIdeltaScale\fR is not specified, it defaults to 1.001.
+
+If \fIdeltaScale\fR is set to zero a control command containing a scale
+value will be written \fIframeRate\fR times a second.
+
+If \fIdeltaScale\fR is set to a negative number scale will be ignored
+when determining if a control command should be written.
+
+.SH DESCRIPTION
+
+\fBhev-timelineToIris\fR reads a timeline file (see \fBhev-navigationToTimeline\fR(1) for a
+description of a timeline file) and generates IRIS control commands that
+manipulate the transformation in the navigation node.
+
+\fBhev-timelineToIris\fR interpolates between positions in the timeline
+file, and writes control commands whenever the interpolated position changes
+more than the specified tolerance. 
+The interpolation method simulates the viewpoint moving through the
+world rather than the world moving around the viewpoint. 
+
+The generated control commands can be saved to an IRIS file, or written directly to
+$IRIS_CONTROL_FIFO, the running IRIS process' fifo.
+
+All generated control commands are "after" commands, which specify an
+absolute or relative time to be executed. All of the commands can be sent to
+a running IRIS process via its control fifo, or loaded as an IRIS file, and will be
+executed by IRIS at the appropriate time. 
+
+\fBhev-timelineToIris\fR liberally comments the control commands, including the
+lines from the input timeline file, so they can be easily correlated. Like any
+control command file, it can be edited with any text editor.
+
+.P
+.SH EXAMPLE
+
+.IP "1) start a IRIS process:"
+irisfly --ex tape.osg &
+
+.IP "2) use the wand or trackball to navigate to the beginning of the desired path."
+
+.IP "3) start recording the navigation:"
+hev-navigationToTimeline > myPath
+
+.IP "4) use the wand or trackball to navigate to the end of the desired path."
+
+.IP "5) stop recording the navigation:"
+Press ^C to terminate \fBhev-navigationToTimeline\fR
+
+.IP "6) replay the navigation:"
+hev-timelineToIris < myPath > $IRIS_CONTROL_FIFO
+
+.IP "7) convert the timeline file into a file of IRIS control commands:"
+hev-timelineToIris < myPath > myControlCommands
+
+.IP "8) replay the navigation:"
+cat myControlCommands > $IRIS_CONTROL_FIFO
+
+.P
+You can also stop the irisfly program after step 5 and run step 7 to create
+the IRIS control command file when an IRIS process is not running.
+
+.SH SEE ALSO
+
+hev-navigationToTimeline, hev-interpolateRotation, hev-interpolateScale,
+hev-interpolateTranslation, hev-readNav, hev-readWorld
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+November 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

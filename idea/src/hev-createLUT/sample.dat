@@ -1,0 +1,6 @@
+# create a LUT - blue to yellow to red
+# comments and blank lines are allowed
+  0  0.0  0.0  1.0  1.0
+
+ 64  1.0  1.0  0.0  1.0
+255  1.0  0.0  0.0  1.0

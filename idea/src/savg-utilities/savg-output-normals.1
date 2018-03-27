@@ -1,0 +1,55 @@
+.TH savg-output-normals  1 "January 2009" "NIST/MCSD/SAVG" 
+.SH NAME
+savg-output-normals
+
+.SH SYNOPSIS
+.B savg-output-normals
+[length] [r g b] 
+
+.SH DESCRIPTION
+.I savg-output-normals
+reads geometric data in .savg format on stdin, creates arrow glyphs to 
+depict the normals specified in that data, and writes those glyphs 
+in .savg format to stdout.
+
+
+
+
+
+
+
+.SH ARGUMENTS
+
+
+.TP
+.B length
+the length of the arrow glyphs.  Default is 1.
+
+.TP
+.B r g b
+the color of the arrow glyphs. Default is 
+.B 0 0 1
+ (blue).
+
+
+
+
+.SH EXAMPLES
+
+.TP
+.B savg-output-normals < cone.savg >  coneNormals.savg
+
+Generates blue arrow glyphs of length 1.
+
+
+
+.TP
+.B savg-output-normals 0.2  1 1 1  >  coneNormals.short.white.savg
+
+Generates white arrow glyphs of length 0.2.
+
+
+
+.SH SEE ALSO
+savg-add-normals, savg-rm-normals
+

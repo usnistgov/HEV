@@ -1,0 +1,5200 @@
+Group {
+  DataVariance STATIC
+  name "savg loader: textGroup"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  num_children 1
+  PositionAttitudeTransform {
+    DataVariance STATIC
+    name "savg loader: text node DCS foo!"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    referenceFrame RELATIVE
+    position 1 2 3
+    attitude 0 0 0 1
+    scale 0.166667 0.166667 0.166667
+    pivotPoint 0 0 0
+    num_children 1
+    MatrixTransform {
+      DataVariance STATIC
+      name "savg loader: Inventor text node foo!"
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      referenceFrame RELATIVE
+      Matrix {
+        1 0 0 0
+        0 0 1 0
+        0 -1 0 0
+        0 0 0 1
+      }
+      num_children 1
+      Group {
+        DataVariance STATIC
+        nodeMask 0xffffffff
+        cullingActive TRUE
+        num_children 1
+        Geode {
+          nodeMask 0xffffffff
+          cullingActive TRUE
+          num_drawables 1
+          Geometry {
+            DataVariance STATIC
+            StateSet {
+              rendering_hint DEFAULT_BIN
+              renderBinMode INHERIT
+              GL_LIGHTING ON
+              Material {
+                ColorMode DIFFUSE
+                ambientColor 0.2 0.2 0.2 1
+                diffuseColor 1 0 0 1
+                specularColor 0 0 0 1
+                emissionColor 0 0 0 1
+                shininess 0
+              }
+            }
+            useDisplayList FALSE
+            useVertexBufferObjects TRUE
+            PrimitiveSets 256
+            {
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                2 0 1 3 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                21 19 20 5 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 11
+              {
+                19 18 5 17 7 16 14 15 13 25
+                26 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                14 13 10 12 11 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                11 8 10 0 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                37 35 36 34 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                35 33 34 32 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                33 31 32 29 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                31 30 29 28 27 13 26 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                357 358 356 359 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                1021 1019 1020 1018 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                1019 1017 1018 1016 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                1017 1014 1016 1015 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 8
+              {
+                1015 1014 1013 1012 1011 1010 1009 1008 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                361 362 360 363 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                365 366 364 367 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                876 875 867 874 868 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 6
+              {
+                868 866 867 865 877 878 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                878 865 879 880 881 882 883 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 8
+              {
+                881 883 884 885 886 887 888 889 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                369 370 368 371 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                373 374 372 375 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                866 868 859 869 857 870 871 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                857 871 872 873 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                866 862 865 864 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                864 862 863 861 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                862 854 861 860 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                381 382 380 383 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                892 890 891 893 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                890 894 893 895 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                894 896 895 897 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                896 898 897 899 900 901 902 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                900 902 903 904 905 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 9
+              {
+                903 905 906 907 908 909 910 911 912 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                910 912 913 914 915 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                913 915 916 917 918 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                916 918 933 932 930 931 929 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                930 929 927 928 926 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 11
+              {
+                927 926 925 924 923 922 921 920 898 919
+                899 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                940 938 939 937 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                938 935 937 936 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                936 935 934 916 933 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                139 138 137 136 134 135 133 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 6
+              {
+                134 133 115 132 117 131 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                117 116 115 114 112 113 111 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                112 111 109 110 108 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 9
+              {
+                109 108 107 106 105 104 102 103 101 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                102 101 99 100 98 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                99 98 96 97 95 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 13
+              {
+                98 118 97 119 120 121 122 123 124 125
+                126 127 128 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                126 128 129 130 131 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                142 140 141 143 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                140 144 143 145 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                144 146 145 147 148 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                148 149 145 150 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                149 151 150 152 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                152 151 153 154 155 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                385 386 384 387 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                389 390 388 391 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                829 830 828 831 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                815 812 814 813 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                795 792 794 793 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                807 804 806 805 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                781 782 780 783 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                839 836 838 837 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                16 22 15 23 24 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                823 820 822 821 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                763 760 762 761 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                759 756 758 757 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                751 748 750 749 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                395 392 394 393 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                811 808 810 809 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                743 740 742 741 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                735 732 734 733 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                731 728 730 729 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                409 410 408 411 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                727 724 726 725 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                413 414 412 415 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                827 824 826 825 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                717 718 716 719 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                711 708 710 709 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                701 702 700 703 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                695 692 694 693 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                405 406 404 407 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                417 418 416 419 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                421 422 420 423 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                687 684 686 685 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                679 676 678 677 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                427 424 426 425 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                429 430 428 431 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                797 798 796 799 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                669 670 668 671 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                663 660 662 661 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                655 652 654 653 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                651 648 650 649 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                433 434 432 435 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                943 941 942 944 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                941 945 944 946 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                945 947 946 948 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                947 949 948 950 951 952 953 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                951 953 954 955 956 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 9
+              {
+                954 956 957 958 959 960 961 962 963 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                961 963 964 965 966 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                964 966 967 968 969 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                967 969 984 983 981 982 980 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                981 980 978 979 977 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 11
+              {
+                978 977 976 975 974 973 972 971 949 970
+                950 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                7 6 5 4 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                351 348 350 349 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                623 620 622 621 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                557 558 556 559 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                543 540 542 541 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                539 536 538 537 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                845 846 844 847 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                531 528 530 529 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                607 604 606 605 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                525 526 524 527 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                573 574 572 575 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 8
+              {
+                96 95 94 93 92 91 90 89 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                511 508 510 509 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                503 500 502 501 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                603 600 602 601 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                499 496 498 497 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                487 484 486 485 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                999 997 1000 1001 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                997 1002 1001 1003 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 6
+              {
+                1002 1004 1003 1005 1006 1007 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                851 848 850 849 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                495 492 494 493 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                471 468 470 469 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                439 436 438 437 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                591 588 590 589 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                571 568 570 569 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                455 452 454 453 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                551 548 550 549 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                615 612 614 613 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                627 624 626 625 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                637 638 636 639 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                984 985 967 986 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                985 987 986 988 989 990 991 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                635 632 634 633 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                441 442 440 443 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                445 446 444 447 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                463 460 462 461 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                449 450 448 451 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                457 458 456 459 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                158 156 157 159 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                156 160 159 161 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                160 162 161 163 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 8
+              {
+                163 162 164 165 166 167 168 169 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                465 466 464 467 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                473 474 472 475 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                333 334 332 335 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                331 328 330 329 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                327 324 326 325 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                801 802 800 803 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                319 316 318 317 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                789 790 788 791 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                785 786 784 787 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                771 768 770 769 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                301 302 300 303 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                753 754 752 755 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                747 744 746 745 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                739 736 738 737 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                285 286 284 287 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                721 722 720 723 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                713 714 712 715 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                707 704 706 705 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                697 698 696 699 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                689 690 688 691 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                681 682 680 683 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                675 672 674 673 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                665 666 664 667 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                657 658 656 659 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                245 246 244 247 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                641 642 640 643 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                237 238 236 239 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                235 232 234 233 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                619 616 618 617 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                611 608 610 609 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                219 220 218 221 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                597 598 596 599 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                217 214 216 215 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                581 582 580 583 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                209 206 208 207 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                565 566 564 567 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                201 198 200 199 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                545 546 544 547 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                193 190 192 191 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                533 534 532 535 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                185 182 184 183 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                517 518 516 519 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                177 174 176 175 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                173 170 172 171 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                489 490 488 491 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                483 480 482 481 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                835 832 834 833 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                841 842 840 843 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                343 340 342 341 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                777 778 776 779 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                515 512 514 513 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                479 476 478 477 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                507 504 506 505 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                593 594 592 595 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                189 186 188 187 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                561 562 560 563 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 6
+              {
+                181 178 180 179 223 222 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                88 87 86 85 83 84 82 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 6
+              {
+                83 82 64 81 66 80 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 7
+              {
+                66 65 64 63 61 62 60 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                61 60 58 59 57 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 9
+              {
+                58 57 56 55 54 53 51 52 50 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                51 50 48 49 47 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                48 47 45 46 44 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 13
+              {
+                47 67 46 68 69 70 71 72 73 74
+                75 76 77 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 5
+              {
+                75 77 78 79 80 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                553 554 552 555 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                321 322 320 323 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                355 352 354 353 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                203 204 202 205 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                281 282 280 283 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                775 772 774 773 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                249 250 248 251 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                269 270 268 271 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                211 212 210 213 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                261 262 260 263 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                647 644 646 645 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                297 298 296 299 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                231 228 230 229 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                403 400 402 401 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                587 584 586 585 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                347 344 346 345 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                765 766 764 767 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                259 256 258 257 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                225 226 224 227 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                397 398 396 399 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                275 272 274 273 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                289 290 288 291 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                313 314 312 315 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                307 304 306 305 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                629 630 628 631 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                521 522 520 523 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                309 310 308 311 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                817 818 816 819 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                255 252 254 253 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                279 276 278 277 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                197 194 196 195 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                859 857 856 858 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                339 336 338 337 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                267 264 266 265 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                379 376 378 377 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                241 242 240 243 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                579 576 578 577 
+              }
+              DrawElementsUShort TRIANGLE_STRIP 4
+              {
+                295 292 294 293 
+              }
+              DrawElementsUShort TRIANGLES 9
+              {
+                0 8 9 80 81 78 131 132 129 
+              }
+              DrawElementsUInt TRIANGLES 42
+              {
+                38 39 40 39 41 40 40 41 42 41
+                43 42 42 43 44 43 45 44 852 853
+                854 853 855 854 992 993 994 993 995 994
+                994 995 996 995 997 996 996 997 998 997
+                999 998 
+              }
+            }
+            VertexArray Vec3Array 1022
+            {
+              0.92222 4.64444 0
+              0.01111 5 0
+              0.01111 4.64444 0
+              0.92222 5 0
+              0 0.16667 0
+              0 0 0
+              0.44444 0.21111 0
+              0.73333 0.34444 0
+              0.94444 5.66667 0
+              0.92222 5.28889 0
+              0.92222 1.15556 0
+              1.16667 6.52222 0
+              1.4 6.93333 0
+              1.75556 7.26667 0
+              0.87778 0.64444 0
+              1.84444 5 0
+              1.85556 1.15556 0
+              1.86667 0.71111 0
+              1.98889 0.41111 0
+              2.28889 0.23333 0
+              2.88889 0 0
+              2.88889 0.16667 0
+              1.85556 4.64444 0
+              3.21111 4.64444 0
+              3.21111 5 0
+              1.84444 6.28889 0
+              1.94444 6.93333 0
+              2.14444 7.17778 0
+              2.25556 7.5 0
+              2.51111 7.27778 0
+              2.92222 7.58889 0
+              3.35556 7.53333 0
+              3.55556 6.44444 0
+              3.71111 7.38889 0
+              3.87778 6.55556 0
+              3.94444 7.16667 0
+              3.98889 6.7 0
+              4.03333 6.91111 0
+              4.13 2.53333 0
+              4.17444 1.98889 0
+              4.28556 3.51111 0
+              4.30778 1.47778 0
+              4.49667 3.94444 0
+              4.51889 1.03333 0
+              4.76333 4.33333 0
+              4.80778 0.64444 0
+              5.10778 4.65556 0
+              5.13 3.06667 0
+              5.16333 0.32222 0
+              5.18556 2.26667 0
+              5.41889 1.32222 0
+              5.57444 0.08889 0
+              5.63 0.88889 0
+              5.90778 0.52222 0
+              6.04111 -0.06667 0
+              6.26333 0.28889 0
+              6.56333 -0.11111 0
+              6.71889 0.2 0
+              7.15222 -0.04444 0
+              7.15222 0.28889 0
+              7.58556 0.6 0
+              7.65222 0.14444 0
+              7.76333 0.86667 0
+              7.89667 1.22222 0
+              8.08556 0.43333 0
+              7.99667 1.66667 0
+              8.03 2.21111 0
+              5.23 3.82222 0
+              5.51889 4.36667 0
+              5.51889 4.9 0
+              5.93 4.68889 0
+              5.99667 5.05556 0
+              6.44111 4.8 0
+              6.53 5.11111 0
+              6.79667 4.74444 0
+              7.05222 5.05556 0
+              7.11889 4.58889 0
+              7.38556 4.33333 0
+              7.53 4.93333 0
+              7.61889 4.02222 0
+              7.91889 3.18889 0
+              7.95222 4.71111 0
+              8.31889 4.42222 0
+              8.43 0.78889 0
+              8.61889 4.05556 0
+              8.84111 3.61111 0
+              8.87444 1.65556 0
+              8.97444 3.1 0
+              9.03 2.53333 0
+              9.13 2.53333 0
+              9.17444 1.98889 0
+              9.28556 3.51111 0
+              9.30778 1.47778 0
+              9.49667 3.94444 0
+              9.51889 1.03333 0
+              9.76333 4.33333 0
+              9.80778 0.64444 0
+              10.1078 4.65556 0
+              10.13 3.06667 0
+              10.1633 0.32222 0
+              10.1856 2.26667 0
+              10.4189 1.32222 0
+              10.5744 0.08889 0
+              10.63 0.88889 0
+              10.9078 0.52222 0
+              11.0411 -0.06667 0
+              11.2633 0.28889 0
+              11.5633 -0.11111 0
+              11.7189 0.2 0
+              12.1522 -0.04444 0
+              12.1522 0.28889 0
+              12.5856 0.6 0
+              12.6522 0.14444 0
+              12.7633 0.86667 0
+              12.8967 1.22222 0
+              13.0856 0.43333 0
+              12.9967 1.66667 0
+              13.03 2.21111 0
+              10.23 3.82222 0
+              10.5189 4.36667 0
+              10.5189 4.9 0
+              10.93 4.68889 0
+              10.9967 5.05556 0
+              11.4411 4.8 0
+              11.53 5.11111 0
+              11.7967 4.74444 0
+              12.0522 5.05556 0
+              12.1189 4.58889 0
+              12.3856 4.33333 0
+              12.53 4.93333 0
+              12.6189 4.02222 0
+              12.9189 3.18889 0
+              12.9522 4.71111 0
+              13.3189 4.42222 0
+              13.43 0.78889 0
+              13.6189 4.05556 0
+              13.8411 3.61111 0
+              13.8744 1.65556 0
+              13.9744 3.1 0
+              14.03 2.53333 0
+              14.1744 5.93333 0
+              14.13 6.57778 0
+              14.1411 6.31111 0
+              14.2411 7.2 0
+              14.3078 4.96667 0
+              14.4189 7.42222 0
+              14.4411 3.94444 0
+              14.4967 3.5 0
+              14.5411 3.15556 0
+              14.6411 1.95556 0
+              14.7078 7.51111 0
+              14.7856 1.95556 0
+              15.03 7.41111 0
+              15.23 7.13333 0
+              15.2856 6.21111 0
+              15.3078 6.72222 0
+              14.1856 0.2 0
+              14.1744 0.7 0
+              14.13 0.46667 0
+              14.2967 0.88889 0
+              14.33 0.02222 0
+              14.4856 1.01111 0
+              14.7189 -0.1 0
+              14.7189 1.06667 0
+              14.9522 1.01111 0
+              15.1189 0.03333 0
+              15.1522 0.87778 0
+              15.2633 0.2 0
+              15.2744 0.68889 0
+              15.33 0.46667 0
+              0.73333 0.34444 0
+              0.87778 0.64444 0
+              0.87778 0.64444 -1
+              0.73333 0.34444 -1
+              0.87778 0.64444 0
+              0.92222 1.15556 0
+              0.92222 1.15556 -1
+              0.87778 0.64444 -1
+              0.92222 1.15556 0
+              0.92222 4.64444 0
+              0.92222 4.64444 -1
+              0.92222 1.15556 -1
+              0.92222 4.64444 0
+              0.01111 4.64444 0
+              0.01111 4.64444 -1
+              0.92222 4.64444 -1
+              0.01111 4.64444 0
+              0.01111 5 0
+              0.01111 5 -1
+              0.01111 4.64444 -1
+              0.01111 5 0
+              0.92222 5 0
+              0.92222 5 -1
+              0.01111 5 -1
+              0.92222 5 0
+              0.92222 4.64444 0
+              0.92222 4.64444 -1
+              0.92222 5 -1
+              2.28889 0.23333 0
+              2.88889 0.16667 0
+              2.88889 0.16667 -1
+              2.28889 0.23333 -1
+              2.88889 0.16667 0
+              2.88889 0 0
+              2.88889 0 -1
+              2.88889 0.16667 -1
+              2.88889 0 0
+              0 0 0
+              0 0 -1
+              2.88889 0 -1
+              0 0 0
+              0 0.16667 0
+              0 0.16667 -1
+              0 0 -1
+              0 0.16667 0
+              0.44444 0.21111 0
+              0.44444 0.21111 -1
+              0 0.16667 -1
+              0.44444 0.21111 0
+              0.73333 0.34444 0
+              0.73333 0.34444 -1
+              0.44444 0.21111 -1
+              0.92222 5.28889 0
+              0.92222 5.28889 -1
+              0.92222 5.28889 0
+              0.94444 5.66667 0
+              0.94444 5.66667 -1
+              0.92222 5.28889 -1
+              0.94444 5.66667 0
+              1.16667 6.52222 0
+              1.16667 6.52222 -1
+              0.94444 5.66667 -1
+              1.16667 6.52222 0
+              1.4 6.93333 0
+              1.4 6.93333 -1
+              1.16667 6.52222 -1
+              1.4 6.93333 0
+              1.75556 7.26667 0
+              1.75556 7.26667 -1
+              1.4 6.93333 -1
+              3.94444 7.16667 0
+              4.03333 6.91111 0
+              4.03333 6.91111 -1
+              3.94444 7.16667 -1
+              4.03333 6.91111 0
+              3.98889 6.7 0
+              3.98889 6.7 -1
+              4.03333 6.91111 -1
+              3.98889 6.7 0
+              3.87778 6.55556 0
+              3.87778 6.55556 -1
+              3.98889 6.7 -1
+              3.87778 6.55556 0
+              3.55556 6.44444 0
+              3.55556 6.44444 -1
+              3.87778 6.55556 -1
+              3.55556 6.44444 0
+              2.51111 7.27778 0
+              2.51111 7.27778 -1
+              3.55556 6.44444 -1
+              2.51111 7.27778 0
+              2.14444 7.17778 0
+              2.14444 7.17778 -1
+              2.51111 7.27778 -1
+              2.14444 7.17778 0
+              1.94444 6.93333 0
+              1.94444 6.93333 -1
+              2.14444 7.17778 -1
+              1.94444 6.93333 0
+              1.84444 6.28889 0
+              1.84444 6.28889 -1
+              1.94444 6.93333 -1
+              1.84444 6.28889 0
+              1.84444 5 0
+              1.84444 5 -1
+              1.84444 6.28889 -1
+              1.84444 5 0
+              3.21111 5 0
+              3.21111 5 -1
+              1.84444 5 -1
+              3.21111 5 0
+              3.21111 4.64444 0
+              3.21111 4.64444 -1
+              3.21111 5 -1
+              3.21111 4.64444 0
+              1.85556 4.64444 0
+              1.85556 4.64444 -1
+              3.21111 4.64444 -1
+              1.85556 4.64444 0
+              1.85556 1.15556 0
+              1.85556 1.15556 -1
+              1.85556 4.64444 -1
+              1.85556 1.15556 0
+              1.86667 0.71111 0
+              1.86667 0.71111 -1
+              1.85556 1.15556 -1
+              1.86667 0.71111 0
+              1.98889 0.41111 0
+              1.98889 0.41111 -1
+              1.86667 0.71111 -1
+              1.98889 0.41111 0
+              2.28889 0.23333 0
+              2.28889 0.23333 -1
+              1.98889 0.41111 -1
+              1.75556 7.26667 0
+              2.25556 7.5 0
+              2.25556 7.5 -1
+              1.75556 7.26667 -1
+              2.25556 7.5 0
+              2.92222 7.58889 0
+              2.92222 7.58889 -1
+              2.25556 7.5 -1
+              2.92222 7.58889 0
+              3.35556 7.53333 0
+              3.35556 7.53333 -1
+              2.92222 7.58889 -1
+              3.35556 7.53333 0
+              3.71111 7.38889 0
+              3.71111 7.38889 -1
+              3.35556 7.53333 -1
+              3.71111 7.38889 0
+              3.94444 7.16667 0
+              3.94444 7.16667 -1
+              3.71111 7.38889 -1
+              8.97444 3.1 0
+              9.03 2.53333 0
+              9.03 2.53333 -1
+              8.97444 3.1 -1
+              9.03 2.53333 0
+              8.87444 1.65556 0
+              8.87444 1.65556 -1
+              9.03 2.53333 -1
+              8.87444 1.65556 0
+              8.43 0.78889 0
+              8.43 0.78889 -1
+              8.87444 1.65556 -1
+              8.43 0.78889 0
+              8.08556 0.43333 0
+              8.08556 0.43333 -1
+              8.43 0.78889 -1
+              8.08556 0.43333 0
+              7.65222 0.14444 0
+              7.65222 0.14444 -1
+              8.08556 0.43333 -1
+              7.65222 0.14444 0
+              7.15222 -0.04444 0
+              7.15222 -0.04444 -1
+              7.65222 0.14444 -1
+              7.15222 -0.04444 0
+              6.56333 -0.11111 0
+              6.56333 -0.11111 -1
+              7.15222 -0.04444 -1
+              6.56333 -0.11111 0
+              6.04111 -0.06667 0
+              6.04111 -0.06667 -1
+              6.56333 -0.11111 -1
+              6.04111 -0.06667 0
+              5.57444 0.08889 0
+              5.57444 0.08889 -1
+              6.04111 -0.06667 -1
+              5.57444 0.08889 0
+              5.16333 0.32222 0
+              5.16333 0.32222 -1
+              5.57444 0.08889 -1
+              5.16333 0.32222 0
+              4.80778 0.64444 0
+              4.80778 0.64444 -1
+              5.16333 0.32222 -1
+              4.80778 0.64444 0
+              4.51889 1.03333 0
+              4.51889 1.03333 -1
+              4.80778 0.64444 -1
+              4.51889 1.03333 0
+              4.30778 1.47778 0
+              4.30778 1.47778 -1
+              4.51889 1.03333 -1
+              4.30778 1.47778 0
+              4.17444 1.98889 0
+              4.17444 1.98889 -1
+              4.30778 1.47778 -1
+              4.17444 1.98889 0
+              4.13 2.53333 0
+              4.13 2.53333 -1
+              4.17444 1.98889 -1
+              4.13 2.53333 0
+              4.28556 3.51111 0
+              4.28556 3.51111 -1
+              4.13 2.53333 -1
+              4.28556 3.51111 0
+              4.49667 3.94444 0
+              4.49667 3.94444 -1
+              4.28556 3.51111 -1
+              4.49667 3.94444 0
+              4.76333 4.33333 0
+              4.76333 4.33333 -1
+              4.49667 3.94444 -1
+              4.76333 4.33333 0
+              5.10778 4.65556 0
+              5.10778 4.65556 -1
+              4.76333 4.33333 -1
+              8.03 2.21111 0
+              7.91889 3.18889 0
+              7.91889 3.18889 -1
+              8.03 2.21111 -1
+              7.91889 3.18889 0
+              7.61889 4.02222 0
+              7.61889 4.02222 -1
+              7.91889 3.18889 -1
+              7.61889 4.02222 0
+              7.38556 4.33333 0
+              7.38556 4.33333 -1
+              7.61889 4.02222 -1
+              7.38556 4.33333 0
+              7.11889 4.58889 0
+              7.11889 4.58889 -1
+              7.38556 4.33333 -1
+              7.11889 4.58889 0
+              6.79667 4.74444 0
+              6.79667 4.74444 -1
+              7.11889 4.58889 -1
+              6.79667 4.74444 0
+              6.44111 4.8 0
+              6.44111 4.8 -1
+              6.79667 4.74444 -1
+              6.44111 4.8 0
+              5.93 4.68889 0
+              5.93 4.68889 -1
+              6.44111 4.8 -1
+              5.93 4.68889 0
+              5.51889 4.36667 0
+              5.51889 4.36667 -1
+              5.93 4.68889 -1
+              5.51889 4.36667 0
+              5.23 3.82222 0
+              5.23 3.82222 -1
+              5.51889 4.36667 -1
+              5.23 3.82222 0
+              5.13 3.06667 0
+              5.13 3.06667 -1
+              5.23 3.82222 -1
+              5.13 3.06667 0
+              5.18556 2.26667 0
+              5.18556 2.26667 -1
+              5.13 3.06667 -1
+              5.18556 2.26667 0
+              5.41889 1.32222 0
+              5.41889 1.32222 -1
+              5.18556 2.26667 -1
+              5.41889 1.32222 0
+              5.63 0.88889 0
+              5.63 0.88889 -1
+              5.41889 1.32222 -1
+              5.63 0.88889 0
+              5.90778 0.52222 0
+              5.90778 0.52222 -1
+              5.63 0.88889 -1
+              5.90778 0.52222 0
+              6.26333 0.28889 0
+              6.26333 0.28889 -1
+              5.90778 0.52222 -1
+              6.26333 0.28889 0
+              6.71889 0.2 0
+              6.71889 0.2 -1
+              6.26333 0.28889 -1
+              6.71889 0.2 0
+              7.15222 0.28889 0
+              7.15222 0.28889 -1
+              6.71889 0.2 -1
+              7.15222 0.28889 0
+              7.58556 0.6 0
+              7.58556 0.6 -1
+              7.15222 0.28889 -1
+              7.58556 0.6 0
+              7.76333 0.86667 0
+              7.76333 0.86667 -1
+              7.58556 0.6 -1
+              7.76333 0.86667 0
+              7.89667 1.22222 0
+              7.89667 1.22222 -1
+              7.76333 0.86667 -1
+              7.89667 1.22222 0
+              7.99667 1.66667 0
+              7.99667 1.66667 -1
+              7.89667 1.22222 -1
+              7.99667 1.66667 0
+              8.03 2.21111 0
+              8.03 2.21111 -1
+              7.99667 1.66667 -1
+              5.10778 4.65556 0
+              5.51889 4.9 0
+              5.51889 4.9 -1
+              5.10778 4.65556 -1
+              5.51889 4.9 0
+              5.99667 5.05556 0
+              5.99667 5.05556 -1
+              5.51889 4.9 -1
+              5.99667 5.05556 0
+              6.53 5.11111 0
+              6.53 5.11111 -1
+              5.99667 5.05556 -1
+              6.53 5.11111 0
+              7.05222 5.05556 0
+              7.05222 5.05556 -1
+              6.53 5.11111 -1
+              7.05222 5.05556 0
+              7.53 4.93333 0
+              7.53 4.93333 -1
+              7.05222 5.05556 -1
+              7.53 4.93333 0
+              7.95222 4.71111 0
+              7.95222 4.71111 -1
+              7.53 4.93333 -1
+              7.95222 4.71111 0
+              8.31889 4.42222 0
+              8.31889 4.42222 -1
+              7.95222 4.71111 -1
+              8.31889 4.42222 0
+              8.61889 4.05556 0
+              8.61889 4.05556 -1
+              8.31889 4.42222 -1
+              8.61889 4.05556 0
+              8.84111 3.61111 0
+              8.84111 3.61111 -1
+              8.61889 4.05556 -1
+              8.84111 3.61111 0
+              8.97444 3.1 0
+              8.97444 3.1 -1
+              8.84111 3.61111 -1
+              13.9744 3.1 0
+              14.03 2.53333 0
+              14.03 2.53333 -1
+              13.9744 3.1 -1
+              14.03 2.53333 0
+              13.8744 1.65556 0
+              13.8744 1.65556 -1
+              14.03 2.53333 -1
+              13.8744 1.65556 0
+              13.43 0.78889 0
+              13.43 0.78889 -1
+              13.8744 1.65556 -1
+              13.43 0.78889 0
+              13.0856 0.43333 0
+              13.0856 0.43333 -1
+              13.43 0.78889 -1
+              13.0856 0.43333 0
+              12.6522 0.14444 0
+              12.6522 0.14444 -1
+              13.0856 0.43333 -1
+              12.6522 0.14444 0
+              12.1522 -0.04444 0
+              12.1522 -0.04444 -1
+              12.6522 0.14444 -1
+              12.1522 -0.04444 0
+              11.5633 -0.11111 0
+              11.5633 -0.11111 -1
+              12.1522 -0.04444 -1
+              11.5633 -0.11111 0
+              11.0411 -0.06667 0
+              11.0411 -0.06667 -1
+              11.5633 -0.11111 -1
+              11.0411 -0.06667 0
+              10.5744 0.08889 0
+              10.5744 0.08889 -1
+              11.0411 -0.06667 -1
+              10.5744 0.08889 0
+              10.1633 0.32222 0
+              10.1633 0.32222 -1
+              10.5744 0.08889 -1
+              10.1633 0.32222 0
+              9.80778 0.64444 0
+              9.80778 0.64444 -1
+              10.1633 0.32222 -1
+              9.80778 0.64444 0
+              9.51889 1.03333 0
+              9.51889 1.03333 -1
+              9.80778 0.64444 -1
+              9.51889 1.03333 0
+              9.30778 1.47778 0
+              9.30778 1.47778 -1
+              9.51889 1.03333 -1
+              9.30778 1.47778 0
+              9.17444 1.98889 0
+              9.17444 1.98889 -1
+              9.30778 1.47778 -1
+              9.17444 1.98889 0
+              9.13 2.53333 0
+              9.13 2.53333 -1
+              9.17444 1.98889 -1
+              9.13 2.53333 0
+              9.28556 3.51111 0
+              9.28556 3.51111 -1
+              9.13 2.53333 -1
+              9.28556 3.51111 0
+              9.49667 3.94444 0
+              9.49667 3.94444 -1
+              9.28556 3.51111 -1
+              9.49667 3.94444 0
+              9.76333 4.33333 0
+              9.76333 4.33333 -1
+              9.49667 3.94444 -1
+              9.76333 4.33333 0
+              10.1078 4.65556 0
+              10.1078 4.65556 -1
+              9.76333 4.33333 -1
+              13.03 2.21111 0
+              12.9189 3.18889 0
+              12.9189 3.18889 -1
+              13.03 2.21111 -1
+              12.9189 3.18889 0
+              12.6189 4.02222 0
+              12.6189 4.02222 -1
+              12.9189 3.18889 -1
+              12.6189 4.02222 0
+              12.3856 4.33333 0
+              12.3856 4.33333 -1
+              12.6189 4.02222 -1
+              12.3856 4.33333 0
+              12.1189 4.58889 0
+              12.1189 4.58889 -1
+              12.3856 4.33333 -1
+              12.1189 4.58889 0
+              11.7967 4.74444 0
+              11.7967 4.74444 -1
+              12.1189 4.58889 -1
+              11.7967 4.74444 0
+              11.4411 4.8 0
+              11.4411 4.8 -1
+              11.7967 4.74444 -1
+              11.4411 4.8 0
+              10.93 4.68889 0
+              10.93 4.68889 -1
+              11.4411 4.8 -1
+              10.93 4.68889 0
+              10.5189 4.36667 0
+              10.5189 4.36667 -1
+              10.93 4.68889 -1
+              10.5189 4.36667 0
+              10.23 3.82222 0
+              10.23 3.82222 -1
+              10.5189 4.36667 -1
+              10.23 3.82222 0
+              10.13 3.06667 0
+              10.13 3.06667 -1
+              10.23 3.82222 -1
+              10.13 3.06667 0
+              10.1856 2.26667 0
+              10.1856 2.26667 -1
+              10.13 3.06667 -1
+              10.1856 2.26667 0
+              10.4189 1.32222 0
+              10.4189 1.32222 -1
+              10.1856 2.26667 -1
+              10.4189 1.32222 0
+              10.63 0.88889 0
+              10.63 0.88889 -1
+              10.4189 1.32222 -1
+              10.63 0.88889 0
+              10.9078 0.52222 0
+              10.9078 0.52222 -1
+              10.63 0.88889 -1
+              10.9078 0.52222 0
+              11.2633 0.28889 0
+              11.2633 0.28889 -1
+              10.9078 0.52222 -1
+              11.2633 0.28889 0
+              11.7189 0.2 0
+              11.7189 0.2 -1
+              11.2633 0.28889 -1
+              11.7189 0.2 0
+              12.1522 0.28889 0
+              12.1522 0.28889 -1
+              11.7189 0.2 -1
+              12.1522 0.28889 0
+              12.5856 0.6 0
+              12.5856 0.6 -1
+              12.1522 0.28889 -1
+              12.5856 0.6 0
+              12.7633 0.86667 0
+              12.7633 0.86667 -1
+              12.5856 0.6 -1
+              12.7633 0.86667 0
+              12.8967 1.22222 0
+              12.8967 1.22222 -1
+              12.7633 0.86667 -1
+              12.8967 1.22222 0
+              12.9967 1.66667 0
+              12.9967 1.66667 -1
+              12.8967 1.22222 -1
+              12.9967 1.66667 0
+              13.03 2.21111 0
+              13.03 2.21111 -1
+              12.9967 1.66667 -1
+              10.1078 4.65556 0
+              10.5189 4.9 0
+              10.5189 4.9 -1
+              10.1078 4.65556 -1
+              10.5189 4.9 0
+              10.9967 5.05556 0
+              10.9967 5.05556 -1
+              10.5189 4.9 -1
+              10.9967 5.05556 0
+              11.53 5.11111 0
+              11.53 5.11111 -1
+              10.9967 5.05556 -1
+              11.53 5.11111 0
+              12.0522 5.05556 0
+              12.0522 5.05556 -1
+              11.53 5.11111 -1
+              12.0522 5.05556 0
+              12.53 4.93333 0
+              12.53 4.93333 -1
+              12.0522 5.05556 -1
+              12.53 4.93333 0
+              12.9522 4.71111 0
+              12.9522 4.71111 -1
+              12.53 4.93333 -1
+              12.9522 4.71111 0
+              13.3189 4.42222 0
+              13.3189 4.42222 -1
+              12.9522 4.71111 -1
+              13.3189 4.42222 0
+              13.6189 4.05556 0
+              13.6189 4.05556 -1
+              13.3189 4.42222 -1
+              13.6189 4.05556 0
+              13.8411 3.61111 0
+              13.8411 3.61111 -1
+              13.6189 4.05556 -1
+              13.8411 3.61111 0
+              13.9744 3.1 0
+              13.9744 3.1 -1
+              13.8411 3.61111 -1
+              15.23 7.13333 0
+              15.3078 6.72222 0
+              15.3078 6.72222 -1
+              15.23 7.13333 -1
+              15.3078 6.72222 0
+              15.2856 6.21111 0
+              15.2856 6.21111 -1
+              15.3078 6.72222 -1
+              15.2856 6.21111 0
+              14.7856 1.95556 0
+              14.7856 1.95556 -1
+              15.2856 6.21111 -1
+              14.7856 1.95556 0
+              14.6411 1.95556 0
+              14.6411 1.95556 -1
+              14.7856 1.95556 -1
+              14.6411 1.95556 0
+              14.5411 3.15556 0
+              14.5411 3.15556 -1
+              14.6411 1.95556 -1
+              14.5411 3.15556 0
+              14.4967 3.5 0
+              14.4967 3.5 -1
+              14.5411 3.15556 -1
+              14.4967 3.5 0
+              14.4411 3.94444 0
+              14.4411 3.94444 -1
+              14.4967 3.5 -1
+              14.4411 3.94444 0
+              14.3078 4.96667 0
+              14.3078 4.96667 -1
+              14.4411 3.94444 -1
+              14.3078 4.96667 0
+              14.1744 5.93333 0
+              14.1744 5.93333 -1
+              14.3078 4.96667 -1
+              14.1744 5.93333 0
+              14.1411 6.31111 0
+              14.1411 6.31111 -1
+              14.1744 5.93333 -1
+              14.1411 6.31111 0
+              14.13 6.57778 0
+              14.13 6.57778 -1
+              14.1411 6.31111 -1
+              14.13 6.57778 0
+              14.2411 7.2 0
+              14.2411 7.2 -1
+              14.13 6.57778 -1
+              14.2411 7.2 0
+              14.4189 7.42222 0
+              14.4189 7.42222 -1
+              14.2411 7.2 -1
+              14.4189 7.42222 0
+              14.7078 7.51111 0
+              14.7078 7.51111 -1
+              14.4189 7.42222 -1
+              14.7078 7.51111 0
+              15.03 7.41111 0
+              15.03 7.41111 -1
+              14.7078 7.51111 -1
+              15.03 7.41111 0
+              15.23 7.13333 0
+              15.23 7.13333 -1
+              15.03 7.41111 -1
+              15.2744 0.68889 0
+              15.33 0.46667 0
+              15.33 0.46667 -1
+              15.2744 0.68889 -1
+              15.33 0.46667 0
+              15.2633 0.2 0
+              15.2633 0.2 -1
+              15.33 0.46667 -1
+              15.2633 0.2 0
+              15.1189 0.03333 0
+              15.1189 0.03333 -1
+              15.2633 0.2 -1
+              15.1189 0.03333 0
+              14.7189 -0.1 0
+              14.7189 -0.1 -1
+              15.1189 0.03333 -1
+              14.7189 -0.1 0
+              14.33 0.02222 0
+              14.33 0.02222 -1
+              14.7189 -0.1 -1
+              14.33 0.02222 0
+              14.1856 0.2 0
+              14.1856 0.2 -1
+              14.33 0.02222 -1
+              14.1856 0.2 0
+              14.13 0.46667 0
+              14.13 0.46667 -1
+              14.1856 0.2 -1
+              14.13 0.46667 0
+              14.1744 0.7 0
+              14.1744 0.7 -1
+              14.13 0.46667 -1
+              14.1744 0.7 0
+              14.2967 0.88889 0
+              14.2967 0.88889 -1
+              14.1744 0.7 -1
+              14.2967 0.88889 0
+              14.4856 1.01111 0
+              14.4856 1.01111 -1
+              14.2967 0.88889 -1
+              14.4856 1.01111 0
+              14.7189 1.06667 0
+              14.7189 1.06667 -1
+              14.4856 1.01111 -1
+              14.7189 1.06667 0
+              14.9522 1.01111 0
+              14.9522 1.01111 -1
+              14.7189 1.06667 -1
+              14.9522 1.01111 0
+              15.1522 0.87778 0
+              15.1522 0.87778 -1
+              14.9522 1.01111 -1
+              15.1522 0.87778 0
+              15.2744 0.68889 0
+              15.2744 0.68889 -1
+              15.1522 0.87778 -1
+              0.01111 4.64444 -1
+              0.01111 5 -1
+              0.92222 4.64444 -1
+              0.92222 5 -1
+              0.44444 0.21111 -1
+              0 0 -1
+              0 0.16667 -1
+              0.73333 0.34444 -1
+              0.92222 5.28889 -1
+              0.94444 5.66667 -1
+              0.92222 1.15556 -1
+              1.16667 6.52222 -1
+              1.4 6.93333 -1
+              1.75556 7.26667 -1
+              0.87778 0.64444 -1
+              1.84444 5 -1
+              1.85556 1.15556 -1
+              1.86667 0.71111 -1
+              1.98889 0.41111 -1
+              2.28889 0.23333 -1
+              2.88889 0 -1
+              2.88889 0.16667 -1
+              1.85556 4.64444 -1
+              3.21111 4.64444 -1
+              3.21111 5 -1
+              1.84444 6.28889 -1
+              1.94444 6.93333 -1
+              2.14444 7.17778 -1
+              2.25556 7.5 -1
+              2.51111 7.27778 -1
+              2.92222 7.58889 -1
+              3.35556 7.53333 -1
+              3.55556 6.44444 -1
+              3.71111 7.38889 -1
+              3.87778 6.55556 -1
+              3.94444 7.16667 -1
+              3.98889 6.7 -1
+              4.03333 6.91111 -1
+              4.28556 3.51111 -1
+              4.17444 1.98889 -1
+              4.13 2.53333 -1
+              4.30778 1.47778 -1
+              4.49667 3.94444 -1
+              4.51889 1.03333 -1
+              4.76333 4.33333 -1
+              4.80778 0.64444 -1
+              5.10778 4.65556 -1
+              5.13 3.06667 -1
+              5.16333 0.32222 -1
+              5.18556 2.26667 -1
+              5.41889 1.32222 -1
+              5.57444 0.08889 -1
+              5.63 0.88889 -1
+              5.90778 0.52222 -1
+              6.04111 -0.06667 -1
+              6.26333 0.28889 -1
+              6.56333 -0.11111 -1
+              6.71889 0.2 -1
+              7.15222 -0.04444 -1
+              7.15222 0.28889 -1
+              7.58556 0.6 -1
+              7.65222 0.14444 -1
+              7.76333 0.86667 -1
+              7.89667 1.22222 -1
+              8.08556 0.43333 -1
+              7.99667 1.66667 -1
+              8.03 2.21111 -1
+              5.23 3.82222 -1
+              5.51889 4.36667 -1
+              5.51889 4.9 -1
+              5.93 4.68889 -1
+              5.99667 5.05556 -1
+              6.44111 4.8 -1
+              6.53 5.11111 -1
+              6.79667 4.74444 -1
+              7.05222 5.05556 -1
+              7.11889 4.58889 -1
+              7.38556 4.33333 -1
+              7.53 4.93333 -1
+              7.61889 4.02222 -1
+              7.91889 3.18889 -1
+              7.95222 4.71111 -1
+              8.31889 4.42222 -1
+              8.43 0.78889 -1
+              8.61889 4.05556 -1
+              8.84111 3.61111 -1
+              8.87444 1.65556 -1
+              8.97444 3.1 -1
+              9.03 2.53333 -1
+              9.28556 3.51111 -1
+              9.17444 1.98889 -1
+              9.13 2.53333 -1
+              9.30778 1.47778 -1
+              9.49667 3.94444 -1
+              9.51889 1.03333 -1
+              9.76333 4.33333 -1
+              9.80778 0.64444 -1
+              10.1078 4.65556 -1
+              10.13 3.06667 -1
+              10.1633 0.32222 -1
+              10.1856 2.26667 -1
+              10.4189 1.32222 -1
+              10.5744 0.08889 -1
+              10.63 0.88889 -1
+              10.9078 0.52222 -1
+              11.0411 -0.06667 -1
+              11.2633 0.28889 -1
+              11.5633 -0.11111 -1
+              11.7189 0.2 -1
+              12.1522 -0.04444 -1
+              12.1522 0.28889 -1
+              12.5856 0.6 -1
+              12.6522 0.14444 -1
+              12.7633 0.86667 -1
+              12.8967 1.22222 -1
+              13.0856 0.43333 -1
+              12.9967 1.66667 -1
+              13.03 2.21111 -1
+              10.23 3.82222 -1
+              10.5189 4.36667 -1
+              10.5189 4.9 -1
+              10.93 4.68889 -1
+              10.9967 5.05556 -1
+              11.4411 4.8 -1
+              11.53 5.11111 -1
+              11.7967 4.74444 -1
+              12.0522 5.05556 -1
+              12.1189 4.58889 -1
+              12.3856 4.33333 -1
+              12.53 4.93333 -1
+              12.6189 4.02222 -1
+              12.9189 3.18889 -1
+              12.9522 4.71111 -1
+              13.3189 4.42222 -1
+              13.43 0.78889 -1
+              13.6189 4.05556 -1
+              13.8411 3.61111 -1
+              13.8744 1.65556 -1
+              13.9744 3.1 -1
+              14.03 2.53333 -1
+              14.1411 6.31111 -1
+              14.13 6.57778 -1
+              14.1744 5.93333 -1
+              14.2411 7.2 -1
+              14.3078 4.96667 -1
+              14.4189 7.42222 -1
+              14.4411 3.94444 -1
+              14.4967 3.5 -1
+              14.5411 3.15556 -1
+              14.6411 1.95556 -1
+              14.7078 7.51111 -1
+              14.7856 1.95556 -1
+              15.03 7.41111 -1
+              15.23 7.13333 -1
+              15.2856 6.21111 -1
+              15.3078 6.72222 -1
+              14.13 0.46667 -1
+              14.1744 0.7 -1
+              14.1856 0.2 -1
+              14.2967 0.88889 -1
+              14.33 0.02222 -1
+              14.4856 1.01111 -1
+              14.7189 -0.1 -1
+              14.7189 1.06667 -1
+              14.9522 1.01111 -1
+              15.1189 0.03333 -1
+              15.1522 0.87778 -1
+              15.2633 0.2 -1
+              15.2744 0.68889 -1
+              15.33 0.46667 -1
+            }
+            NormalBinding PER_VERTEX
+            NormalArray Vec3Array 1022
+            {
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              0 0 1
+              -0.900995 0.433829 0
+              -0.900995 0.433829 0
+              -0.900995 0.433829 0
+              -0.900995 0.433829 0
+              -0.996241 0.0866194 0
+              -0.996241 0.0866194 0
+              -0.996241 0.0866194 0
+              -0.996241 0.0866194 0
+              -1 0 0
+              -1 0 0
+              -1 0 0
+              -1 0 0
+              0 -1 0
+              0 -1 0
+              0 -1 0
+              0 -1 0
+              -1 0 0
+              -1 0 0
+              -1 0 0
+              -1 0 0
+              0 1 -0
+              0 1 -0
+              0 1 -0
+              0 1 -0
+              1 0 0
+              1 0 0
+              1 0 0
+              1 0 0
+              0.110421 0.993885 -0
+              0.110421 0.993885 -0
+              0.110421 0.993885 -0
+              0.110421 0.993885 -0
+              1 0 0
+              1 0 0
+              1 0 0
+              1 0 0
+              0 -1 0
+              0 -1 0
+              0 -1 0
+              0 -1 0
+              -1 0 0
+              -1 0 0
+              -1 0 0
+              -1 0 0
+              -0.0994949 0.995038 0
+              -0.0994949 0.995038 0
+              -0.0994949 0.995038 0
+              -0.0994949 0.995038 0
+              -0.419048 0.907964 0
+              -0.419048 0.907964 0
+              -0.419048 0.907964 0
+              -0.419048 0.907964 0
+              -1 0 0
+              -1 0 0
+              -0.998275 0.0587158 0
+              -0.998275 0.0587158 0
+              -0.998275 0.0587158 0
+              -0.998275 0.0587158 0
+              -0.967881 0.251408 0
+              -0.967881 0.251408 0
+              -0.967881 0.251408 0
+              -0.967881 0.251408 0
+              -0.869689 0.493601 0
+              -0.869689 0.493601 0
+              -0.869689 0.493601 0
+              -0.869689 0.493601 0
+              -0.683943 0.729535 0
+              -0.683943 0.729535 0
+              -0.683943 0.729535 0
+              -0.683943 0.729535 0
+              0.944497 0.32852 -0
+              0.944497 0.32852 -0
+              0.944497 0.32852 -0
+              0.944497 0.32852 -0
+              0.978554 -0.205992 0
+              0.978554 -0.205992 0
+              0.978554 -0.205992 0
+              0.978554 -0.205992 0
+              0.792618 -0.609719 0
+              0.792618 -0.609719 0
+              0.792618 -0.609719 0
+              0.792618 -0.609719 0
+              0.326017 -0.945364 0
+              0.326017 -0.945364 0
+              0.326017 -0.945364 0
+              0.326017 -0.945364 0
+              -0.623682 -0.781679 0
+              -0.623682 -0.781679 0
+              -0.623682 -0.781679 0
+              -0.623682 -0.781679 0
+              0.263115 -0.964764 0
+              0.263115 -0.964764 0
+              0.263115 -0.964764 0
+              0.263115 -0.964764 0
+              0.773964 -0.633229 0
+              0.773964 -0.633229 0
+              0.773964 -0.633229 0
+              0.773964 -0.633229 0
+              0.988174 -0.153338 0
+              0.988174 -0.153338 0
+              0.988174 -0.153338 0
+              0.988174 -0.153338 0
+              1 0 0
+              1 0 0
+              1 0 0
+              1 0 0
+              0 1 -0
+              0 1 -0
+              0 1 -0
+              0 1 -0
+              1 0 0
+              1 0 0
+              1 0 0
+              1 0 0
+              0 -1 0
+              0 -1 0
+              0 -1 0
+              0 -1 0
+              1 0 0
+              1 0 0
+              1 0 0
+              1 0 0
+              0.999688 0.0249894 -0
+              0.999688 0.0249894 -0
+              0.999688 0.0249894 -0
+              0.999688 0.0249894 -0
+              0.926095 0.377291 -0
+              0.926095 0.377291 -0
+              0.926095 0.377291 -0
+              0.926095 0.377291 -0
+              0.509807 0.860289 -0
+              0.509807 0.860289 -0
+              0.509807 0.860289 -0
+              0.509807 0.860289 -0
+              -0.422881 0.906185 0
+              -0.422881 0.906185 0
+              -0.422881 0.906185 0
+              -0.422881 0.906185 0
+              -0.132167 0.991228 0
+              -0.132167 0.991228 0
+              -0.132167 0.991228 0
+              -0.132167 0.991228 0
+              0.127173 0.991881 -0
+              0.127173 0.991881 -0
+              0.127173 0.991881 -0
+              0.127173 0.991881 -0
+              0.376372 0.926469 -0
+              0.376372 0.926469 -0
+              0.376372 0.926469 -0
+              0.376372 0.926469 -0
+              0.689657 0.724136 -0
+              0.689657 0.724136 -0
+              0.689657 0.724136 -0
+              0.689657 0.724136 -0
+              0.995228 0.0975789 -0
+              0.995228 0.0975789 -0
+              0.995228 0.0975789 -0
+              0.995228 0.0975789 -0
+              0.984657 -0.174503 0
+              0.984657 -0.174503 0
+              0.984657 -0.174503 0
+              0.984657 -0.174503 0
+              0.88982 -0.456312 0
+              0.88982 -0.456312 0
+              0.88982 -0.456312 0
+              0.88982 -0.456312 0
+              0.718249 -0.695786 0
+              0.718249 -0.695786 0
+              0.718249 -0.695786 0
+              0.718249 -0.695786 0
+              0.554696 -0.832053 0
+              0.554696 -0.832053 0
+              0.554696 -0.832053 0
+              0.554696 -0.832053 0
+              0.353386 -0.935477 0
+              0.353386 -0.935477 0
+              0.353386 -0.935477 0
+              0.353386 -0.935477 0
+              0.112494 -0.993652 0
+              0.112494 -0.993652 0
+              0.112494 -0.993652 0
+              0.112494 -0.993652 0
+              -0.0847918 -0.996399 0
+              -0.0847918 -0.996399 0
+              -0.0847918 -0.996399 0
+              -0.0847918 -0.996399 0
+              -0.316234 -0.948681 0
+              -0.316234 -0.948681 0
+              -0.316234 -0.948681 0
+              -0.316234 -0.948681 0
+              -0.493601 -0.869688 0
+              -0.493601 -0.869688 0
+              -0.493601 -0.869688 0
+              -0.493601 -0.869688 0
+              -0.671523 -0.740984 0
+              -0.671523 -0.740984 0
+              -0.671523 -0.740984 0
+              -0.671523 -0.740984 0
+              -0.802743 -0.596324 0
+              -0.802743 -0.596324 0
+              -0.802743 -0.596324 0
+              -0.802743 -0.596324 0
+              -0.903281 -0.429051 0
+              -0.903281 -0.429051 0
+              -0.903281 -0.429051 0
+              -0.903281 -0.429051 0
+              -0.967614 -0.252434 0
+              -0.967614 -0.252434 0
+              -0.967614 -0.252434 0
+              -0.967614 -0.252434 0
+              -0.996685 -0.0813546 0
+              -0.996685 -0.0813546 0
+              -0.996685 -0.0813546 0
+              -0.996685 -0.0813546 0
+              -0.98758 0.157119 0
+              -0.98758 0.157119 0
+              -0.98758 0.157119 0
+              -0.98758 0.157119 0
+              -0.898989 0.43797 0
+              -0.898989 0.43797 0
+              -0.898989 0.43797 0
+              -0.898989 0.43797 0
+              -0.824736 0.565517 0
+              -0.824736 0.565517 0
+              -0.824736 0.565517 0
+              -0.824736 0.565517 0
+              -0.68316 0.730269 0
+              -0.68316 0.730269 0
+              -0.68316 0.730269 0
+              -0.68316 0.730269 0
+              -0.993605 -0.112908 0
+              -0.993605 -0.112908 0
+              -0.993605 -0.112908 0
+              -0.993605 -0.112908 0
+              -0.940887 -0.338721 0
+              -0.940887 -0.338721 0
+              -0.940887 -0.338721 0
+              -0.940887 -0.338721 0
+              -0.800003 -0.599996 0
+              -0.800003 -0.599996 0
+              -0.800003 -0.599996 0
+              -0.800003 -0.599996 0
+              -0.691907 -0.721987 0
+              -0.691907 -0.721987 0
+              -0.691907 -0.721987 0
+              -0.691907 -0.721987 0
+              -0.434739 -0.900557 0
+              -0.434739 -0.900557 0
+              -0.434739 -0.900557 0
+              -0.434739 -0.900557 0
+              -0.154387 -0.98801 0
+              -0.154387 -0.98801 0
+              -0.154387 -0.98801 0
+              -0.154387 -0.98801 0
+              0.212428 -0.977177 0
+              0.212428 -0.977177 0
+              0.212428 -0.977177 0
+              0.212428 -0.977177 0
+              0.61688 -0.787057 0
+              0.61688 -0.787057 0
+              0.61688 -0.787057 0
+              0.61688 -0.787057 0
+              0.88335 -0.468714 0
+              0.88335 -0.468714 0
+              0.88335 -0.468714 0
+              0.88335 -0.468714 0
+              0.991355 -0.13121 0
+              0.991355 -0.13121 0
+              0.991355 -0.13121 0
+              0.991355 -0.13121 0
+              0.997597 0.0692831 -0
+              0.997597 0.0692831 -0
+              0.997597 0.0692831 -0
+              0.997597 0.0692831 -0
+              0.970812 0.239843 -0
+              0.970812 0.239843 -0
+              0.970812 0.239843 -0
+              0.970812 0.239843 -0
+              0.898989 0.437971 -0
+              0.898989 0.437971 -0
+              0.898989 0.437971 -0
+              0.898989 0.437971 -0
+              0.797093 0.603857 -0
+              0.797093 0.603857 -0
+              0.797093 0.603857 -0
+              0.797093 0.603857 -0
+              0.548657 0.836048 -0
+              0.548657 0.836048 -0
+              0.548657 0.836048 -0
+              0.548657 0.836048 -0
+              0.191511 0.98149 -0
+              0.191511 0.98149 -0
+              0.191511 0.98149 -0
+              0.191511 0.98149 -0
+              -0.200948 0.979602 0
+              -0.200948 0.979602 0
+              -0.200948 0.979602 0
+              -0.200948 0.979602 0
+              -0.5832 0.812329 0
+              -0.5832 0.812329 0
+              -0.5832 0.812329 0
+              -0.5832 0.812329 0
+              -0.832065 0.554678 0
+              -0.832065 0.554678 0
+              -0.832065 0.554678 0
+              -0.832065 0.554678 0
+              -0.936321 0.351144 0
+              -0.936321 0.351144 0
+              -0.936321 0.351144 0
+              -0.936321 0.351144 0
+              -0.97561 0.21951 0
+              -0.97561 0.21951 0
+              -0.97561 0.21951 0
+              -0.97561 0.21951 0
+              -0.998131 0.061104 0
+              -0.998131 0.061104 0
+              -0.998131 0.061104 0
+              -0.998131 0.061104 0
+              -0.51107 0.859539 0
+              -0.51107 0.859539 0
+              -0.51107 0.859539 0
+              -0.51107 0.859539 0
+              -0.309592 0.950869 0
+              -0.309592 0.950869 0
+              -0.309592 0.950869 0
+              -0.309592 0.950869 0
+              -0.103597 0.994619 0
+              -0.103597 0.994619 0
+              -0.103597 0.994619 0
+              -0.103597 0.994619 0
+              0.105777 0.99439 -0
+              0.105777 0.99439 -0
+              0.105777 0.99439 -0
+              0.105777 0.99439 -0
+              0.247846 0.968799 -0
+              0.247846 0.968799 -0
+              0.247846 0.968799 -0
+              0.247846 0.968799 -0
+              0.465745 0.884919 -0
+              0.465745 0.884919 -0
+              0.465745 0.884919 -0
+              0.465745 0.884919 -0
+              0.61887 0.785493 -0
+              0.61887 0.785493 -0
+              0.61887 0.785493 -0
+              0.61887 0.785493 -0
+              0.773952 0.633245 -0
+              0.773952 0.633245 -0
+              0.773952 0.633245 -0
+              0.773952 0.633245 -0
+              0.894431 0.447206 -0
+              0.894431 0.447206 -0
+              0.894431 0.447206 -0
+              0.894431 0.447206 -0
+              0.967619 0.252416 -0
+              0.967619 0.252416 -0
+              0.967619 0.252416 -0
+              0.967619 0.252416 -0
+              0.995228 0.0975789 -0
+              0.995228 0.0975789 -0
+              0.995228 0.0975789 -0
+              0.995228 0.0975789 -0
+              0.984657 -0.174503 0
+              0.984657 -0.174503 0
+              0.984657 -0.174503 0
+              0.984657 -0.174503 0
+              0.88982 -0.456312 0
+              0.88982 -0.456312 0
+              0.88982 -0.456312 0
+              0.88982 -0.456312 0
+              0.718249 -0.695786 0
+              0.718249 -0.695786 0
+              0.718249 -0.695786 0
+              0.718249 -0.695786 0
+              0.554696 -0.832053 0
+              0.554696 -0.832053 0
+              0.554696 -0.832053 0
+              0.554696 -0.832053 0
+              0.353386 -0.935477 0
+              0.353386 -0.935477 0
+              0.353386 -0.935477 0
+              0.353386 -0.935477 0
+              0.112494 -0.993652 0
+              0.112494 -0.993652 0
+              0.112494 -0.993652 0
+              0.112494 -0.993652 0
+              -0.0847918 -0.996399 0
+              -0.0847918 -0.996399 0
+              -0.0847918 -0.996399 0
+              -0.0847918 -0.996399 0
+              -0.316234 -0.948681 0
+              -0.316234 -0.948681 0
+              -0.316234 -0.948681 0
+              -0.316234 -0.948681 0
+              -0.493601 -0.869688 0
+              -0.493601 -0.869688 0
+              -0.493601 -0.869688 0
+              -0.493601 -0.869688 0
+              -0.671523 -0.740984 0
+              -0.671523 -0.740984 0
+              -0.671523 -0.740984 0
+              -0.671523 -0.740984 0
+              -0.802743 -0.596324 0
+              -0.802743 -0.596324 0
+              -0.802743 -0.596324 0
+              -0.802743 -0.596324 0
+              -0.903281 -0.429051 0
+              -0.903281 -0.429051 0
+              -0.903281 -0.429051 0
+              -0.903281 -0.429051 0
+              -0.967614 -0.252434 0
+              -0.967614 -0.252434 0
+              -0.967614 -0.252434 0
+              -0.967614 -0.252434 0
+              -0.996685 -0.0813546 0
+              -0.996685 -0.0813546 0
+              -0.996685 -0.0813546 0
+              -0.996685 -0.0813546 0
+              -0.98758 0.157119 0
+              -0.98758 0.157119 0
+              -0.98758 0.157119 0
+              -0.98758 0.157119 0
+              -0.898989 0.43797 0
+              -0.898989 0.43797 0
+              -0.898989 0.43797 0
+              -0.898989 0.43797 0
+              -0.824736 0.565517 0
+              -0.824736 0.565517 0
+              -0.824736 0.565517 0
+              -0.824736 0.565517 0
+              -0.68316 0.730269 0
+              -0.68316 0.730269 0
+              -0.68316 0.730269 0
+              -0.68316 0.730269 0
+              -0.993605 -0.112908 0
+              -0.993605 -0.112908 0
+              -0.993605 -0.112908 0
+              -0.993605 -0.112908 0
+              -0.940887 -0.338721 0
+              -0.940887 -0.338721 0
+              -0.940887 -0.338721 0
+              -0.940887 -0.338721 0
+              -0.800003 -0.599996 0
+              -0.800003 -0.599996 0
+              -0.800003 -0.599996 0
+              -0.800003 -0.599996 0
+              -0.691907 -0.721987 0
+              -0.691907 -0.721987 0
+              -0.691907 -0.721987 0
+              -0.691907 -0.721987 0
+              -0.434739 -0.900557 0
+              -0.434739 -0.900557 0
+              -0.434739 -0.900557 0
+              -0.434739 -0.900557 0
+              -0.154387 -0.98801 0
+              -0.154387 -0.98801 0
+              -0.154387 -0.98801 0
+              -0.154387 -0.98801 0
+              0.212428 -0.977177 0
+              0.212428 -0.977177 0
+              0.212428 -0.977177 0
+              0.212428 -0.977177 0
+              0.61688 -0.787057 0
+              0.61688 -0.787057 0
+              0.61688 -0.787057 0
+              0.61688 -0.787057 0
+              0.88335 -0.468714 0
+              0.88335 -0.468714 0
+              0.88335 -0.468714 0
+              0.88335 -0.468714 0
+              0.991355 -0.13121 0
+              0.991355 -0.13121 0
+              0.991355 -0.13121 0
+              0.991355 -0.13121 0
+              0.997597 0.0692831 -0
+              0.997597 0.0692831 -0
+              0.997597 0.0692831 -0
+              0.997597 0.0692831 -0
+              0.970812 0.239843 -0
+              0.970812 0.239843 -0
+              0.970812 0.239843 -0
+              0.970812 0.239843 -0
+              0.898989 0.437971 -0
+              0.898989 0.437971 -0
+              0.898989 0.437971 -0
+              0.898989 0.437971 -0
+              0.797093 0.603857 -0
+              0.797093 0.603857 -0
+              0.797093 0.603857 -0
+              0.797093 0.603857 -0
+              0.548657 0.836048 -0
+              0.548657 0.836048 -0
+              0.548657 0.836048 -0
+              0.548657 0.836048 -0
+              0.191511 0.98149 -0
+              0.191511 0.98149 -0
+              0.191511 0.98149 -0
+              0.191511 0.98149 -0
+              -0.200948 0.979602 0
+              -0.200948 0.979602 0
+              -0.200948 0.979602 0
+              -0.200948 0.979602 0
+              -0.5832 0.812329 0
+              -0.5832 0.812329 0
+              -0.5832 0.812329 0
+              -0.5832 0.812329 0
+              -0.832065 0.554678 0
+              -0.832065 0.554678 0
+              -0.832065 0.554678 0
+              -0.832065 0.554678 0
+              -0.936321 0.351144 0
+              -0.936321 0.351144 0
+              -0.936321 0.351144 0
+              -0.936321 0.351144 0
+              -0.97561 0.21951 0
+              -0.97561 0.21951 0
+              -0.97561 0.21951 0
+              -0.97561 0.21951 0
+              -0.998131 0.061104 0
+              -0.998131 0.061104 0
+              -0.998131 0.061104 0
+              -0.998131 0.061104 0
+              -0.51107 0.859539 0
+              -0.51107 0.859539 0
+              -0.51107 0.859539 0
+              -0.51107 0.859539 0
+              -0.309592 0.950869 0
+              -0.309592 0.950869 0
+              -0.309592 0.950869 0
+              -0.309592 0.950869 0
+              -0.103597 0.994619 0
+              -0.103597 0.994619 0
+              -0.103597 0.994619 0
+              -0.103597 0.994619 0
+              0.105777 0.99439 -0
+              0.105777 0.99439 -0
+              0.105777 0.99439 -0
+              0.105777 0.99439 -0
+              0.247846 0.968799 -0
+              0.247846 0.968799 -0
+              0.247846 0.968799 -0
+              0.247846 0.968799 -0
+              0.465745 0.884919 -0
+              0.465745 0.884919 -0
+              0.465745 0.884919 -0
+              0.465745 0.884919 -0
+              0.61887 0.785493 -0
+              0.61887 0.785493 -0
+              0.61887 0.785493 -0
+              0.61887 0.785493 -0
+              0.773952 0.633245 -0
+              0.773952 0.633245 -0
+              0.773952 0.633245 -0
+              0.773952 0.633245 -0
+              0.894431 0.447206 -0
+              0.894431 0.447206 -0
+              0.894431 0.447206 -0
+              0.894431 0.447206 -0
+              0.967619 0.252416 -0
+              0.967619 0.252416 -0
+              0.967619 0.252416 -0
+              0.967619 0.252416 -0
+              0.982569 0.185897 -0
+              0.982569 0.185897 -0
+              0.982569 0.185897 -0
+              0.982569 0.185897 -0
+              0.999056 -0.043433 0
+              0.999056 -0.043433 0
+              0.999056 -0.043433 0
+              0.999056 -0.043433 0
+              0.993168 -0.116691 0
+              0.993168 -0.116691 0
+              0.993168 -0.116691 0
+              0.993168 -0.116691 0
+              0 -1 0
+              0 -1 0
+              0 -1 0
+              0 -1 0
+              -0.996546 -0.0830455 0
+              -0.996546 -0.0830455 0
+              -0.996546 -0.0830455 0
+              -0.996546 -0.0830455 0
+              -0.991779 -0.12796 0
+              -0.991779 -0.12796 0
+              -0.991779 -0.12796 0
+              -0.991779 -0.12796 0
+              -0.992277 -0.124046 0
+              -0.992277 -0.124046 0
+              -0.992277 -0.124046 0
+              -0.992277 -0.124046 0
+              -0.991601 -0.129335 0
+              -0.991601 -0.129335 0
+              -0.991601 -0.129335 0
+              -0.991601 -0.129335 0
+              -0.99062 -0.136645 0
+              -0.99062 -0.136645 0
+              -0.99062 -0.136645 0
+              -0.99062 -0.136645 0
+              -0.996131 -0.0878845 0
+              -0.996131 -0.0878845 0
+              -0.996131 -0.0878845 0
+              -0.996131 -0.0878845 0
+              -0.999133 -0.0416259 0
+              -0.999133 -0.0416259 0
+              -0.999133 -0.0416259 0
+              -0.999133 -0.0416259 0
+              -0.984428 0.17579 0
+              -0.984428 0.17579 0
+              -0.984428 0.17579 0
+              -0.984428 0.17579 0
+              -0.780862 0.624704 0
+              -0.780862 0.624704 0
+              -0.780862 0.624704 0
+              -0.780862 0.624704 0
+              -0.294087 0.955779 0
+              -0.294087 0.955779 0
+              -0.294087 0.955779 0
+              -0.294087 0.955779 0
+              0.296401 0.955064 -0
+              0.296401 0.955064 -0
+              0.296401 0.955064 -0
+              0.296401 0.955064 -0
+              0.811536 0.584302 -0
+              0.811536 0.584302 -0
+              0.811536 0.584302 -0
+              0.811536 0.584302 -0
+              0.970137 0.242556 -0
+              0.970137 0.242556 -0
+              0.970137 0.242556 -0
+              0.970137 0.242556 -0
+              0.97014 -0.242544 0
+              0.97014 -0.242544 0
+              0.97014 -0.242544 0
+              0.97014 -0.242544 0
+              0.755706 -0.654912 0
+              0.755706 -0.654912 0
+              0.755706 -0.654912 0
+              0.755706 -0.654912 0
+              0.316221 -0.948686 0
+              0.316221 -0.948686 0
+              0.316221 -0.948686 0
+              0.316221 -0.948686 0
+              -0.299821 -0.953996 0
+              -0.299821 -0.953996 0
+              -0.299821 -0.953996 0
+              -0.299821 -0.953996 0
+              -0.776127 -0.630576 0
+              -0.776127 -0.630576 0
+              -0.776127 -0.630576 0
+              -0.776127 -0.630576 0
+              -0.978978 -0.203967 0
+              -0.978978 -0.203967 0
+              -0.978978 -0.203967 0
+              -0.978978 -0.203967 0
+              -0.982342 0.187097 0
+              -0.982342 0.187097 0
+              -0.982342 0.187097 0
+              -0.982342 0.187097 0
+              -0.839556 0.543273 0
+              -0.839556 0.543273 0
+              -0.839556 0.543273 0
+              -0.839556 0.543273 0
+              -0.543242 0.839576 0
+              -0.543242 0.839576 0
+              -0.543242 0.839576 0
+              -0.543242 0.839576 0
+              -0.231641 0.972801 0
+              -0.231641 0.972801 0
+              -0.231641 0.972801 0
+              -0.231641 0.972801 0
+              0.231641 0.972801 -0
+              0.231641 0.972801 -0
+              0.231641 0.972801 -0
+              0.231641 0.972801 -0
+              0.554691 0.832057 -0
+              0.554691 0.832057 -0
+              0.554691 0.832057 -0
+              0.554691 0.832057 -0
+              0.839576 0.543242 -0
+              0.839576 0.543242 -0
+              0.839576 0.543242 -0
+              0.839576 0.543242 -0
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+              0 0 -1
+            }
+            ColorBinding PER_VERTEX
+            ColorArray Vec4Array 1022
+            {
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+              1 0 0 1
+            }
+            TexCoordArray 0 Vec2Array 1022
+            {
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+              0 0
+            }
+          }
+        }
+      }
+    }
+  }
+}

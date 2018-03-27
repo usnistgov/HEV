@@ -1,0 +1,7 @@
+#! /bin/bash
+
+rm -fr vaneRheometerVis
+
+./run --gpuSpheres --vane 6 $* vane.qvisdat section*.qvisdat
+
+

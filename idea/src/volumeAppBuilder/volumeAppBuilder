@@ -1,0 +1,786 @@
+#! /bin/bash
+
+# volumeAppBuilder - see usage message below
+
+# steve@nist.gov
+
+#version="20090819"
+#version="20110415
+#version="20111108"
+#version="20120726"     # Conversion to HEV/IRIS/IDEA
+version="20130124"     # hev-applyState -> hev-mergeState
+
+
+#########
+# Usage #
+#########
+
+function usage {
+
+cat  <<EOF
+
+Usage: volumeAppBuilder [options] --dim i j k -lut file.lut   file.ab [...]
+
+   Volume visualization application builder
+
+ Required:
+
+   --dim i j k     is the dimensions of the volume
+
+   --lut file.lut  is a color look up table. See hev-createLUT(1).
+
+   file.ab         is the "ASCII Brick" - volume data represented as an ASCII
+                   list of i*j*k float numbers in the range of 0.0 to 1.0.
+
+   [...]           when multiple files are specified, then a flip-book animation
+                   application is created.
+
+
+ Options:
+
+   --subdir name   is the name of an existing sub-directory (typically
+                   empty) to place the application files. 
+                   If not specified, "volVisApp" is used. If it does not
+		   exist, it will be created.
+		   
+
+   --elementType   uchar | ushort | float
+
+                   specifies the element type used when generating the
+                   underlying .mha file. The current implementation
+                   allows "uchar" (8bits), "ushort' (16 bits) or
+                   "float" (16 bits) to be specified.
+
+                   If this option is not used, the default
+		   elementType is uchar (8 bits).
+
+    --transfer     preint | emit | lit
+
+                   Used to specify a transfer function type to
+                   pass to hev-voltrace.
+    
+                   The default is 'preint'.  See the man page
+                   hev-voltrace(1) for details
+
+    --scale        float
+
+                   Used to specify a scale value to be passed to 
+                   hev-preintegrate.
+
+                   The default of 1.0 is typically a good choice, so
+                   normally this option need not be specified. It is
+                   provided as a convenience to pass to
+                   hev-preintegrate. Refer to the hev-preintegrate(1)
+
+		   NOTE: This default changed April 4, 2011. If you notice
+		   a difference when using data that previously worked,
+		   this change may be the cause. Try specifying a scale
+		   value of 100
+
+      --objects    When specified, the --objects parameter is passed to
+                   hev-voltrace. The parameter is here primarily for the
+                   use of qvd-rheometerVolAppBuilder. Otherwise, use with
+                   caution.
+
+
+Special Case Option:
+
+   --applyLUT file.lut  is a special case invocation that can be used
+                        at run time to apply a new look up table to the
+                        running application. 
+
+                        file.lut is the look up table to use.
+
+                        No other options should be specified when
+			using this option.
+			
+
+version: ${version}
+
+EOF
+exit 1
+
+}
+# End Usage
+
+
+######################################################################
+# Function to see if $1 is a subset of $2 return 0 (success) if true #
+######################################################################
+
+paramCheck() {
+    pc1=${1#-}        # strip leading - or --
+    pc1=${pc1#-}
+    pc2=${2#-}
+    pc2=${pc2#-}
+    #echo paramCheck $1 $2 ":"  $pc1 $pc2
+    if [ "${pc2#$pc1}" != "$pc2" ] ; then
+        return 0
+    else
+        return 1
+    fi
+}
+# End paramCheck
+
+
+
+#########################
+# Compute wire box size #
+#########################
+
+function wirebox_size {
+
+echo ${idim} ${jdim} ${kdim} ${wireBoxDelta} | awk '
+{
+    max=$1;
+    if ($2 > max) {max=$2;}
+    if ($3 > max) {max=$3;}
+    print $1/max+$4, $2/max+$4, $3/max+$4;
+}'
+
+}
+# End wirebox_size
+
+
+#######################
+# Create transfer.osg #
+#######################
+
+function create_TransferOSG {
+cat > transfer.osg <<EOF
+Node {
+  StateSet {
+    textureUnit 3 {
+      Texture2D {
+        DataVariance STATIC
+        file "transfer.mhd"
+        min_filter LINEAR
+        mag_filter LINEAR
+        useHardwareMipMapGeneration TRUE
+        unRefImageDataAfterApply TRUE
+        internalFormatMode USE_IMAGE_DATA_FORMAT
+        resizeNonPowerOfTwo FALSE
+      }
+    }
+    Uniform {
+      DataVariance STATIC
+      name "volumeLUT"
+      int 3
+    }
+  }
+}
+EOF
+
+}
+# End create_TransferOSG
+
+
+######################
+# Create volume.iris #
+######################
+
+function create_volumeIRIS {
+cat > volume.iris <<EOF
+GROUP pages
+
+GROUP volumePages
+LOAD volPage volume.osg
+ADDCHILD volPage volumePages
+
+# May also be by applyState at run time
+LOAD xfer transfer.osg
+MERGESTATE xfer volumePages
+UNLOAD xfer
+
+GROUP pn000
+NODEMASK pn000 ON
+LOAD tex ${ABBASE}.osg
+MERGESTATE tex pn000
+UNLOAD tex
+ADDCHILD volumePages pn000
+ADDCHILD pn000 pages
+
+RETURN pages
+EOF
+}
+# End create_volumeIRIS
+
+##############################
+# Create volumeFlipBook.iris #
+##############################
+
+function create_volumeFlipBookIRIS {
+VOL=volume.iris
+cat > ${VOL} <<EOF
+GROUP pages
+
+GROUP volumePages
+LOAD volPage volume.osg
+ADDCHILD volPage volumePages
+
+# May also be changed by applyState at run time
+LOAD xfer transfer.osg
+MERGESTATE xfer volumePages
+UNLOAD xfer
+
+EOF
+
+
+j=0
+OnOff="ON"
+for f2 in $*
+do
+  ABBASE=`basename ${f2} .ab`
+  PN=`printf "pn%03d\n" $j`
+  TEX=`printf "tex%03d\n" $j`
+  #echo "  " $VOL $PN $f2
+  cat >> ${VOL} <<EOF  
+
+   GROUP ${PN}
+   NODEMASK ${PN} ${OnOff}
+   LOAD ${TEX} ${ABBASE}.osg
+   MERGESTATE ${TEX} ${PN}
+   UNLOAD ${TEX}
+   ADDCHILD volumePages ${PN}
+   ADDCHILD ${PN} pages
+
+EOF
+  j=$((j+1))
+  OnOff="OFF"
+done
+
+echo "RETURN pages" >> ${VOL}
+
+}
+# End create_volumeFlipBookIRIS
+
+#################
+# Create runvol #
+#################
+
+function create_runvol {
+cat > runvol <<EOF
+#! /bin/bash
+
+# volumeAppBuilder version: ${version}
+
+# runvol - run the volume application
+
+# With no parameters, irislfy is run with --background 1 1 1 and --examine
+#
+# Or you can explicitly specify all irisfly options as parameters
+# or example:
+#
+#              ./runvol --background 0 0 0 --examine
+
+#
+# This application was created with the following command
+#
+# ${userCommand}
+
+EOF
+
+if [ "$FLIPBOOK" == "1" ]
+then
+ANIMATORMCP=animator.mcp
+else
+ANIMATORMCP=''
+fi
+
+cat >> runvol <<EOF
+if [ "\$#" == "0" ]
+then
+    irisfly --background 1 1 1 --examine moo.iris clip.mcp $ANIMATORMCP
+else
+     irisfly \$* moo.iris clip.mcp $ANIMATORMCP
+fi
+
+EOF
+chmod +x runvol
+
+}
+# End create_runvol
+
+
+#######################
+# Create animator.mcp #
+#######################
+function create_animator_mcp {
+
+ hev-animatorMCP volume.iris > animator.mcp
+
+}
+# End create_animator_mcp
+
+###################
+# Create data MHA #
+###################
+function create_dataMHA {
+cat > ${ABBASE}.mha <<EOF
+ObjectType = Image
+NDims = 3
+DimSize =${idim} ${jdim} ${kdim}
+ElementNumberofChannels = 1
+ElementType = ${elementType}
+ElementDataFile = ${ABBASE}.raw
+EOF
+
+
+}
+# End create_dataMHA
+
+
+
+###################
+# Create data OSG #
+###################
+function create_dataOSG {
+cat > ${ABBASE}.osg  <<EOF
+Node {
+    DataVariance STATIC
+    StateSet {
+        DataVariance STATIC
+        textureUnit 2 {
+            Texture3D {
+                DataVariance STATIC
+                file "${ABBASE}.mha"
+                min_filter LINEAR
+                mag_filter LINEAR
+                wrap_s CLAMP_TO_EDGE
+                wrap_t CLAMP_TO_EDGE
+                wrap_r CLAMP_TO_EDGE
+                maxAnisotropy 1
+                borderColor 0 0 0 0
+                borderWidth 0
+                useHardwareMipMapGeneration FALSE
+                unRefImageDataAfterApply TRUE
+                internalFormatMode USE_IMAGE_DATA_FORMAT
+                resizeNonPowerOfTwo FALSE
+            }
+        }
+        Uniform {
+            DataVariance STATIC
+            name "volumeTexture"
+            int 2
+        }
+        Uniform {
+            DataVariance STATIC
+            name "voxelSize"
+            vec3 ${idim} ${jdim} ${kdim}
+        }
+    }
+}
+EOF
+}
+# End create_dataOSG
+
+
+
+####################################
+# Apply LUT to running application #
+####################################
+
+function applyLUT {
+
+    # create reference images
+    hev-LUT2png  $lutFile transferLUT.png
+    hev-LUT2plot $lutFile transferPlot.png
+
+    # process transfer function to create 2D pre-integrated transfer table
+    hev-preintegrate --scale $scale < $lutFile  > transfer.mhd
+    #echo "-------" scale $scale transfer $transferType
+
+
+    # (re)load transfer function and volume
+    # hev-applyState -s transfer.osg volumePages
+    hev-mergeState  transfer.osg volumePages
+
+}
+
+# End applyLUT
+
+
+
+
+#################
+#################
+##             ##
+##     Main    ##
+##             ##
+#################
+#################
+
+
+if [ "$HEVROOT" == "" ]
+then
+	echo "HEVROOT Is not defined"
+	exit 1
+fi
+
+
+
+###################################
+# Process command line parameters #
+###################################
+
+
+if [ "$#" == "0" ]
+then
+    usage
+fi
+
+scale=1
+transferType="preint"
+
+userCommand="$0 $*"
+
+debugFlag=0
+dimFlag=0
+lutFile=""
+objectsFlag=0
+subdirDefault="volVisApp"
+subdir=$subdirDefault
+wireBoxDelta=0
+
+elementType="MET_UCHAR"
+
+N=$#
+while [ $N -gt 0 ]
+do
+  #echo ${N}: $1
+  if ( paramCheck $1 --debug )
+  then
+      debugFlag=1
+      shift
+
+  elif ( paramCheck $1 --dim )
+  then
+      dimFlag=1
+      shift
+      if [ "$#" -lt 3 -o "${1:0:1}" == "-" ]
+      then
+	  echo "insufficient --dim parameters"
+	  usage
+      fi
+      idim=$1
+      shift
+      N=$((N-1))
+
+      jdim=$1
+      shift
+      N=$((N-1))
+
+      kdim=$1
+      shift
+      N=$((N-1))
+
+
+  elif ( paramCheck $1 --lut )
+  then
+      shift
+      if [ "$#" -lt 1 -o "${1:0:1}" == "-" ]
+      then
+	  echo "missing --lut parameter"
+	  usage
+      fi
+      lutFile=$1
+      shift
+      N=$((N-1))
+
+  elif ( paramCheck $1 --applyLUT )
+  then
+      shift
+      if [ "$#" -lt 1 -o "${1:0:1}" == "-" ]
+      then
+	  echo "missing --applyLUT parameter"
+	  usage
+      fi
+      lutFile=$1
+      shift
+      N=$((N-1))
+
+      applyLUT
+      exit
+
+  elif ( paramCheck $1 --subdir )
+  then
+      shift
+      if [ "$#" -lt 1 -o "${1:0:1}" == "-" ]
+      then
+	  echo "missing --subdir parameters"
+	  usage
+      fi
+      subdir=$1
+      shift
+      N=$((N-1))
+
+  elif ( paramCheck $1 --scale )
+  then
+      shift
+      if [ "$#" -lt 1 -o "${1:0:1}" == "-" ]
+      then
+	  echo "missing --scale parameter"
+	  usage
+      fi
+      scale=$1
+      shift
+      N=$((N-1))
+
+  elif ( paramCheck $1 --objects )
+  then
+      objectsFlag=1
+      shift
+      N=$((N-1))
+
+  elif ( paramCheck $1 --transfer )
+  then
+      shift
+      if [ "$#" -lt 1 -o "${1:0:1}" == "-" ]
+      then
+	  echo "missing --transfer parameter"
+	  usage
+      fi
+      transferType=$1
+      shift
+      N=$((N-1))
+
+  elif ( paramCheck $1 --elementType )
+  then
+      shift
+      if [ "$#" -lt 1 -o "${1:0:1}" == "-" ]
+      then
+	  echo "insufficient --elementType parameters"
+	  usage
+      fi
+      case "$1" in
+	  uchar)  elementType="MET_UCHAR"
+                  ;;
+          ushort) elementType="MET_USHORT"
+                  ;;
+          float) elementType="MET_FLOAT"
+                  ;;
+          *) echo "incorrect elementType parameter, use 'uchar', 'ushort' or 'float'"
+             usage
+             ;;
+      esac
+
+      shift
+      N=$((N-1))
+
+
+  fi
+
+  N=$((N-1))
+
+done
+
+
+if [ "$dimFlag" == "0" ]
+then
+    echo "--dim parameter not specified"
+    echo
+    usage
+fi
+
+# Check remaining parameters
+
+for i in $*
+do
+  ABFILE=$i
+
+  # Remaining parameters should not start with "-"
+  if [ "${i:0:1}" == "-" ]
+  then
+    echo "You probably specified an incorrect option: $i"
+    exit
+  fi
+
+  ABBASE=`basename $ABFILE .ab`
+  if [ "$ABFILE" == "$ABBASE" ]
+  then
+    echo
+    echo "Warning: Input file [" $i "] does not end in '.ab'"
+    echo "         This is preferred, but currently not required."
+  fi
+done
+
+if [ "$debugFlag" == "1" ]
+then
+
+    echo "abfiles:" $*
+    echo "dimensions:" $idim $jdim $kdim
+    echo "wire box:" `wirebox_size`
+    echo "elementType:" $elementType
+    echo "lutFile:" $lutFile
+    echo "subdir:" $subdir
+    echo "scale:" $scale
+    echo "transfer:" $transferType
+    echo
+fi
+
+
+#####################
+# Do work in subdir #
+#####################
+
+# Are we using the default subdir?
+if [ $subdir == $subdirDefault ]
+then
+    if [ ! -d $subdir ]
+	then
+	echo Creating $subdir
+	if (! mkdir $subdir)
+        then
+	    echo "Failed to create sub-directory: $subdir"
+	    exit
+        fi
+    fi
+fi
+
+
+if [ ! -d $subdir ]
+then
+    echo "Directory not found:" $subdir
+    usage
+fi
+
+
+# Setup some files
+
+for f in $*
+do
+   if [ -f $f ]
+    then
+      cp $f $subdir
+    else
+       echo
+       echo "File not found:" $f
+       usage
+    fi
+done
+
+
+if [ -f $lutFile ]
+then
+    cp $lutFile $subdir/transfer.lut
+else
+    echo "LUT file does not exist:" $lutFile
+    usage
+fi
+
+cd $subdir
+
+echo Create transfer.osg, box.osgb
+create_TransferOSG
+
+echo Create wire box ${idim} ${jdim} ${kdim}
+wireBoxDelta=.005
+qvd-wireBox --noclip `wirebox_size` .5 .5 .5  box.osgb
+
+
+echo "Create  transferPlot.png transferLUT.png"
+hev-LUT2plot transfer.lut transferPlot.png
+hev-LUT2png  transfer.lut transferLUT.png
+
+echo Process transfer function to create 2D pre-integrated transfer table
+hev-preintegrate --scale $scale < transfer.lut  > transfer.mhd
+#echo "-------" scale $scale transfer $transferType
+
+echo Generate volume rendering object: volume.osg
+wireBoxDelta=0
+
+if [ $objectsFlag == 1 ]
+then
+    objects="--objects"
+else
+    objects=""
+fi
+
+echo hev-voltrace $objects --transfer $transferType `wirebox_size` volume.osg
+     hev-voltrace $objects --transfer $transferType `wirebox_size` volume.osg
+
+#
+# When the user supplies more than one file, then create an flipbook animation
+#
+
+
+if [ "$#" == "1" ]
+then
+  echo "Create a single volume application"
+  export FLIPBOOK=0
+
+  ABBASE=`basename $1 .ab`
+  #echo Create ${ABBASE}.mha
+  create_dataMHA
+
+  #echo Create ${ABBASE}.raw
+  case $elementType in
+  MET_USHORT)
+         hev-data2ushort --float < $ABFILE > ${ABBASE}.raw
+	 ;;
+  MET_FLOAT)
+         hev-data2float         < $ABFILE > ${ABBASE}.raw
+	 ;;
+  *)
+         hev-data2uchar --float < $ABFILE > ${ABBASE}.raw
+         ;;
+  esac
+
+
+  echo Create ${ABBASE}.osg
+  create_dataOSG
+
+  echo "Create volume.iris (single data set)"
+  create_volumeIRIS
+
+else
+  echo "Create a multi-volume flip book animation"
+  export FLIPBOOK=1
+
+  for f in $*
+  do
+    ABBASE=`basename $f .ab`
+    #echo Create ${ABBASE}.mha
+    create_dataMHA
+
+    #echo Create ${ABBASE}.raw
+    case $elementType in
+    MET_USHORT)
+         hev-data2ushort --float < $f > ${ABBASE}.raw
+	 ;;
+    MET_FLOAT)
+         hev-data2float         < $f > ${ABBASE}.raw
+	 ;;
+    *)
+         hev-data2uchar --float < $f > ${ABBASE}.raw
+         ;;
+    esac
+
+
+    #echo Create ${ABBASE}.osg
+    create_dataOSG
+
+  done
+
+  echo "Create volume.iris (flip-book animation)"
+  create_volumeFlipBookIRIS $*
+
+  echo "Create animator.mcp"
+  create_animator_mcp
+
+fi
+
+echo "Create moo.iris"
+hev-moo box.osgb volume.iris > moo.iris
+
+echo "Create runvol"
+create_runvol
+
+
+echo
+echo "All done building application. To execute:"
+echo "        cd $subdir"
+echo "        ./runvol"
+echo
+
+# End

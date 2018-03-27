@@ -1,0 +1,9 @@
+NRRD0001
+content: set9559-1-119.raw
+type: short
+dimension: 3
+sizes: 512 512 119
+spacings: 1 1 1
+data file: ./set9559-1-119.raw
+endian: little
+encoding: raw

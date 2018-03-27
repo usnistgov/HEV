@@ -1,0 +1,95 @@
+#! /usr/bin/perl
+#
+# hev-data2float - see usage message
+#
+# steve@nist.gov
+#
+
+$version="20090730";
+
+use Getopt::Long;    # http://perldoc.perl.org/Getopt/Long.html
+use File::Basename;  # http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hev-data2float [--help] < input > output
+
+   Map printf style numbers from stdin to 32bit float on stdout
+   The input on stdin must be one ASCII number per line.
+   Input is float in the range 0.0 to 1.0.
+
+     --help      print this help message
+
+
+Version: $version
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+$helpFlag=0;
+
+GetOptions("debug"       => \$debugFlag,
+	   "help"        => \$helpFlag,
+           );
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "helpFlag= $helpFlag\n";
+}
+
+usage() if ((@ARGV > 0)||($helpFlag));
+
+
+
+#######################################
+# Read stdin, map, output to stdout   #
+#######################################
+
+$l=0;
+
+    while (<STDIN>) {
+	chop;
+	($v)=split(' ', $_, -1);
+	$l++;
+
+	if (! defined($v)) {
+	    print STDERR "Invalid input at line $l: $v\n";
+	    exit(1);
+	}
+	if ($v < 0) {
+	    print STDERR "Input is < 0.0 at line: $l\n";
+	    print STDERR "$_\n";
+	    exit(1);
+	}
+	if ($v > 1.0) {
+	    print STDERR "Input is > 1.0 at line: $l\n";
+	    print STDERR "$_\n";
+	    exit(1);
+	}
+
+	print STDOUT pack("f",$v);
+    }
+
+# End
+
+

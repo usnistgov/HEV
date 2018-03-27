@@ -1,0 +1,14 @@
+#! /bin/sh
+#
+# The Inventor file loader in Performer does a rotation
+# around the X axis as it reads in the coordinate information.  
+# Why does it do this?  It's a mystery.
+#
+# This script undoes that rotation.  It enables you to place 
+# your Inventor objects using Inventor transformations, then when
+# the resulting Inventor file is read by Performer, the geometry 
+# shows up in the correct position relative to other non-Inventor 
+# files.
+#
+cat | ivrotate 1 0 0 -1.57079632679
+

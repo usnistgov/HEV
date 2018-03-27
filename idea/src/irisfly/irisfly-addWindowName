@@ -1,0 +1,21 @@
+#!/bin/sh
+file=$IRISFLY_HIDE_SHOW_WINDOWS
+
+if [ -z "$file" ]
+then dtk-msgError "irisfly-addWindowName: no window file" 1>&2
+    exit 1
+fi
+
+if [ ! -w "$file" ]
+then dtk-msgError "irisfly-addWindowName: no writeable window file" 1>&2
+    exit 1
+fi
+
+if ( grep -q "^$1$" $file )
+then dtk-msgInfo "irisfly-addWindowName: window \"$1\" is already in window list" 1>&2
+else dtk-msgInfo "irisfly-addWindowName: adding window \"$1\" to window list" 1>&2
+    echo $1 >> $file
+fi
+
+
+

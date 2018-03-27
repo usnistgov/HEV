@@ -1,0 +1,40 @@
+.TH savg-utilities 3 "2004/2012"
+.SH NAME
+savg-cube, savg-sphere, savg-cone, savg-color, savg-translate, ...
+
+
+
+.SH DESCRIPTION
+.PP
+.B
+savg-utilities
+are a collection of commands and filters for creating geometry in
+.I
+savg(1)
+format.
+Each command is documented with an \fIman\fR page.
+For a complete list of the commands type:
+.IP
+cd $HEVROOT/idea/src/savg-utilities
+.br
+ls *.1
+
+.SH EXAMPLE
+The best explanation is a short example:
+.IP
+savg-cube   | savg-color -g 1 > cube.savg
+.br
+savg-cone   | savg-color -r 1 | savg-translate -3 0 0 > cone.savg
+.br
+savg-sphere | savg-color -b 1 | savg-translate  3 0 0 > sphere.savg
+
+.br
+irisfly --examine cone.savg cube.savg sphere.savg
+
+
+
+.SH SEE ALSO
+.I
+irisfly(1),
+.I
+savg(1)

@@ -1,0 +1,4237 @@
+Group {
+  DataVariance STATIC
+  name "plus3d.savg"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  num_children 1
+  Geode {
+    DataVariance STATIC
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    num_drawables 102
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 5
+      {
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          1 2 0 3 4 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          4 5 0 6 7 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          7 8 0 9 10 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          10 11 0 12 13 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          13 14 0 15 
+        }
+      }
+      VertexArray Vec3Array 16
+      {
+        0.0125 0 -0.05
+        0.01159 0.004683 -0.05
+        0.008839 0.008839 -0.05
+        0.004884 0.011506 -0.05
+        0 0.0125 -0.05
+        -0.004683 0.01159 -0.05
+        -0.008839 0.008839 -0.05
+        -0.011506 0.004884 -0.05
+        -0.0125 0 -0.05
+        -0.01159 -0.004683 -0.05
+        -0.008839 -0.008839 -0.05
+        -0.004884 -0.011506 -0.05
+        0 -0.0125 -0.05
+        0.004683 -0.01159 -0.05
+        0.008839 -0.008839 -0.05
+        0.011506 -0.004884 -0.05
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 16
+      {
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 16
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.0125 0 -0.05
+        0.01159 0.004683 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        1 0 0
+        0.927184 0.374607 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.01159 0.004683 -0.05
+        0.008839 0.008839 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.927184 0.374607 0
+        0.707107 0.707107 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.008839 0.008839 -0.05
+        0.004884 0.011506 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.707107 0.707107 0
+        0.390731 0.920505 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.004884 0.011506 -0.05
+        0 0.0125 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.390731 0.920505 0
+        0 1 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0 0.0125 -0.05
+        -0.004683 0.01159 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 1 0
+        -0.374607 0.927184 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.004683 0.01159 -0.05
+        -0.008839 0.008839 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.374607 0.927184 0
+        -0.707107 0.707107 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.008839 0.008839 -0.05
+        -0.011506 0.004884 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.707107 0.707107 0
+        -0.920505 0.390731 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.011506 0.004884 -0.05
+        -0.0125 0 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.920505 0.390731 0
+        -1 0 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.0125 0 -0.05
+        -0.01159 -0.004683 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -1 0 0
+        -0.927184 -0.374607 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.01159 -0.004683 -0.05
+        -0.008839 -0.008839 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.927184 -0.374607 0
+        -0.707107 -0.707107 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.008839 -0.008839 -0.05
+        -0.004884 -0.011506 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.707107 -0.707107 0
+        -0.390731 -0.920505 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.004884 -0.011506 -0.05
+        0 -0.0125 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.390731 -0.920505 0
+        0 -1 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0 -0.0125 -0.05
+        0.004683 -0.01159 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -1 0
+        0.374607 -0.927184 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.004683 -0.01159 -0.05
+        0.008839 -0.008839 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.374607 -0.927184 0
+        0.707107 -0.707107 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.008839 -0.008839 -0.05
+        0.011506 -0.004884 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.707107 -0.707107 0
+        0.920505 -0.390731 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.011506 -0.004884 -0.05
+        0.0125 0 -0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.920505 -0.390731 0
+        1 0 0
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 5
+      {
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          1 2 0 3 4 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          4 5 0 6 7 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          7 8 0 9 10 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          10 11 0 12 13 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          13 14 0 15 
+        }
+      }
+      VertexArray Vec3Array 16
+      {
+        0.0125 0 0.05
+        0.01159 -0.004683 0.05
+        0.008839 -0.008839 0.05
+        0.004884 -0.011506 0.05
+        0 -0.0125 0.05
+        -0.004683 -0.01159 0.05
+        -0.008839 -0.008839 0.05
+        -0.011506 -0.004884 0.05
+        -0.0125 0 0.05
+        -0.01159 0.004683 0.05
+        -0.008839 0.008839 0.05
+        -0.004884 0.011506 0.05
+        0 0.0125 0.05
+        0.004683 0.01159 0.05
+        0.008839 0.008839 0.05
+        0.011506 0.004884 0.05
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 16
+      {
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+        0 0 1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 16
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.0125 0 0.05
+        0.01159 -0.004683 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        1 0 0
+        0.927184 -0.374607 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.01159 -0.004683 0.05
+        0.008839 -0.008839 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.927184 -0.374607 0
+        0.707107 -0.707107 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.008839 -0.008839 0.05
+        0.004884 -0.011506 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.707107 -0.707107 0
+        0.390731 -0.920505 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.004884 -0.011506 0.05
+        0 -0.0125 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.390731 -0.920505 0
+        0 -1 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0 -0.0125 0.05
+        -0.004683 -0.01159 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -1 0
+        -0.374607 -0.927184 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.004683 -0.01159 0.05
+        -0.008839 -0.008839 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.374607 -0.927184 0
+        -0.707107 -0.707107 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.008839 -0.008839 0.05
+        -0.011506 -0.004884 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.707107 -0.707107 0
+        -0.920505 -0.390731 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.011506 -0.004884 0.05
+        -0.0125 0 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.920505 -0.390731 0
+        -1 0 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.0125 0 0.05
+        -0.01159 0.004683 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -1 0 0
+        -0.927184 0.374607 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.01159 0.004683 0.05
+        -0.008839 0.008839 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.927184 0.374607 0
+        -0.707107 0.707107 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.008839 0.008839 0.05
+        -0.004884 0.011506 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.707107 0.707107 0
+        -0.390731 0.920505 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.004884 0.011506 0.05
+        0 0.0125 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.390731 0.920505 0
+        0 1 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0 0.0125 0.05
+        0.004683 0.01159 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 1 0
+        0.374607 0.927184 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.004683 0.01159 0.05
+        0.008839 0.008839 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.374607 0.927184 0
+        0.707107 0.707107 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.008839 0.008839 0.05
+        0.011506 0.004884 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.707107 0.707107 0
+        0.920505 0.390731 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.011506 0.004884 0.05
+        0.0125 0 0.05
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.920505 0.390731 0
+        1 0 0
+        0 0 -1
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 5
+      {
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          1 2 0 3 4 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          4 5 0 6 7 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          7 8 0 9 10 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          10 11 0 12 13 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          13 14 0 15 
+        }
+      }
+      VertexArray Vec3Array 16
+      {
+        -0.05 0 -0.0125
+        -0.05 0.004683 -0.01159
+        -0.05 0.008839 -0.008839
+        -0.05 0.011506 -0.004884
+        -0.05 0.0125 0
+        -0.05 0.01159 0.004683
+        -0.05 0.008839 0.008839
+        -0.05 0.004884 0.011506
+        -0.05 0 0.0125
+        -0.05 -0.004683 0.01159
+        -0.05 -0.008839 0.008839
+        -0.05 -0.011506 0.004884
+        -0.05 -0.0125 0
+        -0.05 -0.01159 -0.004683
+        -0.05 -0.008839 -0.008839
+        -0.05 -0.004884 -0.011506
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 16
+      {
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 16
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 0 -0.0125
+        -0.05 0.004683 -0.01159
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0 -1
+        0 0.374607 -0.927184
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 0.004683 -0.01159
+        -0.05 0.008839 -0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.374607 -0.927184
+        0 0.707107 -0.707107
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 0.008839 -0.008839
+        -0.05 0.011506 -0.004884
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.707107 -0.707107
+        0 0.920505 -0.390731
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 0.011506 -0.004884
+        -0.05 0.0125 0
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.920505 -0.390731
+        0 1 0
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 0.0125 0
+        -0.05 0.01159 0.004683
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 1 0
+        0 0.927184 0.374607
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 0.01159 0.004683
+        -0.05 0.008839 0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.927184 0.374607
+        0 0.707107 0.707107
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 0.008839 0.008839
+        -0.05 0.004884 0.011506
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.707107 0.707107
+        0 0.390731 0.920505
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 0.004884 0.011506
+        -0.05 0 0.0125
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.390731 0.920505
+        0 0 1
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 0 0.0125
+        -0.05 -0.004683 0.01159
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0 1
+        0 -0.374607 0.927184
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 -0.004683 0.01159
+        -0.05 -0.008839 0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.374607 0.927184
+        0 -0.707107 0.707107
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 -0.008839 0.008839
+        -0.05 -0.011506 0.004884
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.707107 0.707107
+        0 -0.920505 0.390731
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 -0.011506 0.004884
+        -0.05 -0.0125 0
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.920505 0.390731
+        0 -1 0
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 -0.0125 0
+        -0.05 -0.01159 -0.004683
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -1 0
+        0 -0.927184 -0.374607
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 -0.01159 -0.004683
+        -0.05 -0.008839 -0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.927184 -0.374607
+        0 -0.707107 -0.707107
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 -0.008839 -0.008839
+        -0.05 -0.004884 -0.011506
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.707107 -0.707107
+        0 -0.390731 -0.920505
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.05 -0.004884 -0.011506
+        -0.05 0 -0.0125
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.390731 -0.920505
+        0 0 -1
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 5
+      {
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          1 2 0 3 4 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          4 5 0 6 7 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          7 8 0 9 10 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          10 11 0 12 13 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          13 14 0 15 
+        }
+      }
+      VertexArray Vec3Array 16
+      {
+        0.05 0 -0.0125
+        0.05 -0.004683 -0.01159
+        0.05 -0.008839 -0.008839
+        0.05 -0.011506 -0.004884
+        0.05 -0.0125 0
+        0.05 -0.01159 0.004683
+        0.05 -0.008839 0.008839
+        0.05 -0.004884 0.011506
+        0.05 0 0.0125
+        0.05 0.004683 0.01159
+        0.05 0.008839 0.008839
+        0.05 0.011506 0.004884
+        0.05 0.0125 0
+        0.05 0.01159 -0.004683
+        0.05 0.008839 -0.008839
+        0.05 0.004884 -0.011506
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 16
+      {
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+        1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 16
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 0 -0.0125
+        0.05 -0.004683 -0.01159
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0 -1
+        0 -0.374607 -0.927184
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 -0.004683 -0.01159
+        0.05 -0.008839 -0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.374607 -0.927184
+        0 -0.707107 -0.707107
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 -0.008839 -0.008839
+        0.05 -0.011506 -0.004884
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.707107 -0.707107
+        0 -0.920505 -0.390731
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 -0.011506 -0.004884
+        0.05 -0.0125 0
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.920505 -0.390731
+        0 -1 0
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 -0.0125 0
+        0.05 -0.01159 0.004683
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -1 0
+        0 -0.927184 0.374607
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 -0.01159 0.004683
+        0.05 -0.008839 0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.927184 0.374607
+        0 -0.707107 0.707107
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 -0.008839 0.008839
+        0.05 -0.004884 0.011506
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.707107 0.707107
+        0 -0.390731 0.920505
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 -0.004884 0.011506
+        0.05 0 0.0125
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 -0.390731 0.920505
+        0 0 1
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 0 0.0125
+        0.05 0.004683 0.01159
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0 1
+        0 0.374607 0.927184
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 0.004683 0.01159
+        0.05 0.008839 0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.374607 0.927184
+        0 0.707107 0.707107
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 0.008839 0.008839
+        0.05 0.011506 0.004884
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.707107 0.707107
+        0 0.920505 0.390731
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 0.011506 0.004884
+        0.05 0.0125 0
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.920505 0.390731
+        0 1 0
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 0.0125 0
+        0.05 0.01159 -0.004683
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 1 0
+        0 0.927184 -0.374607
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 0.01159 -0.004683
+        0.05 0.008839 -0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.927184 -0.374607
+        0 0.707107 -0.707107
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 0.008839 -0.008839
+        0.05 0.004884 -0.011506
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.707107 -0.707107
+        0 0.390731 -0.920505
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.05 0.004884 -0.011506
+        0.05 0 -0.0125
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0.390731 -0.920505
+        0 0 -1
+        -1 0 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 5
+      {
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          1 2 0 3 4 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          4 5 0 6 7 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          7 8 0 9 10 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          10 11 0 12 13 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          13 14 0 15 
+        }
+      }
+      VertexArray Vec3Array 16
+      {
+        0.0125 0.05 0
+        0.01159 0.05 0.004683
+        0.008839 0.05 0.008839
+        0.004884 0.05 0.011506
+        0 0.05 0.0125
+        -0.004683 0.05 0.01159
+        -0.008839 0.05 0.008839
+        -0.011506 0.05 0.004884
+        -0.0125 0.05 0
+        -0.01159 0.05 -0.004683
+        -0.008839 0.05 -0.008839
+        -0.004884 0.05 -0.011506
+        0 0.05 -0.0125
+        0.004683 0.05 -0.01159
+        0.008839 0.05 -0.008839
+        0.011506 0.05 -0.004884
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 16
+      {
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 16
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.0125 0.05 0
+        0.01159 0.05 0.004683
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        1 0 0
+        0.927184 0 0.374607
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.01159 0.05 0.004683
+        0.008839 0.05 0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.927184 0 0.374607
+        0.707107 0 0.707107
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.008839 0.05 0.008839
+        0.004884 0.05 0.011506
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.707107 0 0.707107
+        0.390731 0 0.920505
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.004884 0.05 0.011506
+        0 0.05 0.0125
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.390731 0 0.920505
+        0 0 1
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0 0.05 0.0125
+        -0.004683 0.05 0.01159
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0 1
+        -0.374607 0 0.927184
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.004683 0.05 0.01159
+        -0.008839 0.05 0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.374607 0 0.927184
+        -0.707107 0 0.707107
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.008839 0.05 0.008839
+        -0.011506 0.05 0.004884
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.707107 0 0.707107
+        -0.920505 0 0.390731
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.011506 0.05 0.004884
+        -0.0125 0.05 0
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.920505 0 0.390731
+        -1 0 0
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.0125 0.05 0
+        -0.01159 0.05 -0.004683
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -1 0 0
+        -0.927184 0 -0.374607
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.01159 0.05 -0.004683
+        -0.008839 0.05 -0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.927184 0 -0.374607
+        -0.707107 0 -0.707107
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.008839 0.05 -0.008839
+        -0.004884 0.05 -0.011506
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.707107 0 -0.707107
+        -0.390731 0 -0.920505
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.004884 0.05 -0.011506
+        0 0.05 -0.0125
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.390731 0 -0.920505
+        0 0 -1
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0 0.05 -0.0125
+        0.004683 0.05 -0.01159
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0 -1
+        0.374607 0 -0.927184
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.004683 0.05 -0.01159
+        0.008839 0.05 -0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.374607 0 -0.927184
+        0.707107 0 -0.707107
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.008839 0.05 -0.008839
+        0.011506 0.05 -0.004884
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.707107 0 -0.707107
+        0.920505 0 -0.390731
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.011506 0.05 -0.004884
+        0.0125 0.05 0
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.920505 0 -0.390731
+        1 0 0
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 5
+      {
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          1 2 0 3 4 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          4 5 0 6 7 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          7 8 0 9 10 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 5
+        {
+          10 11 0 12 13 
+        }
+        DrawElementsUShort TRIANGLE_STRIP 4
+        {
+          13 14 0 15 
+        }
+      }
+      VertexArray Vec3Array 16
+      {
+        0.0125 -0.05 0
+        0.01159 -0.05 -0.004683
+        0.008839 -0.05 -0.008839
+        0.004884 -0.05 -0.011506
+        0 -0.05 -0.0125
+        -0.004683 -0.05 -0.01159
+        -0.008839 -0.05 -0.008839
+        -0.011506 -0.05 -0.004884
+        -0.0125 -0.05 0
+        -0.01159 -0.05 0.004683
+        -0.008839 -0.05 0.008839
+        -0.004884 -0.05 0.011506
+        0 -0.05 0.0125
+        0.004683 -0.05 0.01159
+        0.008839 -0.05 0.008839
+        0.011506 -0.05 0.004884
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 16
+      {
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+        0 -1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 16
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.0125 -0.05 0
+        0.01159 -0.05 -0.004683
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        1 0 0
+        0.927184 0 -0.374607
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.01159 -0.05 -0.004683
+        0.008839 -0.05 -0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.927184 0 -0.374607
+        0.707107 0 -0.707107
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.008839 -0.05 -0.008839
+        0.004884 -0.05 -0.011506
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.707107 0 -0.707107
+        0.390731 0 -0.920505
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.004884 -0.05 -0.011506
+        0 -0.05 -0.0125
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.390731 0 -0.920505
+        0 0 -1
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0 -0.05 -0.0125
+        -0.004683 -0.05 -0.01159
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0 -1
+        -0.374607 0 -0.927184
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.004683 -0.05 -0.01159
+        -0.008839 -0.05 -0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.374607 0 -0.927184
+        -0.707107 0 -0.707107
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.008839 -0.05 -0.008839
+        -0.011506 -0.05 -0.004884
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.707107 0 -0.707107
+        -0.920505 0 -0.390731
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.011506 -0.05 -0.004884
+        -0.0125 -0.05 0
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.920505 0 -0.390731
+        -1 0 0
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.0125 -0.05 0
+        -0.01159 -0.05 0.004683
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -1 0 0
+        -0.927184 0 0.374607
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.01159 -0.05 0.004683
+        -0.008839 -0.05 0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.927184 0 0.374607
+        -0.707107 0 0.707107
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.008839 -0.05 0.008839
+        -0.004884 -0.05 0.011506
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.707107 0 0.707107
+        -0.390731 0 0.920505
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        -0.004884 -0.05 0.011506
+        0 -0.05 0.0125
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        -0.390731 0 0.920505
+        0 0 1
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0 -0.05 0.0125
+        0.004683 -0.05 0.01159
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0 0 1
+        0.374607 0 0.927184
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.004683 -0.05 0.01159
+        0.008839 -0.05 0.008839
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.374607 0 0.927184
+        0.707107 0 0.707107
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.008839 -0.05 0.008839
+        0.011506 -0.05 0.004884
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.707107 0 0.707107
+        0.920505 0 0.390731
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+    Geometry {
+      DataVariance STATIC
+      StateSet {
+        DataVariance UNSPECIFIED
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+        GL_DEPTH_TEST PROTECTED|ON
+        GL_BLEND PROTECTED|OFF
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      PrimitiveSets 1
+      {
+        DrawArrays TRIANGLES 0 3
+      }
+      VertexArray Vec3Array 3
+      {
+        0.011506 -0.05 0.004884
+        0.0125 -0.05 0
+        0 0 0
+      }
+      NormalBinding PER_VERTEX
+      NormalArray Vec3Array 3
+      {
+        0.920505 0 0.390731
+        1 0 0
+        0 1 0
+      }
+      ColorBinding PER_VERTEX
+      ColorArray Vec4Array 3
+      {
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+        0.1 1 0.1 1
+      }
+    }
+  }
+}

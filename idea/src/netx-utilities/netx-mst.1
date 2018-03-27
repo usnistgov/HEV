@@ -1,0 +1,92 @@
+.TH NETX-MST.PY 1 "24 July 2012"
+
+.SH NAME
+
+netx-mst.py
+
+
+.SH SYNOPSIS
+
+.B netx-mst.py
+.I  inputFile
+.I  connectedComponent
+
+.SH GRAPH LIMITATIONS
+\fBDirected:\fR No
+.br
+\fBUndirected:\fR Yes
+.br
+\fBSelf-Loops:\fR Yes
+.br
+\fBParallel Edges:\fR Yes
+.br
+\fBOther:\fR None
+.br .br
+.PP
+
+.SH DESCRIPTION
+
+\fBnetx-mst.py\fR prints the edges that compose a minimum spanning tree of a connected component of a graph, given the graph is undirected. \fBconnectedComponent\fR dictates which connected component will be used. See below for more information. This function uses a software package called NetworkX that must be installed for this function to work. An example of the output is given below.
+.br .P
+.br .P
+.PP
+Example Output:					
+.br .P						
+node1	node2								
+.br
+node1	node3								
+.br
+node3	node4								
+.br .P
+.PP
+Where an edge in the minimum spanning tree is between the two nodes on the same line.
+.br .P
+.br .P
+.PP
+\fBinputFile\fR is a file in edge-list format that contains only text. It does not have any header information. The nodes can have any name, as long as each node has a unique name (i.e. you can't have two nodes both named "sam" in the same graph). Optionally, following the two nodes, a weight can be assigned to the edge between them. Two examples are given below. The first with weights and the second without.
+.br .P
+Example One:
+.br .P
+node1 node2 4
+.br .P
+node3 node1 3.2
+.br .P
+node4 node5 5
+.br .P
+.br .P
+.PP
+Where there is an edge between the first two entries(nodes) on the same row and the third value is the weight of the edge between the two nodes.
+.br .P
+.br .P
+.PP
+Example Two:
+.br .P
+node1 node2
+.br .P
+node3 node1
+.br .P
+node4 node5
+.br .P
+.br .P
+.PP
+Where there is an edge between the two nodes on the same line.
+.br .P
+.br .P
+.PP
+\fBconnectedComponent\fR is the unique identifier of a connected component in the graph. This corresponds to the unique identifier given in connComp.output2.txt from the function ./netx-connComp.py. The unique identifier is the number that comes after the decimal point in the identifying number. For example if the connected component you wanted to look at was called \fI2.67\fR, you would use \fI67\fR as your \fBconnectedComponent\fR.
+.br .P
+.br .P
+.PP
+.SH AUTHOR
+
+Zachary Keller
+
+.PP
+July 2012
+
+.PP 
+High Performance Computing & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/hpcvg/

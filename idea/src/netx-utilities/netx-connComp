@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+import networkx as nx
+import sys
+
+
+f1 = open('connComp.output1.txt', 'w')
+f2 = open('connComp.output2.txt', 'w')
+G=nx.MultiGraph()
+
+if(len(sys.argv)>1):
+    myFile=open(sys.argv[1], 'r')
+else:
+    print("Error, no file given to read in")
+    sys.exit()
+
+lines = []
+
+for edge in myFile:
+    lines.append(tuple(edge.split()))
+
+if(len(lines[0])==2):
+    for x in range(len(lines)):
+        G.add_edge(lines[x][0], lines[x][1], weight=1)
+elif(len(lines[0])>=3):
+    for y in range(len(lines)):
+        G.add_edge(lines[y][0], lines[y][1], weight=float(lines[y][2]))
+
+myFile.close()
+
+connComps = nx.connected_components(G)
+maxSize = len(connComps[0])
+
+y=0
+while y < len(connComps):
+    if(len(connComps[y])>maxSize):
+        maxSize = len(connComps[y])
+    y = y+1
+
+numConnComps=[]
+x=0
+while x<maxSize+1:
+    numConnComps.append(0)
+    x = x + 1
+
+z=0
+while z<len(connComps):
+    numConnComps[len(connComps[z])] = numConnComps[len(connComps[z])]+1
+    z = z+1
+
+f1.write("Comp_Size\tNum_of_Comps\n")
+for k in range(len(numConnComps)):
+    if(numConnComps[k]>0):
+        f1.write(str(k))
+        f1.write("\t\t")
+        f1.write(str(numConnComps[k]))
+        f1.write("\n")
+
+counter = 0;
+f2.write("Connected Components' Nodes\n")
+for i in range(len(connComps)):
+    f2.write(str(len(connComps[i])))
+    f2.write(".")
+    f2.write(str(counter))
+    f2.write("- ")
+    counter+=1;
+    for j in range(len(connComps[i])):
+        f2.write(connComps[i][j])
+        if(j != len(connComps[i])-1):
+            f2.write(",")
+    f2.write('\n\n')
+f1.close()
+f2.close()

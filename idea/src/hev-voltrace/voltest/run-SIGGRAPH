@@ -1,0 +1,59 @@
+#!/bin/bash
+# demo script for SIGGRAPH 2009 Diverse and OpenSceneGraph BOF
+
+# run from script directory
+cd $(dirname $0)
+
+# use alpha version of hev-voltrace
+export PATH=..:$PATH
+
+echo "============================================================"
+echo "volume rendered fire simulation"
+#./runcase5v10
+
+echo "============================================================"
+echo "front clipping with vertex shader: box=red, near clipping plane=green"
+qvd-wireBox 1 1 1   1 1 1  box.ive
+hev-voltrace --no-clip --no-objects --integration debugplane 1 1 1 bucky.osg
+savgfly -b .5 .7 .9 --examine bucky.osg box.ive
+
+#echo "============================================================"
+#echo "show generic slicing: slices=blue; hit w to switch to wire frame"
+#hev-voltrace --nobox --slice 20 --integration debugplane 1 1 1 bucky.osg
+#osgviewer --clear-color .5,.7,.9 bucky.osg box.ive
+
+echo "============================================================"
+echo "show ray exit depths"
+hev-voltrace --no-clip --objects --integration debugexit 1 1 1 bucky.osg
+savgfly -b .5 .7 .9 --examine mixed.sge box.ive
+
+echo "============================================================"
+echo "point sampling without randomized first step size"
+cp emit.dat transfer.dat
+hev-voltrace --no-clip --objects --no-randstep --integration point \
+    --transfer emit 1 1 1 bucky.osg
+savgfly -b .5 .7 .9 --examine box.ive mixed.sge &
+dgl-waitExec true		# block until savgfly starts
+./texture point 20
+killall --wait -0 dosg-fly
+
+echo "============================================================"
+echo "point sampling with randomized first step size"
+./rundemo mixed point emit 20
+killall --wait -0 dosg-fly
+
+echo "============================================================"
+echo "linear with randomized first step size"
+./rundemo mixed linear emit 20
+killall --wait -0 dosg-fly
+
+echo "============================================================"
+echo "preintegration"
+./rundemo mixed preint preint 20
+killall --wait -0 dosg-fly
+
+echo "============================================================"
+echo "linear with volume lighting"
+cp lit.dat transfer.dat
+./rundemo mixed linear lit 20
+killall --wait -0 dosg-fly

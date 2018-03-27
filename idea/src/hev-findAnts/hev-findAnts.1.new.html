@@ -1,0 +1,225 @@
+Content-type: text/html
+
+<HTML><HEAD><TITLE>Manpage of hev-findAnts</TITLE>
+</HEAD><BODY>
+<H1>hev-findAnts</H1>
+Section: User Commands  (1)<BR>Updated: 31 Aug 2012<BR><A HREF="#index">Index</A>
+<A HREF="http://localhost/cgi-bin/man/man2html">Return to Main Contents</A><HR>
+
+<A NAME="lbAB">&nbsp;</A>
+<H2>NAME</H2>
+
+hev-findAnts - Find
+&quot;Army of Ants&quot; NIST/HPCVG visualization commands/tools.
+<P>
+<P>
+<A NAME="lbAC">&nbsp;</A>
+<H2>SYNOPSIS</H2>
+
+<B>hev-findAnts [-lmhnvisdogwa] [&lt;string&gt;]</B>
+
+<P>
+<P>
+<A NAME="lbAD">&nbsp;</A>
+<H2>DESCRIPTION</H2>
+
+<P>
+
+<I>hev-findAnts </I>
+
+finds commands or tools in directories specified in the
+<B>PATH</B>
+
+environment variable that are part of the
+&quot;Army of Ants,&quot; small reusable applications
+NIST/HPCVG uses for generating visualizations.
+There are currently eight catagories of tools:
+<BR>
+
+<P>
+<DL COMPACT>
+<DT><B>HEV</B>
+
+<DD>
+(High End Visualization [NIST])
+<DT><B>NETX</B>
+
+<DD>
+(NetworkX Utilities [LANL])
+<DT><B>VTK</B>
+
+<DD>
+(Visualization Toolkit [Kitware])
+<DT><B>ITK</B>
+
+<DD>
+(Insight Toolkit [Kitware])
+<DT><B>SAVG</B>
+
+<DD>
+(Scientific Application and Visualization Group
+[NIST])
+<DT><B>DTK</B>
+
+<DD>
+(DIVERSE Toolkit)
+<DT><B>OSG</B>
+
+<DD>
+(Open SceneGraph)
+<DT><B>DGL</B>
+
+<DD>
+(Distributed Graphics Library [SGI])
+<DT><B>IV</B>
+
+<DD>
+(Inventor/VRML 1.0 [SGI])
+</DL>
+<P>
+
+<P>
+<P>
+The optional &lt;string&gt; parameter is used to narrow the search. 
+It is appended to the catagory prefix before searching. Regular
+expressions can be used.
+<P>
+Command line options are used to select and control 
+the viewing order of each of these catagories. Paging 
+can be controlled with either the
+<I>less</I>
+
+command (default) or the
+<I>more</I>
+
+command.
+<P>
+<P>
+<A NAME="lbAE">&nbsp;</A>
+<H3>Options</H3>
+
+<DL COMPACT>
+<DT><B>l</B>
+
+<DD>
+Display pages using
+<I>less </I>
+
+command (default).
+<DT><B>m</B>
+
+<DD>
+Display pages using
+<I>more</I>
+
+command.
+<DT><B>h</B>
+
+<DD>
+List HEV (High End Visualisation) Tools
+<DT><B>n</B>
+
+<DD>
+List NETX (NetworkX Utilities) Tools
+<DT><B>v</B>
+
+<DD>
+List VTK (Visulaization Toolkit) Tools
+<DT><B>i</B>
+
+<DD>
+List ITK (Insight Tookit) Tools
+<DT><B>s</B>
+
+<DD>
+List SAVG (Sci. App. Visualization Group) Tools
+<DT><B>d</B>
+
+<DD>
+List DTK (DIVERSE Tookit) Tools
+<DT><B>o</B>
+
+<DD>
+List OSG (Open Scene Grpah) Tools
+<DT><B>g</B>
+
+<DD>
+List DGL (Distributed Graphics Library) Tools
+<DT><B>w</B>
+
+<DD>
+List IV (Inventor/VRML) Tools
+<DT><B>a</B>
+
+<DD>
+List all tools (default). If this option is used, the listed is ordered
+as if -hvisdogw had been specified.
+<P>
+<P>
+</DL>
+<A NAME="lbAF">&nbsp;</A>
+<H2>Examples</H2>
+
+To find commands in all catagories with &quot;savg&quot;
+<B>IMMEDIATLY</B>
+
+after the prefix:
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;$&nbsp;hev-findAnts&nbsp;savg
+<P>
+<P>
+To find HEV commands with &quot;savg&quot;
+<B>ANYWHERE</B>
+
+after the prefix, one needs to put a wildcard before the string:
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;$&nbsp;hev-findAnts&nbsp;-h&nbsp;*savg
+<P>
+<P>
+To find SAVG and HEV commands with &quot;savg&quot; anywhere after the prefix
+with any combination of cases, using the 'more' command instead 
+of 'less' for paging:
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;$&nbsp;hev-findAnts&nbsp;-msh&nbsp;*[Ss][Aa][Vv][Gg]
+<P>
+<P>
+<P>
+<A NAME="lbAG">&nbsp;</A>
+<H2>NOTES</H2>
+
+The 'g' option is used for DGL Tools and 'w' is used for IV Tools.
+<P>
+The order the options specified will determine the order
+in which the catagories are listed. Only the first occurrence
+of each option is significant. Repeat occurrences will be ignored.
+<P>
+The 'a' option overides any other catagory selections and orderings.
+<P>
+The 'l' and 'm' options may occur anywhere without changing the order
+in which the catagories are displayed.
+<P>
+<A NAME="lbAH">&nbsp;</A>
+<H2>AUTHOR</H2>
+
+<P>
+
+Terence Griffin, NIST/ITL/ACMD/HPCVG
+<P>
+
+<HR>
+<A NAME="index">&nbsp;</A><H2>Index</H2>
+<DL>
+<DT><A HREF="#lbAB">NAME</A><DD>
+<DT><A HREF="#lbAC">SYNOPSIS</A><DD>
+<DT><A HREF="#lbAD">DESCRIPTION</A><DD>
+<DL>
+<DT><A HREF="#lbAE">Options</A><DD>
+</DL>
+<DT><A HREF="#lbAF">Examples</A><DD>
+<DT><A HREF="#lbAG">NOTES</A><DD>
+<DT><A HREF="#lbAH">AUTHOR</A><DD>
+</DL>
+<HR>
+This document was created by
+<A HREF="http://localhost/cgi-bin/man/man2html">man2html</A>,
+using the manual pages.<BR>
+Time: 20:29:05 GMT, August 31, 2012
+</BODY>
+</HTML>

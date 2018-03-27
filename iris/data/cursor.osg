@@ -1,0 +1,351 @@
+Group {
+  DataVariance UNSPECIFIED
+  name "cursor.osg"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  StateSet {
+    DataVariance STATIC
+    rendering_hint DEFAULT_BIN
+    renderBinMode INHERIT
+    GL_LIGHTING PROTECTED|OFF
+  }
+  num_children 1
+  Group {
+    DataVariance STATIC
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    num_children 12
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays POLYGON 0 6
+        }
+        VertexArray Vec3Array 6
+        {
+          0 0 0
+          0.00883849 0 0
+          0.0309347 0 0.0220962
+          0.0309347 0 0.0309347
+          0.0220962 0 0.0309347
+          0 0 0.00883849
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0.5 0.5 0.5 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays POLYGON 0 6
+        }
+        VertexArray Vec3Array 6
+        {
+          0 0 0.00883849
+          -0.0220962 0 0.0309347
+          -0.0309347 0 0.0309347
+          -0.0309347 0 0.0220962
+          -0.00883849 0 0
+          0 0 0
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0.5 0.5 0.5 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays POLYGON 0 6
+        }
+        VertexArray Vec3Array 6
+        {
+          0 0 -0.00883849
+          0.0220962 0 -0.0309347
+          0.0309347 0 -0.0309347
+          0.0309347 0 -0.0220962
+          0.00883849 0 0
+          0 0 0
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0.5 0.5 0.5 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays POLYGON 0 6
+        }
+        VertexArray Vec3Array 6
+        {
+          0 0 0
+          -0.00883849 0 0
+          -0.0309347 0 -0.0220962
+          -0.0309347 0 -0.0309347
+          -0.0220962 0 -0.0309347
+          0 0 -0.00883849
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0.5 0.5 0.5 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays POLYGON 0 6
+        }
+        VertexArray Vec3Array 6
+        {
+          0 0.000441924 0
+          0.017677 0.000441924 0
+          0.035354 0.000441924 0.017677
+          0.035354 0.000441924 0.035354
+          0.017677 0.000441924 0.035354
+          0 0.000441924 0.017677
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0 0 0 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays POLYGON 0 6
+        }
+        VertexArray Vec3Array 6
+        {
+          0 0.000441924 0.017677
+          -0.017677 0.000441924 0.035354
+          -0.035354 0.000441924 0.035354
+          -0.035354 0.000441924 0.017677
+          -0.017677 0.000441924 0
+          0 0.000441924 0
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0 0 0 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays POLYGON 0 6
+        }
+        VertexArray Vec3Array 6
+        {
+          0 0.000441924 -0.017677
+          0.017677 0.000441924 -0.035354
+          0.035354 0.000441924 -0.035354
+          0.035354 0.000441924 -0.017677
+          0.017677 0.000441924 0
+          0 0.000441924 0
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0 0 0 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays POLYGON 0 6
+        }
+        VertexArray Vec3Array 6
+        {
+          0 0.000441924 0
+          -0.017677 0.000441924 0
+          -0.035354 0.000441924 -0.017677
+          -0.035354 0.000441924 -0.035354
+          -0.017677 0.000441924 -0.035354
+          0 0.000441924 -0.017677
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          0 0 0 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays LINE_STRIP 0 2
+        }
+        VertexArray Vec3Array 2
+        {
+          0 -0.000441924 0
+          0.0265155 -0.000441924 0.0265155
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          1 1 1 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays LINE_STRIP 0 2
+        }
+        VertexArray Vec3Array 2
+        {
+          0 -0.000441924 0
+          -0.0265155 -0.000441924 0.0265155
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          1 1 1 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays LINE_STRIP 0 2
+        }
+        VertexArray Vec3Array 2
+        {
+          0 -0.000441924 0
+          0.0265155 -0.000441924 -0.0265155
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          1 1 1 1
+        }
+      }
+    }
+    Geode {
+      DataVariance STATIC
+      nodeMask 0xffffffff
+      cullingActive TRUE
+      num_drawables 1
+      Geometry {
+        DataVariance STATIC
+        useDisplayList TRUE
+        useVertexBufferObjects FALSE
+        PrimitiveSets 1
+        {
+          DrawArrays LINE_STRIP 0 2
+        }
+        VertexArray Vec3Array 2
+        {
+          0 -0.000441924 0
+          -0.0265155 -0.000441924 -0.0265155
+        }
+        ColorBinding OVERALL
+        ColorArray Vec4Array 1
+        {
+          1 1 1 1
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-testImmersive 1 "January 29, 2009" "NIST/MCSD/HPCVG" "HPCVG HEV"
+
+.SH NAME
+
+ hev-testImmersive - Test if executing immersively or desktop
+
+.SH SYNOPSIS
+
+\fBhev-testImmersive [-h | -v]\fR 
+
+.SH DESCRIPTION
+
+\fBhev-testImmersive\fR is a utility to test if executing on an immersive or
+desktop system. It is typically used in application scripts to setup for the
+appropriate environment. Very often used in conjunction with \fBirisfly\fR.
+
+.PP
+Normally it runs silently and returns and exit status of 0 for immersive and 1
+for desktop.
+
+.SH OPTIONS
+.PP
+.TP
+.B -h
+prints a help message
+
+.TP
+.B -v
+verbose mode. Prints a string: 'DESKTOP' or 'IMMERSIVE' instead of exit status
+
+
+
+.SH EXAMPLE
+
+.PP
+sh example:
+
+.IP
+
+ #!/bin/sh
+ if \`hev-testImmersive\`
+ then
+      echo You are running on an immersive machine
+ else
+      echo You are running on a desktop machine	 
+ fi
+
+.PP
+bash example:
+
+.IP
+
+ #!/bin/bash
+ if ( hev-testImmersive ) ; then
+      echo You are running on an immersive machine
+ else
+      echo You are running on a desktop machine	 
+ fi
+
+
+.SH SEE ALSO
+.PP
+hev-identifyImmersive(1), irisfly(1)
+
+
+.SH AUTHOR
+
+.PP
+Steve Satterfield, steve@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+

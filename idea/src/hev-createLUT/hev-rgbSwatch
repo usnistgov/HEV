@@ -1,0 +1,270 @@
+#! /bin/sh
+
+# steve@nist.gov
+
+
+version="20090623"
+
+function usage {
+
+cat <<EOF
+
+Usage: hev-rgbSwatch [--size NxM] [--float|--int]  r g b [a] [file]
+
+   Display a color swatch of the specified r g b values
+
+       --size specify the output image size, example: 100x50
+
+       --float r g b values are in the range 0.0 to 1.0
+
+       --int   r g b values are in the range 0 to 255
+
+       a      if specified is an alpha component. Default is 1 or 255
+
+       file   if specified will be created and no image displayed
+
+
+echo "Version:" ${version}
+
+EOF
+
+exit 1
+
+}
+
+
+#
+# Function to see if $1 is a subset of $2- return 0 (success) if true
+#
+paramCheck() {
+    pc1=${1#-}        # strip leading - or --
+    pc1=${pc1#-}
+    pc2=${2#-}
+    pc2=${pc2#-}
+    #echo paramCheck $1 $2 ":"  $pc1 $pc2
+    if [ "${pc2#$pc1}" != "$pc2" ] ; then
+        return 0
+    else
+        return 1
+    fi
+}
+# End paramCheck
+
+
+
+#
+# Function to detarmine if parameter is a number
+#
+function isanumber()
+{
+   if ( printf "%g" $1 >/dev/null  2> /dev/null )
+   then
+     return 0
+   else
+     return 1
+   fi
+
+}
+
+#
+# Function to detarmine if parameter is anint
+#
+function isanint()
+{
+   if ( printf "%d" $1 >/dev/null  2> /dev/null )
+   then
+     return 0
+   else
+     return 1
+   fi
+
+}
+
+
+function fl2int()
+{
+    echo $1 | awk '{print int($1*255);}'
+}
+
+
+
+#
+# Process command line parameters
+#
+
+if [ $# -eq 0 ]
+then
+    usage
+fi
+
+alpha=1
+debugFlag=0
+floatFlag=1
+size="180x50"   #
+outfile=/tmp/${USER}.$$.png
+outfileFlag=1
+
+trap "rm -f $outfile" 0
+
+
+while [ $# -gt 0 ]
+do
+    quit=0;
+    if  ( paramCheck $1 --float )
+    then
+        floatFlag=1
+	alpha=1
+	quit=1
+        shift
+    elif  ( paramCheck $1 --int )
+    then
+        floatFlag=0
+	alpha=255
+	quit=1
+        shift
+    elif  ( paramCheck $1 --debug )
+    then
+        debugFlag=1
+	
+	quit=1
+        shift
+    elif ( paramCheck $1 --size )
+    then
+	shift
+	if [ $# -eq 0 ] ; then usage; fi
+	size=$1
+	quit=1
+        shift
+    elif [ "${1#-}" != $1 ]     # check for a dash that is not a valid flag
+    then
+        echo
+        echo "Unknown parameter:" $1
+	echo "Remember to use --"
+        echo
+        usage
+        exit
+    fi
+
+    if	[ "$quit" == 0 ]
+    then
+	break
+    fi
+
+done
+
+#
+# At this point only "r g b [a\ [file]" should be on the command line
+#
+#echo "Remaining parameters:" $*
+
+
+case $# in
+3)
+    red=$1
+    green=$2
+    blue=$3
+    ;;
+4)
+    if ( isanumber $4 )
+    then
+	red=$1
+	green=$2
+	blue=$3
+	alpha=$4
+     else
+	red=$1
+	green=$2
+	blue=$3
+        outfile=$4
+        outfileFlag=0
+    fi
+    ;;
+5)
+    red=$1
+    green=$2
+    blue=$3
+    alpha=$4
+    outfile=$5
+    outfileFlag=0
+    ;;
+*)
+    usage
+    ;;
+esac
+
+
+if [ "$floatFlag" == "1" ]
+then
+    r=`fl2int $red`
+    g=`fl2int $green`
+    b=`fl2int $blue`
+    a=`fl2int $alpha`
+else
+    for i in $red $green $blue $alpha
+    do
+      if ( ! isanint $i )
+      then
+	  echo "Parameter $i should be an integer or you should use the --float option"
+	  echo
+	  usage
+      fi
+    done
+    r=$red
+    g=$green
+    b=$blue
+    a=$alpha
+fi
+
+# r,g,b,a are int
+# red, green, blue, alpha are input
+
+
+if [ $r -lt 0 -o $r -gt 255 ]
+then
+    echo "Red value out of range"
+    usage
+fi
+
+if [ $g -lt 0 -o $g -gt 255 ]
+then
+    echo "Green value out of range"
+    usage
+fi
+
+if [ $b -lt 0 -o $b -gt 255 ]
+then
+    echo "Blue value out of range"
+    usage
+fi
+
+if [ $a -lt 0 -o $a -gt 255 ]
+then
+    echo "Alpha value out of range"
+    usage
+fi
+
+
+# convert requires a flota alpha
+a=`echo $a | awk '{print $1/255;}'`
+
+if [ "$debugFlag" == "1" ]
+then
+  echo "floatFlag=" $floatFlag
+  echo "size=" $size
+  echo "outfile=" $outfile
+  echo "input color:" $red $green $blue $alpha
+  echo "actual color:" $r $g $b $a
+  echo convert -size  ${size} xc:"rgba(${r},${g},${b},${a})" $outfile
+fi
+
+
+
+convert -size  ${size} xc:"rgba(${r},${g},${b},${a})" $outfile
+
+if [ "$outfileFlag" == "1" ]
+then
+    display -title "${red} ${green} ${blue} ${alpha}" $outfile
+fi
+
+
+# End

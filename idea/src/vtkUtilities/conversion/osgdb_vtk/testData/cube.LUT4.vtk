@@ -1,0 +1,44 @@
+# vtk DataFile Version 3.0
+vtk output
+ASCII
+DATASET POLYDATA
+POINTS 8 float
+0 0 0
+1 0 0
+1 1 0
+0 1 0
+0 1 1
+1 1 1
+1 0 1
+0 0 1
+POLYGONS 6 30
+4 0 1 2 3
+4 4 5 6 7
+4 0 7 6 1
+4 1 6 5 2
+4 2 5 4 3
+4 3 4 7 0
+
+CELL_DATA 6
+SCALARS jgh_scalars float 4
+LOOKUP_TABLE default
+0.0 1.0         20         0
+0.2 1.0         30         0
+0.4 -1.0        40         0
+0.6 -1.0        50         0
+0.8 25          60         0
+1.0 -300        70         0
+NORMALS cell_normals float
+0 0 1
+0 0 -1
+0 1 0
+-1 0 0
+0 -1 0
+1 0 0
+TEXTURE_COORDINATES cell_tcoords 2 float
+0.1 8
+0.2 7
+0.3 6
+0.4 5
+0.5 4
+0.6 3

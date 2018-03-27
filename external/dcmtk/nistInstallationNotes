@@ -1,0 +1,16 @@
+DIR=$HEVROOT/external/dcmtk
+
+cd $DIR
+
+download dcmtk from http://dicom.offis.de/dcmtk
+
+untar
+
+update the dcmtk-3.x symlink if needed
+
+cd $DIR/dcmtk-3.x
+
+n=`getconf _NPROCESSORS_ONLN`
+
+./configure --prefix=$DIR && make -j$n all && make install-lib
+

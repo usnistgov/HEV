@@ -1,0 +1,82 @@
+#Inventor V2.0 ascii
+Separator {
+Translation { translation -.0125 -.0125 -.0125 }
+Separator {
+Translation { translation .5 .5 .5 }
+Separator {
+Scale { scaleFactor 1.25 1.25 1.25 }
+Separator {
+Translation { translation 0 -.5 -.5 }
+Separator {
+Cube { width 1 height .005 depth .005 }
+}
+}
+Separator {
+Translation { translation 0 .5 -.5 }
+Separator {
+Cube { width 1 height .005 depth .005 }
+}
+}
+Separator {
+Translation { translation 0 -.5 .5 }
+Separator {
+Cube { width 1 height .005 depth .005 }
+}
+}
+Separator {
+Translation { translation 0 .5 .5 }
+Separator {
+Cube { width 1 height .005 depth .005 }
+}
+}
+Separator {
+Translation { translation .5 0 .5 }
+Separator {
+Cube { width .005 height 1 depth .005 }
+}
+}
+Separator {
+Translation { translation -.5 0 .5 }
+Separator {
+Cube { width .005 height 1 depth .005 }
+}
+}
+Separator {
+Translation { translation .5 0 -.5 }
+Separator {
+Cube { width .005 height 1 depth .005 }
+}
+}
+Separator {
+Translation { translation -.5 0 -.5 }
+Separator {
+Cube { width .005 height 1 depth .005 }
+}
+}
+Separator {
+Translation { translation .5 .5 0 }
+Separator {
+Cube { width .005 height .005 depth 1 }
+}
+}
+Separator {
+Translation { translation -.5 .5 0 }
+Separator {
+Cube { width .005 height .005 depth 1 }
+}
+}
+Separator {
+Translation { translation -.5 -.5 0 }
+Separator {
+Cube { width .005 height .005 depth 1 }
+}
+}
+Separator {
+Translation { translation .5 -.5 0 }
+Separator {
+Cube { width .005 height .005 depth 1 }
+}
+}
+}
+}
+}

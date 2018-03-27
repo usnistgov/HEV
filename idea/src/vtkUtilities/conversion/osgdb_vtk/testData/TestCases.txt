@@ -1,0 +1,64 @@
+TEST CASES:
+
+Color on Vertex                                 cube.perVertex.vtk
+Color on Cell                                   cube.perCell.vtk
+Color on both  (vertex overrides)               cube.perBoth.vtk
+Color on neither                                cube.perNeither.vtk
+
+Normal on Vertex                                cube.perVertex.vtk
+Normal on Cell                                  cube.perCell.vtk
+Normal on both  (vertex overrides)              cube.perBoth.vtk
+Normal on neither                               cube.perNeither.vtk
+
+Texture coords on Vertex 
+    1D                                          cube.tex1D.vtk
+    2D                                          cube.perVertex.vtk
+    3D                                          cube.tex3D.vtk
+Texture coords on Cell (should be ignored)      cube.perCell.vtk
+Texture coords on both (only vertex used)       cube.perBoth.vtk
+Texture coords on neither                       cube.perNeither.vtk
+
+Color on Vertex      &  Normal on Cell          cube.colV.normC.vtk
+Normal on Vertex     &  Color on Cell           cube.normV.colC.vtk
+Tex coord on Vertex  &  Color on Cell           cube.texV.colC.vtk
+Color on Vertex      &  Tex coord on Cell       cube.colV.texC.vtk
+No Color                                        cube.noColor.vtk
+
+Types of color
+   LUT + Scalar 1 component                             cube.perCell.vtk
+   LUT + Scalar 2 component                             cube.LUT2.vtk
+   LUT + Scalar 4 component                             cube.LUT4.vtk
+   uchar 1 component (intensity)                        cube.uchar1Col.vtk
+   uchar 2 component (intensity + alph)                 cube.uchar2Col.vtk
+   uchar 3 component (rgb)                              cube.uchar3Col.vtk
+   uchar 4 component (rgba)                             cube.uchar4Col.vtk
+   both LUT and uchar (LUT overrides)                   cube.LUT.uchar4Col.vtk
+
+Types of cells:
+    VERTEX                                              cube.vertCell.vtk
+    POLY_VERTEX                                         sph.polyVertCell.vtk
+    LINE                                                sph.lineCell.vtk
+    POLY_LINE                                           sph.polyLineCell.vtk
+    TRIANGLE                                            sph.triCell.vtk
+    QUAD                                                cube.perCell.vtk
+    POLYGON                                             flat.polygon.vtk
+    TRIANGLE_STRIP                                      sph.triStripCell.vtk
+    multiple cell types in same file?                   mixedCellTypes.vtk
+                                                        sph.mixedCell.vtk
+
+Input file types:
+    poly data                                           cube.perCell.vtk
+    structured points                                   structPoints.*.vtk
+    structured grid                                     structGrid.*.vtk
+    unstructured grid                                   unstructGrid.*.vtk
+    rectilinear grid                                    rectGrid.*.vtk
+
+Alpha not 1.0                                           cube.transCell.vtk
+                                                        sph.transVert.vtk
+
+Error conditions
+    file not found                                      nonexistent.vtk
+    bad format                                          badFormat.vtk
+    incomplete                                          incomplete.vtk
+    cannot open                                         notReadable.vtk
+    bad file type                                       badType.vtk

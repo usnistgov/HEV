@@ -1,0 +1,68 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-hpcvgSign 1 "May 2015" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-hpcvgSign
+- Display a sign (image) defining HPCVG, ACMD, ITL
+
+.SH SYNOPSIS
+.B  hev-hpcvgSign
+[--fg color] [--bg color] [--size size] [--]
+
+
+.SH DESCRIPTION
+.PP
+.I hev-hpcvgSign
+display an image of the following text:
+.IP
+ High Performance Computing and Visualization Group (HPCVG)  
+          Applied and Computational Mathematics Division (ACMD) 
+               Information Technology Laboratory (ITL)  
+
+
+.SH  OPTIONS
+.PP
+.TP
+.B --help
+print a help message.
+
+.TP
+.B --fg color
+specify foreground text color
+
+.TP
+.B --bg color
+specify background color
+
+.TP
+.B --size size
+specify the vertical size in pixels. Default is 160.
+
+.TP
+.B --
+Anything else on the command line after this is 
+passed to hev-imageDisplay which is used to
+actually display the sign. 
+
+
+.PP
+The \fBcolor\fR value is in the Image Magick format.
+Examples: '#00FF00' or 'rgb(0,255,0)' or 'rgb(0.0%,100.0%,0.0%)'
+.PP
+See: http://www.imagemagick.org/script/color.php
+
+.SH
+EXAMPLE
+.PP
+Display on the CAVE front screen:
+
+.TP
+env DISPLAY=:0.1 hev-hpcvgSign --bg lightblue -- -geometry +350+50 --noborder
+
+
+
+.SH AUTHOR
+Steven G. Satterfield, steve@nist.gov
+.br
+Original implementation May 2015.
+

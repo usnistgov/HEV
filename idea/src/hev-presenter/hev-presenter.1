@@ -1,0 +1,229 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-presenter 1 "September, 2011" "NIST/MCSD" "MCSD HEV"
+.SH NAME
+hev-presenter
+- a GUI that controls a slide show containing images or flipbook movies
+
+.SH SYNOPSIS
+.B "hev-presenter"
+[ \fIfile\fR ... ]
+
+.SH PARAMETERS
+
+.IP \fIfile\fR
+is the name of a data file. Multiple files can be given on the command line. If
+no files are given data lines are read
+from standard input.
+
+.SH DESCRIPTION
+\fBhev-presenter\fR provides a GUI interface to facilitate the display of
+images or flipbook movies as a slide show. Each slide is either a single
+image or a series of images comprising a flipbook movie.
+
+Files
+are loaded and displayed by the \fBhev-imageDisplay\fR(1) program and the
+image displayed is controlled by \fBhev-presenter\fR via a DTK shared memory
+file.
+
+.SH INPUT DATA FORMAT
+Each line can contain either one or more space separated file names or a command keyword with
+optional parameters.
+
+Lines that contain file names will be used as either individual slides, or
+as frames of a movie, one file name per slide or frame, depending on the
+preceeding keyword commands. File names are expanded with the wordexp(3)
+utility to support shell expansion of meta-characters and environment
+variables.
+
+Eight keywords are recognized:
+
+.IP
+\fBPLAY\fR [ \fIplayOptions\fR ]
+.IP
+indicates that \fBhev-presenter\fR  will begin to automatically advance slides,
+starting at the next slide. 
+
+.IP
+\fBSTOP\fR
+.IP
+indicates that \fBhev-presenter\fR should stop automatically advancing slides. A
+\fBSTOP\fR command without a preceeding \fBPLAY\fR command is ignored.
+
+.IP
+\fBSLIDE\fR [ \fIplayOptions\fR ]
+.IP
+is used to specify \fBPLAY\fR options without causing the next slide to
+automatically start advancing. If the slides are already automatically
+advancing the \fBPLAY\fR options will be changed. The purpose of the \fBSLIDE\fR
+command is to allow \fBPLAY\fR parameters to be changed in a hev-presenter data
+file but not have any slides automatically advance unless a \fBPLAY\fR
+command has been encountered. For example, you can have a data file containing a
+single \fBPLAY\fR command at the first slide to be automatically advanced,
+preceeded or followed by \fBSLIDE\fR commands, and by commenting out the single \fBPLAY\fR
+command the file will become completely manual.
+
+.IP
+\fBBEGINMOVIE\fR [ \fImovieOptions\fR ]
+.IP
+indicates that subsequent files should be treated as frames of a movie. All
+frames of a movie are treated as a single slide. 
+
+.IP
+\fBENDMOVIE\fR
+.IP
+signals the end of a movie. Subsequent file names will be treated as
+individual slides. An
+\fBENDMOVIE\fR command without a preceeding \fBBEGINMOVIE\fR command is ignored.
+
+.IP 
+\fBMOVIE\fR [ \fImovieOptions\fR ]
+.IP
+is used to specify \fBBEGINMOVIE\fR options without having to generate a movie
+slide. Options are the same as the \fBBEGINMOVIE\fR command. If no options are given \fBMOVIE\fR is
+effectively a no-op.
+
+.IP
+\fBDEBUG\fR \fION\fR|\fIOFF\fR
+.IP
+will generate diagnostic spewage to stderr if ON. \fBDEBUG\fR spewage can be
+turned on and off throughout the data file to allow debugging of specific parts
+of the file.
+
+.IP
+\fBECHO\fR \fIstring\fR
+.IP
+will echo to standard output the text \fIstring\fR, which may contain spaces
+and any characters.  \fIstring\fR will echoed just before the next slide or
+movie frame is displayed. Multiple \fBECHO\fR commands encountered before a
+slide or frame will be concatenated. The \fBECHO\fR string is cleared after
+every frame or slide. \fBECHO\fR can be used to send control commands to a
+running IRIS process by sending output to \fI$IRIS_CONTROL_FIFO\fR, or can
+be used to execute Unix commands by piping the output of \fBhev-presenter\fR
+to \fIsh\fR.
+
+.P 
+Play Options are:
+.IP 
+\fBREPLAY\fR \fION\fR|\fIOFF\fR
+.IP
+indicates that the slide show should automatically replay after the last
+frame. Default settings will be set back to their original values so each
+slide show will appear the same.
+
+.IP 
+\fBTIME\fR \fIt\fR
+.IP
+specifies how many seconds to display each slide. This not a frame rate, but
+its inverse. This can be a
+floating point number or integer.
+
+.P 
+Movie Options are:
+.IP
+\fBAUTOSTART\fR \fION\fR|\fIOFF\fR
+.IP
+indicates that the movie should automatically start once the slide
+containing the movie is reached.
+.IP 
+\fBLOOP\fR \fION\fR|\fIOFF\fR
+.IP
+indicates that the movie should repeatedly loop.
+.IP 
+\fBFPS\fR \fIn\fR
+.IP
+specifies the frame rate of the movie in frames per second. This can be a
+floating point number or integer.
+
+.SH Note:
+Options set in the \fBBEGINMOVIE\fR, \fBMOVIE\fR, \fBPLAY\fR and \fBSLIDE\fR
+commands become the default value for any subsequent \fBBEGINMOVIE\fR,
+\fBMOVIE\fR, \fBPLAY\fR and \fBSLIDE\fR commands encountered. If no options
+are set, \fBAUTOSTART\fR and \fBLOOP\fR are \fBOFF\fR and \fBFPS\fR is set
+to \fB30\fR. \fBREPLAY\fR is set to \fBOFF\fR and \fBTIME\fR is set to
+\fB10\fR seconds.
+
+.P
+It is an error to have a \fBPLAY\fR, \fBSLIDE\fR or \fBSTOP\fR command between
+\fBBEGINMOVIE\fR and \fBENDMOVIE\fR commands.
+
+.P
+Multiple \fBPLAY\fR and \fBSLIDE\fR commands without corresponding \fBSTOP\fR
+commands are acceptable and can be used to modify the \fBPLAY\fR options.
+
+.P 
+When automatically advancing, a slide with a movie will take as much time as
+it needs to finish the movie. If the movie is looping it will always need to
+be manually advanced to proceed to the next slide.
+
+.P
+If slides are automatically advancing, movies will automatically be started
+regardless of the \fBAUTOSTART\fR value.
+
+.P
+Data files can be commented with \fB#comments\fR and blank lines are
+ignored. Keywords are cAsE iNsEnSaTiVe.
+
+.SH HEV_PRESENTER_FIFO
+If the environment variable \fIHEV_PRESENTER_FIFO\fR is defined, a fifo(7)
+is created and opened, and can be used to send commands to
+\fBhev-presenter\fR. The fifo is deleted when \fBhev-presenter\fR
+exits. Currently the only command supported is "\fBSLIDE\fR \fIn\fR" which
+causes \fBhev-presenter\fR to jump to slide number \fIn\fR.
+
+.SH HEV_PRESENTER_IMAGEDISPLAY_OPTIONS
+The value of the environment variable
+\fIHEV_PRESENTER_IMAGEDISPLAY_OPTIONS\fR is appended to the
+\fBhev-imageDisplay\fR command, which allows the default options to
+\fBhev-imageDisplay\fR, such as \fI-geometry\fR or \fI--color\fR to be
+overriden and/or augmented.
+
+.SH HEV_PRESENTER_IMAGEDISPLAY_ENVVARS
+The value of environment variable \fIHEV_PRESENTER_IMAGEDISPLAY_ENVVARS\fR
+is prepended to the \fBhev-imageDisplay\fR command, which allows the default
+envvars, such as \fIDISPLAY\fR to \fBhev-imageDisplay\fR to be overriden
+and/or augmented.
+
+.SH "hev-imageDisplay window placement"
+\fBhev-presenter\fR creates and destroys the \fBhev-imageDisplay\fR
+process. \fBhev-presenter\fR interrogates the current environment to try to
+determine the optimal placement of the \fBhev-imageDisplay\fR window. On the
+RAVE \fBhev-presenter\fR places the \fBhev-imageDisplay\fR window on the
+front wall of the immersive display if \fIHEV_PRESENTER_FIFO\fR is not
+defined, and the left wall if it is defined. (The reasoning here is that if
+\fIHEV_PRESENTER_FIFO\fR is defined the assumption is that an IRIS process
+is sending the fifo commands, and the slides should be shown on the screen
+not containing the IRIS menus.) On the Powerwall the \fBhev-imageDisplay\fR
+is on the front wall. The \fBhev-presenter\fR GUI is always on the console.
+
+The \fIHEV_PRESENTER_IMAGEDISPLAY_OPTIONS\fR environment variable can be set
+to override the FLTK \fI-geometry\fR option set by
+\fBhev-presenter\fR, allowing the \fBhev-imageDisplay\fR window to be placed at any
+desired location.
+
+The \fIHEV_PRESENTER_IMAGEDISPLAY_ENVVARS\fR environment variable can be
+used to override the \fIDISPLAY\fR environment variable passed to
+\fBhev-presenter\fR, allowing the \fBhev-imageDisplay\fR window to be placed on any
+desired screen.
+
+.SH EXAMPLES
+cd $HEVROOT/idea/src/hev-presenter/slideshow
+.P
+env HEV_PRESENTER_IMAGEDISPLAY_OPTIONS="-geometry +0+0 --color 1 1 1" hev-presenter slides.dat
+.P
+env HEV_PRESENTER_IMAGEDISPLAY_ENVVARS="DISPLAY=:0.1 DTK_SPEW=info" hev-presenter slides.dat
+.P
+export HEV_PRESENTER_FIFO=/tmp/fifo
+.br
+hev-presenter slides.dat  &
+.br
+echo slide 3 > $HEV_PRESENTER_FIFO
+
+.SH SEE ALSO
+hev-imageDisplay(1)
+
+.SH AUTHOR
+
+John Kelso, kelso@nist.gov,  NIST/ITL/MCSD
+
+

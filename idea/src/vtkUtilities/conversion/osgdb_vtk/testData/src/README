@@ -1,0 +1,5 @@
+
+This directory contains some scripts and programs that generate or view
+VTK files.
+
+These are used to generate and verify test data for the VTK file loader.

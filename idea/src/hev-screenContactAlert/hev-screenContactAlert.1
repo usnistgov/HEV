@@ -1,0 +1,64 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-screenContactAlert  1 "September 2014" "NIST/ACMD/HPCVG" "HEV"
+.SH NAME
+hev-screenContactAlert - aka Stop SIgn
+
+
+.SH SYNOPSIS
+.B "hev-screenContactAlert"
+
+.br
+.B "hev-screenContactAlert.iris"
+
+.SH DESCRIPTION
+.PP
+.I
+\fBhev-sceenContactAlert\fR aka \fIStop Sign\fR runs a process which
+monitors the position of the wand and glasses. When they are \fItoo
+close\fR to either of the CAVE screens, a large stop sign is displayed
+and an audio warning is played. The stop sign remains on the display
+until the device is moved away from the screen.
+
+.PP
+This command also works for the single screen of the PowerWall.
+
+.PP
+This command is run by \fIirisfly\fR and typically not explicitly
+executed.
+
+
+.SH "ENVIRONMENT VARIABLES"
+Since this command is typically executed automatically by \fIirisfly\fR,
+there are a few environment variables that can be set to modify its
+behavior.
+
+.PP
+\fBSCREEN_CONTACT_ALERT_NOP=1\fR The command will
+immediately exit and do nothing. This behavior is useful in case you
+want to disable it while running an \fIirisfly\fR application.
+
+.PP
+\fBSCREEN_CONTACT_ALERT_AUDIO=0\fR The audio alert will be disabled.
+The stop sign will be displayed.
+
+.PP
+\fBSCREEN_CONTACT_ALERT_AFILE="filename"\fR Specify an alternate audio
+file to be played. Note: the file format must be compatible with the
+command \fIaplay\fR.
+
+.SH "SEE ALSO"
+irisfly(1), aplay(1)
+
+.SH AUTHOR
+.PP
+Steven G. Satterfield
+.br
+steve@nist.gov
+.br
+NIST/ITL/ACMD/HPCVG
+
+
+
+\"  LocalWords:  hev screenContactAlert NIST fBhev sceenCautionTape fR fIStop
+\"  LocalWords:  fIToo Gaithersburg PowerWall irisfly osg br

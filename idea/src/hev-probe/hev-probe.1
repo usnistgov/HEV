@@ -1,0 +1,88 @@
+.\" This is a comment
+.\" The extra parameters on .TH show up in the headers
+.TH hev-probe 1 "June 2013" "NIST/ACMD" "HEV"
+.SH NAME
+hev-probe
+- a simple probe tool
+
+.SH DESCRIPTION
+.PP
+.I \fBhev-probe\fR
+is a "simple" example of how to write a probe tool in the IDEA/IRIS
+environment. As an example it may be copied and adapted to specific
+needs.  It is also functional as is and has a limited amount of
+customization options available via environment variables.
+
+.PP
+It is implemented completely with script files. A probe tool,
+in this context, is an OSG readable model file that is attached to the
+offsetWand node. As the wand moves, the probe moves. A text window displays
+the current position of the probe in world coordinates. When the left wand
+button is pressed a new text window is created with the position of the wand
+at the time the button was pressed. When the right wand button is pressed an
+instance of a small glyph is loaded into the scenegraph at the position of
+the tip of the probe object at the time the button was pressed. The glyph is
+loaded using world coordinates so it navigates with the world.
+
+.SH FILES
+
+.IP probe.mcp
+is where most of the probe is implemented. When started, probe.mcp brings up
+the dynamic text window and sets its wand button selector name as
+"probe". It then loads the probe and glyph objects and specifies what should
+happen when the left and right wand buttons are pressed. Finally, it
+specifies what should happen when the probe button is turned on/off.
+.IP
+The environment variable \fB$USER_PROBE_STARTUP_SCRIPT\fR can be set
+to a user supplied start up script. It is executed with no parameters
+and the default startup sequence continues.
+.IP
+The environment variable \fB$POINTERGLYPH\fR can be set to any loadable geometry
+to be used as an alternate probe glyph. A yellow arrow is default.
+
+
+.IP probeEventLeft.onOff
+defines what happens when the left wand button is pressed. This is an input
+file to the hev-shmOnOff utility.
+
+.IP probeEventRight.onOff
+defines what happens when the right wand button is pressed. This is an input
+file to the hev-shmOnOff utility.
+
+.IP probeEventLeft.sh
+is the script that is run by probeEventLeft.onOff, and creates a text window
+with the probe's position in world coordinates
+.IP
+The environment variable \fB$USER_PROBE_LEFT_SCRIPT\fR can be set to a
+user supplied script. It will be executed, .i.e \fIsource\fR, by
+probeEvenLeft.sh.  It is called with probe x y z position in user
+coordinates as parameters. If it ends with a bash exit command, the default
+probeEventLeft.sh will be terminated, otherwise, the default action
+will also be executed.
+
+
+
+.IP probeEventRight.sh
+is the script that is run by probeEventRight.onOff, and creates an instance
+of the glyph at the probe's position
+.IP
+The environment variable \fB$USER_PROBE_RIGHT_SCRIPT\fR can be set to a
+user supplied script. It will be executed, .i.e \fIsource\fR, by
+probeEvenRight.sh.  It is called with probe orientation matrix,
+16 numbers, as parameters. If it ends with a bash exit command, the default
+probeEventLeft.sh will be terminated, otherwise, the default action
+will also be executed.
+
+
+
+.SH EXAMPLE
+
+irisfly --ex tape.osg probe.mcp
+
+.SH AUTHOR
+
+John Kelso, kelso@nist.gov,  original 12/2011
+.br
+Steve Satterfield, steve@nist.gov, modifications 6/2013
+
+

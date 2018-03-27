@@ -1,0 +1,129 @@
+#############################
+# qvd-utilities - IDEA/IRIS #
+#############################
+
+December 5, 2013
+
+   add --box x y z parameter to qvd-shearingRocskAppBuilder
+
+January 10, 2013
+
+  ./rabExample           example using qvd-rheometerAppBuilder
+  ./srabExample          example using qvd-shearingRocksAppBuilder
+  ./toGpuSpheresExample  example using qvd-toIRIS --gpuspheres
+  ./toIRISrocksExample   example using qvd-toIRIS (polygon based spheres)
+
+
+January 8, 2013
+
+  Made various updates:
+
+  ./toIRISrocksExample  minor chages
+ 
+  ./toGpuSpheresExample  use a simpler .iris fle for gpu sphere
+
+  renamed ./rabSampleData ./rabExample
+
+
+
+
+May 9, 2012
+
+   To Do
+
+   * Once I get a unified qvd-rheomterAppBuilder, run the src examples
+     done
+
+   * Try rebuilding polygon based rheometer demo
+     done
+
+   * Build a GPU based version of the installed demo.
+     done
+
+   * Install gpu based demo
+     done
+
+   * Then install qvd-utilities
+     done
+
+   * Tell Bill about --gpuSpheres
+     done
+
+
+
+May 7, 2012
+
+  qvd-rheometerAppBuilder3 renamed to and replaces qvd-rheometerAppBuilder 
+
+  qvd-toIRIS replaces  qvd-toIRISrocks
+
+   qvd-toSpheres removed (it as an interium experiment)
+
+  
+
+May 3, 2012
+
+   qvd-toIRISrocks     - create .iris flipbook using polygon spheres
+
+
+   qvd-toSpheres       - create .iris flipbook using savg format points
+                         suitable for rendering spheres with litFatSpheres.osg
+
+   qvd-toIRIS          - create .iris flipbook using polygon spheres
+                         or if --gpuSpheres specified using savg format
+                         points suitable for rendering with litFatSPheres.osg
+
+ 
+   qvd-rheometerAppBuilder   - builds rheometer from vane plus octants
+                               using qvd-toIRISrocks
+
+
+   qvd-rheometerAppBuilder2  - builds rheometer from vane plus octants
+                               using qvd-toSpheres
+
+
+   qvd-rheometerAppBuilder3  - builds rheometer from vane plus octants
+                               using qvd-toIRIS. Has --gpuSpheres option
+                               which is passed to qvd-toIRIS, handle the
+			       special case of vane
+
+
+
+   The goal now is to make qvd-rheometerAppBuilder3/qvd-toIRIS the
+   replacement, ie. primary commands which will ork for both polygon and
+   gpu rendered spheres.
+
+
+
+
+
+April 24, 2012
+
+   continue the conversion. 
+
+   realized that qvd-rheometerAppBuilder could run qvd-toIRISrocks in
+   parallel:
+
+           runall
+
+    
+           vail                  vail               vail          dradis
+           Parallel (octants)    Serial (octants)   Parallel      Parallel
+            4 cpu                                     2 cpu       16
+   real    8m27.742s             16m11.599s         10m39.077s     4m43.532s
+   user    21m55.448s            19m26.826s         20m20.534s    41m14.240s
+   sys     9m17.418s              6m24.003s          7m5.030s      4m5.558s
+
+
+April 12, 2012
+
+   Begin converting to IDEA/IRIS. Initially focus on hev-rehometerAppBuilder
+   and what it needs.
+
+
+
+To Do Reminders
+---------------
+
+  Need to build vane.savg when I do a make install
+  and be sure to install vne.savg in private data

@@ -1,0 +1,28 @@
+{
+    "name": "iris",
+    "version": "0.1.1",
+    "description": "Javascript bindings to the IRIS Control FIFO.",
+    "author": {
+        "name": "Wesley Griffin",
+        "email": "wesley.griffin@nist.gov"
+    },
+    "main": "./lib/iris.js",
+    "bin": {
+        "iris-console": "./bin/iris-console",
+        "iris-server": "./bin/iris-server"
+    },
+    "man": [
+        "./doc/iris-console.1",
+        "./doc/iris-server.1",
+        "./doc/iris-node.7"
+    ],
+    "dependencies": {
+        "mkfifo": "0.1.5",
+        "socket.io": "0.9.16"
+    },
+    "engines": {
+        "node": ">=0.10.21"
+    },
+    "private": "true"
+}
+

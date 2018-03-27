@@ -1,0 +1,9 @@
+#Inventor V2.0 ascii
+#
+# brickwall.iv - define a brick wall
+Separator {
+Texture2 {filename brick.rgb }
+Texture2Transform {scaleFactor 8 8}
+Translation { translation .5 .5 0 }
+Cube { width 1 height 1 depth .005}
+}

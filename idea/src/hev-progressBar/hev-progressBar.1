@@ -1,0 +1,73 @@
+.TH hev-progressBar 1 "May 2014"
+.SH NAME
+
+hev-progressBar
+
+.SH SYNOPSIS
+
+\fBhev-progressBar  [-geometry GEOM] [--noborder] [--noirisfly] shmname
+
+.SH DESCRIPTION
+
+\fBhev-progressBar\fR displays \fIprogress bar\fR in a window.  The
+progress is updated by writing integers, 0 to 100, to the specified
+shared memory name, \fBshmname\fR.  The command \fBhev-writeInts\fR
+can used to update the progress. When progress reaches 100, the
+command will exit. Optional paramaters must be specifed in the order
+shown.
+
+.SH OPTIONS
+
+.IP "\fB--geometry GEOM\fR"
+is the usual X11 parameter to place the displayed window.
+
+.IP "\fB--noborder\fR"
+displays a borderless window
+
+.IP "\fB--noirisfly\fR"
+can be specified to run this command standalone, ie. without \fBirisfly\fR
+running.
+
+
+.SH "EXAMPLE 1"
+
+.PP
+.IP
+irisfly --ex tape.osg &
+.IP
+hev-progressBar progbar &
+.IP
+hev-writeInts progbar 80
+.br
+hev-writeInts progbar 100
+
+
+.SH "EXAMPLE 2"
+
+.PP
+.IP
+irisfly --ex tape.osg &
+.IP
+hev-progressBar -geometry +800+800 --noborder progbar &
+.IP
+for p in 0 20 40 60 80 100
+.br
+do
+.br
+hev-writeInts progbar $p
+.br
+done
+
+.SH "SEE ALSO"
+.PP
+irisfly(1), hev-writInts(1)
+
+
+.SH AUTHOR
+.PP
+Steve Satterfield <steve@nist.gov>
+.br
+High Performance Computing & Visualization group
+.br
+NIST
+

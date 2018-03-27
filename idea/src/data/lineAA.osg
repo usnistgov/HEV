@@ -1,0 +1,14 @@
+Node {
+  StateSet {
+    Comment { 
+      osg does not know the name of this OpenGL option, but it is
+      GL_LINE_SMOOTH, which turns on line antialiasing
+    }
+    0x0B20 ON
+    GL_BLEND ON
+    BlendFunc {
+      source SRC_ALPHA
+      destination ONE_MINUS_SRC_ALPHA
+    }
+  }
+}

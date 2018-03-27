@@ -1,0 +1,138 @@
+# setup script for HEV external
+hev_external=$1
+
+if [ -z "$HEV_PROFILE" ] ; then
+    echo "external This file can not be sourced directly; \$HEVROOT/profile sources this file."
+    return
+fi
+
+hev_msg_prefix="${hev_external}/profile: "
+
+if [ "${hev_external}" == "" ] ; then
+   hev_def_external_dir="$HEVROOT/external"
+   hev_spew "$hev_msg_prefix warning: no directrory passed, using $hev_def_external_dir"
+   hev_external=$hev_def_external_dir
+   unset hev_def_external_dir
+fi
+
+if [ ! -d ${hev_external} ] ; then
+   hev_spew "$hev_msg_prefix HEV profile: Error- $hev_external is not a directory, exiting"
+   return 1
+fi
+
+export HEV_EXTERNAL_DIR="${hev_external}"
+
+# coin
+hev_external_coin=${hev_external}/coin
+if [ -d $hev_external_coin ] ; then
+    export PATH=`hev_prepend_path "$PATH" ${hev_external_coin}/installed/bin ":"`
+    export LD_LIBRARY_PATH=`hev_prepend_path "$LD_LIBRARY_PATH" ${hev_external_coin}/installed/lib ":"`
+    # these two needed by OpenSceneGraph??
+    # export INVENTOR_LIB_DIR=-L${hev_external_coin}/installed/lib
+    export INVENTOR_INCLUDE=-I${hev_external_coin}/installed/include
+else
+    hev_spew $hev_msg_prefix Coin not found
+fi
+
+# OSG
+hev_osgversion=3.x
+hev_spew "Using OSG version $hev_osgversion"
+
+hev_external_osg=${hev_external}/osg
+if [ -d  $hev_external_osg ] ; then
+   export OSGDIR=${hev_external_osg}
+   export LD_LIBRARY_PATH=`hev_prepend_path "$LD_LIBRARY_PATH" ${hev_external_osg}/installed/lib64/osgPlugins ":"`
+   export LD_LIBRARY_PATH=`hev_prepend_path "$LD_LIBRARY_PATH" ${hev_external_osg}/installed/lib64 ":"`
+   export PATH=`hev_prepend_path "$PATH" ${hev_external_osg}/installed/bin ":"`
+   export OSG_FILE_PATH=${hev_external}/osg/OpenSceneGraph-Data:${hev_external}/osg/OpenSceneGraph-Data/Images
+   export PKG_CONFIG_PATH=`hev_prepend_path "$PKG_CONFIG_PATH" "${hev_external_osg}/installed/lib64/pkgconfig" ":"`
+   if [ -z "$OSG_WINDOW" ] ; then 
+       export OSG_WINDOW="320 320 720 720"
+   fi
+else
+    hev_spew $hev_msg_prefix OSG not found
+fi
+unset hev_external_osg
+
+# dtk
+hev_external_dtk=${hev_external}/dtk
+if [ -d  $hev_external_dtk ] ; then
+    export PATH=`hev_prepend_path "$PATH" ${hev_external_dtk}/installed/bin ":"`
+    export LD_LIBRARY_PATH=`hev_prepend_path "$LD_LIBRARY_PATH" ${hev_external_dtk}/installed/lib ":"`
+else
+    hev_spew $hev_msg_prefix DTK not found
+fi
+
+# gle
+hev_external_gle=${hev_external}/gle
+if [ -d  $hev_external_gle ] ; then
+    export HEV_EXTERNAL_GLE=$hev_external_gle
+else
+    hev_spew $hev_msg_prefix GLE not found
+fi
+
+
+# vtk
+hev_vtkversion=5.10
+hev_external_vtk=${hev_external}/vtk
+if [ -d $hev_external_vtk ] ; then
+    export VTKDIR=${hev_external_vtk}
+    export PATH=`hev_prepend_path "$PATH" ${hev_external_vtk}/installed/bin ":"`
+    export LD_LIBRARY_PATH=`hev_prepend_path "$LD_LIBRARY_PATH" ${hev_external_vtk}/installed/lib/vtk-${hev_vtkversion} ":"`
+    export CMAKE_MODULE_PATH=`hev_prepend_path "$CMAKE_MODULE_PATH" ${hev_external_vtk}/installed/lib/vtk-${hev_vtkversion}/cmake ":"`
+else
+    hev_spew $hev_msg_prefix VTK not found
+fi
+
+
+# node
+hev_nodeversion=0.12.15
+hev_external_node=${hev_external}/node
+if [ -d $hev_external_node ] ; then
+    export PATH=`hev_prepend_path "$PATH" ${hev_external_node}/node-v${hev_nodeversion}/bin ":"`
+    export NPM_CONFIG_PREFIX=${hev_external_node}/node-v${hev_nodeversion}
+    export NODE_PATH=${hev_external_node}/node-v${hev_nodeversion}/lib/node_modules
+    export MANPATH=`hev_prepend_path "$MANPATH:" ${hev_external_node}/node-v${hev_nodeversion}/share/man ":"`
+else
+    hev_spew $hev_msg_prefix Node.js not found
+fi
+
+
+# Python3
+hev_external_python3=${hev_external}/python3
+source scl_source enable python33
+if [ -d $hev_external_python3 ] ; then
+    export PATH=`hev_append_path "$PATH" ${hev_external_python3}/installed/bin ":"`
+    export PYTHONPATH=`hev_append_path "$PYTHONPATH" ${hev_external_python3}/installed/lib/python3.3/site-packages ":"`
+else
+    hev_spew $hev_msg_prefix Python3 not found
+fi
+
+
+# R
+hev_external_R=${hev_external}/R
+if [ -d $hev_external_R ] ; then
+    export R_LIBS_USER=`hev_prepend_path "$R_LIBS_USER" ${hev_external_R}/installed ":"`
+else
+    hev_spew $hev_msg_prefix R not found
+fi
+
+
+# QWT
+hev_external_qwt=${hev_external}/qwt
+if [ -d $hev_external_qwt ] ; then
+    export LD_LIBRARY_PATH=`hev_prepend_path "$LD_LIBRARY_PATH" ${hev_external_qwt}/installed/lib ":"`
+fi
+
+unset hev_external
+unset hev_external_coin
+unset hev_external_osg
+unset hev_external_dtk
+unset hev_external_gle
+unset hev_osgversion
+unset hev_external_vtk
+unset hev_vtkversion
+unset hev_external_node
+unset hev_external_python3
+unset hev_external_R
+

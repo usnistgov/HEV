@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath
+END
+LinearR2.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/LinearR2.cpp
+END
+LinearR3.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/LinearR3.cpp
+END
+LinearR4.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/LinearR4.cpp
+END
+LinearR2.h
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/LinearR2.h
+END
+LinearR3.h
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/LinearR3.h
+END
+LinearR4.h
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/LinearR4.h
+END
+Quaternion.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/Quaternion.cpp
+END
+VrData.h
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/VrData.h
+END
+PolynomialRC.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/PolynomialRC.cpp
+END
+MathMisc.h
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/MathMisc.h
+END
+Quaternion.h
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/Quaternion.h
+END
+PolynomialRC.h
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/diverse/!svn/ver/569/trunk/dtk/DSOs/serviceDSO/flockCalibration/SWA/VrMath/PolynomialRC.h
+END

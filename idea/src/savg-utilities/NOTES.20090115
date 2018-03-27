@@ -1,0 +1,25 @@
+
+Here are the changes that I've made over the last few days:
+
+  savg-cone - added new way to calculate normals (see "revisedNormals" option)
+  savg-reverse - added -noFlip option 
+  savg-sphere - fixed problem with very large number of polygons
+  savg-prism - added normals
+  savg-tetra - added normals and added -unit option
+  savg-octa - added normals and added -unit option
+  savg-wireframe - fixed problem with polygons with line color on "polygon" line
+
+  savg-reverse-normals - new program
+  savg-add-normals - new program
+
+  Some cleanup of man pages
+
+  Removed some old source code that is no longer used.
+
+  Didn't remove some other source that isn't being used, but I'm not
+  clear that it won't be useful in the future.
+
+  There are still some problems with some man pages...
+
+JGH
+

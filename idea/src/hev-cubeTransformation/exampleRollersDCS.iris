@@ -1,0 +1,14 @@
+# load the cow under the world node and set it to "examine" the cow
+LOAD cow cow.osg
+ADDCHILD cow world
+EXAMINE world
+
+# load a DCS node under the world node
+DCS dcsNode
+ADDCHILD dcsNode world
+# and load a normalized cube under the DCS
+LOAD cube.osgb
+ADDCHILD - dcsNode
+
+# when the graphics window is up modify the DCS with the rollers. The initial size and position of the cube matches the cow.
+AFTER REALIZE EXEC hev-cubeTransformationRollers --dcs dcsNode --extent cow.osg > $IRIS_CONTROL_FIFO

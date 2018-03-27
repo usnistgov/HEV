@@ -1,0 +1,120 @@
+#!gmake
+
+############# define MACROS #########################################
+
+# define PROJECT to be the directory name containing this software.  If not
+# defined, it defaults to name of this directory.
+PROJECT = 
+
+# these are the binaries that get compiled AND installed as public binaries
+# in $HEV_IDEA_DIR/bin/*
+PUBLIC_BINS = 
+
+# these are the binaries that get compiled AND installed as private binaries
+# in $HEV_IDEA_DIR/etc/$(PROJECT)/bin/*
+PRIVATE_BINS =
+
+# these are DSOs that get compiled AND installed as public DSOs
+# in $HEV_IDEA_DIR/lib/*
+PUBLIC_DSOS = 
+
+# these are the DSOs that get compiled AND installed as private DSOs
+# in $HEV_IDEA_DIR/etc/$(PROJECT)/lib/*
+PRIVATE_DSOS =
+
+# same thing for scripts that get installed
+PUBLIC_SCRIPTS = ivarrow \
+ivaxis \
+ivcone \
+ivcomment \
+ivcomplexity \
+ivcube \
+ivcylinder \
+ivdef \
+ivdeg2rad \
+ivdemo \
+ivdirectionallight \
+ivlightmodel \
+ivline \
+ivmaterial \
+ivmatrixtransform \
+ivpfivfix \
+ivpointlight \
+ivrgba \
+ivrotate \
+ivscale \
+ivshape \
+ivsphere \
+ivspotlight \
+iv_stdin_out \
+ivstick \
+ivtext \
+ivtext3 \
+ivtexture \
+ivtranslate \
+ivtxt \
+ivuse \
+ivutext \
+ivutext3 \
+ivwirecube
+
+# these are scrpts that get copied to $HEV_IDEA_DIR/etc/$(PROJECT)/scripts/*
+PRIVATE_SCRIPTS =
+
+# these are data files used by the project, and others too
+# in $HEV_IDEA_DIR/data
+PUBLIC_DATA = 
+
+# these are data files used by the project, private,
+# in $HEV_IDEA_DIR/etc/$(PROJECT)/data
+PRIVATE_DATA = 
+
+# these are the man pages that get installed in $HEV_IDEA_DIR/man
+MAN_PAGES = ivutilities.3 \
+ivarrow.1 \
+ivaxis.1 \
+ivcone.1 \
+ivcomment.1 \
+ivcomplexity.1 \
+ivcube.1 \
+ivcylinder.1 \
+ivdef.1 \
+ivdeg2rad.1 \
+ivdemo.1 \
+ivdirectionallight.1 \
+ivlightmodel.1 \
+ivline.1 \
+ivmaterial.1 \
+ivmatrixtransform.1 \
+ivpfivfix.1 \
+ivpointlight.1 \
+ivrgba.1 \
+ivrotate.1 \
+ivscale.1 \
+ivshape.1 \
+ivsphere.1 \
+ivspotlight.1 \
+iv_stdin_out.1 \
+ivstick.1 \
+ivtext.1 \
+ivtext3.1 \
+ivtexture.1 \
+ivtranslate.1 \
+ivtxt.1 \
+ivuse.1 \
+ivutext.1 \
+ivutext3.1 \
+ivwirecube.1
+
+################## makefile.include ##################################
+# define CXX, CFLAGS, LIBS, etc.
+
+# creates phoney target build
+
+# creates real target test, and targets for PUBLIC_DSOS, PRIVATE_DSOS,
+# PUBLIC_BINS, PRIVATE_BINS, install, clean, cleaner, distclean
+
+# add or modify or make dependencies to them as needed after the include
+# statement
+
+include $(HEV_IDEA_DIR)/gnumakefile.include

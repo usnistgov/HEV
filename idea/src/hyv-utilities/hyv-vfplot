@@ -1,0 +1,274 @@
+#! /usr/bin/perl
+#
+# hyv-vfplot - see usage message below
+#
+# steve@nist.gov
+#
+
+$version="200811110";
+
+
+use Getopt::Long;
+use File::Basename;  #http://perldoc.perl.org/File/Basename.html
+
+
+#####################
+#  Usage subroutine #
+#####################
+
+
+sub usage {
+
+print STDERR <<EOF
+
+Usage: hyv-vfplot [--nodisplay] [config.prgb]  dataDir
+
+  Generate and display the Full Volume Fraction Plot.
+
+  --nodisplay   generate but don\'t display the plot. Normally, the plot is
+                displayed when it is generated.
+
+  config.prgb   is a config file of the phases to be plotted and the RGB
+                color of the plotted curves. See below for the format.
+                If not specifed, then is is assumed a plot has been
+		previously generated and is in the specified dataDir
+		with the name \"fullVolumeFraction.png\" which is simply 
+		displayed.
+
+
+  dataDir       is an existing directory that contains the appropriate
+                *.vf files exist to match what is requested in config.prgb.
+		The *.vf files are created by previously executing
+		hyv-phase2vf.
+
+
+  config.prgb format:
+    
+     This file is typically in the current directory, not dataDir.
+     It contains lines of the form: phase  red  green blue name
+     where the color are floats in the range 0.0 to 1.0.
+     Only the specified phases will be plotted.
+     For example:
+
+                    1 1.0   0.498 0.941  C3S
+		    2 1.0   0.757 0.498  Ca(OH)2
+		    3 0.867 1.0   0.498  CSH
+		    4 0.498 0.741 1.0    CSH(m)
+
+
+EOF
+;
+exit(1)
+}
+
+# End of Usage subroutine
+
+
+
+
+############################
+# Process the command line #
+############################
+
+$debugFlag=0;
+$helpFlag=0;
+$nodisplay=0;
+
+GetOptions("debug"       => \$debugFlag,
+           "nodisplay"   => \$nodisplay,
+           "help"        => \$helpFlag);
+
+usage() if ($helpflag);
+
+if (@ARGV == 1) {
+    # Simple case, just display the existing file
+    $data = shift;
+    $cmd="hev-imageDisplay -title VolumeFraction ".$data."/fullVolumeFraction.png";
+    if ($debugFlag) {
+	print STDERR "\n$cmd\n";
+    }
+    system($cmd);
+    exit(0);
+} elsif (@ARGV == 2) {
+    $configFile = shift;
+    $data= shift;
+} else {
+    usage();
+}
+
+if ($debugFlag) {
+    print STDERR "\n";
+    print STDERR "debugFlag= $debugFlag\n";
+    print STDERR "nodisplay= $nodisplay\n";
+    print STDERR "configFile= $configFile\n";
+    print STDERR "data= $data\n";
+}
+
+
+#
+# Read the config file
+#
+
+open (CONFIG,"<$configFile") || die("Can not open $configFile\n");
+
+if ($debugFlag) {
+    print STDERR "Reading $configFile\n";
+}
+$i=0;
+while (<CONFIG>) {
+    if (/(\s*)\#/) {
+	#chop; print STDERR "Found comment line: >$_<\n";
+	next
+    }
+    if (/(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)
+            /x)
+        {
+	    if ($debugFlag) {
+		printf STDERR "%d %g %g %g n= %s\n",$1,$2,$3,$4,$5;
+	    }
+	    $phase[$i]=$1;
+	    $r[$i]=$2;
+	    $g[$i]=$3;
+	    $b[$i]=$4;
+	    $pname[$i]=$5;
+	    $i++;
+	}
+    else {
+	chop;
+	die "Bad data in $configFile at line -->$_<--\n";
+    }
+}
+
+#length of config file
+$l=@phase;
+if ($debugFlag) {
+    print "length of data in $configFlag: $l\n";
+}
+
+#
+# Go to the sub-directory to do the work
+#
+chdir($data) || die("Can not chdir to: $data\n");
+
+#
+# Accumulate the volume fraction data into one file for each phase
+#
+for ($i=0; $i<$l; $i++) {
+
+    $cmd="cat \*_".$phase[$i].".vf > phase".$phase[$i].".Rdat";
+    if ($debugFlag) {
+	print STDERR "cmd= $cmd\n";
+    }
+    system($cmd);
+
+}
+
+
+#
+# Build the R graphics program and execute it
+#
+
+$vfRname="fullVolumeFraction.R";
+$vfPngName="fullVolumeFraction.png";
+$pngWidth=448;
+$pngHeight=448;
+
+buildRscript();
+
+
+if ($debugFlag) {
+    print STDERR "hyv-vfplot all done\n";
+}
+exit(0);
+
+
+
+
+sub buildRscript {
+
+open (VFR,">$vfRname") || die("Can not open R output file: $vfRname<\n");
+
+print VFR "# $vfRname - create a Full Volume Fraction Plot using R graphics\n";
+print VFR "#\n";
+$date=localtime;
+print VFR "# This R script was created by hyv-vfplot: $date\n";
+print VFR "#\n";
+print VFR "# Execute with the following command to create $vfPngName\n";
+print VFR "# R --no-save < fullVolumeFraction.R\n";
+print VFR "\n";
+print VFR "png(\"fullVolumeFraction.png\",width=$pngWidth,height=$pngHeight)\n";
+print VFR "\n";
+
+for ($i=0; $i<$l; $i++) {
+    $p=$phase[$i];
+    printf VFR "ph%d=read.table(\"phase%d.Rdat\")\n",$p,$p;
+    printf VFR "p%d=ph%d\$V1\n",$p,$p;
+    printf VFR "p%dcol=rgb(%g,%g,%g)\n",$p,$r[$i],$g[$i],$b[$i];
+    print VFR "\n";
+}
+
+
+# Originally for the xlim, I was setting
+# x<-0:100
+# and then using xlim-range(x) in the plot command.
+# Now I am letting plot default the xlim which seems to work fairly well.
+
+print VFR "# Create the plot\n";
+print VFR "plot.new()\n";
+print VFR "par(lwd=3,bg=\"#ddddff\",font.axis=2,font.lab=2)\n";
+# Assume at least one phase curve exists
+$p=$phase[0];
+printf VFR "plot(p%d,type=\"l\",ylim=c(0,1),ann=FALSE,axes=TRUE,col=p%dcol)\n",$p,$p;
+print VFR "# p1 is repeated later  so that is over prints the legend\n";
+print VFR "\n";
+
+print VFR "# Add the legend\n";
+print VFR "par(lwd=1)\n";
+
+$labelString="\"".$pname[0]."\"";
+for ($i=1; $i<$l; $i++) {
+    $labelString=$labelString.","."\"".$pname[$i]."\"";
+}
+$colorString="p".$phase[0]."col";
+for ($i=1; $i<$l; $i++) {
+    $colorString=$colorString.",p".$phase[$i]."col";
+}
+
+# be a little bit clever for the legend position
+print VFR "xp<-par(\"usr\")[2]*.1      # par function supplies the max user x value\n";
+print VFR "legend(x=xp,y=1,c(".$labelString."),fill=c(".$colorString."),bg=\"white\",box.lwd=1)\n";
+print VFR "par(lwd=3)\n";
+print VFR "par(new=TRUE)\n";
+print VFR "\n";
+
+
+print VFR "# Add the title\n";
+print VFR "title(main=\"Full Volume Fraction\",xlab=\"Time Step\",ylab=\"Fraction\")\n";
+print VFR "par(new=TRUE)\n";
+print VFR "par(lwd=3)\n";
+print VFR "\n";
+
+# Now do the remaining curves
+for ($i=0; $i<$l; $i++) {
+    $p=$phase[$i];
+    printf VFR "plot(p%d,type=\"l\",ylim=c(0,1),ann=FALSE,axes=FALSE,col=p%dcol)\n",$p,$p;
+    print VFR "par(new=TRUE)\n";
+    print VFR "\n";
+}
+
+print VFR "graphics.off()\n";
+print VFR "quit()\n";
+
+close VFR;
+
+# Now execte R to generate the plot into a png file
+$cmd= "R --no-save < fullVolumeFraction.R > fullVolumeFraction.log";
+system($cmd);
+
+# and display
+if ($nodisplay==0) {
+    system("hev-imageDisplay -title VolumeFraction fullVolumeFraction.png");
+}
+exit(0);
+
+}

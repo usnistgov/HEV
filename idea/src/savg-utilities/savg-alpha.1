@@ -1,0 +1,51 @@
+.TH SAVG\-ALPHA 1 "1 March 2004"
+.SH NAME
+savg-alpha \- SAVG ToolBox: alpha
+.SH SYNOPSIS
+.B savg-alpha
+value
+.SH DESCRIPTION
+.I Savg-alpha
+sets the alpha of \fIsavg\fP files (\fISAVG ToolBox\fP).  It 
+accepts input from
+.I stdin
+and outputs to
+.I stdout.
+If invalid arguments or no arguments are given, 
+then 
+.I savg-alpha
+prints usage information and terminates.
+.SH OPTIONS
+.TP
+.B value
+This sets the value of alpha or transparency.  Accepts a floating 
+point number from 0 to 1 and defaults to 1.
+.SH EXAMPLES
+.TP
+.B savg-alpha 0.5 < in.savg > out.savg
+Reads from 
+.I in.savg
+and set the alpha to 0.5.  Then outputs to 
+.I out.savg.
+.SH BUGS
+(none)
+.SH AUTHOR
+Adele Peskin
+.TP
+SAVG Toolbox Project
+Version 1.0
+.br
+March 2005
+.PP 
+Scientific Applications & Visualization Group
+.br
+NIST
+.br
+.B www.nist.gov/mcsd/savg/
+
+
+
+
+
+
+

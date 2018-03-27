@@ -1,0 +1,4 @@
+# attaches a directional light to the wand
+LIGHTNODE flashlight ON POSITION 0 0 0 1 SPOT 0 10
+ADDCHILD flashlight wand
+

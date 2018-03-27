@@ -1,0 +1,672 @@
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix    0.13188  0.0894091  -0.987225          0
+        -0.991266  0.0118952  -0.131343          0
+                0   0.995924  0.0901969          0
+                2        132        1.5          1
+}
+# Cylinder {radius 0.05 height 4.03525}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -4.03525 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.435543  0.0448901  -0.899048          0
+        -0.900168  0.0217199  -0.435001          0
+                0   0.998756  0.0498685          0
+                4        112        3.5          1
+}
+# Cylinder {radius 0.05 height 3.31494}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -3.31494 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.695697   0.475828  -0.538139          0
+        -0.718336   0.460832  -0.521179          0
+                0   0.749147   0.662404          0
+                4        144        5.5          1
+}
+# Cylinder {radius 0.05 height 5.83293}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -5.83293 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix    0.35589   0.180701  -0.916891          0
+        -0.934528  0.0688152  -0.349174          0
+                0   0.981128   0.193361          0
+                6        124        7.5          1
+}
+# Cylinder {radius 0.05 height 4.70826}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -4.70826 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.276768  -0.753321  -0.596579          0
+        -0.960937  -0.216971  -0.171826          0
+                0   0.620831  -0.783945          0
+                8        104        9.5          1
+}
+# Cylinder {radius 0.05 height 4.3416}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -4.3416 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.500359    0.52821  -0.686028          0
+        -0.865818   0.305254  -0.396458          0
+                0   0.792347    0.61007          0
+                8        136       11.5          1
+}
+# Cylinder {radius 0.05 height 6.44708}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -6.44708 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.285826  -0.771284  -0.568704          0
+        -0.958282  -0.230051  -0.169627          0
+                0   0.593462  -0.804862          0
+               10        116       13.5          1
+}
+# Cylinder {radius 0.05 height 6.35513}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -6.35513 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.207146     0.2216  -0.952882          0
+         -0.97831  0.0469213  -0.201762          0
+                0   0.974008   0.226513          0
+               10        148       15.5          1
+}
+# Cylinder {radius 0.05 height 0.85249}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -0.85249 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.447368   0.639473  -0.625249          0
+         -0.89435   0.319875  -0.312759          0
+                0    0.69911   0.715014          0
+               12        128       17.5          1
+}
+# Cylinder {radius 0.05 height 6.46503}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -6.46503 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.265797   0.862254   0.431127          0
+        -0.964029   0.237736   0.118868          0
+                0  -0.447214   0.894427          0
+               14        108       19.5          1
+}
+# Cylinder {radius 0.05 height 7.18443}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -7.18443 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.182811   0.865831  -0.465743          0
+        -0.983148   0.160997 -0.0866025          0
+                0   0.473726   0.880672          0
+               14        140       21.5          1
+}
+# Cylinder {radius 0.05 height 5.24234}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -5.24234 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.549568   0.834746 -0.0342501          0
+        -0.835449   0.549106 -0.0225301          0
+                0   0.040996   0.999159          0
+               16        120       23.5          1
+}
+# Cylinder {radius 0.05 height 7.63422}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -7.63422 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix  0.0587546   0.994173  0.0903793          0
+        -0.998272  0.0585133 0.00531939          0
+                0 -0.0905357   0.995893          0
+               18        100       25.5          1
+}
+# Cylinder {radius 0.05 height 1.12795}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -1.12795 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.318223   0.898276   0.303043          0
+        -0.948016   0.301527   0.101723          0
+                0   -0.31966   0.947532          0
+               18        132       27.5          1
+}
+# Cylinder {radius 0.05 height 7.13701}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -7.13701 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.485847   0.864986   0.125504          0
+        -0.874044   0.480812  0.0697629          0
+                0   -0.14359   0.989637          0
+               20        112       29.5          1
+}
+# Cylinder {radius 0.05 height 7.96985}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -7.96985 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix  0.0919766   0.966514   0.239563          0
+        -0.995761  0.0892751   0.022128          0
+                0  -0.240583   0.970629          0
+               20        144       31.5          1
+}
+# Cylinder {radius 0.05 height 2.62111}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -2.62111 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.480305   0.839327   0.254633          0
+        -0.877102   0.459619   0.139438          0
+                0  -0.290312   0.956932          0
+               22        124       33.5          1
+}
+# Cylinder {radius 0.05 height 7.21467}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -7.21467 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix    0.21256     0.9641  -0.159153          0
+        -0.977148   0.209722 -0.0346207          0
+                0   0.162875   0.986647          0
+               24        104       35.5          1
+}
+# Cylinder {radius 0.05 height 9.01194}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -9.01194 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix    0.60571   0.751553   0.261312          0
+        -0.795686   0.572114   0.198921          0
+                0   -0.32841   0.944535          0
+               24        136       37.5          1
+}
+# Cylinder {radius 0.05 height 3.48881}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -3.48881 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.528871   0.843324 -0.0953946          0
+        -0.848702    0.52552 -0.0594454          0
+                0   0.112401   0.993663          0
+               26        116       39.5          1
+}
+# Cylinder {radius 0.05 height 7.16624}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -7.16624 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}
+#Inventor V2.0 ascii
+Separator {
+MatrixTransform {
+matrix   0.470631  -0.279017   0.837052          0
+          0.88233   0.148827   -0.44648          0
+                0   0.948683   0.316228          0
+               26        148       41.5          1
+}
+# Cylinder {radius 0.05 height 0.376276}
+#Inventor V2.0 ascii
+Separator {
+Scale { scaleFactor 1 -0.376276 1 }
+Separator {
+Translation { translation 0 0.9 0 }
+Separator {
+Scale { scaleFactor .2 0.2 .2 }
+Separator {
+Cone { bottomRadius .5 height 1 }
+}
+}
+}
+Separator {
+Translation { translation 0 0.4 0 }
+Separator {
+Scale { scaleFactor .1 0.8 .1 }
+Separator {
+Cylinder { radius .5 height 1 }
+}
+}
+}
+}
+}

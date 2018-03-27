@@ -1,0 +1,12 @@
+#! /bin/bash
+
+echo Gpu Status
+for g in 0 1 2 3
+do
+
+ echo " $g   " `nvidia-settings -q [gpu:${g}]/FrameLockEnable | grep Attribute | awk '{print $4;}'`
+
+done
+
+
+

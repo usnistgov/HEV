@@ -1,0 +1,57 @@
+Group {
+  DataVariance STATIC
+  name "savg loader: transparentTextGroup"
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  StateSet {
+    rendering_hint TRANSPARENT_BIN
+    renderBinMode USE
+    binNumber 10
+    binName DepthSortedBin
+    GL_BLEND PROTECTED|ON
+  }
+  num_children 1
+  Geode {
+    name "savg loader: text: foo!"
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    StateSet {
+      rendering_hint DEFAULT_BIN
+      renderBinMode INHERIT
+      Material {
+        ColorMode OFF
+        ambientColor 0.2 0.2 0.2 1
+        diffuseColor 0 1 0 0.7
+        specularColor 0 0 0 1
+        emissionColor 0 0 0 1
+        shininess 0
+      }
+    }
+    num_drawables 1
+    osgText::Text3D {
+      DataVariance STATIC
+      StateSet {
+        UniqueID StateSet_0
+        rendering_hint TRANSPARENT_BIN
+        renderBinMode USE
+        binNumber 10
+        binName DepthSortedBin
+      }
+      supportsDisplayList FALSE
+      useDisplayList FALSE
+      useVertexBufferObjects TRUE
+      fontResolution 32 32
+      characterSize 1 1
+      characterSizeMode OBJECT_COORDS
+      alignment LEFT_BOTTOM
+      rotation 1.30656 0.541196 0.541196 1.30656
+      layout LEFT_TO_RIGHT
+      position 0.5 0.5 0.5
+      drawMode 1
+      text "foo!"
+      font /local/HEV/apps/osg/OpenSceneGraph-Data/fonts/arial.ttf
+      characterDepth 1
+      renderMode PER_GLYPH
+    }
+  }
+}

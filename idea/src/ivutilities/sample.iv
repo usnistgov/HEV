@@ -1,0 +1,9 @@
+#Inventor V2.0 ascii
+Separator {
+ Material {
+  diffuseColor [1 0 0]
+ }
+ Text3 {
+   "Hello World!!"
+ }
+}

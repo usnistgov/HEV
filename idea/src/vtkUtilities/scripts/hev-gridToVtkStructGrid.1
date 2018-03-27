@@ -1,0 +1,99 @@
+.TH hev-gridToVtkStructGrid
+.SH NAME
+hev-gridToVtkStructGrid - convert data to VTK structured grid
+
+.SH SYNOPSIS
+.B hev-gridToVtkStructGrid [ options ] --dim X Y Z inFName inCoordFName outFName
+
+.SH DESCRIPTION
+.B hev-gridToVtkStructGrid
+Convert raw data and coordinate files to a VTK structured grid.
+
+.PP
+
+.SH OPTIONS
+.TP
+.B --ncomp or --nc M
+# of components at each grid element.
+Default is 1.
+
+.TP
+.B --type or --t TYPE
+Data type of output grid data.
+Should be one of the following:
+                char
+                uchar
+                short
+                ushort
+                long
+                ulong
+                int
+                uint
+                float
+                double
+
+Default is float.
+
+.TP
+.B --input or --i INPUT
+Indicates whether the input file is text or binary.
+Should be one of the following:
+                text
+                binary
+
+Default is text.
+If binary: The data type must be as indicated by the --type option.
+
+.TP
+.B --vector
+If this option is present, the grid data is written as vector rather than
+scalar data.
+
+
+
+
+
+
+
+.SH PARAMETERS
+.TP
+.B --dim or --d X Y Z
+Number if grid points in each dimension.
+The --dim parameter is required.
+
+.TP
+.B inFName
+Location/filename of input file in raw grid format.
+Can either be ascii or binary.
+
+.TP
+.B inCoordFName
+Location/filename of coords file in raw grid format.
+Can either be ascii or binary.
+
+.TP
+.B outFName
+Location/filename of output file in structured grid format.
+
+.SH EXAMPLE
+
+Sample data files in VTK format can be found in the directory
+\fB$HEVROOT/idea/src/vtkUtilities/data\fR.  Some of these files can
+be used as input to this program.
+
+For example:
+
+  hev-gridToVtkStructGrid --dim 16 10 33 grid.1.data structGrid.1.coords newSG.1.vtk
+
+The output newSG.1.vtk should be identical to structGrid.1.vtk.
+
+.SH SEE ALSO
+
+hev-gridToVtkImage, hev-gridToRectGrid, vtkUtilities
+
+.SH AUTHOR
+Dennis Backhaus
+.br
+NIST Scientific Applied Computational and Mathematics Division (771)
+.br
+July 26th 2012

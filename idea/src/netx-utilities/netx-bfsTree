@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+#Arg 1: edge-list graph file
+#Arg 2: 'u' for undirected, 'd' for directed
+#Arg 3: source node
+
+import networkx as nx
+import sys
+
+if(len(sys.argv)==4):
+    myFile = open(sys.argv[1], 'r')
+else:
+    print("Error: wrong number of arguments.")
+    sys.exit()
+
+if(sys.argv[2]=='u'):
+    G=nx.MultiGraph()
+elif(sys.argv[2]=='d'):
+    G=nx.MultiDiGraph()
+
+lines = []
+for edge in myFile:
+    lines.append(tuple(edge.split()))
+
+if(len(lines[0])==2):
+    G.add_edges_from(lines)
+elif(len(lines[0])>=3):
+    for item in lines:
+        G.add_weighted_edges_from([(item[0],item[1],float(item[2]))])
+else:
+    print("Error in input file. Wrong number of elements per line.")
+    sys.exit()
+
+for item in  nx.bfs_tree(G,sys.argv[3]).edges():
+    print(item[0], item[1])
+
+myFile.close()

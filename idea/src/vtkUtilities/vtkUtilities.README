@@ -1,0 +1,858 @@
+
+Thoughts on the Encapsulation of VTK Functions 
+----------------------------------------------
+Within Our HEV Software
+------------------------
+
+John Hagedorn
+25 January 2012
+(Revised 6 February 2012)
+(Revised 9 April 2012)
+
+
+The purpose of this report is to identify components of VTK that can be 
+encapsulated into standalone HEV programs.  These HEV programs can then 
+be strung together to provide complicated processing scenarios.  We also
+need programs to convert data into a form that VTK can understand and 
+programs to convert VTK output into forms that the other HEV and IRIS 
+programs can understand.
+
+VTK is a very large library.  It would be easy to go overboard by trying
+to encapsulate every component of VTK into its own HEV program.  This
+would require hundreds of separate programs.  I think that this is 
+counter-productive.  When the required processing is sufficiently 
+complex, it is easier to write a custom VTK program that calls the 
+required VTK components.
+
+Thus I recommend that we limit our encapsulation to a fairly limited
+set of important and/or basic tools.
+
+At the end of this report, I include some comments that I hope will be
+useful when implementing this software.
+
+
+
+Summary of Proposed HEV Programs Based on VTK
+---------------------------------------------
+
+This is a brief list of proposed programs.  It is not intended to be a
+definitive list; it is intended merely to express the functionality that
+seems to be needed.  
+
+  Data Format Conversions:
+    hev-gridToVtkImage         - data block to VTK image grid
+    hev-gridToVtkRectGrid      - data block to VTK rectilinear grid
+    hev-gridToVtkStructGrid    - data block to VTK structured grid
+    osgdb_vtk.so               - OSG plugin: load VTK file into OSG
+
+  Grid To Grid Transformations:
+    hev-vtkGridResample        - resample grid at specified points
+    hev-vtkGridSubset          - extract a spatial subset of a grid
+    hev-vtkGridSmooth          - apply smoothing to grid data
+    hev-vtkGradient            - gradient vectors from scalar grid
+    hev-vtkVectorMagnitude     - magnitude of a vector field
+    hev-vtkGridCoordTransform  - transform coordinates of grid pts
+
+  Grid To Geometry Transformations:
+    hev-vtkContour             - iso-lines or iso-surfaces 
+    hev-vtkStreamLine          - stream lines from vector or tensor data
+    hev-vtkVectorGlyph         - glyphs for vector data
+    hev-vtkTensorGlyph         - glyphs for tensor data
+    hev-vtkGridGeom            - basic geometric representation of grid 
+
+  Geometry To Geometry Transformations:
+    hev-vtkPolyDecimate        - reduce number of triangles in a mesh 
+    hev-vtkSmoothMesh          - smooth a polygonal mesh
+    hev-vtkConvertToStrips     - convert to tristrips and polylines
+    hev-vtkConvertToTriangles  - convert all polygons to triangles
+    hev-vtkPolyCoordTransform  - transform polygon coords and normals
+    hev-vtkDelaunay            - generate Delaunay triangulation
+    hev-vtkConnectedComponents - split / count # of connected components
+    hev-vtkAddNormals          - add normals to a set of polygons
+    hev-vtkCleanPolyData       - clean up polygonal data
+    hev-vtkExtractBoundary     - extract boundary for set of polygons
+    hev-vtkClipGeom            - clip polygon data 
+    hev-vtkBoundingHull        - generate a convex hull (not minimal)
+
+My selection of these VTK functions reflects my own prejudices.  I may 
+be overlooking VTK functionality that would be very useful to us in 
+application areas that are not within my experience.
+
+When programs are actually implemented, one may want to factor the 
+functionality into programs in other ways.  For example, the program
+that generates isosurfaces (hev-vtkContour) could include decimation 
+and/or mesh smoothing as options; this could be done for any program
+that generates polygons.  On the other hand, having a program that does 
+decimation or smoothing separately is useful because it can be applied 
+to meshes that were generated in other ways.  I suggest that we separate
+the functionality; so in the example above hev-vtkContour would not 
+include decimation, but decimation would be available in a separate
+program.
+
+I discuss these proposed programs in more detail below.  In many cases,
+I cite the relevant VTK classes that might be used in a given program.
+This is done simply because I was looking at the VTK class documentation
+as I wrote this and I thought that it might be useful information for
+anyone who might be implementing these programs.
+
+
+
+Data Format Conversions
+-----------------------
+
+Summary:
+
+    hev-gridToVtkImage      - convert data block to VTK image grid
+    hev-gridToVtkRectGrid   - convert data block to VTK rectilinear grid
+    hev-gridToVtkStructGrid - convert data block to VTK structured grid
+    osgdb_vtk.so            - OSG plugin: load VTK file into OSG
+
+
+Details:
+
+For conversion, I'm only going to consider gridded data and geometry 
+data. These data representations correspond to the type of data 
+that we currently use, however it is possible that in the future we 
+might want to convert to VTK's unstructured grids.
+
+HEV does not have an established format for gridded data except in their
+use as OSG/OpenGL textures.  In this case, we've typically used .png 
+files for RGBA 2D textures and VTK MetaIO formats .mhd and .mha for 3D 
+textures.  So we have some experience with VTK formats.
+
+MetaIO formats are described here:
+
+   http://www.itk.org/Wiki/MetaIO/Documentation
+
+By convention, .mhd designates a file that just contains the descriptive
+header information while the actual grid data resides in a separate file
+that is cited in the .mhd file.  A .mha file should contain both the 
+header information as well as the gridded data.  In practice, it doesn't
+seem to matter which of these two file extensions are used; the file 
+contents are interpreted correctly.
+
+There are other VTK data representations for gridded data that are more 
+flexible than the MetaIO formats. I think that we should move to these 
+more flexible formats. The VTK terminology for these data 
+representations are: image, rectilinear grid, structured grid, and
+unstructured grid. 
+
+VTK uses the term "image" for a lattice of points that are axis-aligned
+and regularly spaced in all dimensions.  These grid are also often 
+called "structured points".  The terms "image" and "structured points"
+are sometimes used interchangeably, although the vtkImageData class is 
+a super-class of the vtkStructuredPoints class.  Image data need not be 
+a 2D visual image; it just refers to a regular grid and it can be of any
+dimension.  (VTK image data corresponds to what can be stored in a .mha 
+or .mhd file.)
+
+These data representations are described here:
+
+  "The Visualization Toolkit", 3rd Edition, p 125 (section 5.6)
+
+The associated file formats are described here:
+
+    http://www.vtk.org/VTK/img/file-formats.pdf   
+
+Unless absolutely necessary, I recommend that we use the "simple legacy
+formats" described this PDF rather than the XML formats.  
+
+For geometry data, we currently use two formats: SAVG and OSG formats.
+(In this discussion, when I say "geometry" I mean point, line, and
+polygon data that can be directly rendered.) The SAVG format is our own 
+invention which is very simple but lacks any method for specifying that 
+specific vertices (or edges) are common to multiple or polygons.  The 
+OSG formats enable one to express these shared elements and thus can be 
+more efficient.  The OSG format encompasses the .osg, .ive, .osgt, and 
+.osgb file formats.  Note that .osg and .ive are deprecated so they 
+should not be used for new development.  The .osgt format is an ascii 
+text format and .osgb is an equivalent binary format.  Either of these 
+file formats can be written by using the OSG library to build the 
+appropriate data structures in memory and writing using OSG methods.
+
+The VTK (legacy) file formats are simple and it's easy to write software
+that generates files in these formats.  However, as for OSG, one can 
+use the VTK library to create the data structures and write them to
+correctly formatted files.  As far as I know, we should be able to use
+the VTK library to do all of the reading and writing of these files.
+
+I recommend that we implement one or more conversion
+programs that convert simple ascii or binary data files to VTK grid
+formats.  For example, suppose we have a file called grid.dat that
+contains a 3D grid of scalar data (say 100 x 115 x 29 grid points) as 
+one ascii formatted floating point number per grid point.  Then we 
+might convert this to a VTK image grid file with a command that looks 
+like this:
+
+hev-gridToVtkImage --ndim 3 --dim 100 115 29 \
+                     --ncomp 1  --type float    grid.dat grid.vtk
+
+In this example "--ncomp 1" would mean that this is scalar data, i.e. 
+one component per grid point.
+
+There could also be programs
+
+    hev-gridToVtkRectGrid
+    hev-gridToVtkStructGrid
+
+where these would have additional command line arguments to provide the
+names of files that contain the addition coordinate information required
+by these formats.
+
+Clearly, there are other ways to configure these programs, but this 
+gives an idea of my thoughts on what functionality is needed for gridded
+data file conversions.
+
+For geometry data (points, lines, and polygons), I don't see much need 
+for the VTK-derived software to write out .savg format.  It will be much
+more natural to write out polygonal data in VTK's native format.  
+
+There is a need to load both vtk geometry files and vtk image files into
+OSG.  The geometry files, of course, are loaded so that the geometry can
+be drawn.  The VTK image files should be used as 1D, 2D, and 3D textures
+within OSG.  To do this, we can implement an file loader in the form of
+an shared object library:
+
+    osgdb_vtk.so - OSG plugin: load VTK file into OSG
+
+In a previous version of this report I suggested that we establish a
+convention for naming VTK data files with different extensions for each
+data type.  I no longer think that this is a good idea. I think that 
+all VTK data files (in the legacy file formats) should have the 
+extension ".vtk".  This is the convention within the VTK world and I 
+think that we should adhere to it.  Note that for most processing, there
+is really no need to enforce any naming convention. The VTK reader and 
+writer classes don't depend on any file name convention.  The only point
+at which this issue is important is for the file loader for OSG. OSG 
+finds the correct file loader by looking at the file name extension of 
+the file to be loaded.
+
+However, if we ever use the VTK XML file formats (described in the VTK 
+file format documentation mentioned above) we should use the file naming
+conventions described there for the XML files.
+
+
+
+Grid To Grid Transformations
+----------------------------
+
+Summary:
+
+    hev-vtkGridCoordTransform - transform coordinates of grid pts
+    hev-vtkGridSmooth         - apply smoothing to grid data
+    hev-vtkGradient           - gradient vectors from scalar grid
+    hev-vtkVectorMagnitude    - magnitude of a vector field
+    hev-vtkGridResample       - resample grid at specified points
+    hev-vtkGridSubset         - extract a spatial subset of a grid
+    hev-vtkVectorWarp         - deform grid coords by vector field
+    hev-vtkScalarWarp         - deform grid coords by scalar field
+
+
+Details:
+
+hev-vtkGridCoordTransform - transform coordinates of grid points
+    vtkTransformFilter
+
+hev-vtkGridSmooth - apply smoothing to grid data
+    vtkImageConvolve
+    vtkImageSeparableConvolution
+    vtkImageGaussianSmooth
+    vtkImageMedian3D
+    These vtk filters only work on VTK images.  So maybe this should be
+    called hev-vtkImageSmooth.  It would also be useful to handle 
+    non-regular grids, but this might mean implementing the smoothing 
+    algorithms ourselves.
+
+hev-vtkGradient - generate gradient vector field from a scalar grid
+                  (perhaps have option to output magnitude of 
+                   gradient rather than the gradient vector field)
+    vtkDataSetGradient
+    vtkGradientFilter
+    vtkImageGradient
+    vtkImageGradientMagnitude  
+
+hev-vtkVectorMagnitude - calculate magnitude of a vector field
+
+hev-vtkGridResample - resample grid data at specified grid points
+
+    This requires as input a source grid that contains 
+    data at each point, and some specification of the 
+    coordinates of the output grid points.  The program 
+    must then resample the source grid data at the specified 
+    grid points.  VTK calls this "probing" rather than 
+    resampling.  The resample grid could be specified eith
+    with a VTK grid file or by some other means.
+
+    This could be used to do cross-section plane resampling
+    as well as super-sampling and sub-sampling
+
+    vtkImageReslice
+    vtkImageResample
+    vtkCutter
+    vtkProbeFilter
+    vtkGenericProbeFilter
+
+hev-vtkGridSubset - extract a spatial subset of a grid
+    vtkExtractGrid
+    vtkExtractUnstructuredGrid
+    vtkExtractVOI
+
+There are two other VTK grid transformations that may be useful to us,
+but I hesitate to suggest that they be encapsulated into HEV programs.
+These are the VTK classes vtkWarpScalar and vtkWarpVector.  These deform
+grid coordinates based on scalar and vector fields respectively.  In
+particular, vtkWarpScalar is useful in creating a 2D height plot in
+which a horizontal polygon is stretched in the Z direction based on the
+a scalar values at points on the polygon.  So I am not recommending 
+their immediate implementation, but we could write these two programs
+
+hev-vtkVectorWarp - deform grid coords based on vector field
+    vtkWarpVector
+
+hev-vtkScalarWarp - deform grid coords based on scalar field
+    vtkWarpScalar
+
+Note: Most relevant VTK classes cited in this section are derived from:
+    vtkPointSetAlgorithm
+    vtkDataSetAlgorithm
+    vtkImageAlgorithm
+
+
+
+Grid To Geometry Transformations
+--------------------------------
+
+Summary:
+
+    hev-vtkContour     - iso-lines or iso-surfaces 
+    hev-vtkVectorGlyph - glyphs for vector data
+    hev-vtkTensorGlyph - glyphs for tensor data
+    hev-vtkStreamLine  - stream lines from vector or tensor data
+
+
+Details:
+
+hev-vtkContour - Produce iso-lines or iso-surfaces from 2D and 3D 
+                        gridded VTK files.  
+    vtkContourFilter
+    vtkFeatureEdges, vtkFillHolesFilter (maybe useful for generating 
+                                         caps for isosurfaces 
+                                         at volume boundaries)
+    vtkMarchingContourFilter 
+    vtkMarchingCubes 
+    vtkSliceCubes
+    vtkMarchingSquares 
+    vtkImageMarchingCubes
+    (I'm not sure what the differences are among these filters.)
+
+
+hev-vtkVectorGlyph - produce geometric glyphs that represent vector data
+    vtkHedgeHog
+
+hev-vtkTensorGlyph - produce geometric glyphs that represent tensor data
+    vtkTensorGlyph
+
+
+hev-vtkStreamLine - generate stream lines from vector or tensor data
+    vtkStreamTracer (static vector field)
+    vtkTemporalStreamTracer (time-varying vector field)
+    vtkHyperStreamline (tensor hyper stream lines)
+    vtkRibbonFilter  (stream ribbons/surfaces/polygons)
+    vtkTubeFilter    (tubes around lines)
+
+
+hev-vtkGridGeom  - generate basic geometric representation of grid data
+    vtkGeometryFilter
+    vtkPolyDataNormals
+
+
+Note: Most relevant VTK classes in cited this section are derived from:
+    vtkPolyDataAlgorithm 
+
+
+Geometry To Geometry Transformations
+------------------------------------
+
+Summary:
+
+    hev-vtkPolyCoordTransform - transform coords and normals of polygons
+    hev-vtkPolyDecimate       - reduce number of triangles in a mesh 
+    hev-vtkAddNormals         - add normals to a set of polygons
+    hev-vtkCleanPolyData      - clean up polygonal data
+    hev-vtkExtractBoundary    - extract boundary for set of polygons
+    hev-vtkSmoothMesh         - smooth a polygonal mesh
+    hev-vtkDelaunay           - generate Delaunay triangulation
+    hev-vtkClipGeom           - clip polygon data 
+    hev-vtkBoundingHull       - generate convex hull (not minimal)
+    hev-vtkConnectedComponents- split or count # of connected components
+    hev-vtkConvertToStrips    - convert to triangle strips and polylines
+    hev-vtkConvertToTriangles - convert all polygons to triangles
+
+
+Details:
+
+hev-vtkPolyCoordTransform - transform coords and normals of polygons
+    vtkTransformPolyDataFilter
+
+hev-vtkPolyDecimate  - reduce the number of triangles in a mesh 
+    vtkDecimatePro
+    vtkQuadricDecimation
+    vtkTriangleFilter
+
+hev-vtkAddNormals - add normals to a set of polygons
+    vtkPolyDataNormals
+    vtkPPolyDataNormals   
+
+hev-vtkCleanPolyData - clean up polygonal data
+    vtkCleanPolyData
+
+hev-vtkExtractBoundary - extracts boundary lines from a set of polygons
+    vtkFeatureEdges
+
+hev-vtkSmoothMesh - smooth a polygonal mesh
+    vtkSmoothPolyDataFilter
+    vtkWindowedSincPolyDataFilter
+
+hev-vtkDelaunay - generate Delaunay triangulation from a set of points
+    vtkDelaunay2D
+    vtkDelaunay3D
+
+hev-vtkClipGeom - clip polygon data 
+    vtkClipPolyData  
+    vtkExtractPolyDataGeometry
+
+hev-vtkBoundingHull - generate a convex hull (not necessarily minimal)
+    vtkHull
+
+hev-vtkConnectedComponents - split or count the number of connected
+                             components
+                             (This could operate either on polygons
+                              or on unstructured grid data.)
+    vtkPolyDataConnectivityFilter
+    vtkConnectivityFilter
+
+hev-vtkConvertToStrips - convert geometry to triangle strips and
+                         polylines whenever possible 
+    vtkStripper 
+
+hev-vtkTubify - generate a tubes around lines (could replace hev-tubify)
+    vtkTubeFilter
+
+hev-vtkConvertToTriangles - convert all polygons to triangles
+    vtkTriangleFilter
+
+
+Note: Most relevant VTK classes in cited this section are derived from:
+    vtkPolyDataAlgorithm
+
+
+
+Implementation Notes
+--------------------
+
+Here are some random thoughts on the implementation of these programs.
+
+VTK programs can easily be written in a scripting language like Python
+or in C++.  Programs that handle VTK data objects at a high level and 
+read and write only to native VTK formats are probably most suitable
+for implementation in Python.  If the program needs to traverse the VTK
+data structures in detail then it might be more easily written in 
+C++, but it can probably done in Python.  If you need also to access 
+the OSG library, I think that C++ is probably the only choice.  In 
+general, the choice of language is likely to have little impact on 
+performance.
+
+Our current thinking is that these programs should be written in Python
+whenever possible.  C++ should only be used when absolutely necessary.
+
+
+When programming with VTK in C++, the typical way of building a program
+involves the use of "cmake".  I am not a fan of cmake and I think that
+it is largely unnecessary in our environment.  I have found that it is
+reasonably easy to write a standard make file.  For example, here is a
+Makefile that currently works for building several simple VTK
+programs:
+
+
+    ##################################################################
+    # A Makefile for vtk programs that by-passes the cmake procedures.
+
+    all: streamLine1 streamLineTest streamLine2
+
+    streamLineTest: streamLineTest.cpp
+
+    streamLine1: streamLine1.cpp
+
+    # vtk include files are currently here:
+    VTK_INC=/usr/include/vtk
+
+    # The built-in rule for .cpp uses CXXFLAGS and LDLIBS.  We'll use 
+    # these variables to specify the location of include and library 
+    # files.
+
+    CXXFLAGS +=  -Wno-deprecated  -I$(VTK_INC)
+
+    # All relevant vtk libraries.  We just link to all of them.
+    LDLIBS +=  \
+        -lvtkCommon \
+        -lvtkDICOMParser \
+        -lvtkexoIIc \
+        -lvtkFiltering \
+        -lvtkftgl \
+        -lvtkGenericFiltering \
+        -lvtkGraphics \
+        -lvtkHybrid \
+        -lvtkImaging \
+        -lvtkInfovis \
+        -lvtkIO \
+        -lvtklibxml2 \
+        -lvtkmetaio \
+        -lvtkNetCDF \
+        -lvtkParallel \
+        -lvtkRendering \
+        -lvtksqlite \
+        -lvtksys \
+        -lvtkverdict \
+        -lvtkViews \
+        -lvtkVolumeRendering \
+        -lvtkWidgets
+
+    ##################################################################
+
+
+A more complete version of this Makefile with more comments is currently
+located here:
+
+  ~hagedorn/Vis/vtk/newDev/streamLine/Makefile
+
+
+Several HEV programs that use VTK have already been implemented.  These
+could either remain as they are or they could be adapted or 
+reimplemented to make them consistent with newly implemented programs.
+These existing programs are:
+
+    hev-tclVtkIsosurface
+    hev-tclVtkIsosurfaceClean
+    hev-tclVtkIsosurfaceDecimate
+    hev-vtkIsoSavg
+    hev-vtkContour
+
+All of these except hev-vtkContour are implemented as TCL scripts;
+hev-vtkContour is implemented as a C++ program.  Please note that the
+current version of hev-vtkContour should probably be replaced; the
+command line options should be redesigned and some extraneous code 
+should be removed.  I think that hev-vtkIsoSavg is not a bad example of 
+programming VTK, but it is written in TCL, which we should not use for 
+these new programs.  Example programs are useful, but new code does not 
+need to follow any existing model.
+
+We currently have VTK Version 5.2 installed on our Linux systems. There
+are two major sources of information on VTK: books and online 
+documentation. We have two books on VTK:
+
+    "The Visualization Toolkit"  - This is an overview with very few
+                                   specifics on how to program with VTK.
+
+    "The VTK User's Guide"       - This has examples and specific 
+                                   information on how to create a VTK
+                                   program.
+
+VTK has much online documention.  Here are some particularly useful 
+links:
+
+    http://www.vtk.org 
+        The main site.
+
+    http://www.vtk.org/VTK/help/documentation.html
+        Links to various documentation.
+
+    http://www.vtk.org/doc/release/5.2/html/index.htm - 
+        Version 5.2 docs.
+
+    http://www.vtk.org/VTK/help/examplecode.html  
+        Gives some simple example code.
+
+    http://www.vtk.org/doc/release/5.2/html/classes.html
+        The complete index of VTK class definitions
+        Many of the individual class documentation pages have links
+        to example code in several languages.
+
+    http://www.vtk.org/doc/release/5.2/html/pages.html
+        See the "Classes To Examples" links.
+
+I have sometimes found the VTK documentation to be difficult to 
+understand or incomplete.  It is very useful to look at the example code
+on the VTK web site and to look for other examples with google.
+
+It is also important to realize that each VTK algorithm has many 
+options.  It may be impractical to expose all of these options to the
+user of these HEV programs.  Part of the implementation effort will 
+involve deciding which of the VTK options to expose as command line 
+options.  If users need an option or capability that is not provided by 
+the HEV programs, they always have the option to write a custom VTK 
+program.
+
+I recommend that we have at least one test case for every one of these
+programs and that these test cases be kept with the code.  A test case
+would consist of an input data file and some sort of description of the
+output.  
+
+Man pages should be written for each program.
+
+
+When Python is used, we should try to program in a way that is 
+compatible with Python 3. There currently is not a Python 3 "module" for
+VTK; see:
+
+     http://www.vtk.org/Wiki/VTK/Python_Wrapping_FAQ
+
+so we can't use Python 3 at this time for these scripts.
+
+However I suggest that we write in Python so that the code can be
+executed by both Python 2 and Python 3.  The Python code for these VTK 
+programs should be fairly simple and (if we are careful) we should be 
+able to avoid the incompatibilities between Python 2 and Python 3.  See 
+these pages for discussions of the differences between the two versions 
+of Python:
+
+    http://wiki.python.org/moin/Python2orPython3
+    http://docs.python.org/py3k/whatsnew/3.0.html
+
+Also, the Python 2 to 3 translator might be useful:
+
+    http://docs.python.org/py3k/library/2to3.html
+
+There is also much online documentation of Python at python.org and
+there are many examples and tutorials that can be found with google.
+
+Another interesting and useful page concerning VTK and Python:
+
+http://vtk.org/gitweb?p=VTK.git;a=blob;f=Wrapping/Python/README_WRAP.txt
+
+
+We will need to use the OSG library for some of these programs. 
+Specifically, OSG will be needed for the VTK file loader(s).  I 
+recommend that these be written by someone who is already acquainted 
+with the OSG library.  I suspect that these are the only programs that 
+will really need to be programmed in C++ rather than Python. Models for 
+these file loaders are the .savg file loader (osgdb_savg.cpp) and the 
+.mha/.mhd file loader (osgdb_mha.cpp).
+
+The other data format conversion programs (hev-gridToVtkImage,
+hev-gridToVtkRectGrid, and hev-gridToVtkStructGrid) might be easier to 
+write in C++, but could probably be written in either Python or C++. The
+other programs are probably best written in Python.
+
+
+An important part of this project is good specification of the command
+line options for each of the programs. Here are some suggested 
+guidelines for the command line interfaces:
+
+        - Input file names and output file names appear at the end of
+          the command line.  
+
+
+        - Command line options should be of one of these form:
+                --str 
+          or
+                --str val
+
+        - When a user specifies a command line option, the option can
+          be shortened to the shortest string that distinguishes it from
+          the other options
+
+        - the case of the option string should not be significant.
+
+        - the order of the -- options should not be significant.
+
+We could deviate from these guidelines if there was a good reason to do so.  
+
+The following ideas cannot be implemented because (as far as I can tell)
+the VTK reader and writers cannot work with stdin or stdout:
+
+        - If a file name is specified with a single dash ("-") then 
+          use stdin or stdout as appropriate.
+
+        - If a file name is omitted from the end of a command line then
+          use stdin or stdout as appropriate.
+
+For help in parsing the command line, see the Python module optparse. It
+would be nice to use the module argparse, but apparently it is not 
+available in our version of Python.
+
+Here are proposed command lines for one program from each of the four 
+categories:
+
+
+  hev-gridToVtkImage - data block to VTK image grid file
+
+    hev-gridToVtkImage [ options ]  [inFileName [outFileName]]
+
+        inFileName              Name of input file with raw grid data
+
+        outFileName             Name of output VTK image grid file.
+
+        Options:
+
+          --ncomp M             Number of components at each 
+                                grid element
+                                Default is 1
+
+          --ndim N              Number of dimensions
+                                No default
+
+          --dim d1 d2...dN      Number of grid points in each dimension
+                                No default
+
+          --type dataType       Data type of output grid data
+                                Should be one of the following:
+                                    char
+                                    uchar
+                                    short
+                                    ushort
+                                    int
+                                    uint
+                                    float
+                                    double
+                                Default is float
+
+          --input text|bin      Indicates whether the input file is
+                                text or binary.
+                                Default is text.  If bin, then the
+                                data type should be as indicated by
+                                the --type option.
+
+
+        Input file should be a sequence of numbers:
+                - all components for a given grid point should be
+                        grouped together
+                - first dimension varies most rapidly
+
+    Example:
+
+        hev-gridToVtkImage --ndim 3 --dim 100 115 29 \
+                     --ncomp 1  --type float    grid.dat grid.vtk
+
+
+
+
+  hev-vtkGridResample - resample grid at specified points
+
+    hev-vtkGridResample [ options ]  inGridFileName outGridFileName
+
+        inGridFileName          Name of input VTK grid file
+
+        outGridFileName         Name of resampled VTK grid output file.
+        
+      Options:
+
+        --interp mode           Type of interpolation for resampling
+                                One of the following:
+                                    linear
+                                    cubic
+                                    nearest neighbor
+                                Some interpolations might not be 
+                                possible for some grid structures.
+
+        --outDim d1 d2...dN     Dimensions of resampled output grid.
+                                Number of dimensions must match the
+                                dimensionality of the input grid.
+                                Output grid will have same structure as
+                                the input grid.
+
+        --resampPts gridFN      Name of grid file that specifies points
+                                at which to resample grid
+                                Output grid will have same structure as
+                                the grid specified in this option.
+
+        One and only one of the two options --outDim and --resampGrid
+        must be specified.
+
+
+    Examples:
+        hev-vtkGridResample --outDim 45 100 50  \
+                                gridA.3D.vtk gridA.resamp.vtk
+            Resamples the grid in file gridA.3D.vtk to a grid with
+            dimensions 45x100x50 and writes to gridA.resamp.vtk.
+            Note that because --outDim is specified with three 
+            dimensions, gridA.3D.vtk must have three dimensions.
+
+        hev-vtkGridResample --resampPts stdGrid.vtk \
+                                gridA.3D.vtk gridA.std.vtk
+            Resamples gridA.3D.vtk to a grid with points located
+            at the same locations as the points in stdGrid.vtk.
+
+
+  hev-vtkContour             - iso-lines or iso-surfaces 
+
+    hev-vtkContour  value inFileName outFileName
+
+        value           value for which iso-lines or iso-surfaces 
+                        are generated
+
+        inFileName      name of input grid file
+
+        outFileName     name of output polygon file
+
+    Example:
+        hev-vtkContour  0.5  co2.vtk   co2.iso0.5.vtk
+            Generates an isosurface at 0.5 from the grid data in
+            co2.vtk.  The resulting polygons are written to the
+            file co2.iso0.5.vtk.
+
+
+
+  hev-vtkSmoothMesh          - smooth a polygonal mesh
+
+    hev-vtkSmoothMesh [ options ]  inPolyFileName outPolyFileName
+
+        Options:
+                --smooth method Smoothing method, one of the 
+                                following:
+                                        laplacian
+                                        sinc  
+                                Default is "sinc"
+                                
+                --iter N        # of iterations
+                                Default is ??
+
+                --fes  on|off   Feature edge smoothing on or off
+                                Default is on.
+
+                --fang  angle   Feature angle
+                                Default is ??
+
+                --eang  angle   Edge angle
+                                Default is ??
+
+                --bs  on|off    Boundary smoothing on or off
+                                Default is on.
+
+                --relax factor  relaxation factor 
+                                (only for laplacian)
+                                Default is ??
+
+                -nms  on|off    Non-manifold smoothing on or off
+                                (only for sinc)
+                                Default is on.
+                
+    Example:
+        hev-vtkSmoothMesh --iter 50 --smooth laplac  \
+                                co2.iso0.5.vtk  co2.smooth.vtk
+
+        Apply Laplacian smoothing for 50 iterations to polygonal mesh 
+        in co2.iso0.5.vtk to generate smoothed mesh in co2.smooth.vtk.
+        
+    (To understand the smoothing options, you'll need to look at the
+     VTK documentation for vtkSmoothPolygDataFilter and
+     vtkWindowedSincPolyDataFilter.)
+
+
+These command lines are just suggestions.  There may be reasons to 
+specify them in some other way.
+
+
+--
+--
+
+

@@ -1,0 +1,44 @@
+.TH iris-readFifo 1 "February 2011"
+
+.SH NAME
+iris-readFifo
+
+.SH SYNOPSIS 
+
+.B iris-readFifo [ \fI--usleep t\fR] [\fI--unlink\fR] [\fI--once\fR] \fIfifoname\fR
+
+.SH OPTIONS
+
+.IP "\fI--usleep t\fR"
+specifies how many microseconds to sleep at the end of each loop.  If not specified,
+iris::GetUsleep() is used.
+
+.IP "\fI--unlink\fR"
+specifies that the fifo should be removed upon exit
+
+.IP "\fI--once\fR"
+specifies that the program should exit after printing one line of data
+
+.TP 
+\fIfifoname\fR
+.br
+the name of a fifo to read
+
+.SH DESCRIPTION
+
+\fBiris-readFifo\fR reads the specified fifo in a loop and writes each line
+read to standard output. This can be useful when writing shell scripts that
+need to use IRIS fifos, or when a progam that reads standard input
+instead of a fifo.
+
+.SH AUTHOR
+
+.PP
+John Kelso, kelso@nist.gov
+.br
+NIST High Performance Computing and Visualization Group
+.br
+February 2011
+.br
+\fBhttp://www.nist.gov/mcsd/hpcvg/\fR
+ 
