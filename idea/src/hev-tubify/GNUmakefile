@@ -4,7 +4,7 @@ OBJECTS = hev-tubify.o savgIOUtils.o gleToSavgOsg.o
 
 hev-tubify:   $(OBJECTS)
 	cc -o hev-tubify $(OBJECTS) \
-	   -static -L $$HEV_EXTERNAL_GLE -lmodgle -lm
+	   -L $$HEV_EXTERNAL_GLE -lmodgle -lm
 
 hev-tubify.o:  hev-tubify.c savgIOUtils.h gleToSavgOsg.h
 	cc -c hev-tubify.c -I $$HEV_EXTERNAL_GLE
