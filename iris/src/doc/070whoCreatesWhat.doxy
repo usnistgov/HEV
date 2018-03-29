@@ -1,0 +1,18 @@
+/** \page whocreateswhat Who creates what
+
+An iris::SceneGraph object creates the scenegraph, and has methods to add
+or create osgViewer::Viewer objects.  It has a realize() method
+which calls iris::Window::realize() for all of the Window objects.
+
+An iris::Window object creates a osg::GraphicsContext::Traits object and has
+methods to add iris::Pane objects.  The iris::Window::realize() method calls the
+realize() method for every iris::Pane object.
+
+An iris::Pane object's realize() method creates one or two osg::Camera
+objects (depending on if the Window with the Pane is mono or stereo) and a
+callback to update the frustum.  The iris::Pane constructor takes a pointer
+to a iris::Window object.
+
+*/
+
+

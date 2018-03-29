@@ -1,0 +1,43 @@
+/** \page rulesofthumb Rules of Thumb
+
+Here, in no particular order, are some general guidelines to developing IRIS
+programs
+
+- When possible write a separate application which sends control commands
+  via the fifo to an existing class or DSO
+  - you can do a lot with \c iris files that load other \c iris files
+  - start these commands with EXEC iris commands so they'll be killed at exit
+    - you need to clean up any processes your program creates
+    - see the "shell" example if EXECing a shell script
+- Instead of writing an IRIS application see if you can use iris-viewer and
+  load \c iris files and DSOs and set environment variables to do the job.
+- Use a fifo for passing text commands to and from your application (the
+  iris::FifoReader class help make it easy to do) and use dtkSharedMem
+  files to pass chunks of binary state data.
+  - see iris-buttonRouter for a fifo example
+- Don't write a DSO with callbacks unless you have to, as they have the
+  potential to slow the graphics frame rate
+  - if you have to, make the callbacks as fast and lightweight as possible
+- Check out %Utils.h for handy functions (look in the <a href=file:namespaceiris.html >
+"iris Namespace Reference"</a> page, about half-way down, after the classes.)
+- Let the main() program create the iris::SceneGraph object, and have DSOs
+  and other classes use the iris::SceneGraph::instance() method to get a
+  pointer to it
+- Unless you know what you're doing use osg::ref_ptr objects if feasible-
+  see the class's inheritance diagram and see if the class is based on the
+  osg::Referenced class, and if it is you can use a ref ptr.
+  - many seg faults come from the reference counter for an object going to
+    zero, and the pointer to that object now pointing to a deleted object.
+    Using the osg::Referenced::ref() method to get a reference count might
+    help.
+- The SceneGraph::realize() class sets some signals so it can clean up
+  processes on exit.  
+  - if your program calls SceneGraph::realize() then use the
+    SceneGraph::done() function to check for program termination instead of
+    setting your own signals.
+- IRIS is still very much beta-ware
+  - if you need a feature you don't see, ask kelso@nist.gov for it.  He'll
+    be happy to add it to the to-do list if it's not on it already
+  - if you see a feature that's a bug, please report it to kelso@nist.gov
+
+*/

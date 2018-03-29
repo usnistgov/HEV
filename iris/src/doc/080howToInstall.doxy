@@ -1,0 +1,25 @@
+/** \page howtoinstall How to install and configure IRIS
+
+-# where is the tarball?
+    \n <tt>export IRIS_HOME=/some/directory/src/iris-vX.Y</tt>
+-# where do you want to install it?
+    \n <tt>export IRIS_PREFIX=/some/other/directory/iris/installed</tt>
+-# make and install
+   <tt>
+   <br>cd $IRIS_HOME
+   <br>make  -j `getconf _NPROCESSORS_ONLN` install	
+   </tt>
+-# set up path envvars for running
+   -# IRIS control fifo
+   \n <tt>export IRIS_CONTROL_FIFO=/tmp/irisControlFifo-${USER}</tt>
+   -# shell path
+   \n <tt>export PATH=$IRIS_PREFIX/bin:$PATH</tt>
+   -# library path
+   \n <tt>export LD_LIBRARY_PATH=$IRIS_PREFIX/lib:$LD_LIBRARY_PATH</tt>
+   -# pkg-config
+    \n <tt>export PKG_CONFIG_PATH=$IRIS_PREFIX:$PKG_CONFIG_PATH</tt>
+    =# OpenSceneGraph
+    \n <tt>export OSG_FILE_PATH=$IRIS_PREFIX/data:$OSG_FILE_PATH</tt>
+
+
+*/

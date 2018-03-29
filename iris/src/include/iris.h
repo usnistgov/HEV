@@ -1,0 +1,22 @@
+#ifndef __IRIS__
+#define __IRIS__
+#include <iris/ArgumentParser.h>
+#include <iris/Augment.h>
+#include <iris/ClipNode.h>
+#include <iris/ConvertNodeVisitor.h>
+#include <iris/FifoReader.h>
+#include <iris/ImmersivePane.h>
+#include <iris/LightNode.h>
+#include <iris/MatrixTransform.h>
+#include <iris/BillboardTransform.h>
+#include <iris/Nav.h>
+#include <iris/OrthoPane.h>
+#include <iris/Pane.h>
+#include <iris/PerspectivePane.h>
+#include <iris/SceneGraph.h>
+#include <iris/ShmMatrixTransform.h>
+#include <iris/ShmState.h>
+#include <iris/ShmString.h>
+#include <iris/Utils.h>
+#include <iris/Window.h>
+#endif

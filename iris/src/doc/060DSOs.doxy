@@ -1,0 +1,296 @@
+/** \page dsos What DSOs are, why to write one, how to use them and what the supplied DSOs do
+
+DSOs are compiled programs; each program creates an object based on the
+dtkAugment class.  DSOs can be loaded at run time by the iris::SceneGraph class,
+thus modifying the behavior of the running application.
+
+DSOs are handy when you need to do something every graphics frame, such as
+the toggleObjects, trackballNav or setHeadWandMatrix DSOs, or in the case that what you're doing
+can't be done by IRIS control commands, such as the desktopWindow DSOs.
+
+DSOs can define their own control commands, and can be loaded by control
+commands, so they are an easy way to encapsulate specific functionality that shouldn't
+be written into the general IRIS classes.  This is accomplished by the DSO
+writing its own Control method, which will be called instead of the
+iris::Augment::Control() method. If applicable to the DSO's functionality, the DSO should also call the
+iris::Augment::Control() method so the \c active control command will be
+called, as well as checking the value of iris::Augment::getActive() in the
+DSO's callbacks.
+
+Since DSOs can create OSG callbacks it's possible for DSOs to slow the
+graphics loop.  In general it's best to do as much calculation as possible
+in a separate process and have the DSO and the separate process communicate
+via fifos and/or DTK shared memory files.  In general, the separate process
+drives the behavior of the DSO.  Also, in general, text sting commands are
+passed using fifos (the FifoReader class makes this easy to do), and binary
+state information is stored in DTK shared memory files.
+
+The tim (Things In Motion) DSO is a good example of the above general
+guidelines.
+
+The easiest way to load a DSO is to include its name in the list of files
+specified by the \c IRIS_FILES environment variable.
+
+DSO files can also be loaded in IRIS files and control commands using the
+syntax:
+
+  \b DSO <i>Dave</i>
+
+where <i>Dave</i> is the name of a DSO.
+
+IRIS control commands can be passed to a DSO with the syntax:
+
+  \b DSO <i>Dave</i> Open the pod bay doors Hal
+
+where "Open the pod bay doors Hal" is the control command to be processed by
+the <i>Dave</i> DSO.  If the <i>Dave</i> DSO isn't loaded, it is loaded
+before passing the control command, so a separate control command to load
+the DSO isn't needed.
+
+One IRIS DSO is not based on the dtkAugment class; the IRIS file loader is
+based on the osgDB::ReaderWriter class and is used to read and process files
+containing IRIS control commands.  Like other DSOs the IRIS file reader is loaded at
+run time, but being based on the osgDB::ReaderWriter class it is automatically
+loaded by the OSG file reader class when a filename with the suffix \c iris is
+encountered..
+
+Here's a list of the DSOs that come with IRIS and a brief description of what each one does.
+
+<dl>
+<dt>buttonMapper:
+<dd>
+reads a shared memory file for button values and compares then with a series
+of button masks and if the mask and buttons are equal, writes \c 1 to a
+specified shared memory file.  buttonMapper reads control commands to
+implement its functionality:
+- \b BUTTONS <i>buttonShmName</i>
+specifies the name of the shared memory file from which to read button data.  This can
+be changed while IRIS is running by subsequent \b BUTTONS commands.  If no
+\b BUTTONS command is given the shared memory file \c buttons is used.
+- \b MAP <i>mapName</i> <i>mask</i> <i>shmName</i> [ <i>mask</i> <i>shmName</i> ... ]
+creates a button mapping named <i>mapName</i>, with one or more pairs of button
+<i>mask</i>s and shared memory file names, <i>shmName</i>.
+- \b ON <i>mapName</i>
+tells the DSO which map to use when routing buttons.  Every graphics
+frame the button are read, and if their value changes and their new value equals <i>mask</i>, a \c 1 is
+written to the paired shared memory.  Otherwise \c 0 is written to the paired shared memory.
+- \b OFF
+turns off all button routing until another \b ON command is received.
+
+buttonMapper was written as a DSO instead of a program as a convenience to
+application developers, as it allows buttonMapper to use
+the IRIS control fifo and to read iris files, hopefully simplifying
+buttonMapper configuration and control.
+
+<dt>desktopWindow:
+<dd>
+Creates a single window with 3 panes, one perspective, one immersive and
+one ortho.  Implements control commands to switch between panes.
+
+<dt>desktopWindowKeyboardControl:
+<dd>
+  Creates an event handler that uses the "f" key to switch between the three
+  panes in the desktopWindow DSO.  This could also been done as a separate
+  GUI using control commands, but to be consistent with the toggleObjects
+  and keyboardControl DSOs it was done as a DSO.  This also allows keyboard
+  input to be read with the cursor in the graphics window, as opposed to
+  having to move the cursor to a separate GUI or terminal window. \n
+
+<dt>example:
+<dd>
+  A generic example DSO with an event handler, node callback and a control
+  command.
+
+<dt>exampleNav:
+<dd>
+  An example of a DSO implementing a simple navigation using a nav node
+  callback.
+
+<dt>frameGrabber:
+<dd>
+  Reads the OpenGL buffers associated with one or more iris::Pane objects,
+  either once, like a snapshot, or repeatedly, like a movie, and writes the
+  buffers to files upon exit.
+
+<dt>keyboardControl:
+<dd>
+  Reads the keyboard and modifies the running application's navigations and
+  displays.
+
+<dt>monoDispayMod:
+<dd>
+  Modifies all iris::Window objects that are in stereo to be in mono.  This
+  DSO must be loaded before iris::SceneGraph::realize() is called.
+
+<dt>osgdb_iris:
+<dd>
+  The IRIS file loader.
+
+<dt>osgNav:
+<dd>
+  An attempt, so far failed, to use the OSG TrackballManipulator as a IRIS
+  navigation.
+
+<dt>
+powerwallWindow:
+<dd>
+  Creates the Boulder PowerWall Window and Immersive Pane objects.
+
+<dt>
+raveFloorWindow:
+<dd>
+  Creates the RAVE floor Window and Immersive Pane objects.
+
+<dt>
+raveFrontWindow:
+<dd>
+  Creates the RAVE front wall Window and Immersive Pane objects.
+
+<dt>
+raveLeftWindow:
+<dd>
+  Creates the RAVE left wall Window and Immersive Pane objects.
+
+<dt>
+raveMosaicWindow:
+<dd>
+  A simple example of creating multiple tiled PerspectivePanes in a single
+  Window.
+
+<dt>
+setHeadWandMatrixMatrix:
+<dd>
+  Creates an event handler that reads the DTK shared memory files head and
+  wand and when they change sets the DTK shared memory files headMatrix and
+  wandMatrix and the transformations in the head and wand nodes using the matrix
+  data.
+
+<dt>
+sharedMemNav:
+<dd>
+  Reads a matrix from shared memory every frame, and if it changed, call
+  iris::Nav::setMatrix to set the navigation.
+
+<dt>
+shmChildParentTransformation:
+<dd>
+  Creates an event handler that writes to DTK shared memory the matrix that
+  will transform the coordinates of a child node to a parent node's coordinate
+  system. shmChildParentTransformation reads control commands to implement
+  its functionality: 
+  - \b INIT <i>transformationShmName</i> <i>childNode</i>
+  <i>parentNode</i>|- 
+  creates a transformation to be calculated and written to shared memory.
+  <i>transformationShmName</i> specifies the name of the shared memory file
+  to store the transformation. It will contain 16 doubles representing
+  an osg::Matrixd and will be created if it does not exist. <i>childNode</i>
+  is the name of the child node, and <i>parentNode</i> is the name of the
+  parent node. A "-" can be used to specify that the immediate unique parent of
+  <i>childNode</i> should be used. shmChildParentTransformation keeps
+  a mapping between the shared memory file name and the two node names. Multiple
+  transformations can be generated by using different shared memory files.
+  - \b GET <i>transformationShmName</i> will cause
+  shmChildParentTransformation to write the transformation to shared memory
+  once during the next graphics frame. <i>transformationShmName</i> specifies which child-parent
+  transformation to write.
+  - \b START <i>transformationShmName</i> will cause
+  shmChildParentTransformation to write the transformation to shared memory
+  every graphics frame. <i>transformationShmName</i> specifies which child-parent
+  transformation to write.
+  - \b STOP <i>transformationShmName</i> will cause
+  shmChildParentTransformation to stop writing the transformation to shared
+  memory. <i>transformationShmName</i> specifies which child-parent
+  transformation to write.
+
+<dt>
+shmNodeToNodeTransformation:
+<dd>
+  Creates an event handler that writes to DTK shared memory the matrix that
+  will transform the coordinates of one node to the coordinate system of another
+  node. The two nodes need to have a common ancestor node.
+  shmNodeToNodeTransformation reads control commands to implement
+  its functionality: 
+  - \b INIT <i>transformationShmName</i> <i>fromNode</i>
+  <i>toNode</i> [ <i>commonNode</i> ]
+  creates a transformation to be calculated and written to shared memory.
+  <i>transformationShmName</i> specifies the name of the shared memory file
+  to store the transformation. It will contain 16 doubles representing
+  an osg::Matrixd and will be created if it does not exist. <i>fromNode</i>
+  is the name of the node whose coordinates are to be transformed, and <i>toNode</i> is the name of the
+  node whose coordinate system will be written to shared
+  memory. <i>commonNode</i> is the name of a node that is a common ancestor
+  of both  <i>fromNode</i> and  <i>toNode</i>. If <i>commonNode</i> is not
+  given the IRIS "scene" node is used.
+  shmNodeToNodeTransformation keeps
+  a mapping between the shared memory file name and the two node names. Multiple
+  transformations can be generated by using different shared memory files.
+  - \b GET <i>transformationShmName</i> will cause
+  shmNodeToNodeTransformation to write the transformation to shared memory
+  once during the next graphics frame. <i>transformationShmName</i> specifies which from-to
+  transformation to write.
+  - \b START <i>transformationShmName</i> will cause
+  shmNodeToNodeTransformation to write the transformation to shared memory
+  every graphics frame. <i>transformationShmName</i> specifies which from-to
+  transformation to write.
+  - \b STOP <i>transformationShmName</i> will cause
+  shmNodeToNodeTransformation to stop writing the transformation to shared
+  memory. <i>transformationShmName</i> specifies which from-to
+  transformation to write.
+
+<dt>
+tim:
+<dd>
+  Implements control commands which 
+  -# read a list of node names and the
+  name of a DTK shared memory file containing one data for one osg::Matrixd
+  per node, and
+  -# a command causing the shared memory to be read and the
+  matrices to be applied to the nodes.  
+
+  A separate process can "drive" a
+  large number of objects by updating the matrix data in shared memory and
+  issuing a single control command to the tim DSO.
+
+<dt>
+toggleObjects:
+<dd>
+  Creates an event handler that turns graphical objects on and off based on
+  key presses.
+
+<dt>
+trackballNav:
+<dd>
+  The basic desktop navigation that reads the keyboard and mouse to modify a
+  Nav object.
+
+<dt>
+wandJoystickNav:
+<dd>
+  The basic immersive navigation that reads the wand and joystick to modify
+  a Nav object. Rotation is about the Z axis of the scene node.
+
+<dt>
+wandJoystickYNav:
+<dd>
+  A variation on wandJoystickNav; rotation is about the Y axis of the wand.
+
+<dt>
+wandJoystickZNav:
+<dd>
+  A variation on wandJoystickNav; rotation is about the Z axis of the wand.
+
+
+<dt>
+wandJoystickXYtranNav:
+<dd>
+  Like wandJoystickNav except translation only in XY plane.</p> 
+
+<dt>
+writeState:
+<dd>
+  Creates an event handler that writes information about the IRIS state to
+  DTK shared memory.  These data are read by the iris-readState program.
+</dl>
+
+
+*/

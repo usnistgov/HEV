@@ -1,0 +1,1360 @@
+/**
+   \page control A Summary Of All IRIS Control Commands
+
+   Control commands can be in an iris file, read by the iris file loader, or can
+   be sent to a running iris application via the fifo defined in
+   \c $IRIS_CONTROL_FIFO
+
+   A control command has the following syntax:
+
+   \code
+   # this is a comment
+   # keyword matching is case insensitive
+   # one or more spaces or tabs separate each parameter
+   # keywords can be abbreviated
+   # each line always starts with a keyword
+   # use single and double quotes and \ escapes as with the shell to pass special characters
+   \endcode
+
+   Keywords are shown in \b UPPERCASE and parameters are shown in
+   <i>italics</i>.  Specific parameter values are shown in \c Courier
+
+   When <i>nodeName</i> is a parameter, the special node name
+   \b - can be used to refer to the last node loaded by the \b LOAD
+   command. Also see the \b LOAD  <i>nodeName</i>  <i>fileName</i> command
+   for an additional use of the \b - node name.
+
+   <hr>
+
+   This command is only available in the iris file loader:
+
+   \b RETURN <i>nodeName</i>
+   \n causes the loader to return a pointer the node named <i>nodeName</i>
+   \n 
+   \n Note that the returned node will be renamed if the iris file
+   is loaded with an iris \b LOAD command of the form:
+   \n
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b LOAD  <i>nodeName</i>  <i>fileName</i>
+   \n
+   \n
+
+   <hr>
+
+   This command is only available when reading commands from the fifo:
+
+   \b FRAME
+   \n causes subsequent control commands to be executed the next graphics frame
+
+   <hr>
+
+   These commands are parsed and implemented by the iris::SceneGraph class.  
+   No class-specific keyword is needed before these commands:
+
+   \b ADDCHILD <i>nodeName</i> <i>groupName</i> [ <i>index</i> ]
+   \n make the node named <i>nodeName</i> a child of the node named <i>groupName</i>
+   - if <i>index</i> is supplied, insert the node before the node with the supplied index
+   - if <i>index</i> is not supplied, add to end of child list
+   - error if <i>nodeName</i> or <i>groupName</i> don't exist or <i>index</i> is out of range
+   - if the <i>nodeName</i> is a iris::ClipNode or iris::LightNode it will be enabled
+
+   \b AFTER 
+   \n see notes below for \subpage when "When commands"
+
+   \b BACKGROUND <i>r g b</i>
+   - sets the background color for every pane
+   - <i>r g b</i> are each between 0 and 1 inclusive.
+
+   \b BEFORE
+   \n see notes below for \subpage when "When commands"
+
+   \b BILLBOARD <i>nodeName</i> [ <i>x y z</i> [<i>rotationMode</i>] ]
+   \n Creates a transform node that is modified at each update so that
+      the (0,-1,0) vector is rotated to point toward the location of the head.
+        - If specified, <i> x y z </i> is the axis about which the
+          primary rotation done.  At each update, a rotation is done 
+          about this axis to face the children toward the head location
+          as closely as possible.  The default is (0,0,1).
+        - rotationMode is a boolean and should be specified as 
+          either T (true) or F (false).  The default is F.
+        - If rotationMode is true, then the primary rotation described
+          above is the only transformation that is done.
+        - If the rotationMode is false, then the primary rotation is
+          followed by an additional rotation is done to face the
+          (0,-1,0) vector directly toward the head location while 
+          rotating the axis vector as little as possible.
+
+   \b BOUND [ <i>nodeName</i> [ <i>n</i> ] ]
+   \n sets the node's scale so that the radius of the bounding sphere of
+   the node is <i>n</i> normalized coordinates
+   - use a radius of 1 if <i>n</i> isn't supplied
+   - if <i>nodeName</i> isn't specified, use \c world
+
+   \b CENTER [ <i>nodeName</i> [ <i>x y z</i> ] ]
+   \n sets the node's translation so it is centered at the normalized
+   coordinate x y z
+   - use 0 0 0 if <i>x y z</i> isn't supplied
+   - if <i>nodeName</i> isn't specified, use \c world
+
+   \b CLIPNODE <i>nodeName</i> [ \b ON \b <i>\b TRUE</i> | <i>\b FALSE</i> ]
+   - if a node named <i>nodeName</i> exists and is a clip node, turn it ON
+     or OFF if specified. The default is OFF.
+   - if a node named <i>nodeName</i> does not exist, create a new clip node
+     named  <i>nodeName</i> and turn it ON or OFF if specified
+   - error if <i>nodeName</i> exists and is not a clip node
+   - \b CLIPNODE <i>nodeName</i> <i>\b ON</i> | <i>\b OFF</i> can be used in place
+     of \b CLIPNODE <i>nodeName</i> \b ON <i>\b TRUE</i> | <i>\b FALSE</i>
+   - up to iris::ClipNode::maxNodes() clip nodes are available- this is
+     currently set to 6.
+   - an iris::ClipNode is turned on (enabled) when made a child of another
+     node or its nodemask is turned on.
+   - an iris::ClipNode is turned off (disabled) when removed as a child of
+     another node or its nodemask is turned off.
+
+
+   \b CLONE <i>nodeName</i> <i>cloneName</i> [ <i>copyOp</i> ... ] 
+   \n clones the node named <i>nodeName</i> into a new node named
+   <i>cloneName</i> using one or more optional <i>copyOp</i> copy operators
+   - error if <i>cloneName</i> already exists, <i>nodeName</i> doesn't
+     exist, or <i>copyOp</i> is an unknown copy operator
+   - valid <i>copyOp</i> values are:
+     \n \c SHALLOW: create pointers to data in <i>nodeName</i> instead of copying data
+     \n \c OBJECTS: copy osg::Object data
+     \n \c NODES: copy osg::Node data
+     \n \c DRAWABLES: copy osg::Drawable data
+     \n \c STATESETS: copy osg::StateSet data
+     \n \c STATEATTRIBUTES: copy osg::StateAttribute data
+     \n \c TEXTURES: copy osg::Texture data
+     \n \c IMAGES: copy osg::Image data
+     \n \c ARRAYS: copy osg::Array
+     \n \c PRIMITIVES: copy osg::Primitive data
+     \n \c SHAPES: copy osg::Shape data
+     \n \c UNIFORMS: copy osg::Uniform data
+     \n \c ALL: copy all data
+   - see osg::CopyOp::CopyFlags for more information about copy operators
+   - if <i>copyOp</i> is not given \c ALL is used. 
+
+
+   \b COPYPRIMITIVES [ <i>nodeName</i> ]
+   \n copies, or deinstances, all primitives at the leaf nodes of the
+     scenegraph under <i>nodeName</i>. 
+   - if <i>nodeName</i> isn't specified, use \c world.
+
+   \b COPYSTATE <i>fromNodeName</i> <i>toNodeName</i>
+   \n copies the state values from the node named <i>fromNodeName</i> to the node
+   named <i>toNodeName</i>
+   - error if <i>fromNodeName</i> or <i>toNodeName</i> don't exist
+
+   \b CULLING <i>nodeName</i> <i>ON</i>|<i>OFF</i>
+   \n enables or disables frustum culling for the node named
+   <i>nodeName</i>, and all nodes below it in the scenegraph.
+
+   \b DCS | \b SCS <i>nodeName</i> [ <i>x y z</i> [ <i>h p r</i> [ <i>s</i> [ <i>sy sz</i> ] ] ] ] 
+   \n \b QDCS | \b QSCS <i>nodeName</i> [ <i>x y z</i> [ <i>xq xq zq wq</i> [ <i>s</i> [ <i>sy sz</i> ] ] ] ] 
+   \n create or update an osg::MatrixTransform node
+   - if a node named <i>nodeName</i> does not exist, create an osg::MatrixTransform node named <i>nodeName</i>
+   - if an osg::MatrixTransform node named <i>nodeName</i> already
+   exists update its transformation
+   - \b QDCS and \b QSCS use quaternions, \b DCS and \b SCS use Euler angles
+   - \b DCS and \b QDCS set osg::Object::DataVariance to \c DYNAMIC, \b SCS and \b QSCS set
+   osg::Object::DataVariance to \c STATIC
+   - <i>x y z</i> is the node's position
+   - <i>h p r</i> or <i>x y z w</i> is the node's orientation
+   - <i>s sx sz</i> is the node's scale
+
+   \b DUMP <i>nodeName</i> <i>fileName</i>
+   \n write the geometry contained in the <i>nodeName</i> to the OSG-writable <i>fileName</i>.
+   \n example: <tt>DUMP world myWorld.osg</tt>
+
+   \b ECHO  <i>ON</i>|<i>OFF</i>
+   \n enables or disable the echoing of the incoming commands.
+
+   \b EXAMINE [ <i>nodeName</i> ]
+   \n sets the node's position and scale such that all geometry under the
+   node is centered at 0,2,0 in normalized coordinates, and scaled so
+   the bounding sphere has a radius of 1.0.  The pivot point is set to the
+   center of the bounding sphere, and the pivot node is set to the node.  If
+   <i>nodeName</i> isn't specified, use \c world
+
+   \b EXEC <i>command</i>
+   \n creates a shell process and passes it <i>command</i>.  The shell process is
+   killed when iris exits.  Any single valid shell command will work- that
+   is, don't use a command like "exec foo ; bar"
+
+   \b FUSION <i>d</i>
+   \n sets the fusion distance for desktop stereo frusta to <i>d</i>
+
+   \b GROUP <i>groupName</i>
+   \n create a new osg::Group node named <i>groupName</i>
+   - error if <i>groupName</i> already exists
+
+   \b INTEROCULAR <i>d</i>
+   \n sets the interocular distance for all stereo frusta to <i>d</i>, in meters
+
+   \b JUMP <i>ON</i>/<i>OFF</i>
+   \n adds or removes the jump offset, an extra offset from the head position
+
+   \b JUMP \b POSITION <i>x y z</i>
+   \n sets the jump position to <i>x y z</i>, which are in normalized coordinates
+
+   \b JUMP \b ATTITUDE <i>x y z w</i>
+   \n sets the jump orientation to the quaternion value <i>x y z w</i>
+
+   \b JUMP \b ORIENTATION <i>h p r</i>
+   \n sets the jump orientation to the Euler angle <i>h p r</i>
+
+   \b KILL <i>pid</i>
+   \n adds the supplied <i>pid</i> to the list of processes to be killed at exit
+
+   \b LIGHTMODEL [ \b AMBIENT r g b a ] \\   
+    \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b COLOR_CONTROL \b SINGLE | \b
+    SEPARATE_SPECULAR ] \\
+    \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b LOCAL_VIEWER \b TRUE | \b FALSE ] \\
+    \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b TWO_SIDED \b TRUE | \b FALSE ]
+    \n sets parameters in the osg::LightModel in the iris::SceneGraph scene node
+
+   \b LIGHTNODE <i>nodeName</i> [ \b ON <i>TRUE</i> | <i>FALSE</i> ] \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b AMBIENT r g b a ] \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b DIFFUSE r g b a ] \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b SPECULAR r g b a ] \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b POSITION x y z w ] \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b DIRECTION x y z ] \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b ATTENUATION \b CONSTANT a ] \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b ATTENUATION \b LINEAR a ] \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b ATTENUATION \b QUADRATIC a ] \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b SPOT e c ] \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b REF_FRAME \b RELATIVE | \b ABSOLUTE ]
+   - if a node named <i>nodeName</i> exists and is a light node, apply the
+     options to the node
+   - if a node named <i>nodeName</i> does not exist, create a new light node
+     named  <i>nodeName</i> and apply the options.  If no options are given
+     the defaults are used.
+   - error if <i>nodeName</i> exists and is not a light node
+   - up to iris::LightNode::maxNodes() light nodes are available- this is
+     currently set to 8.
+   - \b LIGHTNODE <i>nodeName</i> <i>\b ON</i> | <i>\b OFF</i> can be used in place
+     of \b LIGHTNODE <i>nodeName</i> \b ON <i>\b TRUE</i> | <i>\b FALSE</i>
+   - NOTE: the SceneGraph class creates a light node named "light" and
+     places it under the scene node. The light is by default turned on and at
+     location (0, -sqrt(2), sqrt(2), 0), which is above and behind the head,
+     infinitely far away.
+   - an iris::LightNode is turned on (enabled) when made a child of another
+     node or its nodemask is turned on.
+   - an iris::LightNode is turned off (disabled) when removed as a child of
+     another node or its nodemask is turned off.
+
+   \b LOAD <i>fileName</i>
+   \n read the model file <i>fileName</i>. The node's name is not set;
+   whatever is in the file is used.
+   - error if <i>fileName</i> can't be loaded
+
+   \b LOAD  <i>nodeName</i>  <i>fileName</i>
+   \n read the model file <i>fileName</i> into a new node named <i>nodeName</i>
+   - error if <i>nodeName</i> already exists or <i>fileName</i> can't be loaded
+   - if <i>nodeName</i> is "-" AND the node name returned by loading the
+   file is not blank, the node's name is not set to  <i>nodeName</i> and the
+   returned node name is used instead.
+
+   \b LOG <i>ON</i>|<i>OFF</i>
+   \n enables or disables logging. See the iris-viewer man page for details
+   about the log file.
+
+   \b MAP <i>nodeName</i>
+   \n adds all nodes under the named node to the global map of node
+   names. \b MAP is automatically called on all nodes loaded by the irisfly
+   command, so this command should \b ONLY be called if you are using the LOAD
+   control command to add nodes to the scenegraph after irisfly is already running.
+
+
+   \b MATRIX <i>nodeName</i> [ <i>a00 a01 a02 a03 a10 a11 a12 a13 a20 a21 a22 a23 a30 a31 a32 a33</i> ]
+   \n creates or updates an osg::MatrixTransform node named <i>nodeName</i>
+   - if no parameters are given it creates an identity matrix, or if the
+   node already exists, does nothing
+
+   \b MERGESTATE <i>fromNodeName</i> <i>toNodeName</i>
+   \n merges the state values from the node named <i>fromNodeName</i> to the node
+   named <i>toNodeName</i>
+   - error if <i>fromNodeName</i> or <i>toNodeName</i> don't exist
+
+   \b METERS <i>m</i>
+   \n specifies how many meters are in a normalized coordinate
+   - example, if a normalized coordinate is 4 feet, set \b METERS to 1.21 (four feet in metric).
+
+   \b NOCLIP  <i>nodeName</i>
+   \n if  <i>nodeName</i> does not exist, create a group node named
+   <i>nodeName</i> with clipping disabled for all clipping planes.  If
+   <i>nodeName</i> already exists, turn off clipping for the node.
+
+   \b NODEMASK <i>nodeName</i> <i>ON</i>|<i>OFF</i>
+   \n sets the node mask of the specified node.  <tt>ON</tt> turns on all bits of the
+   node mask.  <tt>OFF</tt> turns off all bits of the node mask.
+   - if the node is a iris::ClipNode or iris::LightNode, <tt>ON</tt> will also enable the
+   node, and <tt>OFF</tt> will disable the node.
+
+   \b NOLIGHT  <i>nodeName</i>
+   \n if  <i>nodeName</i> does not exist, create a group node named
+   <i>nodeName</i> with lighting disabled for all lights.  If
+   <i>nodeName</i> already exists, turn off lighting for the node.
+
+   \b NOLIGHTING [ <i>nodeName</i> ]
+   \n turns off lighting in the node <i>nodeName</i> and all nodes under it
+   - if <i>nodeName</i> isn't specified, use \c world.
+
+   \b NOOP  <i>anything</i>
+   \n No action is taken, but if \b ECHO is <i>ON</i> the command willbe
+   echoe'd.
+
+   \b NORMALS [ <i>nodeName</i> ]
+   \b calls osgUtil::SmoothingVisitor to generate normals for geometry in the
+   node.  It might not always generate the normals you want, but is usually
+   better than no normals at all
+   - if <i>nodeName</i> isn't specified, use \c world
+
+   \b NOSTATESETS <i>nodeName</i>
+   \n removes the osg::StateSet in the node <i>nodeName</i> and all nodes under it
+   - error if <i>nodeName</i> doesn't exist
+
+   \b OPTIMIZE [ <i>nodeName</i> [ <i>optimization</i> ... ] ]
+   \n runs the osgUtil::Optimizer on the node and all nodes under it.  Use the
+   specified optimizations in the order listed, otherwise use the default
+   optimization
+   - if <i>nodeName</i> isn't specified, use \c world. If you are specifying
+   optimizations you need to also specify a node name.
+
+   \b POLYGONMODE [ <i>nodeName</i> [ <i>mode</i>  [ <i>face</i> ] ] ]
+   \n sets the osg::PolygonMode of the named node to the specified
+   values. The osg::PolygonMode of the front and back faces can be set to
+   different modes.  <i>mode</i> can have the value \c point, \c line, or
+   \c fill. <i>face</i> can have the value \c front, \c back, or
+   \c front_and_back. 
+   - if <i>nodeName</i> isn't specified, use \c world.
+   - if <i>mode</i> isn't specified, use \c fill.
+   - if <i>face</i> isn't specified, use \c front_and_back.
+
+   example:
+   \n &nbsp; &nbsp; &nbsp; &nbsp; <tt>polygonmode world line front</tt>
+   \n will display all polygons under the world node with lines (wireframe) on
+   the front of the polygons and filled on the back of the polygons.
+
+   \b QUERY <i>fifoName</i> \b BOUNDINGBOX <i>nodeName</i>
+   \n writes to <i>fifoName</i> the bounding box of the node, in the format
+   xmin xmax ymin ymax zmin zmax
+   - if '<i>nodeName'</i> isn't specified, use \c world.
+
+   \b QUERY <i>fifoName</i> \b CHILDREN <i>nodeName</i>
+   \n writes to <i>fifoName</i> the children nodes of <i>nodeName</i>. The format is a single line of the form:
+   \n <tt> \b CHILDREN '<i>nodeName'</i> N 'childName' 'childName' ...</tt>
+   \n where
+     - \c N is the number of children (might be 0)
+     - \c childName is the name of each parent node (might be '' if the node
+     doesn't have a name)
+
+   if '<i>nodeName'</i> does not exist, the response is:
+   \n <tt> \b CHILDREN '<i>nodeName'</i> \b ERROR: \b NODE \b NOT \b FOUND</tt>
+
+   \b QUERY <i>fifoName</i> \b CLIPNODE
+   \n writes to <i>fifoName</i> a list of the clip nodes. The format is a single line of the form:
+   \n <tt> \b CLIPNODE N 'nodeName' ...</tt>
+   \n where 
+     - \c N is the number of clip nodes (might be 0)
+     - \c nodeName is the name of each clip node
+
+   \b QUERY <i>fifoName</i> \b CLIPNODE <i>nodeName</i>
+   \n writes to <i>fifoName</i> settings related to the iris::ClipNode
+   named <i>nodeName</i>.  The format is a single line of the form: 
+   \n <tt> \b CLIPNODE '<i>nodeName</i>' \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b NUMBER n \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b ON \b TRUE | \b FALSE
+   </tt>
+   \n if '<i>nodeName'</i> does not exist the response is:
+   \n <tt> \b CLIPNODE '<i>nodeName'</i> \b ERROR: \b NODE \b NOT \b FOUND</tt>
+
+   \b \b QUERY <i>fifoName</i> \b JUMP
+   \n writes to <i>fifoName</i> settings related to the iris::SceneGraph
+   jump mode. The format is a single line of the form: 
+   \n <tt> \b JUMP ON|OFF POSITION x y z ORIENTATION h p r</tt>
+
+   \b \b QUERY <i>fifoName</i> \b LIGHTMODEL
+   \n writes to <i>fifoName</i> settings related to the osg::LightModel
+   contained in the iris::SceneGraph scene node.  The format is a single (very long) line of the form:
+   \n <tt> \b LIGHTMODEL \b AMBIENT r g b a \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b COLOR_CONTROL \b SINGLE | \b SEPARATE_SPECULAR \\ 
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b LOCAL_VIEWER \b TRUE | \b FALSE \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b TWO_SIDED \b TRUE | \b FALSE
+   </tt>
+   \n if a osg::LightModel does not exist the response is:
+   \n <tt> \b LIGHTMODEL \b ERROR: \b LIGHTMODEL \b NOT \b FOUND</tt>
+
+   The default LIGHTMODEL values are:
+   \n <tt>LIGHTMODEL AMBIENT 0.2 0.2 0.2 1 \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; LOCAL_VIEWER TRUE TWO_SIDED TRUE</tt>
+
+   \b QUERY <i>fifoName</i> \b LIGHTNODE
+   \n writes to <i>fifoName</i> a list of the light nodes. The format is a single line of the form:
+   \n <tt> \b LIGHTNODE N 'nodeName' ...</tt>
+   \n where 
+     - \c N is the number of light nodes (might be 0)
+     - \c nodeName is the name of each light node
+
+   \b QUERY <i>fifoName</i> \b LIGHTNODE <i>nodeName</i>
+   \n writes to <i>fifoName</i> settings related to the iris::LightNode
+   named <i>nodeName</i>.  The format is a single (fairly long) line of the form: 
+   \n <tt> \b LIGHTNODE '<i>nodeName</i>' \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b NUMBER n \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b ON \b TRUE | \b FALSE \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b AMBIENT r g b a \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b DIFFUSE r g b a \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b SPECULAR r g b a \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b POSITION x y z w \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b DIRECTION x y z \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b ATTENUATION \b CONSTANT a \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b ATTENUATION \b LINEAR a \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b ATTENUATION \b QUADRATIC a \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b SPOT e c \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; \b REF_FRAME \b RELATIVE | \b ABSOLUTE
+   </tt>
+   \n if '<i>nodeName'</i> does not exist the response is:
+   \n <tt> \b LIGHTNODE '<i>nodeName'</i> \b ERROR: \b NODE \b NOT \b FOUND</tt>
+
+   A light with all default values will yield:
+   \n <tt> LIGHTNODE '<i>nodeName</i>' NUMBER <i>n</i> \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; ON FALSE \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; AMBIENT 0 0 0 1 \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; DIFFUSE 0.8 0.8 0.8 1 \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; SPECULAR 1 1 1 1 \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; POSITION 0 -1 0 0 \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; DIRECTION 0 1 0 \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; ATTENUATION CONSTANT 1 \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; ATTENUATION LINEAR 0 \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; ATTENUATION QUADRATIC 0 \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; SPOT 0 180 \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; REF_FRAME RELATIVE
+   </tt>
+
+   \b QUERY <i>fifoName</i> \b NAVIGATION
+   \n writes to fifoName a list of loaded the navigation DSOs (an
+   iris::Augment that creates and manages an iris::Nav). The format is a single line of the form:
+   \n <tt> \b NAVIGATION N 'navName' ...</tt>
+   \n where 
+     - \c N is the number of navigations (might be 0)
+     - \c navName is the name of each navigation DSO
+
+   \b QUERY <i>fifoName</i> \b PANES
+   \n writes to fifoName a list of the names of the loaded iris::Pane
+   objects The format is a single line of the form:
+   \n <tt> \b PANES N 'paneName' ...</tt>
+   \n where 
+     - \c N is the number of panes (might be 0)
+     - \c paneName is the name of each pane object
+
+   \b QUERY <i>fifoName</i> \b PARENTS <i>nodeName</i>
+   \n writes to <i>fifoName</i> the parent nodes of <i>nodeName</i>. The format is a single line of the form:
+   \n <tt> \b PARENTS '<i>nodeName'</i> N 'parentName' 'parentName' ...</tt>
+   \n where 
+     - \c N is the number of parents (might be 0)
+     - \c parentName is the name of each parent node (might be '' if the node
+   doesn't have a name)
+
+   if '<i>nodeName'</i> does not exist the response is:
+   \n <tt> \b PARENTS '<i>nodeName'</i>  \b ERROR: \b NODE \b NOT \b FOUND</tt>
+
+   \b QUERY <i>fifoName</i> \b PING <i>text</i>
+   \n writes <tt> \b PING <i>text</i></tt> to <i>fifoName</i>
+
+   \b QUERY <i>fifoName</i> \b UNIFORM
+   \n writes to <i>fifoName</i> a list of the shader uniforms. The format is a single line of the form:
+   \n <tt> \b UNIFORM N 'uniformName' ...</tt>
+   \n where 
+     - \c N is the number of shader uniforms (might be 0)
+     - \c uniformName is the name of each shader uniform
+
+   \b QUERY <i>fifoName</i> \b UNIFORM <i>uniformName</i>
+   \n writes to <i>fifoName</i> settings related to the shader uniform
+   named <i>uniformName</i>.  The format is a single line of the form: 
+   \n <tt> \b UNIFORM '<i>uniformName</i>' <i>typeName</i> N <i>value0</i> ... <i>valueN</i></tt>
+   \n where
+      - \c <i>typeName</i> is one of the following type specifiers:
+                float, vec2, vec3, vec4,
+                int, ivec2, ivec3, ivec4,
+                uint, uvec2, uvec3, uvec4,
+                bool, bvec2, bvec3, bvec4,
+                mat2, mat3, mat4,
+                mat2x2, mat2x3, mat2x4,
+                mat3x2, mat3x3, mat3x4,
+                mat4x2, mat4x3, mat4x4.
+      - \c N is the number of elements of the specified type.
+      - \c <i>value0</i> ... <i>valueN</i> are the values of the uniform.
+          \n The values of the boolean types (bool, bvec2, bvec3, bvec4) are 
+             specified with the numeric values 0 and 1, which represent 
+             false and true respectively.
+
+   if '<i>uniformName'</i> does not exist the response is:
+   \n <tt> \b UNIFORM '<i>uniformName'</i> \b ERROR: \b UNIFORM \b NOT \b FOUND</tt>
+
+   \b QUERY <i>fifoName</i> \b WINDOWS
+   \n writes to fifoName a list of the names of the loaded iris::Window
+   objects The format is a single line of the form:
+   \n <tt> \b WINDOWS N 'windowName' ...</tt>
+   \n where 
+     - \c N is the number of windows (might be 0)
+     - \c windowName is the name of each window object
+
+   \b REMOVECHILD <i>nodeName</i> <i>groupName</i>
+   \n remove the node named <i>nodeName</i> from the parent node <i>groupName</i> 
+   - error if <i>nodeName</i> or <i>groupName</i> don't exist, or <i>nodeName</i> is not a child of <i>groupName</i>
+   - if the node is a iris::ClipNode or iris::LightNode it will be disabled
+
+   \b SET 
+   \n writes to stderr all the IRIS variables.  See \subpage variables
+   "IRIS Variables" for more details.
+
+   \b SET <i>variable</i> <i>value</i>
+   \n asigns the IRIS variable named <i>variable</i> the value <i>value</i>.  If
+   <i>value</i> is omitted, <i>variable</i> is set to a null string.  See \subpage variables
+   "IRIS Variables" for more details.
+
+
+
+
+\b SHADERPROG <i>nodeName</i>   &nbsp; &nbsp; \b _REMOVE_    
+\n Removes all shader programs from the specified node.
+
+\b SHADERPROG <i>nodeName</i>  [<i>vertShader</i>] [<i>geomShader</i>] [<i>fragShader</i>] [<i>compShader</i>]
+\n Adds or replaces shader programs at the specified node.
+\n The shaders are specified as follows:
+\n 
+        \n &nbsp; &nbsp; <i>vertShader</i> is the specification of a vertex shader: 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; \b V  &nbsp; &nbsp; \b _REMOVE_ &nbsp; &nbsp; <i>(remove existing vertex shader)</i>
+        \n &nbsp; &nbsp; &nbsp; &nbsp; or
+        \n &nbsp; &nbsp; &nbsp; &nbsp; \b V  &nbsp; &nbsp; <i>fileName</i> 
+        \n 
+        \n &nbsp; &nbsp; <i>geomShader</i> is the specification of a geometry shader: 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; \b G  &nbsp; &nbsp; \b _REMOVE_ &nbsp; &nbsp; <i>(remove existing geometry shader)</i>
+        \n &nbsp; &nbsp; &nbsp; &nbsp; or
+        \n &nbsp; &nbsp; &nbsp; &nbsp; \b G  &nbsp; &nbsp; <i>inPrim outPrim maxV fileName</i> 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; where: 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i>inPrim</i> is the input primitive type:
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \b P &nbsp; &nbsp; &nbsp; points
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \b L &nbsp; &nbsp; &nbsp; lines
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \b LA &nbsp; &nbsp; lines with adjacency
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \b T &nbsp; &nbsp; &nbsp; triangles
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \b TA &nbsp; &nbsp; triangles with adjacency
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i>outPrim</i> is the output primitive type:
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \b P &nbsp; &nbsp; &nbsp; points
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \b LS &nbsp; &nbsp; line strips
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \b TS &nbsp; &nbsp; triangle strips
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i>maxV</i> is the maximum number of output vertices
+        \n 
+        \n &nbsp; &nbsp; <i>fragShader</i> is the specification of a fragment shader: 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; \b F  &nbsp; &nbsp; \b _REMOVE_ &nbsp; &nbsp; <i>(remove existing fragment shader)</i>
+        \n &nbsp; &nbsp; &nbsp; &nbsp; or
+        \n &nbsp; &nbsp; &nbsp; &nbsp; \b F  &nbsp; &nbsp; <i>fileName</i> 
+        \n 
+        \n &nbsp; &nbsp; <i>compShader</i> is the specification of a compute shader: 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; \b C  &nbsp; &nbsp; \b _REMOVE_ &nbsp; &nbsp; <i>(remove existing compute shader)</i>
+        \n &nbsp; &nbsp; &nbsp; &nbsp; or
+        \n &nbsp; &nbsp; &nbsp; &nbsp; \b C  &nbsp; &nbsp; <i>workGroupSizeX workGroupSizeY workGroupSizeZ fileName</i> 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; where: 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i>workGroupSizeX</i> is the work group size in x-direction
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i>workGroupSizeY</i> is the work group size in y-direction
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i>workGroupSizeZ</i> is the work group size in z-direction
+        \n 
+\n The vertex, geometry, fragment, or compute shaders specifications can be
+in any order.  One, two, or three shaders can be specified on
+each command line.  
+Shaders that are not specified are not modified.
+The \b _REMOVE_ options will work even if no shader is present.
+\n
+\n Examples: 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; SHADERPROG bod G P TS 12 pBox.geom
+        \n &nbsp; &nbsp; &nbsp; &nbsp; SHADERPROG bod2 F dataColor.frag V min.vert G P TS 12 pBox.geom
+        \n &nbsp; &nbsp; &nbsp; &nbsp; SHADERPROG bod2 F _REMOVE_
+        \n &nbsp; &nbsp; &nbsp; &nbsp; SHADERPROG world C 32 32 1 shader.comp
+\n
+\n
+
+
+   \b SHADERSTORAGEBUFFER <i>nodeName</i> <i>bufferName</i> <i>bufferBinding</i> <i>bufferSize</i>
+   \n Creates an iris::ShaderStorageBufferObject named <i>bufferName</i> with a size (in bytes) of
+   <i>bufferSize</i> and binds it to the state of node <i>nodeName</i> at the binding location
+   <i>bufferBinding</i>.
+   - No assumptions are made about the buffer, it is created as a byte array. It is up to the
+     shader to interpret the buffer contents.
+   - The <i>bufferBinding</i> parameter must match the layout binding in the shader, i.e., a
+     shader with a buffer defined as:
+     \n
+     \code
+layout (binding = 0, std430) buffer BufferType {
+    int last;
+    int current;
+} state;
+     \endcode
+     would use \b 0 for <i>bufferBinding</i>, \b state for <i>bufferName</i>, and \b 8 for
+     <i>bufferSize</i> (where 8 = sizeof(int) * 2).
+
+
+
+
+
+
+
+
+   \b SHMMATRIXTRANSFORM <i>nodeName</i> <i>matrixShmName</i> [ <i>maskShmName</i> [ <i>mask</i> ] ]
+   \n creates an iris::ShmMatrixTransform named <i>nodeName</i>.  The node updates its
+   transformation based on the matrix value in the dtkSharedMem file
+   <i>matrixShmName</i> if the value in the shared memory file <i>maskShmName</i> ANDed
+   with <i>mask</i> is non-zero
+   - if <i>maskShmName</i> is omitted, the transformation will
+   always be updated
+   - if mask is omitted, a value of \c 0xFF (255) will be used,
+   so any bit set in <i>maskShmName</i> will cause the transformation to be updated.
+   - if you're using wand buttons, use bitmask values. i.e, 1, 2, and 4.  1 is button
+   0, or the left button, 2 is the middle button and 4 is the right button.
+   - the node's matrix is initialized to the value in <i>matrixShmName</i>
+   during the first graphics frame regardless of the values of
+   <i>maskShmName</i> or <i>mask</i>. 
+
+   \b SHMMATRIXTRANSFORM <i>nodeName</i> \b MASK <i>n</i>
+   \n calls iris::ShmMatrixTransform::setActiveMask(<i>n</i>) for the iris::ShmMatrixTransform node
+   named <i>nodeName</i>
+   - setting <i>n</i> to 0 will always turn updates off <tt>(0 & N = 0)</tt>
+   - setting <i>n</i> to \c 0xFF (255) will always turn updates on <tt>(1 & N = 1)</tt>
+
+   \b STARTMODELDATA <i>nodeName</i> <i>ext</i>
+   \n \b ENDMODELDATA
+   \n lines between \b STARTMODELDATA and \b ENDMODELDATA will be written to a
+   temp file with extension <i>ext</i> and loaded as with the \b LOAD
+   command.
+
+   \b STATIC [ <i>nodeName</i> ]
+   \n changes the osg::Object::DataVariance of <i>nodeName</i>, and all
+   nodes under it, to \c STATIC.
+   - if <i>nodeName</i> isn't specified, use \c world.
+
+   \b SWITCH <i>nodeName</i> [ \b ON|OFF <i>index</i> ... || \b ALL ]
+   \n \b SWITCH <i>nodeName</i> [ \b ONLYON <i>index</i> ]
+   \n create or modify an osg::Switch node named
+   <i>nodeName</i>. <i>index</i> is a list of one or more child node
+   indices., or if \b ALL is specified, all child nodes will be modified.
+   - if \b ON is supplied the child nodes with <i>index</i> will be turned
+   on, or all child nodes will be turned on if \b ALL is specified
+   - if \b OFF is supplied the child nodes with <i>index</i> will be turned
+   off, or all child nodes will be turned off if \b ALL is specified
+   - if \b ONLYON is supplied the single child node with <i>index</i> will
+     be turned on and all other nodes will be turned off
+
+   \b TERMINATE
+   \n calls iris::SceneGraph::setDone(\c true), which will cause iris::SceneGraph::run() to exit.
+
+   \b TEXT <i>nodeName</i> \\
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b STRING "string" ] \\
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b FONT "string" ] \\
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b RESOLUTION n ] \\
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b SIZE f ] \\
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b COLOR r g b a ] \\
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b ALIGNMENT n ] \\
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b AXIS n ]
+        \n
+    \n Creates a named geode containing an osg::Text drawable with the specified options:
+        \n
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b STRING "string" ] 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; The text string to be displayed
+        \n
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b FONT "string" ] 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; The name of the font
+        \n
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b RESOLUTION n ] 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; The font resolution in texels
+        \n
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b SIZE f ] 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; The rendered character size in object
+        coordinates. The default size is 32.
+        \n
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b COLOR r g b a ] 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; The color of the text
+        \n
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b ALIGNMENT n ] 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; The alignment of the text relative to its origin.  
+        \n &nbsp; &nbsp; &nbsp; &nbsp; The default is "LEFT_BASE_LINE "
+        \n &nbsp; &nbsp; &nbsp; &nbsp; Valid values of n are:
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LEFT_TOP
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LEFT_CENTER
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LEFT_BOTTOM
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CENTER_TOP 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CENTER_CENTER 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CENTER_BOTTOM 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RIGHT_TOP 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RIGHT_CENTER 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RIGHT_BOTTOM 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LEFT_BASE_LINE 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CENTER_BASE_LINE 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RIGHT_BASE_LINE 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LEFT_BOTTOM_BASE_LINE 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CENTER_BOTTOM_BASE_LINE 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RIGHT_BOTTOM_BASE_LINE 
+        \n 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b AXIS n ] 
+        \n &nbsp; &nbsp; &nbsp; &nbsp; The plane the in which the text lies.  
+        \n &nbsp; &nbsp; &nbsp; &nbsp; The default is "XZ_PLANE".  
+        \n &nbsp; &nbsp; &nbsp; &nbsp; Valid values of n are:
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; XY_PLANE
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; REVERSED_XY_PLANE
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; XZ_PLANE
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; REVERSED_XZ_PLANE
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; YZ_PLANE
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; REVERSED_YZ_PLANE
+        \n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SCREEN
+        \n
+        \n If the text node already exists when this command is issued, 
+           the supplied options will override the values in the existing
+           node.  This allows text nodes to be dynamically changed.
+        \n
+        \n
+
+
+
+   \b TXTR <i>nodeName unitNum textureFileName</i>   \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b FILTER <i>NEAREST</i> | <i>LINEAR</i>]   \\
+   \n &nbsp; &nbsp; &nbsp; &nbsp; [ \b FILTER <i>CLAMP</i> | <i>CLAMP_TO_BORDER</i> | <i>CLAMP_TO_EDGE</i> | <i>MIRROR</i> | <i>REPEAT</i> ] 
+   \n
+   \n Adds or updates a texture specification in the 
+        StateSet of the node specified by <i>nodeName</i>.
+        The indicated texture file must exist and be a
+        valid image file type such as .mha or .png.
+   \n
+   \n The specifications of FILTER and WRAP are optional.
+        The default interpolation filter is <i>LINEAR</i>
+        and the default wrap mode is <i>CLAMP_TO_EDGE</i>.
+   \n
+   \n
+
+
+   \b TXTRC <i>texureName unitNum textureDimensionality textureSizeX textureSizeY textureSizeZ \\
+        textureInternalFormat textureSourceFormat textureSourceType</i>   
+   \n Creates new texture named <i>textureName</i>. It
+        can be later used by Compute Shader and attached to 
+        different nodes using command TXTRADD. 
+   \n
+   \n The arguments of the commands are:
+        - <i>textureName</i>
+          \n is the unique name of the texture.
+        - <i>unitNum</i>
+          \n is the nexture unit number.
+        - <i>textureDimensionality</i>
+          \n is one of the following specifiers: 1D, 2D, 3D.
+        - <i>textureSizeX</i>
+          \n is the size of the texure in x-direction.
+        - <i>textureSizeY</i>
+          \n is the size of the texure in y-direction. Keep it 1 if texture is defined as 1D.
+        - <i>textureSizeZ</i>
+          \n is the size of the texure in z-direction. Keep it 1 if texture is defined as 2D.
+        - <i>textureInternalFormat</i>
+          \n is the texture internal format, one of the following specifiers: GL_R8, GL_R16, GL_R16F, 
+          GL_R32F, GL_R8I, GL_R16I, GL_R32I, GL_R8UI, GL_R16UI, GL_R32UI, GL_RG8, GL_RG16, GL_RG16F, 
+          GL_RG32F, GL_RG8I, GL_RG16I, GL_RG32I, GL_RG8UI, GL_RG16UI, GL_RG32UI, GL_RGBA8, GL_RGBA16, 
+          GL_RGBA16F, GL_RGBA32F, GL_RGBA8I, GL_RGBA16I, GL_RGBA32I, GL_RGBA8UI, GL_RGBA16UI, GL_RGBA32UI.
+        - <i>textureSourceFormat</i>
+          \n is the texture source format, one of the following specifiers: GL_RED, GL_DEPTH_COMPONENT,
+          GL_RG, GL_RGB, GL_RGBA.
+        - <i>textureSourceType</i>
+          \n is the texture source type, one of the following specifiers: GL_FLOAT, GL_INT, 
+          GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_INT, GL_UNSIGNED_BYTE_3_3_2,
+          GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5, GL_UNSIGNED_SHORT_5_6_5_REV, 
+          GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV, GL_UNSIGNED_SHORT_5_5_5_1, 
+          GL_UNSIGNED_SHORT_1_5_5_5_REV, GL_UNSIGNED_INT_8_8_8_8, GL_UNSIGNED_INT_8_8_8_8_REV, 
+          GL_UNSIGNED_INT_10_10_10_2, GL_UNSIGNED_INT_2_10_10_10_REV.
+   \n
+   \n Example:
+          \n &nbsp; &nbsp; &nbsp; &nbsp; TXTRC tomaszcompute1 0 2D 512 512 1 GL_R32F GL_RED GL_FLOAT
+   \n
+   \n
+
+
+   \b TXTRADD <i>nodeName unitNum texureName</i>   
+   \n Add or updates a texture specifiction in the StateSet of the node specified by <i>nodeName</i>.
+        The indicated texture name must exist and be a valid image file loaded using TXTR command,
+        or is created using TXTRC command.
+   \n Example:
+          \n &nbsp; &nbsp; &nbsp; &nbsp; TXTRADD world 0 tomaszcompute1
+   \n
+   \n
+
+
+   \b UNIFORM <i>nodeName uniformName value</i>
+   \n Creates or updates a uniform in the StateSet of 
+        the node specified by <i> nodeName </i>.  
+
+      This form of the \b UNIFORM command can be used only for uniforms
+      with a single float value.
+      \n \n
+
+   \b UNIFORM <i> nodeName uniformName typeName count value0 ... valueN </i>
+   \n Creates or updates a uniform in the Stateset of the 
+        node specified by <i> nodeName </i>.
+
+      This form of the \b UNIFORM command can be used to set the value(s)
+        of uniforms of any length: scalars, vectors, matrices, arrays, etc.
+        The arguments of this command are:
+        - <i>nodeName</i>
+          \n is the name of the node at which to set/create the uniform.
+        - <i>uniformName</i>
+          \n is the name of the uniform variable
+        - <i>typeName</i>
+          \n is one of the following type specifiers: float, vec2
+                float, vec2, vec3, vec4,
+                int, ivec2, ivec3, ivec4,
+                uint, uvec2, uvec3, uvec4,
+                bool, bvec2, bvec3, bvec4,
+                mat2, mat3, mat4,
+                mat2x2, mat2x3, mat2x4,
+                mat3x2, mat3x3, mat3x4,
+                mat4x2, mat4x3, mat4x4.
+        - <i>count</i> 
+          \n is the number of elements of the specified type.
+        - <i>value0 ... valueN</i>
+          \n are the values to be assigned to the uniform.
+          \n The values of the boolean types (bool, bvec2, bvec3, bvec4) are 
+             specified with the numeric values 0 and 1, which represent 
+             false and true respectively.
+ 
+   \b UNLOAD <i>nodeName</i>
+   \n deletes the osg::Node object with the node name <i>nodeName</i>
+
+   \b UNSET <i>variable</i> 
+   \n deletes the IRIS variable named <i>variable</i>.  See \subpage variables
+   "IRIS Variables" for more details.
+
+   \b WAIT <i>command</i>
+   \n creates a shell process and passes it <i>command</i>.  IRIS waits for
+   the command to terminate before it continues, so be careful with this
+   command and only use it if you need to be sure that a command has
+   completed before continuing.  Any single valid shell command will work- that
+   is, don't use a command like "exec foo ; bar"
+
+   \n
+
+   <hr>
+   <hr>
+
+   \section controlCommands Control Commands and IRIS Classes
+
+   Control commands are implemented in other iris classes too.  To send a control
+   command to a class other than iris::SceneGraph, preface the command with the name of the class.
+   More of these can be added as needed.
+
+   \b IMMERSIVEPANE [ <i>paneName</i> ] \b EXTENT <i>x y</i>
+   \n sets the extent of the immersive to pane named <i>paneName</i> to <i>x y</i>.  If <i>paneName</i> is
+   omitted all immersive panes will be set. 
+
+   \b IMMERSIVEPANE [ <i>paneName</i> ] \b CENTER <i>x y z</i>
+   \n sets the center of the immersive to pane named <i>paneName</i> to <i>x y z</i>.  If <i>paneName</i> is
+   omitted all immersive panes will be set. 
+
+   \b IMMERSIVEPANE [ <i>paneName</i> ] \b ORIENTATION <i>h p r</i>
+   \n sets the orientation of the immersive to pane named <i>paneName</i> to the Euler angle <i>h p r</i>.  If
+   <i>paneName</i> is omitted all immersive panes will be set.
+
+   \b IMMERSIVEPANE [ <i>paneName</i> ] \b ATTITUDE <i>x y z w</i>
+   \n sets the orientation of the immersive to pane named <i>paneName</i> to the quaternion <i>x y z w</i>.  If
+   <i>paneName</i> is omitted all immersive panes will be set.
+
+   \b IMMERSIVEPANE [ <i>paneName</i> ] \b NEAR <i>f</i>
+   \n sets the immersive pane named <i>paneName</i> to have a near value of <i>f</i>.  If
+   <i>paneName</i> is omitted all immersive panes will be set.
+
+   \b IMMERSIVEPANE [ <i>paneName</i> ] \b FAR <i>f</i>
+   \n sets the immersive pane named <i>paneName</i> to have a far value of <i>f</i>.  If
+   paneName is omitted all immersive panes will be set.
+
+   \b IMMERSIVEPANE [ <i>paneName</i> ] \b ACTIVE 
+   \n sets all cameras in the immersive pane named <i>paneName</i> to active
+   or inactive.  If <i>paneName</i> is omitted all immersive panes will be set.
+
+   \b IMMERSIVEPANE [ <i>paneName</i> ] \b VIEWPORT <i>x y width height</i>
+   \n sets the viewport of the immersive pane named <i>paneName</i> to <i>x y width height</i>.  If <i>paneName</i> is
+   omitted all immersive panes will be set.
+       
+   \b NAV \b ACTIVE <i>ON</i> | <i>OFF</i>
+   \n turns the current navigation <i>ON</i> or <i>OFF</i>. When a navigation is
+   <i>OFF</i> navigation input is ignored.
+
+   \b NAV \b RESET
+   \n sets the navigation to its reset values
+
+   \b NAV \b NEXT
+   \n sets the current navigation to the next navigation in the list
+
+   \b NAV \b USE <i>name</i>
+   \n sets the current navigation to <i>name</i>, which already needs to be
+   in the list of iris::Nav objects
+
+   \b NAV \b POSITION <i>x y z</i>
+   \n set the navigation position to <i>x y z</i>
+
+   \b NAV \b ORIENTATION <i>h p r</i>
+   \n set the navigation orientation to the Euler angle <i>h p r</i>
+
+   \b NAV \b ATTITUDE <i>x y z w</i>
+   \n set the navigation orientation to the quaternion <i>x y z w</i>
+
+   \b NAV \b SCALE <i>x</i> [ <i>y z</i> ]
+   \n set the navigation scale to <i>x y z</i>
+   - if <i>y</i> and <i>z</i> are omitted a uniform scale
+   of <i>x</i> is applied.
+
+   \b NAV \b MATRIX <i>a00 a01 a02 a03 a10 a11 a12 a13 a20 a21 a22 a23 a30 a31 a32 a33</i>
+   \n set the entire navigation matrix
+
+   \b NAV \b PIVOT <i>h p r</i>
+   \n pivot the navigation around the pivot point by the Euler angle <i>h p r</i>
+
+   \b NAV \b PIVOT <i>x y z w</i>
+   \n pivot the navigation around the pivot point by the quaternion angle
+   <i>x y z w</i>
+
+   \b NAV \b PIVOTNODE <i>nodeName</i>
+   \n set the navigation pivot node to the node named <i>nodeName</i>
+   - error if <i>nodeName</i> doesn't exist
+   - the default pivot node is \c world
+
+   \b NAV \b PIVOTPOINT <i>x y z</i>
+   \n set the navigation pivot point to <i>x y z</i>
+
+   \b NAV \b PIVOTSCALE <i>x</i> [ <i>y z</i> ]
+   \n set the navigation scale to <i>x y z</i>, but the scaling is centered
+   around the pivot point
+   - if <i>y</i> and <i>z</i> are omitted a uniform scale
+   of <i>x</i> is applied.
+
+   \b NAV \b RESPONSE <i>s</i>
+   \n set the navigation response to <i>s</i>
+
+   \b ORTHOPANE [ <i>paneName</i> ] \b LEFT <i>f</i>
+   \n sets the ortho pane named <i>paneName</i> to have a left value of <i>f</i>.  If
+   <i>paneName</i> is omitted all ortho panes will be set.
+
+   \b ORTHOPANE [ <i>paneName</i> ] \b RIGHT <i>f</i>
+   \n sets the ortho pane named <i>paneName</i> to have a right value of <i>f</i>.  If
+   <i>paneName</i> is omitted all ortho panes will be set.
+
+   \b ORTHOPANE [ <i>paneName</i> ] \b TOP <i>f</i>
+   \n sets the ortho pane named <i>paneName</i> to have a top value of <i>f</i>.  If
+   <i>paneName</i> is omitted all ortho panes will be set.
+
+   \b ORTHOPANE [ <i>paneName</i> ] \b BOTTOM <i>f</i>
+   \n sets the ortho pane named <i>paneName</i> to have a bottom value of <i>f</i>.  If
+   <i>paneName</i> is omitted all ortho panes will be set.
+
+   \b ORTHOPANE [ <i>paneName</i> ] \b NEAR <i>f</i>
+   \n sets the ortho pane named <i>paneName</i> to have a near value of <i>f</i>.  If
+   <i>paneName</i> is omitted all ortho panes will be set.
+
+   \b ORTHOPANE [ <i>paneName</i> ] \b FAR <i>f</i>
+   \n sets the ortho pane named <i>paneName</i> to have a far value of <i>f</i>.  If
+   <i>paneName</i> is omitted all ortho panes will be set.
+
+   \b ORTHOPANE [ <i>paneName</i> ] \b ACTIVE 
+   \n sets all cameras in the ortho pane named <i>paneName</i> to active
+   or inactive.  If <i>paneName</i> is omitted all ortho panes will be set.
+
+   \b ORTHOPANE [ <i>paneName</i> ] \b VIEWPORT <i>x y width height</i>
+   \n sets the viewport of the ortho pane named <i>paneName</i> to <i>x y width height</i>.  If <i>paneName</i> is
+   omitted all ortho panes will be set.
+
+   \b PANE [ <i>paneName</i> ] \b NEAR <i>f</i>
+   \n sets the pane named <i>paneName</i> to have a near value of <i>f</i>.  If <i>paneName</i> is
+   omitted all panes will be set.
+
+   \b PANE [ <i>paneName</i> ] \b FAR <i>f</i>
+   \n sets the pane named <i>paneName</i> to have a far value of <i>f</i>.  If <i>paneName</i> is
+   omitted all panes will be set.
+
+   \b PANE [ <i>paneName</i> ] \b ACTIVE <i>ON</i>|<i>OFF</i>
+   \n sets all cameras in the pane name <i>paneName</i> to active or inactive.  If <i>paneName</i> is
+   omitted all panes will be set.
+
+   \b PANE [ <i>paneName</i> ] \b VIEWPORT <i>x y width height</i>
+   \n sets the viewport of the pane to <i>x y width height</i>.  If <i>paneName</i> is
+   omitted all panes will be set.
+
+   \b PERSPECTIVEPANE [ <i>paneName</i> ] \b FOV <i>f</i>
+   \n sets the field of view (fov) of the perspective to pane named
+   <i>paneName</i> to <i>f</i>. degrees  If <i>paneName</i>
+   is omitted all perspective panes will be set.
+
+   \b PERSPECTIVEPANE [ <i>paneName</i> ] \b ASPECT <i>f</i>
+   \n sets the aspect ratio of the perspective named <i>paneName</i> to pane to <i>f</i>.  If <i>paneName</i>
+   is omitted all perspective panes will be set.
+
+   \b PERSPECTIVEPANE [ <i>paneName</i> ] \b NEAR <i>f</i>
+   \n sets the perspective pane named <i>paneName</i> to have a near value of <i>f</i>.  If
+   <i>paneName</i> is omitted all perspective panes will be set.
+
+   \b PERSPECTIVEPANE [ <i>paneName</i> ] \b FAR <i>f</i>
+   \n sets the perspective pane named <i>paneName</i> to have a far value of <i>f</i>.  If
+   <i>paneName</i> is omitted all perspective panes will be set.
+
+   \b PERSPECTIVEPANE [ <i>paneName</i> ] \b ACTIVE 
+   \n sets all cameras in the perspective pane named <i>paneName</i> to active
+   or inactive.  If <i>paneName</i> is omitted all perspective panes will be set.
+
+   \b PERSPECTIVEPANE [ <i>paneName</i> ] \b VIEWPORT <i>x y width height</i>
+   \n sets the viewport of the perspective pane named <i>paneName</i> to <i>x y width height</i>.  If <i>paneName</i> is
+   omitted all perspective panes will be set.
+
+   \b WINDOW [ <i>windowName</i> ] \b STEREO <i>ON</i>|<i>OFF</i>
+   \n set the window named <i>windowName</i> to be either stereo or mono.  If <i>windowName</i>
+   is omitted all windows will be set
+   - this command must be called before
+   iris::SceneGraph::realize() is called
+
+   \b WINDOW [ <i>windowName</i> ] \b TRAIT <i>name</i> <i>value</i> ...
+   \n set the trait <i>name</i> for the window named <i>windowName</i> to be
+   <i>value</i>. If <i>windowName</i>
+   is omitted all windows will be set
+   - multiple <i>name</i>/<i>value</i> trait pairs can be specified on a single line
+   - this command must be called before
+   iris::SceneGraph::realize() is called
+   - the traits that can be set are a subset
+   of all the traits in
+   osg::GraphicsContext::Traits ; currently \b X \b
+   Y \b WIDTH \b HEIGHT and \b DECORATION are supported
+
+
+   \n
+
+   <hr>
+   <hr>
+
+   \section DSOs DSOs and Control Commands
+
+   DSOs can also receive control commands.  Preface the control command by
+   \b DSO
+   and the name of the DSO.  The DSO will be loaded if not already
+   loaded. For more information about each DSO see <a href=file:dsos.html > "What DSOs are..."</a>
+
+   All DSOs (by way of the iris::Augment base class) accept the control command
+   \b ACTIVE to turn the DSO on and off (assuming the DSO calls
+   iris::Augment::control() if it's created its own control class, and
+   checks the value of iris::Augment::getActive() in its callback).  For example:
+   \n <tt>DSO setHeadWandMatrix ACTIVE OFF</tt>
+   \n will cause head tracking to stop
+
+   \n
+   \b DSO \c desktopWindow <i>PERSPECTIVE</i>|<i>ORTHO</i>|<i>IMMERSIVE</i>
+   \n tells the \c desktopWindow DSO to use the specified projection.  By
+   default \c desktopWindow uses a perspective projection.
+
+   \n
+   <i>Note</i>: The \c frameGrabber DSO commands use the names of panes.  For
+   our typical irisfly run, there are three standard pane names: \c perspective,
+   \c ortho, and \c immersive.  The \c perspective pane is the initial active
+   pane on the desktop.  If you try to grab a pane that is not active
+   you will get either a black image or no image file at all.
+
+   \b DSO \c frameGrabber \b FILESNAP <i>filename</i> [ <i>pane ...</i> ]
+   \n tells the frameGrabber DSO to grab \b once the contents of one or more
+   <i>pane</i> objects.  If no panes are specified, all active panes are grabbed. 
+   Note that only one file name is specified, so if more than one pane is
+   grabbed, they are all written to the same file; the result will be 
+   that all but one of the images will be lost.
+   See \b SNAP and \b FILESNAPSTEREO.  See \b SUFFIX for the image file types supported.
+
+   \b DSO \c frameGrabber \b FILESNAPSTEREO <i>filename</i> [ <i>pane ...</i> ]
+   \n tells the frameGrabber DSO to grab 
+   a stereo pair of images (both the left and right eye images) 
+   for a single frame for one or more <i>pane</i> objects.  
+   If no panes are specified, all active panes are grabbed. 
+   Note that only one file name is specified, but 
+   "left" and "right"
+   are inserted into the file names to distinguish the two images.
+   However, if more than one pane is grabbed, the file names are reused;
+   The result will be that all but one stereo pair of images will be lost.
+   See \b SNAPSTEREO and \b FILESNAP.  See \b SUFFIX for the image file types supported.
+
+
+   \b DSO \c frameGrabber \b FRAMENUM [ <i>pane ...</i> ]
+   \n tells the frameGrabber DSO to number the output files based on the OSG
+   frame number for the indicated panes.  If no panes are specified, this is applied
+   to all panes.  See \b SEQNUM.
+
+   \b DSO \c frameGrabber \b FRAMERATE <i>t</i>
+   \n tells the frameGrabber DSO to use <i>t</i> as the frame rate for
+   grabbing frames. The default is 30; that is a frame will be grabbed
+   whenever the time since the last grab is greater than or equal to 1/30th
+   of s second. A value of 0 will grab every frame regardless of elapsed time.
+
+   \b DSO \c frameGrabber \b PREFIX <i>string</i> 
+   \n tells the frameGrabber DSO to use <i>string</i> for the prefix of the
+   file name that is used for storing frames. If not given, the default is
+   "/tmp/frameGrabber"
+
+   \b DSO \c frameGrabber \b SETSEQNUM <i>N</i> [ <i>pane ...</i> ]
+   \n tells the frameGrabber DSO to set 
+   the next sequence number to <i>N</i> when 
+   sequentially numbering the the indicated panes.  If no panes are specified, 
+   this is applied to all panes.  The default starting sequence number is zero.
+   See \b SEQNUM.
+
+   \b DSO \c frameGrabber \b SEQNUM [ <i>pane ...</i> ]
+   \n tells the frameGrabber DSO to number the output files sequentially 
+   for the indicated panes.  If no panes are specified, this is applied
+   to all panes.  This is the default for all panes.  
+   See \b FRAMENUM and \b SETSEQNUM.
+
+   \b DSO \c frameGrabber \b SNAP [ <i>pane ...</i> ]
+   \n tells the frameGrabber DSO to grab \b once the contents of one or more
+   <i>pane</i> objects.  If no panes are specified, all active panes are grabbed. 
+   The file names are determined by 
+   \b PREFIX, \b SUFFIX, and \b SEQNUM or \b FRAMENUM.
+   See \b FILESNAP and \b SNAPSTEREO.
+
+
+   \b DSO \c frameGrabber \b SNAPSTEREO [ <i>pane ...</i> ]
+   \n tells the frameGrabber DSO to grab one stereo image pair (left and right eye images)
+   for the current frame for  one or more <i>pane</i> objects.  
+   If no panes are specified, all active panes are grabbed. 
+   The file names are determined by 
+   \b PREFIX, \b SUFFIX, and \b SEQNUM or \b FRAMENUM.
+   The file names are modified by inserting "left" and "right"
+   to distinguish the two images of the stereo pair.
+   See \b SNAP and \b FILESNAPSTEREO.
+
+
+   \b DSO \c frameGrabber \b START [ <i>pane ...</i> ]
+   \n tells the frameGrabber DSO to repeatedly grab the contents of one or more
+   <i>pane</i> objects.  If no panes are specified, all active panes are grabbed.
+   The file names are determined by 
+   \b PREFIX, \b SUFFIX, and \b SEQNUM or \b FRAMENUM.
+    See \b STOP and \b STARTSTEREO
+
+
+   \b DSO \c frameGrabber \b STARTSTEREO [ <i>pane ...</i> ]
+   \n tells the frameGrabber DSO to repeatedly grab stereo image pairs for one or more
+   <i>pane</i> objects.  If no panes are specified, all active panes are grabbed.
+   The file names are determined by 
+   \b PREFIX, \b SUFFIX, and \b SEQNUM or \b FRAMENUM.
+   The file names are modified by inserting "left" and "right"
+   to distinguish the two images of the stereo pair.
+   See \b STOP and \b START
+
+
+
+
+   \b DSO \c frameGrabber \b STOP [ <i>pane ...</i> ]
+   \n tells the frameGrabber DSO to stop grabbbing frames from the specified
+   panes. If  <i>pane</i> is omitted, all pane grabbing will stop.
+   This halts the action of the \b START and \b STARTSTEREO commands.
+   See \b START and \b STARTSTEREO.
+
+
+
+
+   \n
+   \b DSO \c sharedMemNav <i>shmName</i>
+   \n tells the \c sharedMemNav DSO to use the shared memory file
+   <i>shmName</i>, which should contain 16 doubles representing a matrix. There is no default.  The shared memory file can be
+   changed while iris is running.
+
+
+   \n
+   \b DSO \c setHeadWandMatrix \b WAND | \b HEAD \b OFF | \b ON
+   \n causes the DSO to turn off/on tracking for the wand/head nodes and
+   associated shared memory files
+
+
+   \n
+   \b DSO \c shmChildParentTransformation \b INIT <i>shm</i> <i>child</i> <i>parent</i>
+   \n tells the \c shmChildParentTransformation DSO to find pointers to the <i>parent</i> and <i>child</i> nodes,
+   and open a dtkSharedMem file, sizeof (osg::Matrix), named <i>shm</i>.  <i>shm</i> will
+   contain the matrix with the transformation from <i>child</i> to <i>parent</i> when
+   requested by the \b GET or \b START commands.
+   - multiple child-parent transformations can be calculated each frame; the <i>shm</i>
+   parameter specifies which child-parent transformation is affected by
+   subsequent \b GET, \b START or \b STOP commands
+   - if <i>parent</i> is set to "-", the immediate parent of the <i>child</i> node
+   will be used
+   - the transformation includes the transformations in both the
+   <i>child</i> and <i>parent</i> nodes
+   - to get the transformation in a single node, just make both
+   <i>parent</i> and <i>child</i> the name of the same node
+   - the shared memory is initialized to the child-parent transformation
+   in the first graphics frame.
+
+   \b DSO \c shmChildParentTransformation \b GET <i>shm</i>
+   \n causes the DSO to calculate the transformation corresponding to <i>shm</i> ONCE
+
+   \b DSO \c shmChildParentTransformation \b START <i>shm</i>
+   \n causes the DSO to calculate the transformation corresponding to <i>shm</i> every frame
+
+   \b DSO \c shmChildParentTransformation \b STOP <i>shm</i>
+   \n causes the DSO to stop calculating the transformation corresponding to <i>shm</i> every frame
+
+   \n
+   \b DSO \c shmNodeToNodeTransformation \b INIT <i>shm</i> <i>fromNode</i>
+   <i>toNode</i>  [ <i>commonNode</i> ]
+   \n tells the \c shmNodeToNodeTransformation DSO to find pointers to the <i>toNode</i> and <i>fromNode</i> nodes,
+   and open a dtkSharedMem file, sizeof (osg::Matrix), named <i>shm</i>.  <i>shm</i> will
+   contain the matrix with the transformation from <i>fromNode</i> to <i>toNode</i> when
+   requested by the \b GET or \b START commands. The two nodes need to have
+   a common ancestor node.  <i>commonNode</i> will be used as the common
+   ancestor if supplied, otherwise the IRIS "scene" node is used.
+   - multiple fromNode-toNode transformations can be calculated each frame; the <i>shm</i>
+   parameter specifies which fromNode-toNode transformation is affected by
+   subsequent \b GET, \b START or \b STOP commands
+   - the transformation includes the transformations in both the
+   <i>fromNode</i> and <i>toNode</i> nodes
+   - to get the transformation in a single node, just make both
+   <i>toNode</i> and <i>fromNode</i> the name of the same node
+   - the shared memory is initialized to the fromNode-toNode transformation
+   in the first graphics frame.
+
+   \b DSO \c shmNodeToNodeTransformation \b GET <i>shm</i>
+   \n causes the DSO to calculate the transformation corresponding to <i>shm</i> ONCE
+
+   \b DSO \c shmNodeToNodeTransformation \b START <i>shm</i>
+   \n causes the DSO to calculate the transformation corresponding to <i>shm</i> every frame
+
+   \b DSO \c shmNodeToNodeTransformation \b STOP <i>shm</i>
+   \n causes the DSO to stop calculating the transformation corresponding to <i>shm</i> every frame
+
+
+   \n
+
+   <hr>
+   <hr>
+
+   \section when When Commands
+
+   Any control command can be specified to be processed before or after a
+   specific event.  Before here means "just before" and after means "any time
+   after".  Before and after commands can contain other before and after commands as
+   their parameter, although in some cases this doesn't make much sense.
+
+   \b BEFORE \b REALIZE <i>command</i>
+   \n process <i>command</i> just before iris::SceneGraph::realize() is called.
+ 
+   \b BEFORE \b FRAME n <i>command</i>
+   \n process <i>command</i> just before iris::SceneGraph::frame() is called
+   to generate graphics frame number n.  Before the first frame is created, the frame number is zero.
+
+   \b BEFORE \b CLEANUP <i>command</i>
+   \n process <i>command</i> just before iris::SceneGraph::setDone(\c true) is called to kill
+   any processes created with the \b EXEC control command
+
+   \b AFTER \b REALIZE <i>command</i>
+   \n process <i>command</i> if iris::SceneGraph::realize() has been called.
+
+   \b AFTER \b FRAME <i>n</i> <i>command</i>
+   \n process <i>command</i> if iris::SceneGraph::frame() has been called for frame number <i>n</i>.
+
+   \b AFTER \b TIME <i>t</i> <i>command</i>
+   \n process <i>command</i> if the osgViewer::Viewer's reference time is greater than <i>t</i> seconds
+   since the reference time's setting when <i>command</i> was recorded.  That is, <i>t</i> is a relative time that
+   means "do in <i>t</i> reference seconds from now".
+
+   \b AFTER \b ABSTIME <i>t</i> <i>command</i>
+   \n process command if the osgViewer::Viewer's reference time is greater than <i>t</i> seconds.
+   That is, <i>t</i> is an absolute time that means "do <i>command</i> in <i>t</i> reference seconds from
+   when the first frame command was called".
+
+   \b AFTER \b CLEANUP <i>command</i>
+   \n process <i>command</i> after iris::SceneGraph::setDone(\c true) is called.  If <i>command</i> is an
+   \b EXEC, it will not be killed when iris exits
+
+   \b BEFORE \b TIME <i>t</i> <i>command</i>
+   \n is an error.
+
+   \b BEFORE \b ABSTIME <i>t</i> <i>command</i>
+   is an error.
+
+   \n
+
+   <hr>
+   <hr>
+
+   \section variables IRIS Variables
+
+   The \b SET command can be used to assign a value to an IRIS variable.  This value
+   can be referenced by using the form <tt>$(<i>var</i>)</tt> where
+   <i>var</i> is the name of the variable.
+
+   Variable substitution is done at the time the command is parsed.
+   \n For example:
+   \n <tt>SET foo 123
+   \n SET bar abc\$(foo)xyz</tt>
+
+   would result in <tt>bar</tt> being set to <tt>abc123xyz</tt>.  If the
+   value of <tt>foo</tt> later changes, the value of <tt>bar</tt> is not
+   affected.
+
+   If an unknown variable name is used a warning is issued and the variable
+   reference is removed from the expression. 
+   \n For example:
+   \n <tt>SET foo 123
+   \n SET bar abc\$(fooo)xyz</tt>
+
+   would result in <tt>bar</tt> being set to <tt>abcxyz</tt>.  
+
+   Here's another example:
+   \n <tt>set bar tape
+   \n load \$(bar) \$(bar).osg
+   \n return \$(bar)</tt>
+
+   Variables are always "global"; that is, when a variable is assigned via a
+   control command or .iris file, a later control command or .iris file can
+   reference the variable.
+
+   When the iris::SceneGraph object is being created, all environment
+   variables are read in as IRIS variables.  The IRIS variable name is the same as the
+   environment variable name, preceeded with a "$".  For example, if the
+   environment variable <tt>USER</tt> is set to "joe", the IRIS variable name is
+   <tt>$USER</tt>, and is referened using <tt>\$($USER)</tt>.
+
+   These environment variables are only
+   assigned once, so changes to environment variables are not reflected in
+   the IRIS variables.
+
+   If using an \b EXEC or \b WAIT command, environment
+   variables can be used directly, \${USER}, as they are evaluated by the shell
+   executing the command.
+
+   In other situations it might be handy to
+   assign a value to an environment variable and have it used to modify IRIS
+   control commands or .iris files.
+   \n For example:
+
+   In a shell window, type:
+   \n <tt>export MY_FAVORITE_TEAPOT=\$HOME/teapot.osg</tt>
+
+   In your .iris file or Fifo command, use:
+   \n <tt>LOAD teapot \$($MY_FAVORITE_TEAPOT)</tt>
+
+   or
+   \n <tt>SET teapot \$($MY_FAVORITE_TEAPOT)
+   \n LOAD teapot \$(teapot)</tt>
+
+   \n
+
+   <hr>
+   <hr>
+
+   \section IRIS Control Commands Ideas Left To Do
+
+
+   \b SAVE and \b RESTORE
+
+   \b BACKFACECULL [ <i>nodeName</i> ] <i>ON</i>|<i>OFF</i>
+
+   \b MOVIE ... 
+   - can you use osgMovie instead of writing a DSO?
+
+   \b SEQ ...
+   
+   \b BOUNDINGBOX <i>nodeName</i> <i>namedMemoryName</i>
+
+   \b PICK ...
+
+   \b RUBBERBAND <i>nodeName</i> <i>namedMemoryName</i>
+
+ */
+

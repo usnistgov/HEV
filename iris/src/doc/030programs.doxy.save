@@ -1,0 +1,87 @@
+/** \page programs A description of the IRIS programs
+
+IRIS comes with several programs which will hopefully be useful.  Here are
+brief descriptions of each. Read the man page for each program for more information.
+
+<dl>
+<dt>iris-bounds:
+<dd>
+  Prints the bounding sphere and bounding cube of a list of IRIS loadable
+  files.
+
+<dt>iris-buttonRouter:
+<dd>
+  Reads a one byte DTK shared memory file and a one byte mask value and
+  writes 0 or 1 into another one byte DTK shared memory file with the result
+  of ANDing the mask and input file.  Control caommands allow the input and
+  output shared memory files, and the mask, to be modified at run time.  The
+  point of all of this is to allow the button shared memory (typically the
+  wand buttons) to be routed to different applications.
+
+<dt>iris-convert:
+<dd>
+  Reads one or more IRIS readable files, applies the specified conversions,
+  and writes the results to a single output file.  The output file type is
+  any OSG writeable file.
+
+<dt>iris-DCS:
+<dd>
+  Prints the control commands to create a DCS with the specified geometric
+  transformations.  If files are specified, commands are generated to load
+  the files under the DCS.  The output of iris-DCS can be saved in a IRIS
+  file and loaded by IRIS.
+
+<dt>iris-DISPLAYfromWindow:
+<dd>
+  Prints the X11 DISPLAY value that is used by the single iris::Window object
+  loaded on the command line or the \c IRIS_FILES environment variable.
+
+<dt>iris-immersivePaneBorders:
+<dd>
+  Prints the control commands to create white outlines around the
+  iris::ImmersivePane objects loaded on the command line or the \c IRIS_FILES
+  environment variable.  This can hopefully help desktop developers see how
+  their models will fit into an immersive environment.
+
+<dt>iris-readFifo:
+<dd>
+  Reads the specified fifo and writes each line read to standard output.
+  This can be useful when writing shell scripts that need to use IRIS fifos,
+  or when you have a progam that reads standard input instead of a fifo.
+
+<dt>iris-readState:
+<dd>
+  Reads the data written by the writeState DSO and prints it to standard
+  output.
+
+<dt>iris-saveRestorePointer:
+<dd>
+  Reads the position of the X11 cursor when started, and moves the cursor
+  back to this location when exiting.  This is a simple way of moving the
+  cursor back from one of the RAVE screens to its initial location on the
+  desktop. 
+
+<dt>iris-viewer:
+<dd>
+  The basic IRIS file viewer.  Loads models under IRIS scenegaph nodes, plus
+  has a few more options to implement commonly used commands, such as the
+  examine and window background color commands.
+
+<dt>iris-wandMouse:
+<dd>
+  Reads the wand's position and orientation from DTK shared memory and stuffs X11 cursor motion
+  commands so the X11 cursor tracks the wand's intersection with the
+  specified iris::Window.  It is also given the name of a DTK shared memory file
+  with wand button values, and a mask.  When the specified wand button is
+  pressed, an X11 button event is generated.  This allows the wand to
+  interact with X11 GUIs displayed on the specified Window.
+
+<dt>iris-exitOnThreeButtons
+<dd>
+  Reads a specified one byte DTK shared memory file and when the lowest
+  three bits are set sends the TERMINATE control command to the
+  IRIS_CONTROL_FIFO.
+
+</dl>
+
+*/

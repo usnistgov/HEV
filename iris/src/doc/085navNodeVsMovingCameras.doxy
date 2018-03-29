@@ -1,0 +1,29 @@
+/** \page navNodeVsMovingCameras Why does IRIS use an iris::Nav node instead of a moving osg::Camera node?
+
+OSG typically uses an object based on osgGA::MatrixManipulator class to move
+an osg::Camera "around" the objects in the scenegraph.
+
+Instead of moving the camera, IRIS keeps the camera still and moves the
+objects the camera is looking at.
+
+To accomplis this IRIS uses an iris::MatrixTransform node in the scenegraph
+named "nav", and objects of the iris::Nav classs modify the matrix in this
+node to navigate in the virtual world.
+
+IRIS creates a default scenegraph that lets the user add child nodes under
+the default nodes to easily achieve certain effects. See the picture of the
+scenegraph in the \ref refsheet for a more complete explanation.
+
+For example, if a user wishes an object to not move with navigation, all
+that needs to be done is to add child nodes under the scene or ether
+nodes. If the user wants an object to always be the same size regardless of
+the other objects loaded into the virtual world, the object could be loaded
+under the scene or nav node.
+
+To accomplish this same technique using OSG's moving camera approach would
+be significantly messier, involving layering the output of multiple cameras into
+each viewport. IRIS took the approach of using the scenegraph for what it
+does best, nested modeling transformations.
+
+*/
+

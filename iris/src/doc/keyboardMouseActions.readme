@@ -1,0 +1,10 @@
+For the following source files:
+
+    keyboardMouseActions.odt
+    scenegraph.odg
+
+When finished doing updates, typically with Libre Office, go ahead and
+manually export to .pdf.
+
+The ./GNUmakefile does not create the .pdf from the .odt or .odg file.
+

@@ -9,6 +9,16 @@ NIST CAVE.
 
 We have developed this software only on CentOS 7 and NVIDIA GPUs.
 
+Additional packages:
+
+- cmake
+- fltk-\*
+- mesa-\*
+- freeglut-devel
+- tk-devel
+- epel-release
+- R
+
 ### Build Instructions
 
 After a fresh clone:

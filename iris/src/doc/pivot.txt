@@ -1,0 +1,53 @@
+pivot:
+
+this is what happens now to cause --ex to work:
+
+in iris-viewer:
+
+1) calculate a transformation so the object is centered at 0,2,0, bounding
+   sphere= 1, put that in the world node.
+
+   scale is 1/(radius f bounding sphere)
+   position is (0,2,0) - (center of bounding sphere)/(size of bounding sphere)
+
+2) set the pivot point of the world node to the center of the bounding
+   sphere
+
+
+   if (examine)
+    {
+	osg::BoundingSphere s = iris::SceneGraph::instance()->getWorldNode()->getBound() ;
+	if (verbose) printf("world node: radius = %f, center = %f %f %f\n",s.radius(), s.center().x(), s.center().y(), s.center().z()) ;
+	
+	osg::Vec3 examineCenter(0.f,2.f,0.f) ;
+	float examineBound = 1.f ;
+	
+	float examineScale = examineBound/s.radius() ;
+	osg::Vec3 examineOffset = examineCenter - s.center()*examineScale ;
+	isg.getWorldNode()->setScale(osg::Vec3(examineScale,examineScale,examineScale)) ;
+	isg.getWorldNode()->setPosition(examineOffset) ;
+	iris::Nav::setWorldPivotPoint(s.center()) ;
+    }
+
+in the Nav callback:
+
+1) n = multiply the inverse of the pivot point (center of bounding sphere)
+       by the world node matrix.
+
+3) n = n - (n rotated by the inverse of the nav node's rotation)
+	
+
+   if (Nav::usingWorldPivotPoint())
+    {
+	// trying to convert world to normalized
+	// will this work if the world node has a rotation?
+	// will this work for anything other thana centered object?
+	osg::Matrix wm = GetMatrix(SceneGraph::instance()->getWorldNode()) ;
+	osg::Vec3 n = wm.preMult(Nav::getWorldPivotPoint()) ;
+
+	osg::Quat q = SceneGraph::instance()->getNavNode()->getAttitude() ;
+	osg::Vec3 c = n - (q.inverse() * n) ;
+	SceneGraph::instance()->getNavNode()->setPivotPoint(c) ;
+	//printf("c =  %f %f %f\n",c.x(),c.y(),c.z()) ;
+    }
+   }

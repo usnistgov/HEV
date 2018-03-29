@@ -1,0 +1,14 @@
+/** \mainpage Main Page
+
+Welcome to IRIS!
+
+Please see the <a href=file:pages.html > "Related Pages"</a> tab for general
+documentation including pdf man pages and reference sheets.
+
+Check out the other tabs for more class-specific information.  Start at
+iris::SceneGraph if you don't know where to begin.
+
+Utility functions are documented in the <a href=file:namespaceiris.html >
+"iris Namespace Reference"</a> page, about half-way down, after the classes.
+*/
+ 

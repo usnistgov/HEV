@@ -1,6 +1,6 @@
-bin/
-doc/
-include/
-lib/
+./bin/
+./doc/
+./include/
+./lib/
 iris.pc
 iris/src/doc/Doxyfile.bak

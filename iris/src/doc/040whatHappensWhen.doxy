@@ -1,0 +1,42 @@
+/** \page whathappenswhen Sequence of actions taken by the iris-viewer and the SceneGraph class
+
+This is the sequence of actions taken by the iris-viewer, and the
+iris::SceneGraph objects which it creates.
+
+-# iris-viewer creates an iris::SceneGraph object, which does the following:
+   -# signal catcher set up
+   -# variables given default values
+   -# control fifo created and opened
+   -# scenegraph created
+   -# create an osgViewer::Viewer object
+   -# set various Viewer and osg::Camera options
+   -# create an event handler (osgGA::GUIEventHandler class); it's a callback called every frame
+-# iris-viewer loads DSOs and model files from the command line, then makes
+   optional calls (like --examine) as specified in the command line
+-# iris-viewer calls iris::SceneGraph::run()
+   -# processes <tt>before realize</tt> when commands.
+   -# load default iris::Window, iris::Pane and iris::Nav objects if none were specified
+   -# call iris::Window::realize() for every iris::Window
+   -# call osg::osgViewer::Viewer::realize() for every Viewer object
+   -# processes <tt>after realize</tt> when commands
+   -# in a loop:
+     - before first frame, frame number = 0
+     -# processes when commands for <tt>before frame <i>N</i></tt> if frame number == <i>N</i>
+     -# call osgViewer::Viewer::frame() for every Viewer object
+      -# frame number is incremented
+      -# iris::SceneGraph's event handler object is called:
+        -# read fifo:
+	  - call iris::SceneGraph::control() to process commands read
+        -# process keyboard and mouse buttons, including \c ESCAPE key
+      -# node and event handler callbacks as created by other DSOs and classes are called
+      -# frame number is now N+1
+     -# processes when commands for <tt>after frame <i>N</i></tt> if frame number >= <i>N</i>
+     -# processes when commands for <tt>after time <i>T</i></tt> if reference time is > <i>T</i>
+-# iris::SceneGraph::setDone(\c true) is called, via \c ESCAPE, or control command or signal
+   -# process <tt>before cleanup</tt> when commands
+   -# child processes from \c EXEC control commands are killed
+   -# scenegraph nodes are destroyed
+   -# process <tt>after cleanup</tt> when commands
+-# iris::SceneGraph object is destroyed when iris-viewer exits
+
+*/

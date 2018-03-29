@@ -1,0 +1,190 @@
+/** \page thingsToTryOutThingsToConsider Things to try out, things to consider, and bugs to fix.
+
+<b>BUGS</b>
+
+ - the DUMP control command segfaults when "scene" is passed as the first
+   parameter. If the osgDB::writeNodeFile() command in
+   iris::SceneGraph::dump() is commented out it doesn't segfault. The
+   current suspcion is that it's related to the osg::ref_ptr containing the
+   osg::Node parameter going out of scope and deleting the scenegraph.
+
+ - fix issue where signals 2 & 3 are already set- you see it when backgrounding
+   in a shell script something that sets signals 2 & 3. Look in Util.cpp for Signal
+   function for the message. So far this hasn't caused any problems, so it might be OK to
+   just not print the warning message.
+
+ - the man page for iris-getUsleep is missing. Are any others missing?
+
+<b>TO DO</b>
+
+ - add to the doxygen documentation the Uniforms that IRIS sets.
+   - iris_ClipPlaneEnabled
+   - iris_LightEnabled
+   - iris_Viewport
+
+ - create a display DSO that will write the view, either a snapshot or a
+   series of images, to a virtual buffer of high resolution, say
+   1024x1024. Write control commands to control it. See the savgDisplay DSO
+   for pointers. Can you do any threading to speed things up?
+
+ - write a SAVESCENEGRAPH control command and iris::SceneGraph method
+   - just dump to an IRIS file the matrices for each generic node, plus
+     response, whatever else is needed, such as pivot point? This might be
+     easier when the nodekits have been written
+   - just load the IRIS file to do a restore
+   - can it be an IRIS file? a mixture of control commands and loading osgb files?
+
+ - the iris-convert program should have options to call methods in osgUtil::Simplifier
+
+ - there's a big klude in the desktopWindow DSO that cycles the nodemask of
+   each camera node at startup. For some reason if this isn't done the
+   framerate is reduced until you cycle through all of the frusta.
+
+ - use iris::VectorOfStringsToCoord wherever possible- look in Scenegraph class where it parses control commands
+
+ - once iris::Window::realize() is called no more iris::Window objects can
+   be created. Also, the iris::Pane::setViewport() command has no effect
+   after iris::Window::realize() has been called.
+   osgViewer::Viewer::realize() gives errors if called multiple times
+
+ - is there a way to close a window using the KDE GUI that won't kill
+   the application?  How to send a "close window" event? Scenegraph's event
+   handler has a case for this condition.
+   - is creating, realizing and destroying osg::Viewer objects the way to
+     create/destroy Windows? 
+
+ - every new IRIS node type (such as iris::MatrixTransform) should have an
+   OSG nodekit so the nodes can be used in OSG files
+
+ - typedef ll the vectors of ref pointers and convert to typedefs so you can
+   make iterators, and take out the vector references and use iterators
+   instead so if they get changed to something else the code won't need to
+   be changed
+
+ - decide what needs to be private and what needs to be protected
+
+ - replace passing by *pointer to passing by &reference- no NULL pointer to
+   have to check for.  Any way to set a default node, like world, so two
+   methods aren't needed?  Is there a difference between passing as an
+   argument and returning as a value? 
+    - void setNode(const Node& node) vs Node& node = getNode()?
+    - passing by a non-const pointer is a good way to indicate an output parameter
+
+ - keep looking at whether we need ref pointers, either more or less of them, with stored
+   and passed data.  What does osgWorks return in findNode?  What do OSG
+   methods return that return vectors of nodes?  Are IRIS lists, like the
+   windowList, returning a copy or a pointer?
+
+ - look at const usage- use it more and more correctly.  can you pass const
+   pointers to vectors and ref pointers to make things go faster? 
+
+ - document every method in every file in include/iris. Also, find a way to
+   nicely add DSOs and program to the doxygen documentation.
+
+ - add IRIS version to iris.pc, and make an iris-version command that
+   calls pkg-config to print it out
+
+ - desktop stereo hasn't been used enough to be really considered "done". In
+   particular the iris::SceneGraph class methods for convergence and
+   interocular needs to be tested.
+
+ - does iris::SceneGraph::setMeters actually produce a correctly sized meter
+   stick in an immersive system?
+
+ - iris-readState:
+   - add command line options: look at options for hev-readFloats- use --initial --1 --loop or --block
+   - have --all dump all, default is to print pretty like a status window
+   - do a dtk::getSize() to find out how big to malloc for char string with nav name
+
+ - add more data to writeState (and iris-readState)- pivot point, pivot node
+
+ - all applications should use the osg::ArgumentParser for parsing command line
+   options and arguments and generating usage and help messages. iris-viewer
+   should use the osgViewer::HelpHandler to create on-screen help
+   messages. Refer to the osgviewer code in
+   $HEVROOT/osg/osg-svn/OpenSceneGraph/applications for an example.
+
+ - modify the geometry loaded by the toggleObjects DSO so they don't get
+   added to bounding sphere or bounding box
+
+ - write a new class, iris::Viewer:
+   - can simplify iris::SceneGraph and help allow multiple iris::SceneGraph objects
+   - based on osgViewer::Viewer class
+   - add iris defaults, event callback for the SceneGraph object that
+     created it
+   - add default Window and Navigation in its realize() function
+
+ - static variable issues if allowing more than one iris::SceneGraph object:
+   - keep iris::SceneGraph's static index variables in mind
+   - make sure that all SceneGraph::instance() calls are used only in DSOs
+     or callbacks, or other places where a SceneGraph object has been created     
+   - take static methods out of nav object, so can have multiple navigation
+     objects, one per Viewer
+   - figure out all the static vectors, static variables and static
+     functions like keyboard/mouse and scene/world update
+   - just support writeState for first SceneGraph object?
+   - how to support multiple SceneGraph and Viewer objects in DSOs?
+
+ - can osgNavDSO do something useful?  why does it show a blank screen now?
+   can it be attached to the nav node? 
+   - the original idea of osgNavDSO was to see if classes like
+     osgGA::TrackballManipulator could be used as IRIS navigations
+
+ - convert buttonMapper from a DSO to an application
+   - when input button changes, only write output buttons if they have
+     changed- right now it always writes to all output buttons
+   - is anyone even using buttonMapper?
+
+ - modify the makefiles so you don't generate dependency files when doing a
+   make clean. GNU make manual, section 9.2, gives an example of how to
+   avoid making dependency files when doing a make clean 
+
+ - add a --pretty option to iris-bounds so it generataes easier to read
+   output, perhaps with the same format as dosg-bounds.
+
+ - iris::SceneGraph:
+   - in places like SceneGraph::control that check both the vec size and vec
+     parameters, check vec.size() first so it won't segfault when checking vec parameter
+   - instead of SceneGraph class having a list of Viewers, have a single
+     CompositeViewer object?
+   - meters() is useful so objects appear to be the correct physical size- a
+     meter stick measures a meter long.  So meters is tied into the display,
+     but also into the tracker, as the tracker shared memory is in
+     normalized data.
+   - how to implement meters()?  is it just a convenient way to convert
+     between meters and scene?  Should immersive displays be measured in
+     meters or scene coords?  want a meter stick to be one meter in any
+     system if meters is set correctly.  if interocular is in meters,
+     shouldn't displays be in meters too?
+   - what unit should fusion be in?  meters, scene, % distance to screen?
+     Should it set fusion in the viewer class too for compatibility?
+   - have a node callback for the scene node (instead of in the event
+     callback) for syncing the world and ether nodes, so you get one per SceneGraph object
+   - need a replaceNode method and control command that can replace any node
+     in the scenegraph, even the scene node. Needs special smarts about the
+     standard scenegraph nodes and stuff in the sge node list
+   - have the bounds/examine/center methods to not need to first reset the world node
+
+ - clean up and document the code in
+   iris::ImmersiveScreen::setProjectionAndViewMatrix() method. Believe it or
+   not I understood it when I wrote it!
+
+ - iris::Nav:
+   - if you allow multiple SceneGraph objects you will probably need to make
+     this a class based on the MatrixTransform class and get rid of the
+     static methods
+   - does Nav need to do something with pivot when it does a reset?
+
+ - save the vector index of each class into an _index variable, add a
+   getIndex() method.  Already done in SceneGraph state
+
+ - consider putting IRIS on the DIVERSE web page- if so need to do svn of it on sourceforge?
+
+ - after every CentOS update try to install collada and get OSG to build
+   with it. See if you can convert inventor or vrml files to collada.
+
+ -  after every CentOS update try to build Paul Matrz's osgworks code
+
+*/
+
+
