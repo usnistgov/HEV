@@ -13,7 +13,7 @@ LAST_SUBDIRS  = \
 				src/hev-caveTest/ \
 				src/doc/
 
-IGNORE_SUBDIRS = src/hev-hydview/
+IGNORE_SUBDIRS = src/hev-hydview/ src/hev-triangulation/
 
 ALL_SUBDIRS = $(filter-out $(IGNORE_SUBDIRS),$(sort $(dir $(wildcard src/*/GNUmakefile))))
 REST_SUBDIRS = $(filter-out $(FIRST_SUBDIRS),$(filter-out $(LAST_SUBDIRS),$(ALL_SUBDIRS)))

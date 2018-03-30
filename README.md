@@ -15,9 +15,14 @@ Additional packages:
 - fltk-\*
 - mesa-\*
 - freeglut-devel
+- alsa-lib-devel
+- libsndfile-devel
+- portaudio-devel
 - tk-devel
 - epel-release
 - R
+- GraphicsMagick
+- ImageMagick
 
 ### Build Instructions
 
@@ -30,5 +35,5 @@ $ make install
 ```
 
 Wesley Griffin
-Updated: 2018-03-27
+Updated: 2018-03-29
 
