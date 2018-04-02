@@ -11,6 +11,8 @@ We have developed this software only on CentOS 7 and NVIDIA GPUs.
 
 Additional packages:
 
+- centos-release-scl
+- python33
 - cmake
 - fltk-\*
 - mesa-\*
